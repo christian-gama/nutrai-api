@@ -1,0 +1,93 @@
+run:
+  go: "1.19.5"
+  skip-dirs:
+    - "tools"
+    - "vendor"
+
+output:
+  format: colored-line-number
+
+linters-settings:
+  revive:
+    max-open-files: 2048
+    ignore-generated-header: true
+    severity: error
+    rules:
+      - name: add-constant
+        severity: warning
+        disabled: true
+
+      - name: defer
+        severity: warning
+        disabled: false
+        arguments:
+          - ["call-chain", "loop"]
+
+      - name: line-length-limit
+        severity: warning
+        disabled: true
+        arguments: [120]
+
+      - name: modifies-parameter
+        severity: warning
+        disabled: false
+
+      - name: nested-structs
+        severity: warning
+        disabled: false
+
+      - name: receiver-naming
+        severity: warning
+        disabled: false
+
+      - name: redefines-builtin-id
+        severity: warning
+        disabled: false
+
+      - name: unnecessary-stmt
+        severity: warning
+        disabled: false
+
+      - name: useless-break
+        severity: warning
+        disabled: false
+
+      - name: error-naming
+        severity: warning
+        disabled: false
+
+      - name: unreachable-code
+        severity: warning
+        disabled: false
+
+linters:
+  disable-all: true
+  enable:
+    - deadcode
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    - varcheck
+    - gocyclo
+    - goconst
+    - gofumpt
+    - goimports
+    - unconvert
+    - whitespace
+    - godot
+    - gosec
+    - revive
+
+issues:
+  exclude-rules:
+    - path: '(.+)_test\.go'
+      text: "create a named constant for it"
+    - path: '(.+)_test\.go'
+      text: "make it a constant"
+    - path: '(.+)_test\.go'
+      linters:
+        - errcheck
+  fix: true

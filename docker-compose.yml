@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+  api:
+    container_name: nutrai-api
+    restart: always
+    build:
+      context: .
+      target: api
+      dockerfile: Dockerfile
+      args:
+        - WORKDIR=$WORKDIR
+        - ARCH=${ARCH:-amd64}
+    ports:
+      - "$APP_PORT:$APP_PORT"
+    env_file:
+      - .env.$ENV
+    volumes:
+      - ./.cache/go:/root/.cache
+      - ./.generated/build:$WORKDIR/.generated/build
+      - ./.generated/coverage:$WORKDIR/.generated/coverage
+      - ./cmd:$WORKDIR/cmd
+      - ./internal:$WORKDIR/internal
+      - ./testutils:$WORKDIR/testutils

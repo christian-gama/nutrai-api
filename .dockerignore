@@ -1,0 +1,3 @@
+.generated/
+.cache/
+testutils/mocks/
