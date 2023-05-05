@@ -1,0 +1,7 @@
+{
+  "go.testEnvVars": {
+    "TEST_MODE": "all",
+    "DB_HOST": "localhost",
+    "DB_PORT": 18543,
+  },
+}
