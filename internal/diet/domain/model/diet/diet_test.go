@@ -30,7 +30,7 @@ func (s *DietTestSuite) TestNewDiet() {
 
 		sut := func() (*diet.Diet, error) {
 			dto := diet.DietInput(*data)
-			return diet.NewDiet(&dto)
+			return diet.New(&dto)
 		}
 
 		return &Sut{Sut: sut, Data: data}

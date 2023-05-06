@@ -22,8 +22,8 @@ type Diet struct {
 	MonthlyCostUSD  value.MonthlyCostUSD   `faker:"boundary_start=12.65, boundary_end=184.05"`
 }
 
-// DietInput represents the input to create a new Diet.
-func NewDiet(input *DietInput) (*Diet, error) {
+// New returns a new Diet instance.
+func New(input *DietInput) (*Diet, error) {
 	diet := Diet(*input)
 
 	if err := diet.Validate(); err != nil {
