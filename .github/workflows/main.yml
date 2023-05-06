@@ -17,9 +17,9 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/.cache/linter
-          key: ${{ runner.os }}-linter-${{ hashFiles('**.go') }}
+          key: ${{ runner.os }}-linter-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-linter-
+            ${{ runner.os }}-linter
       - name: Lint
         run: make lint
 
