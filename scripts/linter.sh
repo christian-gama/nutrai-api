@@ -1,10 +1,11 @@
 #!/bin/bash
-#
-# Script to lint the code using golangci-lint docker image.
-#
-# Author: Christian Gama e Silva
-# Email: christiangama.dev@gmail.com
-# Date Created: 2023/05/04
+# ==============================================================================================
+# Title:    linter.sh
+# Brief:    Run golangci-lint in a Docker container to lint the source code.
+# Author:   christiangama.dev@gmail.com
+# Creation: 2023-05-05
+# Usage:    ./scripts/linter.sh
+# ==============================================================================================
 
 CACHE_DIR="$PWD/.cache/linter"
 DEFAULT_CONFIG="$HOME/.golangci.yml"
