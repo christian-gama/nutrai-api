@@ -12,16 +12,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Cache linter dependencies
-        uses: actions/cache@v3
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
         with:
-          path: |
-            ${{ github.workspace }}/.cache/linter
-          key: ${{ runner.os }}-linter-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-linter
-      - name: Lint
-        run: make lint
+          version: v1.29
 
   test:
     runs-on: ubuntu-latest
