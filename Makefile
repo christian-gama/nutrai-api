@@ -95,6 +95,16 @@ test: .cmd-exists-go .clear-screen
 
 
 # ==============================================================================================
+# Target: test-ci
+# Brief: This target is used to run all tests on CI.
+# Usage: Run the command 'make test-ci'.
+# ==============================================================================================
+.PHONY: test-ci
+test-ci: .cmd-exists-go .clear-screen
+	@TEST_MODE=all go test -v ./...
+
+
+# ==============================================================================================
 # Target: .cmd-exists-%
 # Brief: This is a helper target to check if a command exists. It will exit with code 1 if it does not.
 # Usage: It is not meant to be called directly, but by other targets.

@@ -38,4 +38,4 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-test
       - name: Test
-        run: go test -v ./...
+        run: make test-ci
