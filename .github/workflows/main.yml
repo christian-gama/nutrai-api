@@ -6,13 +6,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  create-env:
-    runs-on: ubuntu-latest
-    environment: test
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
   lint:
     runs-on: ubuntu-latest
     steps:
