@@ -13,7 +13,7 @@ func (i ID) Uint() uint {
 // Validate returns true if the ID is valid.
 func (i ID) Validate() error {
 	if i == 0 {
-		return errutil.NewErrInvalid("id", "cannot be empty")
+		return errutil.NewErrRequired("id")
 	}
 
 	return nil

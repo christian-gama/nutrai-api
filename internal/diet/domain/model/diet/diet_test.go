@@ -44,7 +44,7 @@ func (s *DietTestSuite) TestNewDiet() {
 
 				diet, err := sut.Sut()
 
-				s.ErrorAsInvalid(err)
+				s.ErrorAsRequired(err)
 				s.Nil(diet)
 			})
 		})

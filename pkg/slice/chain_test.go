@@ -211,4 +211,28 @@ func (s *SliceStructSuite) TestChain() {
 
 		s.Equal(chain.Build(), clone.Build())
 	})
+
+	s.Run("slice.IndexOf returns the index of the first element that matches the element", func() {
+		chain := slice.Chain(ints())
+
+		indexOf := slice.IndexOf(chain.Build(), 10)
+
+		s.Equal(9, indexOf)
+	})
+
+	s.Run("slice.IndexOf returns -1 if no element matches the element", func() {
+		chain := slice.Chain(ints())
+
+		indexOf := slice.IndexOf(chain.Build(), 404)
+
+		s.Equal(-1, indexOf)
+	})
+
+	s.Run("slice.RemoveDuplicates returns a slice without duplicate elements", func() {
+		chain := slice.Chain(ints())
+
+		withoutDuplicates := slice.RemoveDuplicates(chain.Build())
+
+		s.Equal([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, withoutDuplicates)
+	})
 }
