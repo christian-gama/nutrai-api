@@ -1,0 +1,48 @@
+name: Run linter and tests
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  create-env:
+    runs-on: ubuntu-latest
+    environment: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache linter dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/.cache/linter
+          key: ${{ runner.os }}-linter-${{ hashFiles('**.go') }}
+          restore-keys: |
+            ${{ runner.os }}-linter-
+      - name: Lint
+        run: make lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache test dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+          key: ${{ runner.os }}-test-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-test
+      - name: Test
+        run: make test
