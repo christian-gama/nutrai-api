@@ -1,5 +1,11 @@
 package value
 
+import (
+	"fmt"
+
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
+)
+
 // RestrictedFood removes the food from the diet.
 type RestrictedFood string
 
@@ -8,7 +14,18 @@ func (r RestrictedFood) String() string {
 	return string(r)
 }
 
-// IsValid returns true if the RestrictedFood is valid.
-func (r RestrictedFood) IsValid() bool {
-	return len(r) > 0 && len(r) < 100
+// Validate returns an error if the RestrictedFood is invalid.
+func (r RestrictedFood) Validate() error {
+	const fieldName = "restricted food"
+	const maxChars = 100
+
+	if len(r) == 0 {
+		return errutil.NewErrRequired(fieldName)
+	}
+
+	if len(r) > maxChars {
+		return errutil.NewErrInvalid(fieldName, fmt.Sprintf("cannot be longer than %d characters", maxChars))
+	}
+
+	return nil
 }

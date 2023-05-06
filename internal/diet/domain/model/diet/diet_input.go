@@ -5,6 +5,7 @@ import (
 	sharedvalue "github.com/christian-gama/nutrai-api/internal/shared/domain/value"
 )
 
+// DietInput is the input to create a new Diet.
 type DietInput struct {
 	ID              sharedvalue.ID
 	Name            value.Name

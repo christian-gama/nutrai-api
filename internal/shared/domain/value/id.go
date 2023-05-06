@@ -1,5 +1,7 @@
 package value
 
+import "github.com/christian-gama/nutrai-api/pkg/errutil"
+
 // ID represents the ID of a domain entity.
 type ID uint
 
@@ -8,7 +10,11 @@ func (i ID) Uint() uint {
 	return uint(i)
 }
 
-// IsValid returns true if the ID is valid.
-func (i ID) IsValid() bool {
-	return i > 0
+// Validate returns true if the ID is valid.
+func (i ID) Validate() error {
+	if i == 0 {
+		return errutil.NewErrInvalid("id", "cannot be empty")
+	}
+
+	return nil
 }

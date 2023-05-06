@@ -1,5 +1,11 @@
 package value
 
+import (
+	"fmt"
+
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
+)
+
 // DurationInWeeks represents the duration of a diet in weeks.
 type DurationInWeeks int16
 
@@ -8,7 +14,19 @@ func (d DurationInWeeks) Int16() int16 {
 	return int16(d)
 }
 
-// IsValid returns true if the duration is valid.
-func (d DurationInWeeks) IsValid() bool {
-	return d > 0 && d < 100
+// Validate returns an error if the duration is invalid.
+func (d DurationInWeeks) Validate() error {
+	const fieldName = "durationInWeeks"
+	const maxWeeks = 520
+	const minWeeks = 1
+
+	if d < minWeeks {
+		return errutil.NewErrInvalid(fieldName, fmt.Sprintf("cannot be less than %d week", minWeeks))
+	}
+
+	if d > 520 {
+		return errutil.NewErrInvalid(fieldName, fmt.Sprintf("cannot be greater than %d weeks", maxWeeks))
+	}
+
+	return nil
 }

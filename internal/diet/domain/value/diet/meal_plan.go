@@ -1,5 +1,11 @@
 package value
 
+import (
+	"fmt"
+
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
+)
+
 // MealPlan represents the meal plan of a diet.
 type MealPlan string
 
@@ -8,13 +14,30 @@ func (m MealPlan) String() string {
 	return string(m)
 }
 
-// IsValid returns true if the meal plan is valid.
-func (m MealPlan) IsValid() bool {
-	switch m {
-	case Ketogenic, Vegetarian, Vegan, Mediterranean, Paleolithic, LowCarb:
-		return true
+// Validate returns an error if the meal plan is invalid.
+func (m MealPlan) Validate() error {
+	const fieldName = "mealPlan"
+
+	validMealPlans := []MealPlan{
+		Ketogenic,
+		Vegetarian,
+		Vegan,
+		Mediterranean,
+		Paleolithic,
+		LowCarb,
 	}
-	return false
+
+	if len(m) == 0 {
+		return errutil.NewErrRequired(fieldName)
+	}
+
+	for _, validMealPlan := range validMealPlans {
+		if validMealPlan == m {
+			return nil
+		}
+	}
+
+	return errutil.NewErrInvalid(fieldName, fmt.Sprintf("must be one of %v", validMealPlans))
 }
 
 const (
