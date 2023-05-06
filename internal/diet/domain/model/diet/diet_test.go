@@ -49,7 +49,7 @@ func (s *DietTestSuite) TestNewDiet() {
 			})
 		})
 
-		s.Run("cost", func() {
+		s.Run("MonthlyCostUSD", func() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
 				sut.Data.MonthlyCostUSD = 0
@@ -81,7 +81,7 @@ func (s *DietTestSuite) TestNewDiet() {
 			})
 		})
 
-		s.Run("description", func() {
+		s.Run("Description", func() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
 				sut.Data.Description = ""
@@ -103,7 +103,7 @@ func (s *DietTestSuite) TestNewDiet() {
 			})
 		})
 
-		s.Run("durationInWeeks", func() {
+		s.Run("DurationInWeeks", func() {
 			s.Run("Should return an error when less than min", func() {
 				sut := makeSut()
 				sut.Data.DurationInWeeks = 0
@@ -125,7 +125,7 @@ func (s *DietTestSuite) TestNewDiet() {
 			})
 		})
 
-		s.Run("goal", func() {
+		s.Run("Goal", func() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
 				sut.Data.Goal = ""
@@ -147,7 +147,7 @@ func (s *DietTestSuite) TestNewDiet() {
 			})
 		})
 
-		s.Run("mealPlan", func() {
+		s.Run("MealPlan", func() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
 				sut.Data.MealPlan = ""
@@ -169,7 +169,7 @@ func (s *DietTestSuite) TestNewDiet() {
 			})
 		})
 
-		s.Run("name", func() {
+		s.Run("Name", func() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
 				sut.Data.Name = ""
@@ -191,7 +191,7 @@ func (s *DietTestSuite) TestNewDiet() {
 			})
 		})
 
-		s.Run("restrictedFood", func() {
+		s.Run("RestrictedFood", func() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
 				sut.Data.RestrictedFood = []value.RestrictedFood{}

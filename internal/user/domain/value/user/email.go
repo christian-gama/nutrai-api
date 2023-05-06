@@ -16,7 +16,7 @@ func (e Email) String() string {
 
 // Validate returns an error if the email is invalid.
 func (e Email) Validate() error {
-	const fieldName = "email"
+	const fieldName = "Email"
 
 	if e == "" {
 		return errutil.NewErrRequired(fieldName)

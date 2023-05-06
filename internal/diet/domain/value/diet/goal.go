@@ -16,7 +16,7 @@ func (g Goal) String() string {
 
 // Validate returns an error if the goal is invalid.
 func (g Goal) Validate() error {
-	const fieldName = "goal"
+	const fieldName = "Goal"
 
 	validGoals := []Goal{
 		WeightLoss,

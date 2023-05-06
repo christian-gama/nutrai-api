@@ -16,7 +16,7 @@ func (n Name) String() string {
 
 // Validate returns an error if the name is invalid.
 func (n Name) Validate() error {
-	const fieldName = "name"
+	const fieldName = "Name"
 	const maxChars = 100
 
 	if len(n) == 0 {

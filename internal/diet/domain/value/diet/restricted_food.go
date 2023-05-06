@@ -16,7 +16,7 @@ func (r RestrictedFood) String() string {
 
 // Validate returns an error if the restricted food is invalid.
 func (r RestrictedFood) Validate() error {
-	const fieldName = "restricted food"
+	const fieldName = "RestrictedFood"
 	const maxChars = 100
 
 	if len(r) == 0 {

@@ -16,7 +16,7 @@ func (c MonthlyCostUSD) Float32() float32 {
 
 // Validate returns an error if the monthly cost is invalid.
 func (c MonthlyCostUSD) Validate() error {
-	const fieldName = "monthlyCostUSD"
+	const fieldName = "MonthlyCostUSD"
 	const maxCost = 9_999
 
 	if c == 0 {

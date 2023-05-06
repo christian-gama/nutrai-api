@@ -16,7 +16,7 @@ func (d DurationInWeeks) Int16() int16 {
 
 // Validate returns an error if the duration is invalid.
 func (d DurationInWeeks) Validate() error {
-	const fieldName = "durationInWeeks"
+	const fieldName = "DurationInWeeks"
 	const maxWeeks = 520
 	const minWeeks = 1
 

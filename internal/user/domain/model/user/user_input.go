@@ -10,4 +10,5 @@ type UserInput struct {
 	ID       sharedvalue.ID
 	Email    value.Email
 	Password value.Password
+	Name     value.Name
 }

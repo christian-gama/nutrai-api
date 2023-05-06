@@ -16,7 +16,7 @@ func (m MealPlan) String() string {
 
 // Validate returns an error if the meal plan is invalid.
 func (m MealPlan) Validate() error {
-	const fieldName = "mealPlan"
+	const fieldName = "MealPlan"
 
 	validMealPlans := []MealPlan{
 		Ketogenic,

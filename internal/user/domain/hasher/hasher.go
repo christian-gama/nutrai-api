@@ -1,9 +1,11 @@
 package hasher
 
-type Hasher interface {
-	// Hash returns the hashed value.
-	Hash(value string) (string, error)
+import value "github.com/christian-gama/nutrai-api/internal/user/domain/value/user"
 
-	// Compare returns an error if the value is not equal to the hashed value.
-	Compare(value, hash string) error
+type Hasher interface {
+	// Hash returns the hashed password.
+	Hash(password value.Password) (value.Password, error)
+
+	// Compare returns an error if the password does not match the hash.
+	Compare(password value.Password, hash string) error
 }

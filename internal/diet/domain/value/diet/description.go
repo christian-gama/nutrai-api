@@ -16,7 +16,7 @@ func (n Description) String() string {
 
 // Validate returns an error if the description is invalid.
 func (n Description) Validate() error {
-	const fieldName = "description"
+	const fieldName = "Description"
 	const maxChars = 500
 
 	if len(n) == 0 {

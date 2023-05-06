@@ -16,7 +16,7 @@ func (p Password) String() string {
 
 // Validate returns an error if the password is invalid.
 func (p Password) Validate() error {
-	const fieldName = "password"
+	const fieldName = "Password"
 	const minLen = 8
 	const maxLen = 32
 
