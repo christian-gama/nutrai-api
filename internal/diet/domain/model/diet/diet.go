@@ -16,7 +16,6 @@ type Diet struct {
 	ID              sharedvalue.ID         `faker:"uint"`
 	Name            value.Name             `faker:"name"`
 	Description     value.Description      `faker:"paragraph"`
-	AllowedFood     []value.AllowedFood    `faker:"-"`
 	RestrictedFood  []value.RestrictedFood `faker:"-"`
 	DurationInWeeks value.DurationInWeeks  `faker:"boundary_start=1, boundary_end=100"`
 	Goal            value.Goal             `faker:"oneof:WEIGHT_LOSS, WEIGHT_GAIN, MAINTAIN, IMPROVED_HEALTH, INCREASE_ENERGY, MUSCLE_GAIN"`
@@ -25,19 +24,18 @@ type Diet struct {
 }
 
 func NewDiet(
-	input InputDietDTO,
+	input DietInput,
 ) (*Diet, error) {
 	diet := Diet(input)
+
 	if err := diet.Validate(); err != nil {
 		return nil, err
 	}
 
 	return &diet, nil
-
 }
 
 func (d Diet) Validate() error {
-
 	if isValid := d.ID.IsValid(); !isValid {
 		return errors.New("invalid ID")
 	}
@@ -64,20 +62,6 @@ func (d Diet) Validate() error {
 
 	if isValid := d.MonthlyCostUSD.IsValid(); !isValid {
 		return errors.New("invalid monthly cost")
-	}
-
-	if len(d.AllowedFood) == 0 {
-		return errors.New("allowed food cannot be empty")
-	}
-
-	for _, allowedFood := range d.AllowedFood {
-		if isValid := allowedFood.IsValid(); !isValid {
-			return errors.New("invalid allowed food")
-		}
-	}
-
-	if len(d.RestrictedFood) == 0 {
-		return errors.New("restricted food cannot be empty")
 	}
 
 	for _, restrictedFood := range d.RestrictedFood {

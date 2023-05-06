@@ -5,11 +5,10 @@ import (
 	sharedvalue "github.com/christian-gama/nutrai-api/internal/shared/domain/value"
 )
 
-type InputDietDTO struct {
+type DietInput struct {
 	ID              sharedvalue.ID
 	Name            value.Name
 	Description     value.Description
-	AllowedFood     []value.AllowedFood
 	RestrictedFood  []value.RestrictedFood
 	DurationInWeeks value.DurationInWeeks
 	Goal            value.Goal

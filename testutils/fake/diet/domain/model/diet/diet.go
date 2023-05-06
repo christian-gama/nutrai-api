@@ -12,12 +12,9 @@ func Diet() *diet.Diet {
 	data := new(diet.Diet)
 
 	err := faker.FakeData(data)
-
 	if err != nil {
 		panic(fmt.Errorf("error while generating fake Diet: %w", err))
 	}
-
-	data.AllowedFood = []value.AllowedFood{value.AllowedFood(faker.Name()), value.AllowedFood(faker.Name())}
 
 	data.RestrictedFood = []value.RestrictedFood{value.RestrictedFood(faker.Name()), value.RestrictedFood(faker.Name())}
 

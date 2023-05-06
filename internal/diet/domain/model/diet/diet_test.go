@@ -4,7 +4,8 @@ import (
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
-	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model"
+	value "github.com/christian-gama/nutrai-api/internal/diet/domain/value/diet"
+	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/diet"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
 
@@ -26,17 +27,7 @@ func (s *DietTestSuite) TestNewDiet() {
 		data := fake.Diet()
 
 		sut := func() (*diet.Diet, error) {
-			dto := diet.InputDietDTO{
-				ID:              data.ID,
-				Name:            data.Name,
-				Description:     data.Description,
-				AllowedFood:     data.AllowedFood,
-				RestrictedFood:  data.RestrictedFood,
-				DurationInWeeks: data.DurationInWeeks,
-				Goal:            data.Goal,
-				MealPlan:        data.MealPlan,
-				MonthlyCostUSD:  data.MonthlyCostUSD,
-			}
+			dto := diet.DietInput(*data)
 			return diet.NewDiet(dto)
 		}
 
@@ -74,24 +65,20 @@ func (s *DietTestSuite) TestNewDiet() {
 			s.Equal("invalid description", err.Error())
 		})
 
-		s.Run("Should return error when AllowedFood is empty", func() {
+		s.Run("Should return error when a restricted food is not valid", func() {
 			sut := makeSut()
-			sut.Data.AllowedFood = nil
+			stringWith100Characters := ""
+
+			for i := 0; i < 100; i++ {
+				stringWith100Characters += "a"
+			}
+
+			sut.Data.RestrictedFood = []value.RestrictedFood{value.RestrictedFood(stringWith100Characters)}
 
 			diet, err := sut.Sut()
 			s.Error(err)
 			s.Nil(diet)
-			s.Equal("allowed food cannot be empty", err.Error())
-		})
-
-		s.Run("Should return error when RestrictedFood is empty", func() {
-			sut := makeSut()
-			sut.Data.RestrictedFood = nil
-
-			diet, err := sut.Sut()
-			s.Error(err)
-			s.Nil(diet)
-			s.Equal("restricted food cannot be empty", err.Error())
+			s.Equal("invalid restricted food", err.Error())
 		})
 
 		s.Run("Should return error when DurationInWeeks is empty", func() {
@@ -133,6 +120,21 @@ func (s *DietTestSuite) TestNewDiet() {
 			s.Nil(diet)
 			s.Equal("invalid monthly cost", err.Error())
 		})
+	})
 
+	s.Run("TestNewDiet (Success)", func() {
+		sut := makeSut()
+		diet, err := sut.Sut()
+
+		s.NoError(err)
+		s.NotNil(diet)
+		s.Equal(sut.Data.ID, diet.ID)
+		s.Equal(sut.Data.Name, diet.Name)
+		s.Equal(sut.Data.Description, diet.Description)
+		s.Equal(sut.Data.RestrictedFood, diet.RestrictedFood)
+		s.Equal(sut.Data.DurationInWeeks, diet.DurationInWeeks)
+		s.Equal(sut.Data.Goal, diet.Goal)
+		s.Equal(sut.Data.MealPlan, diet.MealPlan)
+		s.Equal(sut.Data.MonthlyCostUSD, diet.MonthlyCostUSD)
 	})
 }
