@@ -7,15 +7,6 @@
 # Usage:    ./scripts/linter.sh
 # ==============================================================================================
 
-CACHE_DIR="$PWD/.cache/linter"
-DEFAULT_CONFIG="$HOME/.golangci.yml"
-mkdir -p "$CACHE_DIR"
+DEFAULT_CONFIG=".golangci.yml"
 
-docker run \
---rm -t \
---user "$(id -u):$(id -g)" \
--v "$CACHE_DIR:/.cache" \
--v "$PWD:/app" \
---workdir /app \
-golangci/golangci-lint:v1.47.3 \
-golangci-lint run --config .golangci.yml "$@"
+go run github.com/golangci/golangci-lint/cmd/golangci-lint@v1.52.2 run --config "$DEFAULT_CONFIG" ./...

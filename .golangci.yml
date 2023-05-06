@@ -63,14 +63,12 @@ linters-settings:
 linters:
   disable-all: true
   enable:
-    - deadcode
     - gosimple
     - govet
     - ineffassign
     - staticcheck
     - typecheck
     - unused
-    - varcheck
     - gocyclo
     - goconst
     - gofumpt
