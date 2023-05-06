@@ -29,6 +29,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Install 'gotestsum'
+        run: go install gotest.tools/gotestsum@latest
+
       - name: Cache test dependencies
         uses: actions/cache@v3
         with:
