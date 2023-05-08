@@ -5,7 +5,7 @@ import (
 	"time"
 
 	queryingPort "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
-	"github.com/christian-gama/nutrai-api/internal/user/infra/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/infra/querying"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"gorm.io/gorm"
 )

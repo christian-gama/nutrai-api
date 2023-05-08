@@ -6,10 +6,10 @@ import (
 
 	queryingPort "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
 	"github.com/christian-gama/nutrai-api/internal/shared/domain/value"
+	"github.com/christian-gama/nutrai-api/internal/shared/infra/querying"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
 	"github.com/christian-gama/nutrai-api/internal/user/infra/persistence"
-	"github.com/christian-gama/nutrai-api/internal/user/infra/querying"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/user/domain/model/user"
 	fixture "github.com/christian-gama/nutrai-api/testutils/fixture/user"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
@@ -33,7 +33,7 @@ func (s *UserSuite) SetupTest() {
 
 func (s *UserSuite) TestSave() {
 	type Sut struct {
-		Sut   func(ctx context.Context, input repo.SaveUserInput) (value.ID, error)
+		Sut   func(ctx context.Context, input repo.SaveUserInput) (*user.User, error)
 		Ctx   context.Context
 		Input repo.SaveUserInput
 	}
@@ -57,10 +57,10 @@ func (s *UserSuite) TestSave() {
 	s.Run("Should create a new user", func(db *gorm.DB) {
 		sut := makeSut(db)
 
-		id, err := sut.Sut(sut.Ctx, sut.Input)
+		user, err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.NoError(err)
-		s.NotZero(id, "Should have an ID")
+		s.NotZero(user.ID, "Should have an ID")
 	})
 
 	s.Run("Should return an error when the user already exists", func(db *gorm.DB) {
@@ -98,7 +98,7 @@ func (s *UserSuite) TestDelete() {
 
 		userDeps := fixture.SaveUser(db, nil)
 
-		sut.Input.ID = userDeps.User.ID
+		sut.Input.IDs = []value.ID{userDeps.User.ID}
 
 		err := sut.Sut(sut.Ctx, sut.Input)
 
@@ -108,7 +108,7 @@ func (s *UserSuite) TestDelete() {
 	s.Run("Should delete nothing if the user does not exist", func(db *gorm.DB) {
 		sut := makeSut(db)
 
-		sut.Input.ID = 404_404_404
+		sut.Input.IDs = []value.ID{404_404_404}
 
 		err := sut.Sut(sut.Ctx, sut.Input)
 
@@ -295,6 +295,7 @@ func (s *UserSuite) TestUpdate() {
 		ctx := context.Background()
 		input := repo.UpdateUserInput{
 			User: fake.User(),
+			ID:   1,
 		}
 		sut := s.User(db).Update
 
@@ -312,6 +313,7 @@ func (s *UserSuite) TestUpdate() {
 
 		*sut.Input.User = *userDeps.User
 		sut.Input.User.Name = "new name"
+		sut.Input.ID = userDeps.User.ID
 
 		err := sut.Sut(sut.Ctx, sut.Input)
 

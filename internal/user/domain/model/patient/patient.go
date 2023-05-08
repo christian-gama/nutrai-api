@@ -2,6 +2,7 @@ package patient
 
 import (
 	sharedvalue "github.com/christian-gama/nutrai-api/internal/shared/domain/value"
+	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
 	value "github.com/christian-gama/nutrai-api/internal/user/domain/value/patient"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
@@ -9,7 +10,7 @@ import (
 // Patient is the model for a patient.
 type Patient struct {
 	ID       sharedvalue.ID `faker:"uint"`
-	UserID   sharedvalue.ID `faker:"uint"`
+	User     *user.User     `faker:"-"`
 	WeightKG value.WeightKG `faker:"boundary_start=1, boundary_end=999"`
 	HeightM  value.HeightM  `faker:"boundary_start=1, boundary_end=3"`
 	Age      value.Age      `faker:"boundary_start=1, boundary_end=100"`
@@ -28,10 +29,6 @@ func (p *Patient) Validate() error {
 	var errs *errutil.Error
 
 	if err := p.ID.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
-	}
-
-	if err := p.UserID.Validate(); err != nil {
 		errs = errutil.Append(errs, err)
 	}
 

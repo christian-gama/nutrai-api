@@ -23,6 +23,7 @@ func (e *Error) Error() string {
 			output += "\n"
 		}
 	}
+
 	return output
 }
 

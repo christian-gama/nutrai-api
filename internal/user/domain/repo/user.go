@@ -23,16 +23,18 @@ type AllUsersInput struct {
 // FindUserInput is the input for the Find method.
 type FindUserInput struct {
 	ID value.ID
+	querying.Filterer
 }
 
 // DeleteUserInput is the input for the Delete method.
 type DeleteUserInput struct {
-	ID value.ID
+	IDs []value.ID
 }
 
 // UpdateUserInput is the input for the Update method.
 type UpdateUserInput struct {
 	User *user.User
+	ID   value.ID
 }
 
 // User is the interface that wraps the basic User methods.
@@ -47,7 +49,7 @@ type User interface {
 	Find(ctx context.Context, input FindUserInput, preload ...string) (*user.User, error)
 
 	// Save saves the given user.
-	Save(ctx context.Context, input SaveUserInput) (value.ID, error)
+	Save(ctx context.Context, input SaveUserInput) (*user.User, error)
 
 	// Update updates the given user.
 	Update(ctx context.Context, input UpdateUserInput) error

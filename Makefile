@@ -191,7 +191,7 @@ postgres: .cmd-exists-docker .clear-screen .check-env-file
 	@if [ "$(ENV_FILE)" = ".env.test" ]; then \
 		WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d psql_test; \
 	else \
-		WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose docker compose --env-file $(ENV_FILE) up -d psql; \
+		WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d psql; \
 	fi;
 
 
@@ -215,7 +215,7 @@ mock: .cmd-exists-go
 # ==============================================================================================
 .PHONY: docker-run
 docker-run: .cmd-exists-docker .clear-screen .check-env-file
-	@WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d api --build --remove-orphans --force-recreate
+	@WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d api --build --force-recreate --remove-orphans
 
 
 # ==============================================================================================

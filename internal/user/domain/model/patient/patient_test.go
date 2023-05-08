@@ -145,7 +145,6 @@ func (s *PatientTestSuite) TestNewPatient() {
 		s.Run("Should return multiple errors when multiple fields are invalid", func() {
 			sut := makeSut()
 			sut.Data.ID = 0
-			sut.Data.UserID = 0
 			sut.Data.WeightKG = 0
 			sut.Data.HeightM = 0
 			sut.Data.Age = 0
@@ -153,7 +152,7 @@ func (s *PatientTestSuite) TestNewPatient() {
 			patient, err := sut.Sut()
 
 			e := err.(*errutil.Error)
-			s.Equal(5, e.Len(), "should have 5 errors")
+			s.Equal(4, e.Len(), "should have 4 errors")
 			s.Nil(patient)
 		})
 	})
@@ -167,7 +166,6 @@ func (s *PatientTestSuite) TestNewPatient() {
 			s.NoError(err)
 			s.NotNil(patient)
 			s.Equal(sut.Data.ID, patient.ID)
-			s.Equal(sut.Data.UserID, patient.UserID)
 			s.Equal(sut.Data.WeightKG, patient.WeightKG)
 			s.Equal(sut.Data.HeightM, patient.HeightM)
 			s.Equal(sut.Data.Age, patient.Age)

@@ -9,6 +9,6 @@ type User struct {
 }
 
 // TableName returns the table name for the User schema.
-func (u *User) TableName() string {
+func (u User) TableName() string {
 	return "users"
 }

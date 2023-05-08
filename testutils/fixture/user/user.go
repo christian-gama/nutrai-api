@@ -24,7 +24,7 @@ func SaveUser(db *gorm.DB, deps *UserDeps) *UserDeps {
 	if user == nil {
 		user = fake.User()
 
-		id, err := persistence.NewUser(db).
+		user, err := persistence.NewUser(db).
 			Save(context.Background(), repo.SaveUserInput{
 				User: user,
 			})
@@ -32,7 +32,6 @@ func SaveUser(db *gorm.DB, deps *UserDeps) *UserDeps {
 			panic(fmt.Errorf("could not create user: %w", err))
 		}
 
-		user.ID = id
 		deps.User = user
 	}
 

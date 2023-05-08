@@ -1,6 +1,8 @@
 package value
 
-import "github.com/christian-gama/nutrai-api/pkg/errutil"
+import (
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
+)
 
 // ID represents the ID of a domain entity.
 type ID uint

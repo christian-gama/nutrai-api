@@ -24,7 +24,7 @@ func (w Age) Validate() error {
 		return errutil.NewErrRequired(fieldName)
 	}
 
-	if w <= minAge {
+	if w < minAge {
 		return errutil.NewErrInvalid(fieldName, fmt.Sprintf("cannot be less than %d", minAge))
 	}
 

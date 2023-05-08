@@ -6,6 +6,7 @@ import (
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
+// Name represents the user name.
 type Name string
 
 // String returns the string representation of the name.
