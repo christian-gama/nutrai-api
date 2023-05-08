@@ -254,7 +254,7 @@ docker-run: .cmd-exists-docker .clear-screen .check-env-file
 	fi;
 
 # ==============================================================================================
-# Target: .prepare-test
+# Target: .prepare-test-db
 # Brief: This is a helper target to prepare the test environment.
 # Usage: It is not meant to be called directly, but by other targets.
 # ==============================================================================================
