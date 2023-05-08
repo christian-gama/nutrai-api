@@ -15,14 +15,12 @@ type User struct {
 }
 
 // New returns a new User instance.
-func New(input *UserInput) (*User, error) {
-	user := User(*input)
-
+func New(user *User) (*User, error) {
 	if err := user.Validate(); err != nil {
 		return nil, err
 	}
 
-	return &user, nil
+	return user, nil
 }
 
 // Validate returns an error if the user is invalid.

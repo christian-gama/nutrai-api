@@ -1,9 +1,8 @@
 package fake
 
 import (
-	"fmt"
-
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
+	"github.com/christian-gama/nutrai-api/testutils/fake"
 	"github.com/go-faker/faker/v4"
 )
 
@@ -12,11 +11,11 @@ func User() *user.User {
 
 	err := faker.FakeData(data)
 	if err != nil {
-		panic(fmt.Errorf("error while generating fake User: %w", err))
+		fake.ErrGenerating("user", err)
 	}
 
 	if err := data.Validate(); err != nil {
-		panic(fmt.Errorf("error while generating fake User: %w", err))
+		fake.ErrGenerating("user", err)
 	}
 
 	return data

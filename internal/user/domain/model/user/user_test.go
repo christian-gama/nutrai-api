@@ -29,8 +29,7 @@ func (s *UserTestSuite) TestNewUser() {
 		data := fake.User()
 
 		sut := func() (*user.User, error) {
-			dto := user.UserInput(*data)
-			return user.New(&dto)
+			return user.New(data)
 		}
 
 		return &Sut{Sut: sut, Data: data}

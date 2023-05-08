@@ -1,8 +1,29 @@
 version: '3.9'
 services:
+  psql:
+    container_name: nutrai-psql
+    image: postgres:15.2-alpine
+    restart: "no"
+    command: -p $DB_PORT
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $DB_USER -d $DB_NAME" ]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+    environment:
+      - POSTGRES_USER=$DB_USER
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_DB=$DB_NAME
+      - POSTGRES_PORT=$DB_PORT
+    volumes:
+      - ./.generated/db_data/$APP_ENV:/var/lib/postgresql/data
+    ports:
+      - "$DB_PORT:$DB_PORT"
+
   api:
     container_name: nutrai-api
     restart: always
+    command: sh -c "make run ENV_FILE=.env.$APP_ENV"
     build:
       context: .
       target: api
@@ -10,10 +31,15 @@ services:
       args:
         - WORKDIR=$WORKDIR
         - ARCH=${ARCH:-amd64}
+        - AIRVERSION=$AIRVERSION
     ports:
       - "$APP_PORT:$APP_PORT"
     env_file:
-      - .env.$ENV
+      - .env.$APP_ENV
+    depends_on:
+      - psql
+    links:
+      - psql
     volumes:
       - ./.cache/go:/root/.cache
       - ./.generated/build:$WORKDIR/.generated/build
@@ -21,3 +47,26 @@ services:
       - ./cmd:$WORKDIR/cmd
       - ./internal:$WORKDIR/internal
       - ./testutils:$WORKDIR/testutils
+    environment:
+      - RUNNING_IN_DOCKER=true
+
+  psql_test:
+    container_name: nutrai-psql-test
+    image: postgres:15.2-alpine
+    restart: always
+    command: -c fsync=off -c full_page_writes=off -c synchronous_commit=off -p $DB_PORT
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $DB_USER -d $DB_NAME" ]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+    ports:
+      - "$DB_PORT:$DB_PORT"
+    environment:
+      - POSTGRES_USER=$DB_USER
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_DB=$DB_NAME
+      - POSTGRES_HOST=$DB_HOST
+      - POSTGRES_PORT=$DB_PORT
+    tmpfs:
+      - /var/lib/postgresql/data

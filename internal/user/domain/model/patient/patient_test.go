@@ -27,8 +27,7 @@ func (s *PatientTestSuite) TestNewPatient() {
 		data := fake.Patient()
 
 		sut := func() (*patient.Patient, error) {
-			dto := patient.PatientInput(*data)
-			return patient.New(&dto)
+			return patient.New(data)
 		}
 
 		return &Sut{Sut: sut, Data: data}

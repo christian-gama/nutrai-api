@@ -1,8 +1,12 @@
 package suite
 
 import (
+	"testing"
+
+	"github.com/christian-gama/nutrai-api/testutils"
 	"github.com/christian-gama/nutrai-api/testutils/suite/asserts"
 	"github.com/stretchr/testify/suite"
+	"gorm.io/gorm"
 )
 
 type Suite struct {
@@ -39,4 +43,21 @@ func (s *Suite) ErrorAsRequired(err error, msgAndArgs ...any) bool {
 // ErrorAsInternal checks if the error is an ErrInternal.
 func (s *Suite) ErrorAsInternal(err error, msgAndArgs ...any) bool {
 	return asserts.ErrorAsInternal(s.T(), err, msgAndArgs...)
+}
+
+type SuiteWithConn struct {
+	Suite
+}
+
+func TestSetupTestsSuite(t *testing.T) {
+	t.Helper()
+	suite.Run(t, new(SuiteWithConn))
+}
+
+func (s *SuiteWithConn) Run(name string, f func(tx *gorm.DB)) bool {
+	return s.Suite.Run(name, func() {
+		testutils.Transaction(s.Fail, func(tx *gorm.DB) {
+			f(tx)
+		})
+	})
 }

@@ -23,14 +23,12 @@ type Diet struct {
 }
 
 // New returns a new Diet instance.
-func New(input *DietInput) (*Diet, error) {
-	diet := Diet(*input)
-
+func New(diet *Diet) (*Diet, error) {
 	if err := diet.Validate(); err != nil {
 		return nil, err
 	}
 
-	return &diet, nil
+	return diet, nil
 }
 
 // Validate returns an error if the diet is invalid.

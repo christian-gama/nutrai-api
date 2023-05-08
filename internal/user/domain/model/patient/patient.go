@@ -16,14 +16,12 @@ type Patient struct {
 }
 
 // New returns a new Patient instance.
-func New(input *PatientInput) (*Patient, error) {
-	patient := Patient(*input)
-
+func New(patient *Patient) (*Patient, error) {
 	if err := patient.Validate(); err != nil {
 		return nil, err
 	}
 
-	return &patient, nil
+	return patient, nil
 }
 
 func (p *Patient) Validate() error {

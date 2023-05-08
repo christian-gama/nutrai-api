@@ -1,8 +1,10 @@
 FROM golang:1.20-alpine AS base
+RUN apk update && apk add make
 
 FROM base AS api
-RUN go install github.com/codegangsta/gin@latest
 ARG WORKDIR
+ARG AIRVERSION=1.43.0
+RUN go install github.com/cosmtrek/air@v${AIRVERSION}
 WORKDIR $WORKDIR
 COPY . ./
 

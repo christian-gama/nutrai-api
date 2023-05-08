@@ -99,3 +99,9 @@ Temporary Items
 # Generated files
 .cache/
 .generated/
+tmp/
+
+# Env
+.env
+.env.*
+!.env.example
