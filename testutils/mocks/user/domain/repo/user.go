@@ -5,10 +5,10 @@ package mocks
 import (
 	context "context"
 
-	manager "github.com/christian-gama/nutrai-api/internal/shared/infra/manager"
+	querying "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
 	mock "github.com/stretchr/testify/mock"
 
-	querying "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
+	repo "github.com/christian-gama/nutrai-api/internal/user/domain/repo"
 
 	user "github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
 )
@@ -19,7 +19,7 @@ type User struct {
 }
 
 // All provides a mock function with given fields: ctx, input, preload
-func (_m *User) All(ctx context.Context, input manager.AllInput[user.User], preload ...string) (*querying.PaginationOutput[*user.User], error) {
+func (_m *User) All(ctx context.Context, input repo.AllUsersInput, preload ...string) (*querying.PaginationOutput[*user.User], error) {
 	_va := make([]interface{}, len(preload))
 	for _i := range preload {
 		_va[_i] = preload[_i]
@@ -31,10 +31,10 @@ func (_m *User) All(ctx context.Context, input manager.AllInput[user.User], prel
 
 	var r0 *querying.PaginationOutput[*user.User]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, manager.AllInput[user.User], ...string) (*querying.PaginationOutput[*user.User], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repo.AllUsersInput, ...string) (*querying.PaginationOutput[*user.User], error)); ok {
 		return rf(ctx, input, preload...)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, manager.AllInput[user.User], ...string) *querying.PaginationOutput[*user.User]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repo.AllUsersInput, ...string) *querying.PaginationOutput[*user.User]); ok {
 		r0 = rf(ctx, input, preload...)
 	} else {
 		if ret.Get(0) != nil {
@@ -42,7 +42,7 @@ func (_m *User) All(ctx context.Context, input manager.AllInput[user.User], prel
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, manager.AllInput[user.User], ...string) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, repo.AllUsersInput, ...string) error); ok {
 		r1 = rf(ctx, input, preload...)
 	} else {
 		r1 = ret.Error(1)
@@ -52,11 +52,11 @@ func (_m *User) All(ctx context.Context, input manager.AllInput[user.User], prel
 }
 
 // Delete provides a mock function with given fields: ctx, input
-func (_m *User) Delete(ctx context.Context, input manager.DeleteInput[user.User]) error {
+func (_m *User) Delete(ctx context.Context, input repo.DeleteUserInput) error {
 	ret := _m.Called(ctx, input)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, manager.DeleteInput[user.User]) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repo.DeleteUserInput) error); ok {
 		r0 = rf(ctx, input)
 	} else {
 		r0 = ret.Error(0)
@@ -66,7 +66,7 @@ func (_m *User) Delete(ctx context.Context, input manager.DeleteInput[user.User]
 }
 
 // Find provides a mock function with given fields: ctx, input, preload
-func (_m *User) Find(ctx context.Context, input manager.FindInput[user.User], preload ...string) (*user.User, error) {
+func (_m *User) Find(ctx context.Context, input repo.FindUserInput, preload ...string) (*user.User, error) {
 	_va := make([]interface{}, len(preload))
 	for _i := range preload {
 		_va[_i] = preload[_i]
@@ -78,10 +78,10 @@ func (_m *User) Find(ctx context.Context, input manager.FindInput[user.User], pr
 
 	var r0 *user.User
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, manager.FindInput[user.User], ...string) (*user.User, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repo.FindUserInput, ...string) (*user.User, error)); ok {
 		return rf(ctx, input, preload...)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, manager.FindInput[user.User], ...string) *user.User); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repo.FindUserInput, ...string) *user.User); ok {
 		r0 = rf(ctx, input, preload...)
 	} else {
 		if ret.Get(0) != nil {
@@ -89,7 +89,7 @@ func (_m *User) Find(ctx context.Context, input manager.FindInput[user.User], pr
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, manager.FindInput[user.User], ...string) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, repo.FindUserInput, ...string) error); ok {
 		r1 = rf(ctx, input, preload...)
 	} else {
 		r1 = ret.Error(1)
@@ -99,15 +99,15 @@ func (_m *User) Find(ctx context.Context, input manager.FindInput[user.User], pr
 }
 
 // Save provides a mock function with given fields: ctx, input
-func (_m *User) Save(ctx context.Context, input manager.SaveInput[user.User]) (*user.User, error) {
+func (_m *User) Save(ctx context.Context, input repo.SaveUserInput) (*user.User, error) {
 	ret := _m.Called(ctx, input)
 
 	var r0 *user.User
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, manager.SaveInput[user.User]) (*user.User, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repo.SaveUserInput) (*user.User, error)); ok {
 		return rf(ctx, input)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, manager.SaveInput[user.User]) *user.User); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repo.SaveUserInput) *user.User); ok {
 		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
@@ -115,7 +115,7 @@ func (_m *User) Save(ctx context.Context, input manager.SaveInput[user.User]) (*
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, manager.SaveInput[user.User]) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, repo.SaveUserInput) error); ok {
 		r1 = rf(ctx, input)
 	} else {
 		r1 = ret.Error(1)
@@ -125,11 +125,11 @@ func (_m *User) Save(ctx context.Context, input manager.SaveInput[user.User]) (*
 }
 
 // Update provides a mock function with given fields: ctx, input
-func (_m *User) Update(ctx context.Context, input manager.UpdateInput[user.User]) error {
+func (_m *User) Update(ctx context.Context, input repo.UpdateUserInput) error {
 	ret := _m.Called(ctx, input)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, manager.UpdateInput[user.User]) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repo.UpdateUserInput) error); ok {
 		r0 = rf(ctx, input)
 	} else {
 		r0 = ret.Error(0)
