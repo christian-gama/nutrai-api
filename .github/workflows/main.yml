@@ -23,6 +23,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Setup environment
+        run: ./scripts/create_env.sh
+
       - name: Cache test dependencies
         uses: actions/cache@v3
         with:
