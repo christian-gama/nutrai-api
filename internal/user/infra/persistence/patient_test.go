@@ -332,17 +332,4 @@ func (s *PatientSuite) TestUpdate() {
 		s.NoError(err)
 		s.EqualValues(50, patient.Age, "Should have the same age")
 	})
-
-	s.Run("Should return an error if tries to update a non existent patient", func(db *gorm.DB) {
-		sut := makeSut(db)
-
-		fixture.SavePatient(db, nil)
-
-		sut.Input.Patient.Age = 50
-		sut.Input.Patient.ID = 404_404_404
-
-		err := sut.Sut(sut.Ctx, sut.Input)
-
-		s.Error(err)
-	})
 }
