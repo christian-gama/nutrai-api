@@ -11,6 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// patientImpl is the implementation of repo.Patient.
 type patientImpl struct {
 	manager *manager.Manager[patient.Patient, schema.Patient]
 }

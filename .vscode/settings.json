@@ -4,4 +4,5 @@
     "DB_HOST": "localhost",
     "DB_PORT": 5434,
   },
+  "go.testOnSave": true
 }

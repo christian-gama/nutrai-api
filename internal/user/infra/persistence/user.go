@@ -11,6 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// userImpl is the implementation of repo.User.
 type userImpl struct {
 	manager *manager.Manager[user.User, schema.User]
 }
