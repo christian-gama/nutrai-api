@@ -12,13 +12,13 @@ func Diet() *diet.Diet {
 
 	err := faker.FakeData(data)
 	if err != nil {
-		fake.ErrGenerating("diet", err)
+		fake.ErrGenerating(err)
 	}
 
 	data.RestrictedFood = []value.RestrictedFood{value.RestrictedFood(faker.Name()), value.RestrictedFood(faker.Name())}
 
 	if err := data.Validate(); err != nil {
-		fake.ErrGenerating("diet", err)
+		fake.ErrGenerating(err)
 	}
 
 	return data

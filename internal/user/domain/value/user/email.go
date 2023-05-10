@@ -2,6 +2,7 @@ package value
 
 import (
 	"net/mail"
+	"strings"
 
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
@@ -23,7 +24,11 @@ func (e Email) Validate() error {
 	}
 
 	if _, err := mail.ParseAddress(e.String()); err != nil {
-		return errutil.NewErrInvalid(fieldName, err.Error())
+		// err.Error output is equal to `mail: error message`
+		msg := strings.Split(err.Error(), ":")[1]
+		msg = strings.TrimSpace(msg)
+
+		return errutil.NewErrInvalid(fieldName, msg)
 	}
 
 	return nil

@@ -34,18 +34,6 @@ func (s *PatientTestSuite) TestNewPatient() {
 	}
 
 	s.Run("TestNewPatient (Error)", func() {
-		s.Run("ID", func() {
-			s.Run("Should return an error when empty", func() {
-				sut := makeSut()
-				sut.Data.ID = 0
-
-				patient, err := sut.Sut()
-
-				s.ErrorAsRequired(err)
-				s.Nil(patient)
-			})
-		})
-
 		s.Run("WeightKG", func() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()

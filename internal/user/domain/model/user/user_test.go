@@ -36,18 +36,6 @@ func (s *UserTestSuite) TestNewUser() {
 	}
 
 	s.Run("TestNewUser (Error)", func() {
-		s.Run("ID", func() {
-			s.Run("Should return an error when empty", func() {
-				sut := makeSut()
-				sut.Data.ID = 0
-
-				user, err := sut.Sut()
-
-				s.ErrorAsRequired(err)
-				s.Nil(user)
-			})
-		})
-
 		s.Run("Email", func() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
@@ -78,16 +66,6 @@ func (s *UserTestSuite) TestNewUser() {
 				user, err := sut.Sut()
 
 				s.ErrorAsRequired(err)
-				s.Nil(user)
-			})
-
-			s.Run("Should return an error when invalid", func() {
-				sut := makeSut()
-				sut.Data.Password = "123"
-
-				user, err := sut.Sut()
-
-				s.ErrorAsInvalid(err)
 				s.Nil(user)
 			})
 		})

@@ -11,11 +11,13 @@ import (
 	"gorm.io/gorm/schema"
 )
 
+// Manager is a generic manager for a model and a schema.
 type Manager[Model any, Schema schema.Tabler] struct {
 	*gorm.DB
 	name string
 }
 
+// NewManager returns a new Manager.
 func NewManager[Model any, Schema schema.Tabler](db *gorm.DB) *Manager[Model, Schema] {
 	var schema Schema
 
@@ -25,6 +27,7 @@ func NewManager[Model any, Schema schema.Tabler](db *gorm.DB) *Manager[Model, Sc
 	}
 }
 
+// Save saves the model in the database.
 func (m *Manager[Model, Schema]) Save(
 	ctx context.Context,
 	input SaveInput[Model],
@@ -42,6 +45,7 @@ func (m *Manager[Model, Schema]) Save(
 	return convert.ToModel(input.Model, &schema), nil
 }
 
+// Find finds the model in the database.
 func (m *Manager[Model, Schema]) Find(
 	ctx context.Context,
 	input FindInput[Model],
@@ -51,6 +55,7 @@ func (m *Manager[Model, Schema]) Find(
 	var schema Schema
 
 	if err := db.
+		Model(&schema).
 		Scopes(sql.PreloadScope(preload), querying.FilterScope(input.Filterer)).
 		Where("id = ?", input.ID).
 		First(&schema).
@@ -62,6 +67,7 @@ func (m *Manager[Model, Schema]) Find(
 	return convert.ToModel(&model, &schema), nil
 }
 
+// All returns all models in the database.
 func (m *Manager[Model, Schema]) All(
 	ctx context.Context,
 	input AllInput[Model],
@@ -105,6 +111,7 @@ func (m *Manager[Model, Schema]) All(
 	return pagination, nil
 }
 
+// Delete deletes the model in the database.
 func (m *Manager[Model, Schema]) Delete(
 	ctx context.Context,
 	input DeleteInput[Model],
@@ -123,6 +130,7 @@ func (m *Manager[Model, Schema]) Delete(
 	return nil
 }
 
+// Update updates the model in the database.
 func (m *Manager[Model, Schema]) Update(
 	ctx context.Context,
 	input UpdateInput[Model],
@@ -130,10 +138,6 @@ func (m *Manager[Model, Schema]) Update(
 	db := m.DB.WithContext(ctx)
 	var s Schema
 	schema := convert.FromModel(&s, &input.Model)
-
-	if _, err := m.Find(ctx, FindInput[Model]{ID: input.ID}); err != nil {
-		return err
-	}
 
 	if err := db.
 		Model(&schema).

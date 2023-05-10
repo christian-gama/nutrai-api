@@ -322,17 +322,4 @@ func (s *UserSuite) TestUpdate() {
 		s.NoError(err)
 		s.EqualValues("new name", user.Name, "Should have the new name")
 	})
-
-	s.Run("Should return an error if tries to update a non existent user", func(db *gorm.DB) {
-		sut := makeSut(db)
-
-		fixture.SaveUser(db, nil)
-
-		sut.Input.User.Name = "new name"
-		sut.Input.User.ID = 404_404_404
-
-		err := sut.Sut(sut.Ctx, sut.Input)
-
-		s.Error(err)
-	})
 }

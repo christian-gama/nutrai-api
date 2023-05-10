@@ -27,10 +27,6 @@ func New(user *User) (*User, error) {
 func (u *User) Validate() error {
 	var errs *errutil.Error
 
-	if err := u.ID.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
-	}
-
 	if err := u.Email.Validate(); err != nil {
 		errs = errutil.Append(errs, err)
 	}

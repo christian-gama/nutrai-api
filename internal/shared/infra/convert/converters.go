@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Converters is a list of type converters used by this package.
 var Converters = []copier.TypeConverter{
 	{
 		SrcType: gorm.DeletedAt{},

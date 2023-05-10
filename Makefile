@@ -35,6 +35,11 @@ init: .cmd-exists-git .cmd-exists-go .cmd-exists-docker .cmd-exists-sh .clear-sc
 # ==============================================================================================
 .PHONY: run
 run: .cmd-exists-go .clear-screen .check-env-file
+ifneq ($(RUNNING_IN_DOCKER), true)
+	@$(MAKE) postgres
+	@sh ./scripts/wait_for_db.sh nutrai-psql
+endif
+
 ifeq ($(ENV_FILE), .env.prod)
 	@$(MAKE) build
 	@$(BUILD_DIR)/$(APP_NAME) -e $(ENV_FILE)
@@ -215,7 +220,7 @@ mock: .cmd-exists-go
 # ==============================================================================================
 .PHONY: docker-run
 docker-run: .cmd-exists-docker .clear-screen .check-env-file
-	@WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d api --build --force-recreate --remove-orphans
+	@RUNNING_IN_DOCKER=true WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d api --build --force-recreate --remove-orphans
 
 
 # ==============================================================================================

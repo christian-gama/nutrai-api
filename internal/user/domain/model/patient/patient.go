@@ -25,12 +25,9 @@ func New(patient *Patient) (*Patient, error) {
 	return patient, nil
 }
 
+// Validate returns an error if the patient is invalid.
 func (p *Patient) Validate() error {
 	var errs *errutil.Error
-
-	if err := p.ID.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
-	}
 
 	if err := p.WeightKG.Validate(); err != nil {
 		errs = errutil.Append(errs, err)
@@ -41,6 +38,12 @@ func (p *Patient) Validate() error {
 	}
 
 	if err := p.Age.Validate(); err != nil {
+		errs = errutil.Append(errs, err)
+	}
+
+	if p.User == nil {
+		errs = errutil.Append(errs, errutil.NewErrRequired("user"))
+	} else if err := p.User.Validate(); err != nil {
 		errs = errutil.Append(errs, err)
 	}
 

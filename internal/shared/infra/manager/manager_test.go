@@ -357,17 +357,4 @@ func (s *ManagerSuite) TestUpdate() {
 		s.NoError(err)
 		s.EqualValues("new name", sample.Name, "Should have the new name")
 	})
-
-	s.Run("Should return an error if tries to update a non existent sample", func(db *gorm.DB) {
-		sut := makeSut(db)
-
-		SaveSample(db)
-
-		sut.Input.Model.Name = "new name"
-		sut.Input.Model.ID = 404_404_404
-
-		err := sut.Sut(sut.Ctx, sut.Input)
-
-		s.Error(err)
-	})
 }
