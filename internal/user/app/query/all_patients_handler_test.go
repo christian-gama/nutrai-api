@@ -4,8 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/value"
+	"github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
 	"github.com/christian-gama/nutrai-api/internal/user/app/query"
+	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 	queryFake "github.com/christian-gama/nutrai-api/testutils/fake/user/app/query"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/user/domain/model/patient"
 	mocks "github.com/christian-gama/nutrai-api/testutils/mocks/user/domain/repo"
@@ -14,23 +15,23 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type FindPatientHandlerSuite struct {
+type AllPatientsHandlerSuite struct {
 	suite.Suite
 }
 
-func TestFindPatientHandlerSuite(t *testing.T) {
-	suite.RunUnitTest(t, new(FindPatientHandlerSuite))
+func TestAllPatientsHandlerSuite(t *testing.T) {
+	suite.RunUnitTest(t, new(AllPatientsHandlerSuite))
 }
 
-func (s *FindPatientHandlerSuite) TestPatientHandler() {
+func (s *AllPatientsHandlerSuite) TestPatientHandler() {
 	type Mocks struct {
 		Repo *mocks.Patient
 	}
 
 	type Sut struct {
-		Sut   query.FindPatientHandler
+		Sut   query.AllPatientsHandler
 		Ctx   context.Context
-		Input *query.FindPatientInput
+		Input *query.AllPatientsInput
 		Mocks *Mocks
 	}
 
@@ -38,9 +39,9 @@ func (s *FindPatientHandlerSuite) TestPatientHandler() {
 		patientRepo := mocks.NewPatient(s.T())
 
 		return Sut{
-			Sut:   query.NewFindPatientHandler(patientRepo),
+			Sut:   query.NewAllPatientsHandler(patientRepo),
 			Ctx:   context.Background(),
-			Input: queryFake.FindPatientInput(),
+			Input: queryFake.AllPatientsInput(),
 			Mocks: &Mocks{
 				Repo: patientRepo,
 			},
@@ -50,21 +51,23 @@ func (s *FindPatientHandlerSuite) TestPatientHandler() {
 	s.Run("Should return a PatientOutput", func() {
 		sut := makeSut()
 
-		patient := fake.Patient()
-		patient.ID = value.ID(sut.Input.ID)
-		sut.Mocks.Repo.On("Find", sut.Ctx, mock.Anything, "User").Return(patient, nil)
+		sut.Mocks.Repo.On("All", sut.Ctx, mock.Anything, "User").Return(&querying.PaginationOutput[*patient.Patient]{
+			Results: []*patient.Patient{fake.Patient()},
+			Total:   1,
+		}, nil)
 
 		output, err := sut.Sut.Handle(sut.Ctx, sut.Input)
 
 		s.NoError(err)
 		s.Require().NotNil(output)
-		s.Equal(sut.Input.ID, output.ID, "ID should be the same")
+		s.Len(output.Results, 1)
+		s.Equal(1, output.Total)
 	})
 
 	s.Run("Should return an error when the repository fails", func() {
 		sut := makeSut()
 
-		sut.Mocks.Repo.On("Find", sut.Ctx, mock.Anything, "User").Return(nil, assert.AnError)
+		sut.Mocks.Repo.On("All", sut.Ctx, mock.Anything, "User").Return(nil, assert.AnError)
 
 		output, err := sut.Sut.Handle(sut.Ctx, sut.Input)
 

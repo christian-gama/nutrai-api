@@ -24,7 +24,7 @@ func NewFindPatientHandler(repo repo.Patient) FindPatientHandler {
 
 // Handle implements query.Handler.
 func (q *findPatientHandlerImpl) Handle(ctx context.Context, input *FindPatientInput) (*FindPatientOutput, error) {
-	patient, err := q.Patient.Find(ctx, repo.FindPatientInput{ID: value.ID(input.ID)})
+	patient, err := q.Patient.Find(ctx, repo.FindPatientInput{ID: value.ID(input.ID)}, "User")
 	if err != nil {
 		return nil, err
 	}
