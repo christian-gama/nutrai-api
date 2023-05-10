@@ -140,7 +140,7 @@ func (s *PatientTestSuite) TestNewPatient() {
 			patient, err := sut.Sut()
 
 			e := err.(*errutil.Error)
-			s.Equal(4, e.Len(), "should have 4 errors")
+			s.Equal(3, e.Len(), "should have 3 errors")
 			s.Nil(patient)
 		})
 	})

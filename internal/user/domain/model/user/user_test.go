@@ -104,7 +104,6 @@ func (s *UserTestSuite) TestNewUser() {
 
 		s.Run("Should return multiple errors when multiple fields are invalid", func() {
 			sut := makeSut()
-			sut.Data.ID = 0
 			sut.Data.Email = ""
 			sut.Data.Password = ""
 			sut.Data.Name = ""
@@ -112,7 +111,7 @@ func (s *UserTestSuite) TestNewUser() {
 			user, err := sut.Sut()
 
 			e := err.(*errutil.Error)
-			s.Equal(4, e.Len(), "should have 4 errors")
+			s.Equal(3, e.Len(), "should have 3 errors")
 			s.Nil(user)
 		})
 	})
