@@ -25,8 +25,8 @@ func TestCheckCredentialsSuite(t *testing.T) {
 
 func (s *CheckCredentialsSuite) TestCheckCredentials() {
 	type Mocks struct {
-		Hasher      *hasherMock.Hasher
-		PatientRepo *userMock.User
+		Hasher   *hasherMock.Hasher
+		UserRepo *userMock.User
 	}
 
 	type Sut struct {
@@ -47,8 +47,8 @@ func (s *CheckCredentialsSuite) TestCheckCredentials() {
 			Ctx:   context.Background(),
 			Input: input,
 			Mocks: &Mocks{
-				Hasher:      hasher,
-				PatientRepo: userRepo,
+				Hasher:   hasher,
+				UserRepo: userRepo,
 			},
 		}
 	}
@@ -57,7 +57,7 @@ func (s *CheckCredentialsSuite) TestCheckCredentials() {
 		sut := makeSut()
 
 		user := userFake.User()
-		sut.Mocks.PatientRepo.On("FindByEmail", sut.Ctx, mock.Anything).Return(user, nil)
+		sut.Mocks.UserRepo.On("FindByEmail", sut.Ctx, mock.Anything).Return(user, nil)
 		sut.Mocks.Hasher.On("Compare", value.Password(sut.Input.Password), user.Password).Return(nil)
 
 		err := sut.Sut.Handle(sut.Ctx, sut.Input)
@@ -68,7 +68,7 @@ func (s *CheckCredentialsSuite) TestCheckCredentials() {
 	s.Run("Should return an error if the user does not exist", func() {
 		sut := makeSut()
 
-		sut.Mocks.PatientRepo.On("FindByEmail", sut.Ctx, mock.Anything).Return(nil, assert.AnError)
+		sut.Mocks.UserRepo.On("FindByEmail", sut.Ctx, mock.Anything).Return(nil, assert.AnError)
 
 		err := sut.Sut.Handle(sut.Ctx, sut.Input)
 
@@ -79,7 +79,7 @@ func (s *CheckCredentialsSuite) TestCheckCredentials() {
 		sut := makeSut()
 
 		user := userFake.User()
-		sut.Mocks.PatientRepo.On("FindByEmail", sut.Ctx, mock.Anything).Return(user, nil)
+		sut.Mocks.UserRepo.On("FindByEmail", sut.Ctx, mock.Anything).Return(user, nil)
 		sut.Mocks.Hasher.On("Compare", value.Password(sut.Input.Password), user.Password).Return(assert.AnError)
 
 		err := sut.Sut.Handle(sut.Ctx, sut.Input)
@@ -91,7 +91,7 @@ func (s *CheckCredentialsSuite) TestCheckCredentials() {
 		sut := makeSut()
 
 		user := userFake.User()
-		sut.Mocks.PatientRepo.On("FindByEmail", sut.Ctx, mock.Anything).Return(user, nil)
+		sut.Mocks.UserRepo.On("FindByEmail", sut.Ctx, mock.Anything).Return(user, nil)
 		sut.Input.Password = ""
 
 		err := sut.Sut.Handle(sut.Ctx, sut.Input)
