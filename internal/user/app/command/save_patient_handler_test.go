@@ -49,7 +49,7 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 		}
 	}
 
-	s.Run("Should return nil when saving user succeeds", func() {
+	s.Run("Should return nil when saving patient succeeds", func() {
 		sut := makeSut()
 
 		sut.Mocks.HashPasswordHandler.
@@ -82,20 +82,6 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 		sut.Mocks.HashPasswordHandler.AssertCalled(s.T(), "Handle", sut.Ctx, &service.HashPasswordInput{Password: string(password)})
 	})
 
-	s.Todo("Should call patientRepo.Save with the hashed password", func() {
-		sut := makeSut()
-
-		sut.Mocks.HashPasswordHandler.
-			On("Handle", sut.Ctx, mock.Anything).
-			Return(&service.HashPasswordOutput{HashedPassword: "hashed"}, nil)
-
-		sut.Mocks.PatientRepo.
-			On("Save", sut.Ctx, mock.Anything).
-			Return(fakePatient.Patient(), nil)
-
-		_ = sut.Sut.Handle(sut.Ctx, sut.Input)
-	})
-
 	s.Run("Should return error when hashing password fails", func() {
 		sut := makeSut()
 
@@ -121,7 +107,7 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 		s.ErrorAsRequired(err)
 	})
 
-	s.Run("Should return error when saving user fails", func() {
+	s.Run("Should return error when saving patient fails", func() {
 		sut := makeSut()
 
 		sut.Mocks.HashPasswordHandler.

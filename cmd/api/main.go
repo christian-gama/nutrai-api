@@ -8,7 +8,6 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/env"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql"
 	"github.com/christian-gama/nutrai-api/internal/user/app/command"
-	"github.com/christian-gama/nutrai-api/internal/user/app/query"
 	"github.com/christian-gama/nutrai-api/internal/user/app/service"
 	"github.com/christian-gama/nutrai-api/internal/user/infra/hash"
 	"github.com/christian-gama/nutrai-api/internal/user/infra/persistence"
@@ -27,7 +26,7 @@ func main() {
 	patientRepo := persistence.NewPatient(db)
 	hashPasswordHandler := service.NewHashPasswordHandler(hash.New())
 	savePatientHandler := command.NewSavePatientHandler(patientRepo, hashPasswordHandler)
-	allPatientsHandler := query.NewAllPatientsHandler(patientRepo)
+	updatePatientHandler := command.NewUpdatePatientHandler(patientRepo)
 	ctx := context.Background()
 
 	err = savePatientHandler.Handle(ctx, &command.SavePatientInput{
@@ -46,15 +45,18 @@ func main() {
 
 	fmt.Println("Patient created successfully!")
 
-	output, err := allPatientsHandler.Handle(ctx, &query.AllPatientsInput{})
+	err = updatePatientHandler.Handle(ctx, &command.UpdatePatientInput{
+		ID: 1,
+		User: &command.UpdateUserInput{
+			Name:  "Xurupita",
+			Email: faker.Email(),
+		},
+		Age:      20,
+		HeightM:  1.9,
+		WeightKG: 80,
+	})
 	if err != nil {
 		panic(err)
-	}
-
-	fmt.Println("All patients:")
-	fmt.Printf("Total: %d\n", output.Total)
-	for _, patient := range output.Results {
-		fmt.Printf("ID: %d, Name: %s, Email: %s\n", patient.ID, patient.User.Name, patient.User.Email)
 	}
 
 	server := http.Server{

@@ -140,6 +140,7 @@ func (m *Manager[Model, Schema]) Update(
 	schema := convert.FromModel(&s, &input.Model)
 
 	if err := db.
+		Session(&gorm.Session{FullSaveAssociations: true}).
 		Model(&schema).
 		Where("id = ?", input.ID).
 		Updates(&schema).

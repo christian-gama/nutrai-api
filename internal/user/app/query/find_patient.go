@@ -1,9 +1,11 @@
 package query
 
+// FindPatientInput is the input data of the patient query.
 type FindPatientInput struct {
 	ID uint `form:"id"`
 }
 
+// FindPatientOutput is the output data of the patient query.
 type FindPatientOutput struct {
 	ID       uint            `json:"id"`
 	Age      int             `json:"age"`
