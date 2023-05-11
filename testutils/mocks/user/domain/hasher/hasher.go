@@ -13,11 +13,11 @@ type Hasher struct {
 }
 
 // Compare provides a mock function with given fields: password, hash
-func (_m *Hasher) Compare(password value.Password, hash string) error {
+func (_m *Hasher) Compare(password value.Password, hash value.Password) error {
 	ret := _m.Called(password, hash)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(value.Password, string) error); ok {
+	if rf, ok := ret.Get(0).(func(value.Password, value.Password) error); ok {
 		r0 = rf(password, hash)
 	} else {
 		r0 = ret.Error(0)
@@ -27,18 +27,18 @@ func (_m *Hasher) Compare(password value.Password, hash string) error {
 }
 
 // Hash provides a mock function with given fields: password
-func (_m *Hasher) Hash(password value.Password) (string, error) {
+func (_m *Hasher) Hash(password value.Password) (value.Password, error) {
 	ret := _m.Called(password)
 
-	var r0 string
+	var r0 value.Password
 	var r1 error
-	if rf, ok := ret.Get(0).(func(value.Password) (string, error)); ok {
+	if rf, ok := ret.Get(0).(func(value.Password) (value.Password, error)); ok {
 		return rf(password)
 	}
-	if rf, ok := ret.Get(0).(func(value.Password) string); ok {
+	if rf, ok := ret.Get(0).(func(value.Password) value.Password); ok {
 		r0 = rf(password)
 	} else {
-		r0 = ret.Get(0).(string)
+		r0 = ret.Get(0).(value.Password)
 	}
 
 	if rf, ok := ret.Get(1).(func(value.Password) error); ok {
