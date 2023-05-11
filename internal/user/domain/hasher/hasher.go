@@ -4,8 +4,8 @@ import value "github.com/christian-gama/nutrai-api/internal/user/domain/value/us
 
 type Hasher interface {
 	// Hash returns the hashed password.
-	Hash(password value.Password) (string, error)
+	Hash(password value.Password) (value.Password, error)
 
 	// Compare returns an error if the password does not match the hash.
-	Compare(password value.Password, hash string) error
+	Compare(password value.Password, hash value.Password) error
 }

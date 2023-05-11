@@ -4,7 +4,9 @@ import (
 	"context"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/infra/convert"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/manager"
+	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
 	"github.com/christian-gama/nutrai-api/internal/user/infra/persistence/schema"
@@ -14,6 +16,13 @@ import (
 // userImpl is the implementation of repo.User.
 type userImpl struct {
 	manager *manager.Manager[user.User, schema.User]
+}
+
+// NewUser returns a new User.
+func NewUser(db *gorm.DB) repo.User {
+	return &userImpl{
+		manager: manager.NewManager[user.User, schema.User](db),
+	}
 }
 
 // All implements repo.User.
@@ -31,6 +40,22 @@ func (p *userImpl) Find(ctx context.Context, input repo.FindUserInput, preload .
 	return p.manager.Find(ctx, manager.FindInput[user.User]{ID: input.ID, Filterer: input.Filterer}, preload...)
 }
 
+// FindByEmail implements repo.User.
+func (p *userImpl) FindByEmail(ctx context.Context, input repo.FindByEmailUserInput) (*user.User, error) {
+	db := p.manager.WithContext(ctx)
+	var schema schema.User
+
+	if err := db.
+		Model(&schema).
+		Where("email = ?", input.Email).
+		First(&schema).
+		Error; err != nil {
+		return nil, sql.Error(err, schema.TableName())
+	}
+
+	return convert.ToModel(&user.User{}, &schema), nil
+}
+
 // Save implements repo.User.
 func (p *userImpl) Save(ctx context.Context, input repo.SaveUserInput) (*user.User, error) {
 	return p.manager.Save(ctx, manager.SaveInput[user.User]{Model: input.User})
@@ -39,11 +64,4 @@ func (p *userImpl) Save(ctx context.Context, input repo.SaveUserInput) (*user.Us
 // Update implements repo.User.
 func (p *userImpl) Update(ctx context.Context, input repo.UpdateUserInput) error {
 	return p.manager.Update(ctx, manager.UpdateInput[user.User]{Model: input.User, ID: input.ID})
-}
-
-// NewUser returns a new User.
-func NewUser(db *gorm.DB) repo.User {
-	return &userImpl{
-		manager: manager.NewManager[user.User, schema.User](db),
-	}
 }

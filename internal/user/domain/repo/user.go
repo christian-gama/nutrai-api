@@ -26,6 +26,11 @@ type FindUserInput struct {
 	querying.Filterer
 }
 
+// FindByEmailUserInput is the input for the FindByEmail method.
+type FindByEmailUserInput struct {
+	Email string
+}
+
 // DeleteUserInput is the input for the Delete method.
 type DeleteUserInput struct {
 	IDs []value.ID
@@ -47,6 +52,9 @@ type User interface {
 
 	// Find returns the user with the given id.
 	Find(ctx context.Context, input FindUserInput, preload ...string) (*user.User, error)
+
+	// FindByEmail returns the user with the given email.
+	FindByEmail(ctx context.Context, input FindByEmailUserInput) (*user.User, error)
 
 	// Save saves the given user.
 	Save(ctx context.Context, input SaveUserInput) (*user.User, error)

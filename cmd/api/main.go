@@ -26,14 +26,17 @@ func main() {
 	patientRepo := persistence.NewPatient(db)
 	hashPasswordHandler := service.NewHashPasswordHandler(hash.New())
 	savePatientHandler := command.NewSavePatientHandler(patientRepo, hashPasswordHandler)
-	updatePatientHandler := command.NewUpdatePatientHandler(patientRepo)
+	userRepo := persistence.NewUser(db)
+	hasher := hash.New()
+	checkCredentialsHandler := command.NewCheckCredentialsHandler(userRepo, hasher)
 	ctx := context.Background()
 
+	email := faker.Email()
 	err = savePatientHandler.Handle(ctx, &command.SavePatientInput{
 		Age: 18,
 		User: &command.SaveUserInput{
 			Name:     faker.Name(),
-			Email:    faker.Email(),
+			Email:    email,
 			Password: "12345678",
 		},
 		HeightM:  1.8,
@@ -45,19 +48,15 @@ func main() {
 
 	fmt.Println("Patient created successfully!")
 
-	err = updatePatientHandler.Handle(ctx, &command.UpdatePatientInput{
-		ID: 1,
-		User: &command.UpdateUserInput{
-			Name:  "Xurupita",
-			Email: faker.Email(),
-		},
-		Age:      20,
-		HeightM:  1.9,
-		WeightKG: 80,
+	err = checkCredentialsHandler.Handle(ctx, &command.CheckCredentialsInput{
+		Email:    email,
+		Password: "12345678",
 	})
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println("Credentials are correct!")
 
 	server := http.Server{
 		Addr:              ":8080",

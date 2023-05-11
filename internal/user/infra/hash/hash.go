@@ -15,15 +15,15 @@ func New() hasher.Hasher {
 }
 
 // Hash implements the hasher.Hasher interface.
-func (h *hashImpl) Hash(password value.Password) (string, error) {
+func (h *hashImpl) Hash(password value.Password) (value.Password, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
 	}
-	return string(bytes), nil
+	return value.Password(bytes), nil
 }
 
 // Compare implements the hasher.Hasher interface.
-func (h *hashImpl) Compare(password value.Password, hash string) error {
+func (h *hashImpl) Compare(password value.Password, hash value.Password) error {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }

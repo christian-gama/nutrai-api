@@ -28,5 +28,5 @@ func (s *hashPasswordHandlerImpl) Handle(ctx context.Context, input *HashPasswor
 		return nil, err
 	}
 
-	return &HashPasswordOutput{hashedPassword}, nil
+	return &HashPasswordOutput{string(hashedPassword)}, nil
 }
