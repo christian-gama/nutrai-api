@@ -80,11 +80,13 @@ func (b *builder) SetHeightM(heightM value.HeightM) *builder {
 	return b
 }
 
+// SetAge sets the age on the builder.
 func (b *builder) SetAge(age value.Age) *builder {
 	b.patient.Age = age
 	return b
 }
 
+// Build builds the patient.
 func (b *builder) Build() (*Patient, error) {
 	if err := b.patient.Validate(); err != nil {
 		return nil, err
