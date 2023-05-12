@@ -17,8 +17,8 @@ type Diet struct {
 	Description     value.Description      `faker:"paragraph"`
 	RestrictedFood  []value.RestrictedFood `faker:"-"`
 	DurationInWeeks value.DurationInWeeks  `faker:"boundary_start=1, boundary_end=100"`
-	Goal            value.Goal             `faker:"oneof:WEIGHT_LOSS, WEIGHT_GAIN, MAINTAIN, IMPROVED_HEALTH, INCREASE_ENERGY, MUSCLE_GAIN"`
-	MealPlan        value.MealPlan         `faker:"oneof:ketogenic, vegetarian, vegan, mediterranean, paleolithic, low-carb"`
+	Goal            value.Goal             `faker:"-"`
+	MealPlan        value.MealPlan         `faker:"-"`
 	MonthlyCostUSD  value.MonthlyCostUSD   `faker:"boundary_start=12.65, boundary_end=184.05"`
 }
 

@@ -16,6 +16,8 @@ func Diet() *diet.Diet {
 	}
 
 	data.RestrictedFood = []value.RestrictedFood{value.RestrictedFood(faker.Name()), value.RestrictedFood(faker.Name())}
+	data.Goal = value.WeightLoss
+	data.MealPlan = value.Vegetarian
 
 	if err := data.Validate(); err != nil {
 		fake.ErrGenerating(err)
