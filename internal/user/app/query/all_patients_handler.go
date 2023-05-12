@@ -28,7 +28,8 @@ func (q *allPatientsHandlerImpl) Handle(ctx context.Context, input *AllPatientsI
 		Filterer:  input.Filter,
 		Paginator: &input.Pagination,
 		Sorter:    input.Sort,
-	}, "User")
+		Preloader: input.Preload,
+	})
 	if err != nil {
 		return nil, err
 	}

@@ -14,32 +14,25 @@ type Find[Model interface{}] struct {
 	mock.Mock
 }
 
-// Find provides a mock function with given fields: ctx, input, preload
-func (_m *Find[Model]) Find(ctx context.Context, input manager.FindInput[Model], preload ...string) (*Model, error) {
-	_va := make([]interface{}, len(preload))
-	for _i := range preload {
-		_va[_i] = preload[_i]
-	}
-	var _ca []interface{}
-	_ca = append(_ca, ctx, input)
-	_ca = append(_ca, _va...)
-	ret := _m.Called(_ca...)
+// Find provides a mock function with given fields: ctx, input
+func (_m *Find[Model]) Find(ctx context.Context, input manager.FindInput[Model]) (*Model, error) {
+	ret := _m.Called(ctx, input)
 
 	var r0 *Model
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, manager.FindInput[Model], ...string) (*Model, error)); ok {
-		return rf(ctx, input, preload...)
+	if rf, ok := ret.Get(0).(func(context.Context, manager.FindInput[Model]) (*Model, error)); ok {
+		return rf(ctx, input)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, manager.FindInput[Model], ...string) *Model); ok {
-		r0 = rf(ctx, input, preload...)
+	if rf, ok := ret.Get(0).(func(context.Context, manager.FindInput[Model]) *Model); ok {
+		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*Model)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, manager.FindInput[Model], ...string) error); ok {
-		r1 = rf(ctx, input, preload...)
+	if rf, ok := ret.Get(1).(func(context.Context, manager.FindInput[Model]) error); ok {
+		r1 = rf(ctx, input)
 	} else {
 		r1 = ret.Error(1)
 	}

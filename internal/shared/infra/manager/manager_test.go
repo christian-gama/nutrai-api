@@ -156,7 +156,6 @@ func (s *ManagerSuite) TestFind() {
 		Sut func(
 			ctx context.Context,
 			input manager.FindInput[Sample],
-			preload ...string,
 		) (*Sample, error)
 		Ctx   context.Context
 		Input manager.FindInput[Sample]
@@ -205,7 +204,6 @@ func (s *ManagerSuite) TestAll() {
 		Sut func(
 			ctx context.Context,
 			input manager.AllInput[Sample],
-			preload ...string,
 		) (*queryingPort.PaginationOutput[*Sample], error)
 		Ctx   context.Context
 		Input manager.AllInput[Sample]
@@ -217,6 +215,7 @@ func (s *ManagerSuite) TestAll() {
 			Paginator: &querying.Pagination{},
 			Sorter:    querying.Sort{},
 			Filterer:  querying.Filter{},
+			Preloader: querying.Preload{},
 		}
 		sut := s.Sample(db).All
 

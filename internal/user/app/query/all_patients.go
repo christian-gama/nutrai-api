@@ -4,9 +4,10 @@ import "github.com/christian-gama/nutrai-api/internal/shared/infra/querying"
 
 // AllPatientsInput represents the input data for getting all patients.
 type AllPatientsInput struct {
-	querying.Filter `form:"filter"`
-	querying.Pagination
-	querying.Sort `form:"sort"`
+	querying.Pagination `faker:"-"`
+	querying.Filter     `form:"filter" faker:"-"`
+	querying.Sort       `form:"sort" faker:"-"`
+	querying.Preload    `form:"preload" faker:"-"`
 }
 
 // AllPatientsOutput represents the output data for getting all patients.

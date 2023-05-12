@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/app/command"
+	"github.com/christian-gama/nutrai-api/internal/shared/infra/querying"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
@@ -24,7 +25,12 @@ func NewUpdatePatientHandler(p repo.Patient) UpdatePatientHandler {
 
 // Handle implements command.Handler.
 func (c *updatePatientHandlerImpl) Handle(ctx context.Context, input *UpdatePatientInput) error {
-	savedPatient, err := c.Find(ctx, repo.FindPatientInput{ID: input.ID}, "User")
+	savedPatient, err := c.Find(ctx,
+		repo.FindPatientInput{
+			ID:        input.ID,
+			Preloader: querying.AddPreload("user"),
+		},
+	)
 	if err != nil {
 		return err
 	}

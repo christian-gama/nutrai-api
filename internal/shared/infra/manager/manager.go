@@ -49,14 +49,13 @@ func (m *Manager[Model, Schema]) Save(
 func (m *Manager[Model, Schema]) Find(
 	ctx context.Context,
 	input FindInput[Model],
-	preload ...string,
 ) (*Model, error) {
 	db := m.DB.WithContext(ctx)
 	var schema Schema
 
 	if err := db.
 		Model(&schema).
-		Scopes(sql.PreloadScope(preload), querying.FilterScope(input.Filterer)).
+		Scopes(querying.PreloadScope(input.Preloader), querying.FilterScope(input.Filterer)).
 		Where("id = ?", input.ID).
 		First(&schema).
 		Error; err != nil {
@@ -71,14 +70,13 @@ func (m *Manager[Model, Schema]) Find(
 func (m *Manager[Model, Schema]) All(
 	ctx context.Context,
 	input AllInput[Model],
-	preload ...string,
 ) (*queryingPort.PaginationOutput[*Model], error) {
 	db := m.DB.WithContext(ctx)
 	var schemas []Schema
 
 	if err := db.
 		Scopes(
-			sql.PreloadScope(preload),
+			querying.PreloadScope(input.Preloader),
 			querying.FilterScope(input.Filterer),
 			querying.PaginationScope(input.Paginator),
 			querying.SortScope(input.Sorter),

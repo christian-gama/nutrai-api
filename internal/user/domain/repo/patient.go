@@ -18,12 +18,14 @@ type AllPatientsInput struct {
 	querying.Filterer
 	querying.Sorter
 	querying.Paginator
+	querying.Preloader
 }
 
 // FindPatientInput is the input for the Find method.
 type FindPatientInput struct {
 	ID value.ID
 	querying.Filterer
+	querying.Preloader
 }
 
 // DeletePatientInput is the input for the Delete method.
@@ -40,13 +42,13 @@ type UpdatePatientInput struct {
 // Patient is the interface that wraps the basic Patient methods.
 type Patient interface {
 	// All returns all patients.
-	All(ctx context.Context, input AllPatientsInput, preload ...string) (*querying.PaginationOutput[*patient.Patient], error)
+	All(ctx context.Context, input AllPatientsInput) (*querying.PaginationOutput[*patient.Patient], error)
 
 	// Delete deletes the patient with the given id.
 	Delete(ctx context.Context, input DeletePatientInput) error
 
 	// Find returns the patient with the given id.
-	Find(ctx context.Context, input FindPatientInput, preload ...string) (*patient.Patient, error)
+	Find(ctx context.Context, input FindPatientInput) (*patient.Patient, error)
 
 	// Save saves the given patient.
 	Save(ctx context.Context, input SavePatientInput) (*patient.Patient, error)

@@ -26,8 +26,8 @@ func NewUser(db *gorm.DB) repo.User {
 }
 
 // All implements repo.User.
-func (p *userImpl) All(ctx context.Context, input repo.AllUsersInput, preload ...string) (*querying.PaginationOutput[*user.User], error) {
-	return p.manager.All(ctx, manager.AllInput[user.User]{Filterer: input.Filterer, Paginator: input.Paginator, Sorter: input.Sorter}, preload...)
+func (p *userImpl) All(ctx context.Context, input repo.AllUsersInput) (*querying.PaginationOutput[*user.User], error) {
+	return p.manager.All(ctx, manager.AllInput[user.User]{Filterer: input.Filterer, Paginator: input.Paginator, Sorter: input.Sorter, Preloader: input.Preloader})
 }
 
 // Delete implements repo.User.
@@ -36,8 +36,8 @@ func (p *userImpl) Delete(ctx context.Context, input repo.DeleteUserInput) error
 }
 
 // Find implements repo.User.
-func (p *userImpl) Find(ctx context.Context, input repo.FindUserInput, preload ...string) (*user.User, error) {
-	return p.manager.Find(ctx, manager.FindInput[user.User]{ID: input.ID, Filterer: input.Filterer}, preload...)
+func (p *userImpl) Find(ctx context.Context, input repo.FindUserInput) (*user.User, error) {
+	return p.manager.Find(ctx, manager.FindInput[user.User]{ID: input.ID, Filterer: input.Filterer, Preloader: input.Preloader})
 }
 
 // FindByEmail implements repo.User.

@@ -7,7 +7,7 @@ import (
 
 // FindUserInput is the input data of the user query.
 type FindUserOutput struct {
-	ID    sharedvalue.ID `json:"id"`
-	Email value.Email    `json:"email"`
-	Name  value.Name     `json:"name"`
+	ID    sharedvalue.ID `json:"id" faker:"uint"`
+	Email value.Email    `json:"email" faker:"email"`
+	Name  value.Name     `json:"name" faker:"name"`
 }

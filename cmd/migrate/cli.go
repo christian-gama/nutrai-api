@@ -11,22 +11,21 @@ import (
 )
 
 var (
-	envFile    string
-	silent     bool
-	shouldSeed bool
+	envFile string
+	silent  bool
 )
 
 func init() {
 	os.Stdout.Write([]byte("\033[H\033[2J"))
 	cmd.PersistentFlags().StringVarP(&envFile, "env-file", "e", "", "environment file")
 	cmd.PersistentFlags().BoolVarP(&silent, "silent", "q", false, "silent mode (no logs)")
-	cmd.PersistentFlags().BoolVarP(&shouldSeed, "seed", "s", false, "seed the database")
 	cmd.AddCommand(upCmd)
 	cmd.AddCommand(dropCmd)
 	cmd.AddCommand(forceCmd)
 	cmd.AddCommand(downCmd)
 	cmd.AddCommand(versionCmd)
 	cmd.AddCommand(stepsCmd)
+	cmd.AddCommand(resetCmd)
 }
 
 var cmd = &cobra.Command{
@@ -109,6 +108,16 @@ var stepsCmd = &cobra.Command{
 		}
 
 		migrate.MakeMigrate(silent).Steps(steps)
+	},
+}
+
+var resetCmd = &cobra.Command{
+	Use:   "reset",
+	Short: "Reset the database",
+	Long:  "Reset the database by downing all migrations and then running them all again",
+	Run: func(cmd *cobra.Command, args []string) {
+		setupEnvFile()
+		migrate.MakeMigrate(silent).Reset()
 	},
 }
 

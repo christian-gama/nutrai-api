@@ -13,12 +13,14 @@ type Suite struct {
 	suite.Suite
 }
 
+// Skip skips the test.
 func (s *Suite) Skip(name string, f func()) bool {
 	return s.Run(name, func() {
 		s.T().Skip()
 	})
 }
 
+// Todo marks the test as TODO, skipping it and printing a message.
 func (s *Suite) Todo(name string, f func()) bool {
 	return s.Run(name, func() {
 		s.T().Skipf("TODO: %s", name)
@@ -45,6 +47,7 @@ func (s *Suite) ErrorAsInternal(err error, msgAndArgs ...any) bool {
 	return asserts.ErrorAsInternal(s.T(), err, msgAndArgs...)
 }
 
+// SuiteWithConn is a suite with a connection to the database.
 type SuiteWithConn struct {
 	Suite
 }

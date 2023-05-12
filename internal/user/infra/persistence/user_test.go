@@ -121,7 +121,6 @@ func (s *UserSuite) TestFind() {
 		Sut func(
 			ctx context.Context,
 			input repo.FindUserInput,
-			preload ...string,
 		) (*user.User, error)
 		Ctx   context.Context
 		Input repo.FindUserInput
@@ -170,7 +169,6 @@ func (s *UserSuite) TestAll() {
 		Sut func(
 			ctx context.Context,
 			input repo.AllUsersInput,
-			preload ...string,
 		) (*queryingPort.PaginationOutput[*user.User], error)
 		Ctx   context.Context
 		Input repo.AllUsersInput

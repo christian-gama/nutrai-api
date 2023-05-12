@@ -8,6 +8,8 @@ import (
 	"gorm.io/gorm"
 )
 
+// Transaction is a helper function to run a transaction in a test. It will
+// rollback automatically in the end of the function.
 func Transaction(
 	failFn func(failureMessage string, msgAndArgs ...interface{}) bool,
 	fn func(tx *gorm.DB),

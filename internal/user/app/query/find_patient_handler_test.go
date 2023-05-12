@@ -51,7 +51,7 @@ func (s *FindPatientHandlerSuite) TestPatientHandler() {
 
 		patient := fake.Patient()
 		patient.ID = sut.Input.ID
-		sut.Mocks.Repo.On("Find", sut.Ctx, mock.Anything, "User").Return(patient, nil)
+		sut.Mocks.Repo.On("Find", sut.Ctx, mock.Anything).Return(patient, nil)
 
 		output, err := sut.Sut.Handle(sut.Ctx, sut.Input)
 
@@ -63,7 +63,7 @@ func (s *FindPatientHandlerSuite) TestPatientHandler() {
 	s.Run("Should return an error when the repository fails", func() {
 		sut := makeSut()
 
-		sut.Mocks.Repo.On("Find", sut.Ctx, mock.Anything, "User").Return(nil, assert.AnError)
+		sut.Mocks.Repo.On("Find", sut.Ctx, mock.Anything).Return(nil, assert.AnError)
 
 		output, err := sut.Sut.Handle(sut.Ctx, sut.Input)
 
