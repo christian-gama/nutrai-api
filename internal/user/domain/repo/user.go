@@ -4,8 +4,9 @@ import (
 	"context"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/value"
+	sharedvalue "github.com/christian-gama/nutrai-api/internal/shared/domain/value"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
+	value "github.com/christian-gama/nutrai-api/internal/user/domain/value/user"
 )
 
 // SaveUserInput is the input for the Save method.
@@ -22,24 +23,24 @@ type AllUsersInput struct {
 
 // FindUserInput is the input for the Find method.
 type FindUserInput struct {
-	ID value.ID
+	ID sharedvalue.ID
 	querying.Filterer
 }
 
 // FindByEmailUserInput is the input for the FindByEmail method.
 type FindByEmailUserInput struct {
-	Email string
+	Email value.Email
 }
 
 // DeleteUserInput is the input for the Delete method.
 type DeleteUserInput struct {
-	IDs []value.ID
+	IDs []sharedvalue.ID
 }
 
 // UpdateUserInput is the input for the Update method.
 type UpdateUserInput struct {
 	User *user.User
-	ID   value.ID
+	ID   sharedvalue.ID
 }
 
 // User is the interface that wraps the basic User methods.

@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/app/query"
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/value"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/convert"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
 )
@@ -24,7 +23,7 @@ func NewFindPatientHandler(repo repo.Patient) FindPatientHandler {
 
 // Handle implements query.Handler.
 func (q *findPatientHandlerImpl) Handle(ctx context.Context, input *FindPatientInput) (*FindPatientOutput, error) {
-	patient, err := q.Patient.Find(ctx, repo.FindPatientInput{ID: value.ID(input.ID)}, "User")
+	patient, err := q.Patient.Find(ctx, repo.FindPatientInput{ID: input.ID}, "User")
 	if err != nil {
 		return nil, err
 	}

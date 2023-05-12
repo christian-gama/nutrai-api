@@ -6,7 +6,6 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/user/app/command"
 	"github.com/christian-gama/nutrai-api/internal/user/app/service"
-	value "github.com/christian-gama/nutrai-api/internal/user/domain/value/user"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/user/app/command"
 	fakePatient "github.com/christian-gama/nutrai-api/testutils/fake/user/domain/model/patient"
 	userServiceMock "github.com/christian-gama/nutrai-api/testutils/mocks/user/app/service"
@@ -54,7 +53,7 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 
 		sut.Mocks.HashPasswordHandler.
 			On("Handle", sut.Ctx, mock.Anything).
-			Return(&service.HashPasswordOutput{HashedPassword: "hashed"}, nil)
+			Return(&service.HashPasswordOutput{Password: "hashed"}, nil)
 
 		sut.Mocks.PatientRepo.
 			On("Save", sut.Ctx, mock.Anything).
@@ -68,10 +67,10 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 	s.Run("Should call hashPasswordHandler.Handle with the password", func() {
 		sut := makeSut()
 
-		password := value.Password(sut.Input.User.Password)
+		password := sut.Input.User.Password
 		sut.Mocks.HashPasswordHandler.
 			On("Handle", sut.Ctx, mock.Anything).
-			Return(&service.HashPasswordOutput{HashedPassword: "hashed"}, nil)
+			Return(&service.HashPasswordOutput{Password: "hashed"}, nil)
 
 		sut.Mocks.PatientRepo.
 			On("Save", sut.Ctx, mock.Anything).
@@ -79,7 +78,7 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 
 		_ = sut.Sut.Handle(sut.Ctx, sut.Input)
 
-		sut.Mocks.HashPasswordHandler.AssertCalled(s.T(), "Handle", sut.Ctx, &service.HashPasswordInput{Password: string(password)})
+		sut.Mocks.HashPasswordHandler.AssertCalled(s.T(), "Handle", sut.Ctx, &service.HashPasswordInput{Password: password})
 	})
 
 	s.Run("Should return error when hashing password fails", func() {
@@ -99,7 +98,7 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 
 		sut.Mocks.HashPasswordHandler.
 			On("Handle", sut.Ctx, mock.Anything).
-			Return(&service.HashPasswordOutput{HashedPassword: "hashed"}, nil)
+			Return(&service.HashPasswordOutput{Password: "hashed"}, nil)
 		sut.Input.User.Email = ""
 
 		err := sut.Sut.Handle(sut.Ctx, sut.Input)
@@ -112,7 +111,7 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 
 		sut.Mocks.HashPasswordHandler.
 			On("Handle", sut.Ctx, mock.Anything).
-			Return(&service.HashPasswordOutput{HashedPassword: "hashed"}, nil)
+			Return(&service.HashPasswordOutput{Password: "hashed"}, nil)
 
 		sut.Mocks.PatientRepo.On("Save", sut.Ctx, mock.Anything).Return(nil, assert.AnError)
 

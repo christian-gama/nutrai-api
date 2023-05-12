@@ -16,15 +16,6 @@ type Patient struct {
 	Age      value.Age      `faker:"boundary_start=1, boundary_end=100"`
 }
 
-// New returns a new Patient instance.
-func New(patient *Patient) (*Patient, error) {
-	if err := patient.Validate(); err != nil {
-		return nil, err
-	}
-
-	return patient, nil
-}
-
 // Validate returns an error if the patient is invalid.
 func (p *Patient) Validate() error {
 	var errs *errutil.Error
@@ -52,4 +43,52 @@ func (p *Patient) Validate() error {
 	}
 
 	return nil
+}
+
+type builder struct {
+	patient *Patient
+}
+
+// NewBuilder creates a new builder for a patient.
+func NewBuilder() *builder {
+	return &builder{
+		patient: &Patient{},
+	}
+}
+
+// SetID sets the ID on the builder.
+func (b *builder) SetID(id sharedvalue.ID) *builder {
+	b.patient.ID = id
+	return b
+}
+
+// SetUser sets the user on the builder.
+func (b *builder) SetUser(user *user.User) *builder {
+	b.patient.User = user
+	return b
+}
+
+// SetWeightKG sets the weightKG on the builder.
+func (b *builder) SetWeightKG(weightKG value.WeightKG) *builder {
+	b.patient.WeightKG = weightKG
+	return b
+}
+
+// SetHeightM sets the heightM on the builder.
+func (b *builder) SetHeightM(heightM value.HeightM) *builder {
+	b.patient.HeightM = heightM
+	return b
+}
+
+func (b *builder) SetAge(age value.Age) *builder {
+	b.patient.Age = age
+	return b
+}
+
+func (b *builder) Build() (*Patient, error) {
+	if err := b.patient.Validate(); err != nil {
+		return nil, err
+	}
+
+	return b.patient, nil
 }

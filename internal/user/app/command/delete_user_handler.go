@@ -23,10 +23,10 @@ func NewDeleteUserHandler(p repo.User) DeleteUserHandler {
 
 // Handle implements command.Handler.
 func (c *deleteUserHandlerImpl) Handle(ctx context.Context, input *DeleteUserInput) error {
-	_, err := c.Find(ctx, repo.FindUserInput{ID: value.ID(input.ID)})
+	_, err := c.Find(ctx, repo.FindUserInput{ID: input.ID})
 	if err != nil {
 		return err
 	}
 
-	return c.Delete(ctx, repo.DeleteUserInput{IDs: []value.ID{value.ID(input.ID)}})
+	return c.Delete(ctx, repo.DeleteUserInput{IDs: []value.ID{input.ID}})
 }

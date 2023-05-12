@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/app/command"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/convert"
 	"github.com/christian-gama/nutrai-api/internal/user/app/service"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
+	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
 )
 
@@ -26,13 +26,28 @@ func NewSavePatientHandler(p repo.Patient, h service.HashPasswordHandler) SavePa
 
 // Handle implements command.Handler.
 func (c *savePatientHandlerImpl) Handle(ctx context.Context, input *SavePatientInput) error {
-	hashPasswordOutput, err := c.HashPasswordHandler.Handle(ctx, &service.HashPasswordInput{Password: input.User.Password})
+	hashPasswordOutput, err := c.HashPasswordHandler.Handle(
+		ctx, &service.HashPasswordInput{Password: input.User.Password},
+	)
 	if err != nil {
 		return err
 	}
-	input.User.Password = hashPasswordOutput.HashedPassword
 
-	patient, err := convert.ToValidModel(&patient.Patient{}, input)
+	user, err := user.NewBuilder().
+		SetName(input.User.Name).
+		SetEmail(input.User.Email).
+		SetPassword(hashPasswordOutput.Password).
+		Build()
+	if err != nil {
+		return err
+	}
+
+	patient, err := patient.NewBuilder().
+		SetAge(input.Age).
+		SetHeightM(input.HeightM).
+		SetWeightKG(input.WeightKG).
+		SetUser(user).
+		Build()
 	if err != nil {
 		return err
 	}

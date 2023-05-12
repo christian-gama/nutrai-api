@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/user/app/command"
-	value "github.com/christian-gama/nutrai-api/internal/user/domain/value/user"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/user/app/command"
 	userFake "github.com/christian-gama/nutrai-api/testutils/fake/user/domain/model/user"
 	hasherMock "github.com/christian-gama/nutrai-api/testutils/mocks/user/domain/hasher"
@@ -58,7 +57,7 @@ func (s *CheckCredentialsSuite) TestCheckCredentials() {
 
 		user := userFake.User()
 		sut.Mocks.UserRepo.On("FindByEmail", sut.Ctx, mock.Anything).Return(user, nil)
-		sut.Mocks.Hasher.On("Compare", value.Password(sut.Input.Password), user.Password).Return(nil)
+		sut.Mocks.Hasher.On("Compare", sut.Input.Password, user.Password).Return(nil)
 
 		err := sut.Sut.Handle(sut.Ctx, sut.Input)
 
@@ -80,7 +79,7 @@ func (s *CheckCredentialsSuite) TestCheckCredentials() {
 
 		user := userFake.User()
 		sut.Mocks.UserRepo.On("FindByEmail", sut.Ctx, mock.Anything).Return(user, nil)
-		sut.Mocks.Hasher.On("Compare", value.Password(sut.Input.Password), user.Password).Return(assert.AnError)
+		sut.Mocks.Hasher.On("Compare", sut.Input.Password, user.Password).Return(assert.AnError)
 
 		err := sut.Sut.Handle(sut.Ctx, sut.Input)
 

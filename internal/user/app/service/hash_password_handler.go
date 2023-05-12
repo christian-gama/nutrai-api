@@ -5,7 +5,6 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/shared/app/service"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/hasher"
-	value "github.com/christian-gama/nutrai-api/internal/user/domain/value/user"
 )
 
 // HashPasswordInput represents the input data for the HashPassword service.
@@ -23,10 +22,10 @@ func NewHashPasswordHandler(h hasher.Hasher) HashPasswordHandler {
 
 // Handle generates a hash for the given password.
 func (s *hashPasswordHandlerImpl) Handle(ctx context.Context, input *HashPasswordInput) (*HashPasswordOutput, error) {
-	hashedPassword, err := s.Hash(value.Password(input.Password))
+	hashedPassword, err := s.Hash(input.Password)
 	if err != nil {
 		return nil, err
 	}
 
-	return &HashPasswordOutput{string(hashedPassword)}, nil
+	return &HashPasswordOutput{hashedPassword}, nil
 }

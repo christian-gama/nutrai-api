@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/app/command"
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/value"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/convert"
+	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
+	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
 )
 
@@ -24,15 +24,30 @@ func NewUpdatePatientHandler(p repo.Patient) UpdatePatientHandler {
 
 // Handle implements command.Handler.
 func (c *updatePatientHandlerImpl) Handle(ctx context.Context, input *UpdatePatientInput) error {
-	savedPatient, err := c.Find(ctx, repo.FindPatientInput{ID: value.ID(input.ID)}, "User")
+	savedPatient, err := c.Find(ctx, repo.FindPatientInput{ID: input.ID}, "User")
 	if err != nil {
 		return err
 	}
 
-	patient, err := convert.ToValidModel(savedPatient, input)
+	user, err := user.NewBuilder().
+		SetName(input.User.Name).
+		SetEmail(input.User.Email).
+		// The password must keep the same. To change the password, refer to the ChangePassword command.
+		SetPassword(savedPatient.User.Password).
+		Build()
 	if err != nil {
 		return err
 	}
 
-	return c.Update(ctx, repo.UpdatePatientInput{Patient: patient, ID: value.ID(input.ID)})
+	patient, err := patient.NewBuilder().
+		SetAge(input.Age).
+		SetHeightM(input.HeightM).
+		SetWeightKG(input.WeightKG).
+		SetUser(user).
+		Build()
+	if err != nil {
+		return err
+	}
+
+	return c.Update(ctx, repo.UpdatePatientInput{Patient: patient, ID: input.ID})
 }

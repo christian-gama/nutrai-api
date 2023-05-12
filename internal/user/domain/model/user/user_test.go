@@ -29,7 +29,11 @@ func (s *UserTestSuite) TestNewUser() {
 		data := fake.User()
 
 		sut := func() (*user.User, error) {
-			return user.New(data)
+			return user.NewBuilder().
+				SetEmail(data.Email).
+				SetPassword(data.Password).
+				SetName(data.Name).
+				Build()
 		}
 
 		return &Sut{Sut: sut, Data: data}
@@ -124,9 +128,9 @@ func (s *UserTestSuite) TestNewUser() {
 
 			s.NoError(err)
 			s.NotNil(user)
-			s.Equal(sut.Data.ID, user.ID)
-			s.Equal(sut.Data.Email, user.Email)
-			s.Equal(sut.Data.Password, user.Password)
+			s.Equal(sut.Data.Email, user.Email, "should have the same email")
+			s.Equal(sut.Data.Password, user.Password, "should have the same password")
+			s.Equal(sut.Data.Name, user.Name, "should have the same name")
 		})
 	})
 }

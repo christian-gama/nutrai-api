@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/value"
 	"github.com/christian-gama/nutrai-api/internal/user/app/query"
 	queryFake "github.com/christian-gama/nutrai-api/testutils/fake/user/app/query"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/user/domain/model/patient"
@@ -51,7 +50,7 @@ func (s *FindPatientHandlerSuite) TestPatientHandler() {
 		sut := makeSut()
 
 		patient := fake.Patient()
-		patient.ID = value.ID(sut.Input.ID)
+		patient.ID = sut.Input.ID
 		sut.Mocks.Repo.On("Find", sut.Ctx, mock.Anything, "User").Return(patient, nil)
 
 		output, err := sut.Sut.Handle(sut.Ctx, sut.Input)

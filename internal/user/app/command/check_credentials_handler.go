@@ -32,7 +32,7 @@ func (c *checkCredentialsHandlerImpl) Handle(ctx context.Context, input *CheckCr
 		return err
 	}
 
-	password := value.Password(input.Password)
+	password := input.Password
 	if err := password.Validate(); err != nil {
 		return err
 	}

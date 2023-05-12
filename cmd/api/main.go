@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	"net/http"
+	"time"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/env"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql"
 	"github.com/christian-gama/nutrai-api/internal/user/app/command"
 	"github.com/christian-gama/nutrai-api/internal/user/app/service"
+	value "github.com/christian-gama/nutrai-api/internal/user/domain/value/user"
 	"github.com/christian-gama/nutrai-api/internal/user/infra/hash"
 	"github.com/christian-gama/nutrai-api/internal/user/infra/persistence"
 	"github.com/go-faker/faker/v4"
@@ -26,16 +27,14 @@ func main() {
 	patientRepo := persistence.NewPatient(db)
 	hashPasswordHandler := service.NewHashPasswordHandler(hash.New())
 	savePatientHandler := command.NewSavePatientHandler(patientRepo, hashPasswordHandler)
-	userRepo := persistence.NewUser(db)
-	hasher := hash.New()
-	checkCredentialsHandler := command.NewCheckCredentialsHandler(userRepo, hasher)
 	ctx := context.Background()
 
-	email := faker.Email()
+	email := value.Email(faker.Email())
+	start := time.Now()
 	err = savePatientHandler.Handle(ctx, &command.SavePatientInput{
 		Age: 18,
 		User: &command.SaveUserInput{
-			Name:     faker.Name(),
+			Name:     "christian",
 			Email:    email,
 			Password: "12345678",
 		},
@@ -45,24 +44,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println("Patient created successfully!")
-
-	err = checkCredentialsHandler.Handle(ctx, &command.CheckCredentialsInput{
-		Email:    email,
-		Password: "12345678",
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("Credentials are correct!")
-
-	server := http.Server{
-		Addr:              ":8080",
-		ReadHeaderTimeout: 5,
-	}
-	defer server.Close()
-
-	server.ListenAndServe()
+	fmt.Printf("Took %v to save patient\n", time.Since(start))
 }

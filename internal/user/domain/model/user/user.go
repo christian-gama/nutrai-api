@@ -14,15 +14,6 @@ type User struct {
 	Name     value.Name     `faker:"len=3"`
 }
 
-// New returns a new User instance.
-func New(user *User) (*User, error) {
-	if err := user.Validate(); err != nil {
-		return nil, err
-	}
-
-	return user, nil
-}
-
 // Validate returns an error if the user is invalid.
 func (u *User) Validate() error {
 	var errs *errutil.Error
@@ -44,4 +35,48 @@ func (u *User) Validate() error {
 	}
 
 	return nil
+}
+
+type builder struct {
+	user *User
+}
+
+// NewBuilder returns a new builder for the user model.
+func NewBuilder() *builder {
+	return &builder{
+		user: &User{},
+	}
+}
+
+// SetID sets the user ID.
+func (b *builder) SetID(id sharedvalue.ID) *builder {
+	b.user.ID = id
+	return b
+}
+
+// SetEmail sets the user email.
+func (b *builder) SetEmail(email value.Email) *builder {
+	b.user.Email = email
+	return b
+}
+
+// SetPassword sets the user password.
+func (b *builder) SetPassword(password value.Password) *builder {
+	b.user.Password = password
+	return b
+}
+
+// SetName sets the user name.
+func (b *builder) SetName(name value.Name) *builder {
+	b.user.Name = name
+	return b
+}
+
+// Build returns the user model.
+func (b *builder) Build() (*User, error) {
+	if err := b.user.Validate(); err != nil {
+		return nil, err
+	}
+
+	return b.user, nil
 }

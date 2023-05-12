@@ -27,7 +27,12 @@ func (s *PatientTestSuite) TestNewPatient() {
 		data := fake.Patient()
 
 		sut := func() (*patient.Patient, error) {
-			return patient.New(data)
+			return patient.NewBuilder().
+				SetAge(data.Age).
+				SetHeightM(data.HeightM).
+				SetWeightKG(data.WeightKG).
+				SetUser(data.User).
+				Build()
 		}
 
 		return &Sut{Sut: sut, Data: data}
@@ -153,10 +158,9 @@ func (s *PatientTestSuite) TestNewPatient() {
 
 			s.NoError(err)
 			s.NotNil(patient)
-			s.Equal(sut.Data.ID, patient.ID)
-			s.Equal(sut.Data.WeightKG, patient.WeightKG)
-			s.Equal(sut.Data.HeightM, patient.HeightM)
-			s.Equal(sut.Data.Age, patient.Age)
+			s.Equal(sut.Data.WeightKG, patient.WeightKG, "should have the same weight")
+			s.Equal(sut.Data.HeightM, patient.HeightM, "should have the same height")
+			s.Equal(sut.Data.Age, patient.Age, "should have the same age")
 		})
 	})
 }
