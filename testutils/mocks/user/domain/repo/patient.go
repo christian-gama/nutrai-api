@@ -17,32 +17,25 @@ type Patient struct {
 	mock.Mock
 }
 
-// All provides a mock function with given fields: ctx, input, preload
-func (_m *Patient) All(ctx context.Context, input repo.AllPatientsInput, preload ...string) (*querying.PaginationOutput[*patient.Patient], error) {
-	_va := make([]interface{}, len(preload))
-	for _i := range preload {
-		_va[_i] = preload[_i]
-	}
-	var _ca []interface{}
-	_ca = append(_ca, ctx, input)
-	_ca = append(_ca, _va...)
-	ret := _m.Called(_ca...)
+// All provides a mock function with given fields: ctx, input
+func (_m *Patient) All(ctx context.Context, input repo.AllPatientsInput) (*querying.PaginationOutput[*patient.Patient], error) {
+	ret := _m.Called(ctx, input)
 
 	var r0 *querying.PaginationOutput[*patient.Patient]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, repo.AllPatientsInput, ...string) (*querying.PaginationOutput[*patient.Patient], error)); ok {
-		return rf(ctx, input, preload...)
+	if rf, ok := ret.Get(0).(func(context.Context, repo.AllPatientsInput) (*querying.PaginationOutput[*patient.Patient], error)); ok {
+		return rf(ctx, input)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, repo.AllPatientsInput, ...string) *querying.PaginationOutput[*patient.Patient]); ok {
-		r0 = rf(ctx, input, preload...)
+	if rf, ok := ret.Get(0).(func(context.Context, repo.AllPatientsInput) *querying.PaginationOutput[*patient.Patient]); ok {
+		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*querying.PaginationOutput[*patient.Patient])
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, repo.AllPatientsInput, ...string) error); ok {
-		r1 = rf(ctx, input, preload...)
+	if rf, ok := ret.Get(1).(func(context.Context, repo.AllPatientsInput) error); ok {
+		r1 = rf(ctx, input)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -64,32 +57,25 @@ func (_m *Patient) Delete(ctx context.Context, input repo.DeletePatientInput) er
 	return r0
 }
 
-// Find provides a mock function with given fields: ctx, input, preload
-func (_m *Patient) Find(ctx context.Context, input repo.FindPatientInput, preload ...string) (*patient.Patient, error) {
-	_va := make([]interface{}, len(preload))
-	for _i := range preload {
-		_va[_i] = preload[_i]
-	}
-	var _ca []interface{}
-	_ca = append(_ca, ctx, input)
-	_ca = append(_ca, _va...)
-	ret := _m.Called(_ca...)
+// Find provides a mock function with given fields: ctx, input
+func (_m *Patient) Find(ctx context.Context, input repo.FindPatientInput) (*patient.Patient, error) {
+	ret := _m.Called(ctx, input)
 
 	var r0 *patient.Patient
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, repo.FindPatientInput, ...string) (*patient.Patient, error)); ok {
-		return rf(ctx, input, preload...)
+	if rf, ok := ret.Get(0).(func(context.Context, repo.FindPatientInput) (*patient.Patient, error)); ok {
+		return rf(ctx, input)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, repo.FindPatientInput, ...string) *patient.Patient); ok {
-		r0 = rf(ctx, input, preload...)
+	if rf, ok := ret.Get(0).(func(context.Context, repo.FindPatientInput) *patient.Patient); ok {
+		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*patient.Patient)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, repo.FindPatientInput, ...string) error); ok {
-		r1 = rf(ctx, input, preload...)
+	if rf, ok := ret.Get(1).(func(context.Context, repo.FindPatientInput) error); ok {
+		r1 = rf(ctx, input)
 	} else {
 		r1 = ret.Error(1)
 	}

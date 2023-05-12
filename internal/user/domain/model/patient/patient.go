@@ -14,6 +14,7 @@ type Patient struct {
 	WeightKG value.WeightKG `faker:"boundary_start=1, boundary_end=999"`
 	HeightM  value.HeightM  `faker:"boundary_start=1, boundary_end=3"`
 	Age      value.Age      `faker:"boundary_start=1, boundary_end=100"`
+	BMI      value.BMI      `faker:"boundary_start=16, boundary_end=30"`
 }
 
 // Validate returns an error if the patient is invalid.

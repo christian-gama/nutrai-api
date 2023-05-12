@@ -49,7 +49,7 @@ func (s *UpdatePatientHandlerSuite) TestUpdateHandler() {
 
 		patient := fakePatient.Patient()
 		sut.Mocks.PatientRepo.
-			On("Find", sut.Ctx, mock.Anything, "User").
+			On("Find", sut.Ctx, mock.Anything).
 			Return(patient, nil)
 
 		sut.Mocks.PatientRepo.
@@ -65,7 +65,7 @@ func (s *UpdatePatientHandlerSuite) TestUpdateHandler() {
 		sut := makeSut()
 
 		sut.Mocks.PatientRepo.
-			On("Find", sut.Ctx, mock.Anything, "User").
+			On("Find", sut.Ctx, mock.Anything).
 			Return(fakePatient.Patient(), nil)
 
 		sut.Input.User.Email = ""
@@ -80,7 +80,7 @@ func (s *UpdatePatientHandlerSuite) TestUpdateHandler() {
 
 		patient := fakePatient.Patient()
 		sut.Mocks.PatientRepo.
-			On("Find", sut.Ctx, mock.Anything, "User").
+			On("Find", sut.Ctx, mock.Anything).
 			Return(patient, nil)
 
 		sut.Mocks.PatientRepo.On("Update", sut.Ctx, mock.Anything).Return(assert.AnError)

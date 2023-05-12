@@ -6,8 +6,10 @@ import (
 	"time"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/env"
+	"github.com/christian-gama/nutrai-api/internal/shared/infra/querying"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql"
 	"github.com/christian-gama/nutrai-api/internal/user/app/command"
+	"github.com/christian-gama/nutrai-api/internal/user/app/query"
 	"github.com/christian-gama/nutrai-api/internal/user/app/service"
 	value "github.com/christian-gama/nutrai-api/internal/user/domain/value/user"
 	"github.com/christian-gama/nutrai-api/internal/user/infra/hash"
@@ -44,5 +46,17 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	fmt.Printf("Took %v to save patient\n", time.Since(start))
+
+	findPatientHandler := query.NewFindPatientHandler(patientRepo)
+	patient, err := findPatientHandler.Handle(ctx, &query.FindPatientInput{
+		ID:      5,
+		Preload: querying.AddPreload("user").Slice(),
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Saved patient: %+v\n", patient)
 }

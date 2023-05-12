@@ -14,6 +14,7 @@ type SaveInput[Model any] struct {
 type FindInput[Model any] struct {
 	ID value.ID
 	queryingPort.Filterer
+	queryingPort.Preloader
 }
 
 // DeleteInput is the input for Delete method.
@@ -26,6 +27,7 @@ type AllInput[Model any] struct {
 	queryingPort.Filterer
 	queryingPort.Paginator
 	queryingPort.Sorter
+	queryingPort.Preloader
 }
 
 // UpdateInput is the input for Update method.

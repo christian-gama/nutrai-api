@@ -131,7 +131,6 @@ func (s *PatientSuite) TestFind() {
 		Sut func(
 			ctx context.Context,
 			input repo.FindPatientInput,
-			preload ...string,
 		) (*patient.Patient, error)
 		Ctx   context.Context
 		Input repo.FindPatientInput
@@ -180,7 +179,6 @@ func (s *PatientSuite) TestAll() {
 		Sut func(
 			ctx context.Context,
 			input repo.AllPatientsInput,
-			preload ...string,
 		) (*queryingPort.PaginationOutput[*patient.Patient], error)
 		Ctx   context.Context
 		Input repo.AllPatientsInput

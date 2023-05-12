@@ -15,6 +15,7 @@ const (
 	allTests         = "all"
 )
 
+// mode returns the test mode to be executed.
 func mode() string {
 	modes := []string{unitTests, integrationTests, allTests}
 	mode, ok := os.LookupEnv("TEST_MODE")

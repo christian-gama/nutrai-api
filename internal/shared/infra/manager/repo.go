@@ -11,11 +11,11 @@ type Save[Model any] interface {
 }
 
 type Find[Model any] interface {
-	Find(ctx context.Context, input FindInput[Model], preload ...string) (*Model, error)
+	Find(ctx context.Context, input FindInput[Model]) (*Model, error)
 }
 
 type All[Model any] interface {
-	All(ctx context.Context, input AllInput[Model], preload ...string) (*queryingPort.PaginationOutput[*Model], error)
+	All(ctx context.Context, input AllInput[Model]) (*queryingPort.PaginationOutput[*Model], error)
 }
 
 type Update[Model any] interface {

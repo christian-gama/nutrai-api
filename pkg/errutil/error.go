@@ -36,7 +36,7 @@ func (e *Error) HasErrors() bool {
 	return true
 }
 
-// Len returns the number of errors.
+// Len implements sort.Interface.
 func (e *Error) Len() int {
 	if !e.HasErrors() {
 		return 0
@@ -45,7 +45,9 @@ func (e *Error) Len() int {
 	return len(e.Errors)
 }
 
-// Unwrap returns the first error in the chain.
+// Unwrap returns the result of calling the Unwrap method on err, if err's
+// type contains an Unwrap method returning error.
+// Otherwise, Unwrap returns nil.
 func (e *Error) Unwrap() error {
 	if !e.HasErrors() {
 		return nil

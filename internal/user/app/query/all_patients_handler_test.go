@@ -51,10 +51,14 @@ func (s *AllPatientsHandlerSuite) TestPatientHandler() {
 	s.Run("Should return a PatientOutput", func() {
 		sut := makeSut()
 
-		sut.Mocks.Repo.On("All", sut.Ctx, mock.Anything, "User").Return(&querying.PaginationOutput[*patient.Patient]{
-			Results: []*patient.Patient{fake.Patient()},
-			Total:   1,
-		}, nil)
+		sut.Mocks.Repo.On("All", sut.Ctx, mock.Anything).
+			Return(
+				&querying.PaginationOutput[*patient.Patient]{
+					Results: []*patient.Patient{fake.Patient()},
+					Total:   1,
+				},
+				nil,
+			)
 
 		output, err := sut.Sut.Handle(sut.Ctx, sut.Input)
 
@@ -67,7 +71,7 @@ func (s *AllPatientsHandlerSuite) TestPatientHandler() {
 	s.Run("Should return an error when the repository fails", func() {
 		sut := makeSut()
 
-		sut.Mocks.Repo.On("All", sut.Ctx, mock.Anything, "User").Return(nil, assert.AnError)
+		sut.Mocks.Repo.On("All", sut.Ctx, mock.Anything, mock.Anything).Return(nil, assert.AnError)
 
 		output, err := sut.Sut.Handle(sut.Ctx, sut.Input)
 

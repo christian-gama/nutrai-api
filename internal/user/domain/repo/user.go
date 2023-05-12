@@ -19,12 +19,14 @@ type AllUsersInput struct {
 	querying.Filterer
 	querying.Sorter
 	querying.Paginator
+	querying.Preloader
 }
 
 // FindUserInput is the input for the Find method.
 type FindUserInput struct {
 	ID sharedvalue.ID
 	querying.Filterer
+	querying.Preloader
 }
 
 // FindByEmailUserInput is the input for the FindByEmail method.
@@ -46,13 +48,13 @@ type UpdateUserInput struct {
 // User is the interface that wraps the basic User methods.
 type User interface {
 	// All returns all users.
-	All(ctx context.Context, input AllUsersInput, preload ...string) (*querying.PaginationOutput[*user.User], error)
+	All(ctx context.Context, input AllUsersInput) (*querying.PaginationOutput[*user.User], error)
 
 	// Delete deletes the user with the given id.
 	Delete(ctx context.Context, input DeleteUserInput) error
 
 	// Find returns the user with the given id.
-	Find(ctx context.Context, input FindUserInput, preload ...string) (*user.User, error)
+	Find(ctx context.Context, input FindUserInput) (*user.User, error)
 
 	// FindByEmail returns the user with the given email.
 	FindByEmail(ctx context.Context, input FindByEmailUserInput) (*user.User, error)

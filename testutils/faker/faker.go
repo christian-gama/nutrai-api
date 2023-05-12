@@ -8,6 +8,7 @@ import (
 	"github.com/go-faker/faker/v4/pkg/options"
 )
 
+// InitializeProviders initializes all the custom providers for faker.
 func InitializeProviders() {
 	_ = faker.AddProvider("time_now", func(v reflect.Value) (any, error) {
 		return providers.TimeNow(), nil
@@ -30,6 +31,7 @@ func InitializeProviders() {
 	})
 }
 
+// Setup sets up the faker package, setting the min and max size for slices and maps.
 func Setup() {
 	options.SetRandomMapAndSliceMinSize(2)
 	options.SetRandomMapAndSliceMaxSize(5)

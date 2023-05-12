@@ -16,32 +16,25 @@ type All[Model interface{}] struct {
 	mock.Mock
 }
 
-// All provides a mock function with given fields: ctx, input, preload
-func (_m *All[Model]) All(ctx context.Context, input manager.AllInput[Model], preload ...string) (*querying.PaginationOutput[*Model], error) {
-	_va := make([]interface{}, len(preload))
-	for _i := range preload {
-		_va[_i] = preload[_i]
-	}
-	var _ca []interface{}
-	_ca = append(_ca, ctx, input)
-	_ca = append(_ca, _va...)
-	ret := _m.Called(_ca...)
+// All provides a mock function with given fields: ctx, input
+func (_m *All[Model]) All(ctx context.Context, input manager.AllInput[Model]) (*querying.PaginationOutput[*Model], error) {
+	ret := _m.Called(ctx, input)
 
 	var r0 *querying.PaginationOutput[*Model]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, manager.AllInput[Model], ...string) (*querying.PaginationOutput[*Model], error)); ok {
-		return rf(ctx, input, preload...)
+	if rf, ok := ret.Get(0).(func(context.Context, manager.AllInput[Model]) (*querying.PaginationOutput[*Model], error)); ok {
+		return rf(ctx, input)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, manager.AllInput[Model], ...string) *querying.PaginationOutput[*Model]); ok {
-		r0 = rf(ctx, input, preload...)
+	if rf, ok := ret.Get(0).(func(context.Context, manager.AllInput[Model]) *querying.PaginationOutput[*Model]); ok {
+		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*querying.PaginationOutput[*Model])
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, manager.AllInput[Model], ...string) error); ok {
-		r1 = rf(ctx, input, preload...)
+	if rf, ok := ret.Get(1).(func(context.Context, manager.AllInput[Model]) error); ok {
+		r1 = rf(ctx, input)
 	} else {
 		r1 = ret.Error(1)
 	}

@@ -161,27 +161,28 @@ create-migration: .cmd-exists-go .clear-screen
 # Usage: Run the command 'make migrate ENV_FILE="<env_file>" MIGRATION="<migration>" [VERSION="<version>"]'.
 # Args:
 # 	ENV_FILE: The env file to be loaded.
-# 	MIGRATION: The migration to be run. Options: up, down, drop, force.
+# 	MIGRATION: The migration to be run. Options: up, down, drop, force, steps, version, reset.
 # 	VERSION: The version to be migrated.
 # ==============================================================================================
 .PHONY: migrate
-migrate: .cmd-exists-docker .clear-screen .check-env-file
+migrate: .cmd-exists-docker .clear-screen .check-env-file .prepare-db
 	@if [ -z "$(MIGRATION)" ]; then \
 		echo "Error: expected MIGRATION"; \
 		exit 1; \
 	fi;
 
-	@if [ "$(MIGRATION)" != "up" ] && [ "$(MIGRATION)" != "down" ] && [ "$(MIGRATION)" != "force" ] && [ "$(MIGRATION)" != "drop" ] && [ "$(MIGRATION)" != "steps" ] && [ "$(MIGRATION)" != "version" ]; then \
-		echo "Error: expected [up|down|force|drop|steps|version]"; \
-		exit 1; \
-	fi;
-
-	@if [ "$(MIGRATION)" = "steps" ] && [ -z "$(VERSION)" ]; then \
-		echo "Error: expected VERSION"; \
-		exit 1; \
-	fi;
-
-	@go run ./cmd/migrate/*.go -e $(ENV_FILE) $(MIGRATION) $(VERSION)
+	@case "$(MIGRATION)" in \
+		up|down|force|drop|steps|version|reset) \
+			if [ "$(MIGRATION)" = "steps" ] && [ -z "$(VERSION)" ]; then \
+				echo "Error: expected VERSION"; \
+				exit 1; \
+			fi; \
+			go run ./cmd/migrate/*.go -e "$(ENV_FILE)" "$(MIGRATION)" "$(VERSION)" ;; \
+		*) \
+			echo "Error: expected [up|down|force|drop|steps|version|reset]"; \
+			exit 1; \
+			;; \
+	esac
 
 
 # ==============================================================================================
@@ -258,6 +259,7 @@ docker-run: .cmd-exists-docker .clear-screen .check-env-file
 		exit 1; \
 	fi;
 
+
 # ==============================================================================================
 # Target: .prepare-test-db
 # Brief: This is a helper target to prepare the test environment.
@@ -266,5 +268,14 @@ docker-run: .cmd-exists-docker .clear-screen .check-env-file
 .prepare-test-db: .cmd-exists-go .cmd-exists-docker .clear-screen
 	@WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file .env.test up -d psql_test
 	@sh ./scripts/wait_for_db.sh nutrai-psql-test
-	@go run ./cmd/migrate/*.go -e .env.test drop ""
-	@go run ./cmd/migrate/*.go -e .env.test up ""
+	@go run ./cmd/migrate/*.go -e .env.test reset
+
+
+# ==============================================================================================
+# Target: .prepare-db
+# Brief: This is a helper target to prepare the database.
+# Usage: It is not meant to be called directly, but by other targets.
+# ==============================================================================================
+.prepare-db: .cmd-exists-docker .clear-screen
+	@WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d psql
+	@sh ./scripts/wait_for_db.sh nutrai-psql
