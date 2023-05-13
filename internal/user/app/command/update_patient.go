@@ -7,7 +7,7 @@ import (
 
 // UpdatePatientInput represents the input data for the UpdatePatient command.
 type UpdatePatientInput struct {
-	ID sharedvalue.ID `form:"id"`
+	ID sharedvalue.ID `url:"id"`
 
 	Age      value.Age        `json:"age" faker:"boundary_start=18,boundary_end=100"`
 	HeightM  value.HeightM    `json:"heightM" faker:"boundary_start=1,boundary_end=2"`

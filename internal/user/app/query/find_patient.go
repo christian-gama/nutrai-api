@@ -8,7 +8,7 @@ import (
 
 // FindPatientInput is the input data of the patient query.
 type FindPatientInput struct {
-	ID sharedvalue.ID `form:"id" faker:"uint"`
+	ID sharedvalue.ID `url:"id" faker:"uint"`
 
 	querying.Preload `form:"preload" faker:"-"`
 }

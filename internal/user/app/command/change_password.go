@@ -7,7 +7,7 @@ import (
 
 // ChangePasswordInput represents the input data for the ChangePassword command.
 type ChangePasswordInput struct {
-	ID sharedvalue.ID `form:"id" faker:"uint"`
+	ID sharedvalue.ID `url:"id" faker:"uint"`
 
 	Password value.Password `json:"password" faker:"len=8"`
 }
