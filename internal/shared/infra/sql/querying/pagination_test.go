@@ -5,13 +5,13 @@ import (
 	"time"
 
 	queryingPort "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"gorm.io/gorm"
 )
 
 type PaginationSuite struct {
-	suite.SuiteWithConn
+	suite.SuiteWithSQLConn
 }
 
 func TestPaginationSuite(t *testing.T) {

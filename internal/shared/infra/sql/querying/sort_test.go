@@ -5,13 +5,13 @@ import (
 	"time"
 
 	queryingPort "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"gorm.io/gorm"
 )
 
 type SortSuite struct {
-	suite.SuiteWithConn
+	suite.SuiteWithSQLConn
 }
 
 func TestSortSuite(t *testing.T) {

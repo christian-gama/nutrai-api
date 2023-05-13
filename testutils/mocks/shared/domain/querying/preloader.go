@@ -28,20 +28,6 @@ func (_m *Preloader) Add(field string) querying.Preloader {
 	return r0
 }
 
-// Field provides a mock function with given fields: idx
-func (_m *Preloader) Field(idx int) string {
-	ret := _m.Called(idx)
-
-	var r0 string
-	if rf, ok := ret.Get(0).(func(int) string); ok {
-		r0 = rf(idx)
-	} else {
-		r0 = ret.Get(0).(string)
-	}
-
-	return r0
-}
-
 // Slice provides a mock function with given fields:
 func (_m *Preloader) Slice() []string {
 	ret := _m.Called()

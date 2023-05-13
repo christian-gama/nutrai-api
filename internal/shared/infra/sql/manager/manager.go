@@ -5,13 +5,13 @@ import (
 
 	queryingPort "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/convert"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/querying"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql"
+	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 )
 
-// Manager is a generic manager for a model and a schema.
+// Manager is a generic SQL manager for a model and a schema.
 type Manager[Model any, Schema schema.Tabler] struct {
 	*gorm.DB
 	name string
@@ -55,7 +55,10 @@ func (m *Manager[Model, Schema]) Find(
 
 	if err := db.
 		Model(&schema).
-		Scopes(querying.PreloadScope(input.Preloader), querying.FilterScope(input.Filterer)).
+		Scopes(
+			querying.PreloadScope(input.Preloader),
+			querying.FilterScope(input.Filterer),
+		).
 		Where("id = ?", input.ID).
 		First(&schema).
 		Error; err != nil {

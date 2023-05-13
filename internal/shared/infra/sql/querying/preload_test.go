@@ -4,13 +4,13 @@ import (
 	"testing"
 
 	queryingPort "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"gorm.io/gorm"
 )
 
 type PreloadSuite struct {
-	suite.SuiteWithConn
+	suite.SuiteWithSQLConn
 }
 
 func TestPreloadSuite(t *testing.T) {

@@ -1,6 +1,6 @@
 package query
 
-import "github.com/christian-gama/nutrai-api/internal/shared/infra/querying"
+import "github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
 
 // AllPatientsInput represents the input data for getting all patients.
 type AllPatientsInput struct {

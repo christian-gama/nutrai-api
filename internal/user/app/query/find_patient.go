@@ -2,7 +2,7 @@ package query
 
 import (
 	sharedvalue "github.com/christian-gama/nutrai-api/internal/shared/domain/value"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
 	value "github.com/christian-gama/nutrai-api/internal/user/domain/value/patient"
 )
 

@@ -30,7 +30,7 @@ func (f Filter) Field(idx int) string {
 		return ""
 	}
 
-	// field=name,operator=value
+	// field=name,op=eq,value=any
 	parts := strings.Split(f[idx], ",")
 	fieldPart := strings.Split(parts[0], "=")
 	return fieldPart[1]

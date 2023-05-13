@@ -6,14 +6,14 @@ import (
 	"time"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/env"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/querying"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql"
+	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/internal/user/app/command"
 	"github.com/christian-gama/nutrai-api/internal/user/app/query"
 	"github.com/christian-gama/nutrai-api/internal/user/app/service"
 	value "github.com/christian-gama/nutrai-api/internal/user/domain/value/user"
 	"github.com/christian-gama/nutrai-api/internal/user/infra/hash"
-	"github.com/christian-gama/nutrai-api/internal/user/infra/persistence"
+	persistence "github.com/christian-gama/nutrai-api/internal/user/infra/persistence/sql"
 	"github.com/go-faker/faker/v4"
 )
 
@@ -26,7 +26,7 @@ func main() {
 	}
 	defer sqlDB.Close()
 
-	patientRepo := persistence.NewPatient(db)
+	patientRepo := persistence.NewSQLPatient(db)
 	hashPasswordHandler := service.NewHashPasswordHandler(hash.New())
 	savePatientHandler := command.NewSavePatientHandler(patientRepo, hashPasswordHandler)
 	ctx := context.Background()

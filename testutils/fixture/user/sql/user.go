@@ -6,7 +6,7 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
-	"github.com/christian-gama/nutrai-api/internal/user/infra/persistence"
+	persistence "github.com/christian-gama/nutrai-api/internal/user/infra/persistence/sql"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/user/domain/model/user"
 	"gorm.io/gorm"
 )

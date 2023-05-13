@@ -1,4 +1,4 @@
-package testutils
+package sqlutil
 
 import (
 	gosql "database/sql"

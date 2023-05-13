@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/app/command"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"

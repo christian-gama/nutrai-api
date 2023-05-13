@@ -3,7 +3,7 @@ package suite
 import (
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/testutils"
+	"github.com/christian-gama/nutrai-api/testutils/sqlutil"
 	"github.com/christian-gama/nutrai-api/testutils/suite/asserts"
 	"github.com/stretchr/testify/suite"
 	"gorm.io/gorm"
@@ -47,19 +47,19 @@ func (s *Suite) ErrorAsInternal(err error, msgAndArgs ...any) bool {
 	return asserts.ErrorAsInternal(s.T(), err, msgAndArgs...)
 }
 
-// SuiteWithConn is a suite with a connection to the database.
-type SuiteWithConn struct {
+// SuiteWithSQLConn is a suite with a connection to the database.
+type SuiteWithSQLConn struct {
 	Suite
 }
 
 func TestSetupTestsSuite(t *testing.T) {
 	t.Helper()
-	suite.Run(t, new(SuiteWithConn))
+	suite.Run(t, new(SuiteWithSQLConn))
 }
 
-func (s *SuiteWithConn) Run(name string, f func(tx *gorm.DB)) bool {
+func (s *SuiteWithSQLConn) Run(name string, f func(tx *gorm.DB)) bool {
 	return s.Suite.Run(name, func() {
-		testutils.Transaction(s.Fail, func(tx *gorm.DB) {
+		sqlutil.Transaction(s.Fail, func(tx *gorm.DB) {
 			f(tx)
 		})
 	})

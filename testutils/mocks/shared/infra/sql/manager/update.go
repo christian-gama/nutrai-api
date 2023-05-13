@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	manager "github.com/christian-gama/nutrai-api/internal/shared/infra/manager"
+	manager "github.com/christian-gama/nutrai-api/internal/shared/infra/sql/manager"
 	mock "github.com/stretchr/testify/mock"
 )
 

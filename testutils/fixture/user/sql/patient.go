@@ -7,7 +7,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
-	"github.com/christian-gama/nutrai-api/internal/user/infra/persistence"
+	persistence "github.com/christian-gama/nutrai-api/internal/user/infra/persistence/sql"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/user/domain/model/patient"
 	"gorm.io/gorm"
 )
@@ -32,7 +32,7 @@ func SavePatient(db *gorm.DB, deps *PatientDeps) *PatientDeps {
 		patient = fake.Patient()
 		patient.User = deps.User
 
-		patient, err := persistence.NewPatient(db).
+		patient, err := persistence.NewSQLPatient(db).
 			Save(context.Background(), repo.SavePatientInput{
 				Patient: patient,
 			})

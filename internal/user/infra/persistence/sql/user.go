@@ -5,11 +5,11 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/convert"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/manager"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql"
+	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/manager"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
-	"github.com/christian-gama/nutrai-api/internal/user/infra/persistence/schema"
+	"github.com/christian-gama/nutrai-api/internal/user/infra/persistence/sql/schema"
 	"gorm.io/gorm"
 )
 

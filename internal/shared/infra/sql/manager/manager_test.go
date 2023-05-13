@@ -6,16 +6,16 @@ import (
 
 	queryingPort "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
 	"github.com/christian-gama/nutrai-api/internal/shared/domain/value"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/manager"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/querying"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql"
+	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/manager"
+	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/go-faker/faker/v4"
 	"gorm.io/gorm"
 )
 
-type ManagerSuite struct {
-	suite.SuiteWithConn
+type SQLManagerSuite struct {
+	suite.SuiteWithSQLConn
 	Sample func(db *gorm.DB) manager.Repository[Sample]
 }
 
@@ -49,10 +49,10 @@ func SaveSample(db *gorm.DB) *Sample {
 }
 
 func TestManagerSuite(t *testing.T) {
-	suite.RunIntegrationTest(t, new(ManagerSuite))
+	suite.RunIntegrationTest(t, new(SQLManagerSuite))
 }
 
-func (s *ManagerSuite) SetupTest() {
+func (s *SQLManagerSuite) SetupTest() {
 	s.Sample = func(db *gorm.DB) manager.Repository[Sample] {
 		return manager.NewManager[Sample, Sample](db)
 	}
@@ -61,12 +61,12 @@ func (s *ManagerSuite) SetupTest() {
 	db.AutoMigrate(&Sample{})
 }
 
-func (s *ManagerSuite) AfterTest() {
+func (s *SQLManagerSuite) AfterTest() {
 	db := sql.MakePostgres()
 	db.Migrator().DropTable(&Sample{})
 }
 
-func (s *ManagerSuite) TestSave() {
+func (s *SQLManagerSuite) TestSave() {
 	type Sut struct {
 		Sut   func(ctx context.Context, input manager.SaveInput[Sample]) (*Sample, error)
 		Ctx   context.Context
@@ -109,7 +109,7 @@ func (s *ManagerSuite) TestSave() {
 	})
 }
 
-func (s *ManagerSuite) TestDelete() {
+func (s *SQLManagerSuite) TestDelete() {
 	type Sut struct {
 		Sut   func(ctx context.Context, input manager.DeleteInput[Sample]) error
 		Ctx   context.Context
@@ -151,7 +151,7 @@ func (s *ManagerSuite) TestDelete() {
 	})
 }
 
-func (s *ManagerSuite) TestFind() {
+func (s *SQLManagerSuite) TestFind() {
 	type Sut struct {
 		Sut func(
 			ctx context.Context,
@@ -199,7 +199,7 @@ func (s *ManagerSuite) TestFind() {
 	})
 }
 
-func (s *ManagerSuite) TestAll() {
+func (s *SQLManagerSuite) TestAll() {
 	type Sut struct {
 		Sut func(
 			ctx context.Context,
@@ -315,7 +315,7 @@ func (s *ManagerSuite) TestAll() {
 	})
 }
 
-func (s *ManagerSuite) TestUpdate() {
+func (s *SQLManagerSuite) TestUpdate() {
 	type Sut struct {
 		Sut func(
 			ctx context.Context,

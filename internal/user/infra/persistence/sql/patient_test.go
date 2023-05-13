@@ -6,19 +6,19 @@ import (
 
 	queryingPort "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
 	"github.com/christian-gama/nutrai-api/internal/shared/domain/value"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
-	"github.com/christian-gama/nutrai-api/internal/user/infra/persistence"
+	persistence "github.com/christian-gama/nutrai-api/internal/user/infra/persistence/sql"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/user/domain/model/patient"
 	userfake "github.com/christian-gama/nutrai-api/testutils/fake/user/domain/model/user"
-	fixture "github.com/christian-gama/nutrai-api/testutils/fixture/user"
+	fixture "github.com/christian-gama/nutrai-api/testutils/fixture/user/sql"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"gorm.io/gorm"
 )
 
 type PatientSuite struct {
-	suite.SuiteWithConn
+	suite.SuiteWithSQLConn
 	Patient func(db *gorm.DB) repo.Patient
 }
 
@@ -28,7 +28,7 @@ func TestPatientSuite(t *testing.T) {
 
 func (s *PatientSuite) SetupTest() {
 	s.Patient = func(db *gorm.DB) repo.Patient {
-		return persistence.NewPatient(db)
+		return persistence.NewSQLPatient(db)
 	}
 }
 
