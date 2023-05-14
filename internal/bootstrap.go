@@ -15,7 +15,7 @@ func Bootstrap(ctx context.Context, log logger.Logger, envFile string) {
 	env.Load(envFile)
 	log.Infof("Booting the application")
 
-	r, _, _ := ApiRoutes()
+	r := Routes()
 
 	server.Start(ctx, r, log)
 }

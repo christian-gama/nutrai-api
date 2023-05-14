@@ -72,14 +72,3 @@ func (r *Routing) Register(router *gin.RouterGroup) {
 		}
 	}
 }
-
-// Print prints the route into the console.
-func (r *Routing) Print(mainGroup string) {
-	for _, route := range r.Routes {
-		if len(route.Controller.Params()) > 0 {
-			fmt.Printf("%-6s %s%s%s\n", route.Controller.Method(), mainGroup, r.Group, route.Controller.Params().ToPath(route.Controller.Path()))
-		} else {
-			fmt.Printf("%-6s %s%s%s\n", route.Controller.Method(), mainGroup, r.Group, route.Controller.Path())
-		}
-	}
-}
