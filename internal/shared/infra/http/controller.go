@@ -25,10 +25,10 @@ type Controller interface {
 	Method() Method
 
 	// Path is the path that the handler will listen to.
-	Path() string
+	Path() Path
 
 	// Params is the list of params that the handler will listen to.
-	Params() []string
+	Params() Params
 
 	// IsPublic is a flag that indicates if the handler is public or not.
 	IsPublic() bool
@@ -36,8 +36,8 @@ type Controller interface {
 
 type ControllerOptions struct {
 	IsPublic bool
-	Params   []string
-	Path     string
+	Params   Params
+	Path     Path
 	Method   Method
 }
 
@@ -45,9 +45,9 @@ type ControllerOptions struct {
 type controllerImpl[Input any] struct {
 	handler  func(*gin.Context, *Input)
 	method   Method
-	path     string
+	path     Path
 	isPublic bool
-	params   []string
+	params   Params
 
 	input Input
 }
@@ -106,7 +106,7 @@ func (c *controllerImpl[P]) Method() Method {
 }
 
 // Path implements Controller.
-func (c *controllerImpl[P]) Path() string {
+func (c *controllerImpl[P]) Path() Path {
 	return c.path
 }
 
@@ -116,7 +116,7 @@ func (c *controllerImpl[P]) IsPublic() bool {
 }
 
 // Params implements Controller.
-func (c *controllerImpl[P]) Params() []string {
+func (c *controllerImpl[P]) Params() Params {
 	return c.params
 }
 
@@ -140,14 +140,14 @@ func (c *controllerImpl[P]) validate() {
 		}
 	}
 
-	if !strings.HasPrefix(c.path, "/") {
+	if !strings.HasPrefix(c.path.String(), "/") {
 		result = errutil.Append(
 			result,
 			fmt.Errorf("the path %s does not start with a slash", c.path),
 		)
 	}
 
-	if !hasValidCharacters(append(unit.AlphaNumeric, []rune("-/")...), c.path) {
+	if !hasValidCharacters(append(unit.AlphaNumeric, []rune("-/")...), c.path.String()) {
 		result = errutil.Append(
 			result,
 			fmt.Errorf("the path %s contains invalid characters", c.path),

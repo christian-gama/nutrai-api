@@ -19,5 +19,6 @@ func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
 		controller.MakeAllPatients()
 		controller.MakeSavePatient()
+		controller.MakeUpdatePatient()
 	})
 }

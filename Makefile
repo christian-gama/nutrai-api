@@ -51,6 +51,21 @@ endif
 
 
 # ==============================================================================================
+# Target: routes
+# Brief: This target is used to list all routes.
+# Usage: Run the command 'make routes'.
+# ==============================================================================================
+.PHONY: routes
+routes: .cmd-exists-go .clear-screen
+ifneq ($(RUNNING_IN_DOCKER), true)
+	@ENV_FILE=.env.dev $(MAKE) postgres
+	@sh ./scripts/wait_for_db.sh nutrai-psql
+endif
+
+	@go run ./cmd/routes/main.go
+
+
+# ==============================================================================================
 # Target: build
 # Brief: This target is used to build the project. It will generate a binary file at the BUILD_DIR.
 # Usage: Run the command 'make build'.

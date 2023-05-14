@@ -21,8 +21,8 @@ func TestRoutingSuite(t *testing.T) {
 type Controller struct {
 	status  int
 	method  http.Method
-	path    string
-	params  []string
+	path    http.Path
+	params  http.Params
 	handler func(*gin.Context) string
 }
 
@@ -34,7 +34,7 @@ func (h *Controller) Method() http.Method {
 	return h.method
 }
 
-func (h *Controller) Path() string {
+func (h *Controller) Path() http.Path {
 	return h.path
 }
 
@@ -42,7 +42,7 @@ func (h *Controller) IsPublic() bool {
 	return true
 }
 
-func (h *Controller) Params() []string {
+func (h *Controller) Params() http.Params {
 	return h.params
 }
 
@@ -73,7 +73,7 @@ func (s *RoutingSuite) TestRegister() {
 						status:  http.StatusOK,
 						handler: func(ctx *gin.Context) string { return "Hello, World!" },
 						method:  http.MethodGet,
-						path:    "/",
+						path:    http.JoinPath(""),
 					},
 				},
 			},
@@ -94,7 +94,7 @@ func (s *RoutingSuite) TestRegister() {
 						handler: func(ctx *gin.Context) string { return "Hello, World!" },
 						method:  http.MethodGet,
 						path:    "/",
-						params:  []string{"id"},
+						params:  http.AddParams("id"),
 					},
 				},
 			},

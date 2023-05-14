@@ -2,6 +2,7 @@
 // to keep the API standardized and simple.
 package http
 
+// Method is the HTTP method.
 type Method string
 
 const (
@@ -17,3 +18,8 @@ const (
 	// MethodDelete is the HTTP DELETE method.
 	MethodDelete Method = "DELETE"
 )
+
+// String returns the string representation of the HTTP method.
+func (m Method) String() string {
+	return string(m)
+}

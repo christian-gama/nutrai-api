@@ -27,9 +27,9 @@ func (s *ControllerSuite) TestNewController() {
 		handler := func(*gin.Context, *any) {}
 		opts := http.ControllerOptions{
 			Method:   http.MethodGet,
-			Path:     "/",
+			Path:     http.JoinPath(""),
 			IsPublic: true,
-			Params:   []string{"id"},
+			Params:   http.AddParams("id"),
 		}
 		sut := http.NewController[any]
 
@@ -67,7 +67,7 @@ func (s *ControllerSuite) TestNewController() {
 	s.Run("panic when params are invalid", func() {
 		sut, handler, opts := makeSut()
 
-		opts.Params = []string{"invalid param"}
+		opts.Params = http.Params{"invalid param"}
 
 		s.Panics(func() { sut(handler, opts) })
 	})
@@ -75,7 +75,7 @@ func (s *ControllerSuite) TestNewController() {
 	s.Run("panic when params are not unique", func() {
 		sut, handler, opts := makeSut()
 
-		opts.Params = []string{"id", "id"}
+		opts.Params = http.AddParams("id").Add("id")
 
 		s.Panics(func() { sut(handler, opts) })
 	})
@@ -84,7 +84,9 @@ func (s *ControllerSuite) TestNewController() {
 		sut, handler, opts := makeSut()
 
 		opts.Path = "invalid path"
+		s.Panics(func() { sut(handler, opts) })
 
+		opts.Path = "/invalid/:path"
 		s.Panics(func() { sut(handler, opts) })
 	})
 
@@ -103,9 +105,9 @@ func (s *ControllerSuite) TestController() {
 
 		http.ControllerOptions{
 			Method:   http.MethodPut,
-			Path:     "/",
+			Path:     http.JoinPath(""),
 			IsPublic: true,
-			Params:   []string{"id"},
+			Params:   http.AddParams("id"),
 		},
 	)
 
@@ -114,7 +116,7 @@ func (s *ControllerSuite) TestController() {
 
 		method := sut()
 
-		s.Equal(http.MethodPut, method)
+		s.EqualValues(http.MethodPut, method)
 	})
 
 	s.Run("controller.Path returns the correct path", func() {
@@ -122,7 +124,7 @@ func (s *ControllerSuite) TestController() {
 
 		path := sut()
 
-		s.Equal("/", path)
+		s.EqualValues("/", path)
 	})
 
 	s.Run("controller.IsPublic returns the correct value", func() {
@@ -138,14 +140,14 @@ func (s *ControllerSuite) TestController() {
 
 		params := sut()
 
-		s.Equal([]string{"id"}, params)
+		s.Equal([]string{"id"}, params.Slice())
 	})
 }
 
 type Payload struct {
 	Name string `json:"name" validate:"max=10"`
-	ID   int    `            validate:"gte=1"   uri:"id"`
-	Age  int    `            validate:"lte=100"          form:"age"`
+	ID   int    `uri:"id"    validate:"gte=1"`
+	Age  int    `form:"age"  validate:"lte=100"`
 }
 
 func (s *ControllerSuite) TestHandle() {
@@ -166,9 +168,9 @@ func (s *ControllerSuite) TestHandle() {
 			handler,
 			http.ControllerOptions{
 				Method:   http.MethodPut,
-				Path:     "/",
+				Path:     http.JoinPath(""),
 				IsPublic: true,
-				Params:   []string{"id"},
+				Params:   http.AddParams("id"),
 			},
 		)
 

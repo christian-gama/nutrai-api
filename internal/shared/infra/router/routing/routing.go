@@ -3,7 +3,6 @@ package routing
 import (
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/http"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
@@ -63,13 +62,24 @@ func (r *Routing) Register(router *gin.RouterGroup) {
 
 		path := route.Controller.Path()
 		if len(route.Controller.Params()) > 0 {
-			path = fmt.Sprintf("%s/:%s", path, strings.Join(route.Controller.Params(), "/:"))
+			path = route.Controller.Params().ToPath(path)
 		}
 
 		if group != nil {
-			group.Handle(string(route.Controller.Method()), path, handlers...)
+			group.Handle(route.Controller.Method().String(), path.String(), handlers...)
 		} else {
-			router.Handle(string(route.Controller.Method()), path, handlers...)
+			router.Handle(route.Controller.Method().String(), path.String(), handlers...)
+		}
+	}
+}
+
+// Print prints the route into the console.
+func (r *Routing) Print(mainGroup string) {
+	for _, route := range r.Routes {
+		if len(route.Controller.Params()) > 0 {
+			fmt.Printf("%-6s %s%s%s\n", route.Controller.Method(), mainGroup, r.Group, route.Controller.Params().ToPath(route.Controller.Path()))
+		} else {
+			fmt.Printf("%-6s %s%s%s\n", route.Controller.Method(), mainGroup, r.Group, route.Controller.Path())
 		}
 	}
 }

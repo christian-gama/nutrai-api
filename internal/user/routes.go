@@ -12,6 +12,7 @@ func Routes() *routing.Routing {
 		Routes: []*routing.Route{
 			{Controller: controller.MakeAllPatients()},
 			{Controller: controller.MakeSavePatient()},
+			{Controller: controller.MakeUpdatePatient()},
 		},
 	}
 }

@@ -23,28 +23,28 @@ func MustRequestWithBody(
 	ctx, r, writer := createTestContext()
 	handlerPath := handler.Path()
 	if len(handler.Params()) > 0 {
-		handlerPath = fmt.Sprintf("%s/:%s", handlerPath, strings.Join(handler.Params(), "/:"))
+		handlerPath = http.Path(fmt.Sprintf("%s/:%s", handlerPath, strings.Join(handler.Params(), "/:")))
 	}
 
-	r.Handle(string(handler.Method()), handlerPath, func(ctx *gin.Context) {
+	r.Handle(handler.Method().String(), handlerPath.String(), func(ctx *gin.Context) {
 		handler.Handle(ctx)
 	})
 
 	var err error
 	path := handler.Path()
 	if len(opt.Params) > 0 {
-		path = strings.TrimSuffix(path, "/")
-		path = fmt.Sprintf("%s/%s", path, strings.Join(opt.Params, "/"))
+		path = http.Path(strings.TrimSuffix(path.String(), "/"))
+		path = http.Path(fmt.Sprintf("%s/%s", path, strings.Join(opt.Params, "/")))
 	}
 
 	path += "?page=1&limit=100"
 	if opt.Queries != "" {
-		path = fmt.Sprintf("%s&%s", path, opt.Queries)
+		path = http.Path(fmt.Sprintf("%s&%s", path, opt.Queries))
 	}
 
 	ctx.Request, err = gohttp.NewRequest(
 		string(handler.Method()),
-		path,
+		path.String(),
 		strings.NewReader(httputil.Stringify(opt.Data)),
 	)
 	if err != nil {

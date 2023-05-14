@@ -1,6 +1,7 @@
 package controller_test
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"testing"
@@ -16,41 +17,57 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type SavePatientSuite struct {
+type UpdatePatientSuite struct {
 	suite.Suite
 }
 
-func TestSavePatientSuite(t *testing.T) {
-	suite.RunUnitTest(t, new(SavePatientSuite))
+func TestUpdatePatientSuite(t *testing.T) {
+	suite.RunUnitTest(t, new(UpdatePatientSuite))
 }
 
-func (s *SavePatientSuite) TestHandle() {
+func (s *UpdatePatientSuite) TestHandle() {
 	type Sut struct {
-		Sut                controller.SavePatient
-		Input              *command.SavePatientInput
-		SavePatientHandler *commandMock.Handler[*command.SavePatientInput]
+		Sut                  controller.UpdatePatient
+		Input                *command.UpdatePatientInput
+		UpdatePatientHandler *commandMock.Handler[*command.UpdatePatientInput]
 	}
 
 	makeSut := func() *Sut {
-		input := fake.SavePatientInput()
-		savePatient := commandMock.NewHandler[*command.SavePatientInput](s.T())
-		sut := controller.NewSavePatient(savePatient)
-		return &Sut{Sut: sut, SavePatientHandler: savePatient, Input: input}
+		input := fake.UpdatePatientInput()
+		updatePatient := commandMock.NewHandler[*command.UpdatePatientInput](s.T())
+		sut := controller.NewUpdatePatient(updatePatient)
+		return &Sut{Sut: sut, UpdatePatientHandler: updatePatient, Input: input}
 	}
 
-	s.Run("should save a patient", func() {
+	s.Run("should update a patient", func() {
 		sut := makeSut()
 
-		sut.SavePatientHandler.
+		sut.UpdatePatientHandler.
 			On("Handle", mock.Anything, sut.Input).
 			Return(nil)
 
 		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
-			Data: sut.Input,
+			Data:   sut.Input,
+			Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
 		})
 
 		s.Equal(http.StatusCreated, ctx.Writer.Status())
-		sut.SavePatientHandler.AssertCalled(s.T(), "Handle", mock.Anything, sut.Input)
+		sut.UpdatePatientHandler.AssertCalled(s.T(), "Handle", mock.Anything, sut.Input)
+	})
+
+	s.Run("ID", func() {
+		s.Run("should return error when empty", func() {
+			sut := makeSut()
+
+			sut.Input.ID = 0
+
+			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
+				Data:   sut.Input,
+				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
+			})
+
+			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
+		})
 	})
 
 	s.Run("Age", func() {
@@ -60,7 +77,8 @@ func (s *SavePatientSuite) TestHandle() {
 			sut.Input.Age = 17
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-				Data: sut.Input,
+				Data:   sut.Input,
+				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
 			})
 
 			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -72,7 +90,8 @@ func (s *SavePatientSuite) TestHandle() {
 			sut.Input.Age = 101
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-				Data: sut.Input,
+				Data:   sut.Input,
+				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
 			})
 
 			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -86,7 +105,8 @@ func (s *SavePatientSuite) TestHandle() {
 			sut.Input.WeightKG = 29
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-				Data: sut.Input,
+				Data:   sut.Input,
+				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
 			})
 
 			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -98,7 +118,8 @@ func (s *SavePatientSuite) TestHandle() {
 			sut.Input.WeightKG = 601
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-				Data: sut.Input,
+				Data:   sut.Input,
+				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
 			})
 
 			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -112,7 +133,8 @@ func (s *SavePatientSuite) TestHandle() {
 			sut.Input.HeightM = 0.99
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-				Data: sut.Input,
+				Data:   sut.Input,
+				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
 			})
 
 			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -124,7 +146,8 @@ func (s *SavePatientSuite) TestHandle() {
 			sut.Input.HeightM = 3.01
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-				Data: sut.Input,
+				Data:   sut.Input,
+				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
 			})
 
 			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -138,7 +161,8 @@ func (s *SavePatientSuite) TestHandle() {
 			sut.Input.User = nil
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-				Data: sut.Input,
+				Data:   sut.Input,
+				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
 			})
 
 			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -151,7 +175,8 @@ func (s *SavePatientSuite) TestHandle() {
 				sut.Input.User.Name = ""
 
 				ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-					Data: sut.Input,
+					Data:   sut.Input,
+					Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
 				})
 
 				s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -163,7 +188,8 @@ func (s *SavePatientSuite) TestHandle() {
 				sut.Input.User.Name = value.Name(strings.Repeat("a", 101))
 
 				ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-					Data: sut.Input,
+					Data:   sut.Input,
+					Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
 				})
 
 				s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -175,7 +201,8 @@ func (s *SavePatientSuite) TestHandle() {
 				sut.Input.User.Name = value.Name("a")
 
 				ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-					Data: sut.Input,
+					Data:   sut.Input,
+					Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
 				})
 
 				s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -189,7 +216,8 @@ func (s *SavePatientSuite) TestHandle() {
 				sut.Input.User.Email = ""
 
 				ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-					Data: sut.Input,
+					Data:   sut.Input,
+					Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
 				})
 
 				s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -201,45 +229,8 @@ func (s *SavePatientSuite) TestHandle() {
 				sut.Input.User.Email = "invalid_email"
 
 				ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-					Data: sut.Input,
-				})
-
-				s.Equal(http.StatusBadRequest, ctx.Writer.Status())
-			})
-		})
-
-		s.Run("Password", func() {
-			s.Run("should return error when empty", func() {
-				sut := makeSut()
-
-				sut.Input.User.Password = ""
-
-				ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-					Data: sut.Input,
-				})
-
-				s.Equal(http.StatusBadRequest, ctx.Writer.Status())
-			})
-
-			s.Run("should return error when greater than 32", func() {
-				sut := makeSut()
-
-				sut.Input.User.Password = value.Password(strings.Repeat("a", 101))
-
-				ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-					Data: sut.Input,
-				})
-
-				s.Equal(http.StatusBadRequest, ctx.Writer.Status())
-			})
-
-			s.Run("should return error when less than 8", func() {
-				sut := makeSut()
-
-				sut.Input.User.Password = value.Password("a")
-
-				ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-					Data: sut.Input,
+					Data:   sut.Input,
+					Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
 				})
 
 				s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -247,16 +238,17 @@ func (s *SavePatientSuite) TestHandle() {
 		})
 	})
 
-	s.Run("panics when SavePatientHandler.Handle returns error", func() {
+	s.Run("panics when UpdatePatientHandler.Handle returns error", func() {
 		sut := makeSut()
 
-		sut.SavePatientHandler.
+		sut.UpdatePatientHandler.
 			On("Handle", mock.Anything, sut.Input).
 			Return(assert.AnError)
 
 		s.Panics(func() {
 			gintest.MustRequest(sut.Sut, gintest.Option{
-				Data: sut.Input,
+				Data:   sut.Input,
+				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
 			})
 		})
 	})

@@ -12,3 +12,7 @@ func MakeAllPatients() AllPatients {
 func MakeSavePatient() SavePatient {
 	return NewSavePatient(command.MakeSavePatientHandler())
 }
+
+func MakeUpdatePatient() UpdatePatient {
+	return NewUpdatePatient(command.MakeUpdatePatientHandler())
+}
