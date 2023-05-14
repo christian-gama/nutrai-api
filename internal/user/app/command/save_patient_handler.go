@@ -2,6 +2,7 @@ package command
 
 import (
 	"context"
+	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/app/command"
 	"github.com/christian-gama/nutrai-api/internal/user/app/service"
@@ -20,8 +21,16 @@ type savePatientHandlerImpl struct {
 }
 
 // NewSavePatientHandler returns a new Save instance.
-func NewSavePatientHandler(p repo.Patient, h service.HashPasswordHandler) SavePatientHandler {
-	return &savePatientHandlerImpl{p, h}
+func NewSavePatientHandler(r repo.Patient, h service.HashPasswordHandler) SavePatientHandler {
+	if r == nil {
+		panic(errors.New("repo.Patient cannot be nil"))
+	}
+
+	if h == nil {
+		panic(errors.New("service.HashPasswordHandler cannot be nil"))
+	}
+
+	return &savePatientHandlerImpl{r, h}
 }
 
 // Handle implements command.Handler.

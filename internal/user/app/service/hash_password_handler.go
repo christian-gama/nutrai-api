@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/app/service"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/hasher"
@@ -17,6 +18,10 @@ type hashPasswordHandlerImpl struct {
 
 // NewHashPasswordHandler creates a new instance of a HashPassword service.
 func NewHashPasswordHandler(h hasher.Hasher) HashPasswordHandler {
+	if h == nil {
+		panic(errors.New("hasher cannot be nil"))
+	}
+
 	return &hashPasswordHandlerImpl{h}
 }
 

@@ -22,7 +22,7 @@ type Controller interface {
 	Handle(ctx *gin.Context)
 
 	// Method is the HTTP method that the handler will listen to.
-	Method() string
+	Method() Method
 
 	// Path is the path that the handler will listen to.
 	Path() string
@@ -38,13 +38,13 @@ type ControllerOptions struct {
 	IsPublic bool
 	Params   []string
 	Path     string
-	Method   string
+	Method   Method
 }
 
 // controllerImpl is the implementation of the Controller interface.
 type controllerImpl[Input any] struct {
 	handler  func(*gin.Context, *Input)
-	method   string
+	method   Method
 	path     string
 	isPublic bool
 	params   []string
@@ -101,7 +101,7 @@ func (c controllerImpl[Input]) Handle(ctx *gin.Context) {
 }
 
 // Handler implements Controller.
-func (c *controllerImpl[P]) Method() string {
+func (c *controllerImpl[P]) Method() Method {
 	return c.method
 }
 
@@ -154,7 +154,7 @@ func (c *controllerImpl[P]) validate() {
 		)
 	}
 
-	methods := []string{
+	methods := []Method{
 		MethodDelete, MethodGet, MethodPost, MethodPut,
 	}
 

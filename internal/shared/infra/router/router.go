@@ -10,7 +10,7 @@ import (
 // New sets the mode of the router and returns a new router.
 // It will also set up the global middlewares.
 func New() *gin.Engine {
-	if env.App.Env == "dev" {
+	if env.App.Env == env.Development && env.Config.Debug {
 		gin.SetMode(gin.DebugMode)
 	} else {
 		gin.SetMode(gin.ReleaseMode)

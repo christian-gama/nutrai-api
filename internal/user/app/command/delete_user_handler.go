@@ -2,6 +2,7 @@ package command
 
 import (
 	"context"
+	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/app/command"
 	"github.com/christian-gama/nutrai-api/internal/shared/domain/value"
@@ -17,8 +18,12 @@ type deleteUserHandlerImpl struct {
 }
 
 // NewDeleteUserHandler returns a new Delete instance.
-func NewDeleteUserHandler(p repo.User) DeleteUserHandler {
-	return &deleteUserHandlerImpl{p}
+func NewDeleteUserHandler(r repo.User) DeleteUserHandler {
+	if r == nil {
+		panic(errors.New("repo.User cannot be nil"))
+	}
+
+	return &deleteUserHandlerImpl{r}
 }
 
 // Handle implements command.Handler.

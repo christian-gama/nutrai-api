@@ -20,7 +20,7 @@ func TestRoutingSuite(t *testing.T) {
 
 type Controller struct {
 	status  int
-	method  string
+	method  http.Method
 	path    string
 	params  []string
 	handler func(*gin.Context) string
@@ -30,7 +30,7 @@ func (h *Controller) Handle(c *gin.Context) {
 	c.String(h.status, h.handler(c))
 }
 
-func (h *Controller) Method() string {
+func (h *Controller) Method() http.Method {
 	return h.method
 }
 
@@ -192,13 +192,13 @@ func (s *RoutingSuite) TestRegister() {
 	})
 }
 
-func Register(routing *routing.Routing, method, path string) *httptest.ResponseRecorder {
+func Register(routing *routing.Routing, method http.Method, path string) *httptest.ResponseRecorder {
 	w := httptest.NewRecorder()
 	router := gin.New()
 	v1 := router.Group("/test")
 	routing.Register(v1)
 
-	router.ServeHTTP(w, httptest.NewRequest(method, path, nil))
+	router.ServeHTTP(w, httptest.NewRequest(string(method), path, nil))
 
 	return w
 }

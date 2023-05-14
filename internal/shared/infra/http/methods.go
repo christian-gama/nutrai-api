@@ -2,16 +2,18 @@
 // to keep the API standardized and simple.
 package http
 
+type Method string
+
 const (
 	// MethodGet is the HTTP GET method.
-	MethodGet = "GET"
+	MethodGet Method = "GET"
 
 	// MethodPost is the HTTP POST method.
-	MethodPost = "POST"
+	MethodPost Method = "POST"
 
 	// MethodPut is the HTTP PUT method.
-	MethodPut = "PUT"
+	MethodPut Method = "PUT"
 
 	// MethodDelete is the HTTP DELETE method.
-	MethodDelete = "DELETE"
+	MethodDelete Method = "DELETE"
 )

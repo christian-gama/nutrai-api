@@ -4,7 +4,7 @@ CACHE_DIR ?= $(PWD)/.cache
 BUILD_DIR ?= $(GENERATED_DIR)/build
 MAKE = make --no-print-directory
 APP_NAME = nutrai-api
-AIRVERSION = 1.43.0
+AIRVERSION = v1.43.0
 
 # WORKDIR is used to set the working directory for Dockerfile builds.
 export WORKDIR=/usr/src/app
@@ -44,7 +44,7 @@ ifeq ($(ENV_FILE), .env.prod)
 	@$(MAKE) build
 	@$(BUILD_DIR)/$(APP_NAME) -e $(ENV_FILE)
 else
-	@go run github.com/cosmtrek/air@v$(AIRVERSION)
+	@go run github.com/cosmtrek/air@$(AIRVERSION) -- -e $(ENV_FILE)
 endif
 
 

@@ -22,7 +22,7 @@ func Error(err error) *ResponseBody {
 		errs = errutil.Append(errs, err)
 	}
 
-	if env.App.Env != env.EnvProduction && env.Config.Debug {
+	if env.App.Env != env.Production && env.Config.Debug {
 		return ErrorDebug(errs)
 	}
 

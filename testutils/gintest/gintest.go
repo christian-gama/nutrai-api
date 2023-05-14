@@ -26,7 +26,7 @@ func MustRequestWithBody(
 		handlerPath = fmt.Sprintf("%s/:%s", handlerPath, strings.Join(handler.Params(), "/:"))
 	}
 
-	r.Handle(handler.Method(), handlerPath, func(ctx *gin.Context) {
+	r.Handle(string(handler.Method()), handlerPath, func(ctx *gin.Context) {
 		handler.Handle(ctx)
 	})
 
@@ -43,7 +43,7 @@ func MustRequestWithBody(
 	}
 
 	ctx.Request, err = gohttp.NewRequest(
-		handler.Method(),
+		string(handler.Method()),
 		path,
 		strings.NewReader(httputil.Stringify(opt.Data)),
 	)

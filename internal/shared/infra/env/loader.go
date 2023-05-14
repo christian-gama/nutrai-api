@@ -58,7 +58,7 @@ func validate() {
 		)
 	}
 
-	validEnvs := []AppEnv{EnvProduction, EnvDevelopment, EnvTest}
+	validEnvs := []AppEnv{Production, Development, Test}
 	if !slice.Contains(validEnvs, App.Env) {
 		panic(
 			fmt.Errorf(

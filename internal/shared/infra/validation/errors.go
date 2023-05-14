@@ -31,12 +31,14 @@ var ErrorMap = map[string]func(field string, param string) error{
 		)
 	},
 
-	"cnpj": func(field string, param string) error {
-		return errutil.NewErrInvalid(field, "is not a valid CNPJ")
-	},
-
-	"cpf": func(field string, param string) error {
-		return errutil.NewErrInvalid(field, "is not a valid CPF")
+	"preload": func(field string, param string) error {
+		return errutil.NewErrInvalid(
+			field,
+			fmt.Sprintf(
+				"must have one of the fields: %s",
+				param,
+			),
+		)
 	},
 
 	// Default

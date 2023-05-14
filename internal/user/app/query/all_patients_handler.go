@@ -2,6 +2,7 @@ package query
 
 import (
 	"context"
+	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/app/query"
 	"github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
@@ -18,8 +19,12 @@ type allPatientsHandlerImpl struct {
 }
 
 // NewAllPatientsHandler instantiates the AllPatients use case handler.
-func NewAllPatientsHandler(repo repo.Patient) AllPatientsHandler {
-	return &allPatientsHandlerImpl{repo}
+func NewAllPatientsHandler(r repo.Patient) AllPatientsHandler {
+	if r == nil {
+		panic(errors.New("repo.Patient cannot be nil"))
+	}
+
+	return &allPatientsHandlerImpl{r}
 }
 
 // Handle implements query.Handler.

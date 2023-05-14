@@ -67,9 +67,9 @@ func (r *Routing) Register(router *gin.RouterGroup) {
 		}
 
 		if group != nil {
-			group.Handle(route.Controller.Method(), path, handlers...)
+			group.Handle(string(route.Controller.Method()), path, handlers...)
 		} else {
-			router.Handle(route.Controller.Method(), path, handlers...)
+			router.Handle(string(route.Controller.Method()), path, handlers...)
 		}
 	}
 }

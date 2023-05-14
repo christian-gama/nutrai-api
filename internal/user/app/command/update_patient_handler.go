@@ -2,6 +2,7 @@ package command
 
 import (
 	"context"
+	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/app/command"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
@@ -19,8 +20,12 @@ type updatePatientHandlerImpl struct {
 }
 
 // NewUpdatePatientHandler returns a new Update instance.
-func NewUpdatePatientHandler(p repo.Patient) UpdatePatientHandler {
-	return &updatePatientHandlerImpl{p}
+func NewUpdatePatientHandler(r repo.Patient) UpdatePatientHandler {
+	if r == nil {
+		panic(errors.New("repo.Patient cannot be nil"))
+	}
+
+	return &updatePatientHandlerImpl{r}
 }
 
 // Handle implements command.Handler.

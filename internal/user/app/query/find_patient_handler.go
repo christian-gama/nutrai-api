@@ -2,6 +2,7 @@ package query
 
 import (
 	"context"
+	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/app/query"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/convert"
@@ -18,6 +19,10 @@ type findPatientHandlerImpl struct {
 
 // NewFindPatientHandler instantiates the FindPatient use case handler.
 func NewFindPatientHandler(repo repo.Patient) FindPatientHandler {
+	if repo == nil {
+		panic(errors.New("repo.Patient cannot be nil"))
+	}
+
 	return &findPatientHandlerImpl{repo}
 }
 

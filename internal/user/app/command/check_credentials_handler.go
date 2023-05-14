@@ -2,6 +2,7 @@ package command
 
 import (
 	"context"
+	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/shared/app/command"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/hasher"
@@ -22,6 +23,14 @@ type checkCredentialsHandlerImpl struct {
 
 // NewCheckCredentialsHandler returns a new CheckCredentialsHandler.
 func NewCheckCredentialsHandler(r repo.User, h hasher.Hasher) CheckCredentialsHandler {
+	if r == nil {
+		panic(errors.New("repo.User cannot be nil"))
+	}
+
+	if h == nil {
+		panic(errors.New("hasher.Hasher cannot be nil"))
+	}
+
 	return &checkCredentialsHandlerImpl{r, h}
 }
 

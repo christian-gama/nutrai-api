@@ -1,14 +1,14 @@
 package env
 
 const (
-	// EnvProduction is the production string representation of the app environment.
-	EnvProduction AppEnv = "prod"
+	// Production is the production string representation of the app environment.
+	Production AppEnv = "prod"
 
-	// EnvDevelopment is the development string representation of the app environment.
-	EnvDevelopment AppEnv = "dev"
+	// Development is the development string representation of the app environment.
+	Development AppEnv = "dev"
 
-	// EnvTest is the test string representation of the app environment.
-	EnvTest AppEnv = "test"
+	// Test is the test string representation of the app environment.
+	Test AppEnv = "test"
 )
 
 const (
