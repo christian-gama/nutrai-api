@@ -30,10 +30,6 @@ func NotFound(ctx *gin.Context, err error) {
 // Created is a helper function to return a created response
 // with a default JSON response.
 func Created(ctx *gin.Context, data any) {
-	if data == nil {
-		data = "resource created successfully"
-	}
-
 	ctx.AbortWithStatusJSON(http.StatusCreated, Data(data))
 }
 

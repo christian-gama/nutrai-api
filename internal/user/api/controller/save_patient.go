@@ -23,7 +23,7 @@ func NewSavePatient(c command.SavePatientHandler) SavePatient {
 			if err != nil {
 				panic(err)
 			}
-			http.Created(ctx, true)
+			http.Created(ctx, nil)
 		},
 
 		http.ControllerOptions{
