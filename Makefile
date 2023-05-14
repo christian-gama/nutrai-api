@@ -51,12 +51,12 @@ endif
 
 
 # ==============================================================================================
-# Target: routes
+# Target: list-routes
 # Brief: This target is used to list all routes.
-# Usage: Run the command 'make routes'.
+# Usage: Run the command 'make list-routes'.
 # ==============================================================================================
-.PHONY: routes
-routes: .cmd-exists-go .clear-screen
+.PHONY: list-routes
+list-routes: .cmd-exists-go .clear-screen
 ifneq ($(RUNNING_IN_DOCKER), true)
 	@ENV_FILE=.env.dev $(MAKE) postgres
 	@sh ./scripts/wait_for_db.sh nutrai-psql
