@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Routes registers all the routes.
-func Routes() *gin.Engine {
+// LoadEngine registers all the routes.
+func LoadEngine() *gin.Engine {
 	engine := router.New()
 
 	RegisterApiRoutes(engine)

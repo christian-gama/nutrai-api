@@ -13,7 +13,7 @@ func main() {
 	fmt.Print("\033[H\033[2J")
 	fmt.Println("Listing all routes:")
 
-	engine := internal.Routes()
+	engine := internal.LoadEngine()
 	routes := engine.Routes()
 
 	PrintRoutes(routes)
