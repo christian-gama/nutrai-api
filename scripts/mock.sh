@@ -9,6 +9,7 @@
 
 dir=$1
 
+echo "Running mockery for $dir..."
 go run github.com/vektra/mockery/v2@v2.20.0 \
 	--all \
 	--keeptree \

@@ -3,8 +3,8 @@
 package mocks
 
 import (
+	http "github.com/christian-gama/nutrai-api/internal/shared/infra/http"
 	gin "github.com/gin-gonic/gin"
-
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -33,14 +33,14 @@ func (_m *Controller) IsPublic() bool {
 }
 
 // Method provides a mock function with given fields:
-func (_m *Controller) Method() string {
+func (_m *Controller) Method() http.Method {
 	ret := _m.Called()
 
-	var r0 string
-	if rf, ok := ret.Get(0).(func() string); ok {
+	var r0 http.Method
+	if rf, ok := ret.Get(0).(func() http.Method); ok {
 		r0 = rf()
 	} else {
-		r0 = ret.Get(0).(string)
+		r0 = ret.Get(0).(http.Method)
 	}
 
 	return r0

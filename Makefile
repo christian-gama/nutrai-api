@@ -208,8 +208,9 @@ postgres: .cmd-exists-docker .clear-screen .check-env-file
 # ==============================================================================================
 .PHONY: mock
 mock: .cmd-exists-go
-	@sh -c "./scripts/mock.sh ./internal"
-	@sh -c "./scripts/mock.sh ./pkg"
+	@rm -rf ./testutils/mocks
+	@sh -c "./scripts/mock.sh ./internal" &	\
+	sh -c "./scripts/mock.sh ./pkg"
 
 
 # ==============================================================================================
@@ -253,11 +254,14 @@ docker-run: .cmd-exists-docker .clear-screen .check-env-file
 		echo "Error: expected ENV_FILE"; \
 		exit 1; \
 	fi;
-
-	@if [ "$(ENV_FILE)" != ".env.dev" ] && [ "$(ENV_FILE)" != ".env.prod" ] && [ "$(ENV_FILE)" != ".env.test" ]; then \
-		echo "Error: expected .env.dev, .env.test or .env.prod"; \
-		exit 1; \
-	fi;
+	
+	@case "$(ENV_FILE)" in \
+		.env.dev|.env.test|.env.prod) ;; \
+		*) \
+			echo "Error: expected .env.dev, .env.test or .env.prod"; \
+			exit 1; \
+			;; \
+	esac
 
 
 # ==============================================================================================
