@@ -32,6 +32,8 @@ init: .cmd-exists-git .cmd-exists-go .cmd-exists-docker .cmd-exists-sh .clear-sc
 # Target: run
 # Brief: This target is used to run the project.
 # Usage: Run the command 'make run [ENV_FILE="<path>"]'.
+# Flags:
+#  ENV_FILE: The path to the environment file. It defaults to '.env.dev'.
 # ==============================================================================================
 .PHONY: run
 run: .cmd-exists-go .clear-screen .check-env-file
