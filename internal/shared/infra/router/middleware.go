@@ -34,7 +34,12 @@ func Cors() gin.HandlerFunc {
 		AllowAllOrigins: true,
 		AllowFiles:      true,
 		AllowHeaders:    []string{"Origin", "Content-Type", "Accept", "Authorization"},
-		AllowMethods:    []string{"GET", "POST", "DELETE", "PATCH"},
+		AllowMethods: []string{
+			http.MethodGet.String(),
+			http.MethodPost.String(),
+			http.MethodPut.String(),
+			http.MethodDelete.String(),
+		},
 	})
 }
 
