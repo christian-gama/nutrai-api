@@ -10,15 +10,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	envFile string
-	silent  bool
-)
+var envFile string
 
 func init() {
 	os.Stdout.Write([]byte("\033[H\033[2J"))
 	cmd.PersistentFlags().StringVarP(&envFile, "env-file", "e", "", "environment file")
-	cmd.PersistentFlags().BoolVarP(&silent, "silent", "q", false, "silent mode (no logs)")
 	cmd.AddCommand(upCmd)
 	cmd.AddCommand(dropCmd)
 	cmd.AddCommand(forceCmd)
@@ -40,7 +36,7 @@ var upCmd = &cobra.Command{
 	Long:  "Run all available migrations to bring the database schema to the latest version",
 	Run: func(cmd *cobra.Command, args []string) {
 		setupEnvFile()
-		migrate.MakeMigrate(silent).Up()
+		migrate.MakeMigrate().Up()
 	},
 }
 
@@ -50,7 +46,7 @@ var dropCmd = &cobra.Command{
 	Long:  "Drop all tables in the database, use with caution",
 	Run: func(cmd *cobra.Command, args []string) {
 		setupEnvFile()
-		migrate.MakeMigrate(silent).Drop()
+		migrate.MakeMigrate().Drop()
 	},
 }
 
@@ -69,7 +65,7 @@ var forceCmd = &cobra.Command{
 			panic(err)
 		}
 
-		migrate.MakeMigrate(silent).Force(version)
+		migrate.MakeMigrate().Force(version)
 	},
 }
 
@@ -79,7 +75,7 @@ var downCmd = &cobra.Command{
 	Long:  "Run all available migrations to bring the database schema to the previous version",
 	Run: func(cmd *cobra.Command, args []string) {
 		setupEnvFile()
-		migrate.MakeMigrate(silent).Down()
+		migrate.MakeMigrate().Down()
 	},
 }
 
@@ -89,7 +85,7 @@ var versionCmd = &cobra.Command{
 	Long:  "Version returns the currently active migration version. Return an error if no version is set.",
 	Run: func(cmd *cobra.Command, args []string) {
 		setupEnvFile()
-		migrate.MakeMigrate(silent).Version()
+		migrate.MakeMigrate().Version()
 	},
 }
 
@@ -107,7 +103,7 @@ var stepsCmd = &cobra.Command{
 			panic(err)
 		}
 
-		migrate.MakeMigrate(silent).Steps(steps)
+		migrate.MakeMigrate().Steps(steps)
 	},
 }
 
@@ -117,7 +113,7 @@ var resetCmd = &cobra.Command{
 	Long:  "Reset the database by downing all migrations and then running them all again",
 	Run: func(cmd *cobra.Command, args []string) {
 		setupEnvFile()
-		migrate.MakeMigrate(silent).Reset()
+		migrate.MakeMigrate().Reset()
 	},
 }
 
