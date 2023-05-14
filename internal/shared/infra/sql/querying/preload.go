@@ -3,7 +3,7 @@ package querying
 import (
 	"strings"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
 	"github.com/iancoleman/strcase"
 	"gorm.io/gorm"
 )
@@ -12,12 +12,12 @@ import (
 type Preload []string
 
 // AddPreload returns a new Preload with the given field and order.
-func AddPreload(field string) querying.Preloader {
+func AddPreload(field string) queryer.Preloader {
 	return Preload{}.Add(field)
 }
 
 // Add implements Preloader.
-func (s Preload) Add(field string) querying.Preloader {
+func (s Preload) Add(field string) queryer.Preloader {
 	s = append(s, field)
 
 	return s
@@ -29,7 +29,7 @@ func (s Preload) Slice() []string {
 }
 
 // PreloadScope returns a GORM scope that applies preloading to the query.
-func PreloadScope(preload querying.Preloader) func(db *gorm.DB) *gorm.DB {
+func PreloadScope(preload queryer.Preloader) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if preload != nil {
 			for _, field := range preload.Slice() {

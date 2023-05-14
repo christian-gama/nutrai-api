@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	querying "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
+	queryer "github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
 	patient "github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 	mock "github.com/stretchr/testify/mock"
 
@@ -18,19 +18,19 @@ type Patient struct {
 }
 
 // All provides a mock function with given fields: ctx, input
-func (_m *Patient) All(ctx context.Context, input repo.AllPatientsInput) (*querying.PaginationOutput[*patient.Patient], error) {
+func (_m *Patient) All(ctx context.Context, input repo.AllPatientsInput) (*queryer.PaginationOutput[*patient.Patient], error) {
 	ret := _m.Called(ctx, input)
 
-	var r0 *querying.PaginationOutput[*patient.Patient]
+	var r0 *queryer.PaginationOutput[*patient.Patient]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, repo.AllPatientsInput) (*querying.PaginationOutput[*patient.Patient], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repo.AllPatientsInput) (*queryer.PaginationOutput[*patient.Patient], error)); ok {
 		return rf(ctx, input)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, repo.AllPatientsInput) *querying.PaginationOutput[*patient.Patient]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repo.AllPatientsInput) *queryer.PaginationOutput[*patient.Patient]); ok {
 		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*querying.PaginationOutput[*patient.Patient])
+			r0 = ret.Get(0).(*queryer.PaginationOutput[*patient.Patient])
 		}
 	}
 

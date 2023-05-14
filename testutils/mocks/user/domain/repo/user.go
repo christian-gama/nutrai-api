@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	querying "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
+	queryer "github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
 	mock "github.com/stretchr/testify/mock"
 
 	repo "github.com/christian-gama/nutrai-api/internal/user/domain/repo"
@@ -19,19 +19,19 @@ type User struct {
 }
 
 // All provides a mock function with given fields: ctx, input
-func (_m *User) All(ctx context.Context, input repo.AllUsersInput) (*querying.PaginationOutput[*user.User], error) {
+func (_m *User) All(ctx context.Context, input repo.AllUsersInput) (*queryer.PaginationOutput[*user.User], error) {
 	ret := _m.Called(ctx, input)
 
-	var r0 *querying.PaginationOutput[*user.User]
+	var r0 *queryer.PaginationOutput[*user.User]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, repo.AllUsersInput) (*querying.PaginationOutput[*user.User], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repo.AllUsersInput) (*queryer.PaginationOutput[*user.User], error)); ok {
 		return rf(ctx, input)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, repo.AllUsersInput) *querying.PaginationOutput[*user.User]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repo.AllUsersInput) *queryer.PaginationOutput[*user.User]); ok {
 		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*querying.PaginationOutput[*user.User])
+			r0 = ret.Get(0).(*queryer.PaginationOutput[*user.User])
 		}
 	}
 

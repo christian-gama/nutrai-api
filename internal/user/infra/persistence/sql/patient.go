@@ -3,7 +3,7 @@ package persistence
 import (
 	"context"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/manager"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
@@ -24,7 +24,7 @@ func NewSQLPatient(db *gorm.DB) repo.Patient {
 }
 
 // All implements repo.Patient.
-func (p *patientSQLImpl) All(ctx context.Context, input repo.AllPatientsInput) (*querying.PaginationOutput[*patient.Patient], error) {
+func (p *patientSQLImpl) All(ctx context.Context, input repo.AllPatientsInput) (*queryer.PaginationOutput[*patient.Patient], error) {
 	return p.manager.All(ctx,
 		manager.AllInput[patient.Patient]{
 			Filterer:  input.Filterer,

@@ -3,7 +3,7 @@ package repo
 import (
 	"context"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
 	sharedvalue "github.com/christian-gama/nutrai-api/internal/shared/domain/value"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
 	value "github.com/christian-gama/nutrai-api/internal/user/domain/value/user"
@@ -16,17 +16,17 @@ type SaveUserInput struct {
 
 // AllUsersInput is the input for the All method.
 type AllUsersInput struct {
-	querying.Filterer
-	querying.Sorter
-	querying.Paginator
-	querying.Preloader
+	queryer.Filterer
+	queryer.Sorter
+	queryer.Paginator
+	queryer.Preloader
 }
 
 // FindUserInput is the input for the Find method.
 type FindUserInput struct {
 	ID sharedvalue.ID
-	querying.Filterer
-	querying.Preloader
+	queryer.Filterer
+	queryer.Preloader
 }
 
 // FindByEmailUserInput is the input for the FindByEmail method.
@@ -48,7 +48,7 @@ type UpdateUserInput struct {
 // User is the interface that wraps the basic User methods.
 type User interface {
 	// All returns all users.
-	All(ctx context.Context, input AllUsersInput) (*querying.PaginationOutput[*user.User], error)
+	All(ctx context.Context, input AllUsersInput) (*queryer.PaginationOutput[*user.User], error)
 
 	// Delete deletes the user with the given id.
 	Delete(ctx context.Context, input DeleteUserInput) error

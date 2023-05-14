@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	queryingPort "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"gorm.io/gorm"
@@ -24,10 +24,10 @@ func (s *SortSuite) TestSort() {
 		Name string `gorm:"not null"`
 	}
 
-	type Sut func(*gorm.DB, queryingPort.Sorter) []*Entity
+	type Sut func(*gorm.DB, queryer.Sorter) []*Entity
 
 	makeSut := func(tx *gorm.DB) Sut {
-		return func(tx *gorm.DB, sorter queryingPort.Sorter) []*Entity {
+		return func(tx *gorm.DB, sorter queryer.Sorter) []*Entity {
 			tx.AutoMigrate(&Entity{})
 
 			if err := tx.CreateInBatches([]*Entity{

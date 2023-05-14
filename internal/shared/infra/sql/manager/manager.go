@@ -3,7 +3,7 @@ package manager
 import (
 	"context"
 
-	queryingPort "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/convert"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
@@ -73,7 +73,7 @@ func (m *Manager[Model, Schema]) Find(
 func (m *Manager[Model, Schema]) All(
 	ctx context.Context,
 	input AllInput[Model],
-) (*queryingPort.PaginationOutput[*Model], error) {
+) (*queryer.PaginationOutput[*Model], error) {
 	db := m.DB.WithContext(ctx)
 	var schemas []Schema
 
@@ -99,7 +99,7 @@ func (m *Manager[Model, Schema]) All(
 		return nil, sql.Error(err, m.name)
 	}
 
-	pagination := &queryingPort.PaginationOutput[*Model]{}
+	pagination := &queryer.PaginationOutput[*Model]{}
 	for _, sch := range schemas {
 		var model Model
 		pagination.Results = append(

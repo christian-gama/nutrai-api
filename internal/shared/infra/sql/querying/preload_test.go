@@ -3,7 +3,7 @@ package querying_test
 import (
 	"testing"
 
-	queryingPort "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"gorm.io/gorm"
@@ -37,10 +37,10 @@ func (s *PreloadSuite) TestPreload() {
 		AnotherEntity   *AnotherEntity `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	}
 
-	type Sut func(*gorm.DB, queryingPort.Preloader) *Entity
+	type Sut func(*gorm.DB, queryer.Preloader) *Entity
 
 	makeSut := func(tx *gorm.DB) Sut {
-		return func(tx *gorm.DB, Preloader queryingPort.Preloader) *Entity {
+		return func(tx *gorm.DB, Preloader queryer.Preloader) *Entity {
 			tx.AutoMigrate(&Entity{})
 
 			entity := &Entity{

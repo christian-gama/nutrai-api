@@ -3,7 +3,7 @@ package manager
 import (
 	"context"
 
-	queryingPort "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
 )
 
 type Save[Model any] interface {
@@ -15,7 +15,7 @@ type Find[Model any] interface {
 }
 
 type All[Model any] interface {
-	All(ctx context.Context, input AllInput[Model]) (*queryingPort.PaginationOutput[*Model], error)
+	All(ctx context.Context, input AllInput[Model]) (*queryer.PaginationOutput[*Model], error)
 }
 
 type Update[Model any] interface {

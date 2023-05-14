@@ -31,7 +31,8 @@ func (c *ChangePasswordHandlerImpl) Handle(ctx context.Context, input *ChangePas
 	}
 
 	hashPasswordOutput, err := c.HashPasswordHandler.Handle(
-		ctx, &service.HashPasswordInput{Password: input.Password},
+		ctx,
+		&service.HashPasswordInput{Password: input.Password},
 	)
 	if err != nil {
 		return err

@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	queryingPort "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/shared/domain/value"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
@@ -169,7 +169,7 @@ func (s *UserSuite) TestAll() {
 		Sut func(
 			ctx context.Context,
 			input repo.AllUsersInput,
-		) (*queryingPort.PaginationOutput[*user.User], error)
+		) (*queryer.PaginationOutput[*user.User], error)
 		Ctx   context.Context
 		Input repo.AllUsersInput
 	}

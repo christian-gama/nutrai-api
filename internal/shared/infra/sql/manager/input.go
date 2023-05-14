@@ -1,7 +1,7 @@
 package manager
 
 import (
-	queryingPort "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/shared/domain/value"
 )
 
@@ -13,8 +13,8 @@ type SaveInput[Model any] struct {
 // FindInput is the input for Find method.
 type FindInput[Model any] struct {
 	ID value.ID
-	queryingPort.Filterer
-	queryingPort.Preloader
+	queryer.Filterer
+	queryer.Preloader
 }
 
 // DeleteInput is the input for Delete method.
@@ -24,10 +24,10 @@ type DeleteInput[Model any] struct {
 
 // AllInput is the input for All method.
 type AllInput[Model any] struct {
-	queryingPort.Filterer
-	queryingPort.Paginator
-	queryingPort.Sorter
-	queryingPort.Preloader
+	queryer.Filterer
+	queryer.Paginator
+	queryer.Sorter
+	queryer.Preloader
 }
 
 // UpdateInput is the input for Update method.

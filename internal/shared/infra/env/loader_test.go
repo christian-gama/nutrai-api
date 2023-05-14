@@ -64,6 +64,9 @@ func createTempEnv(content string) (*os.File, string) {
 }
 
 const validEnvContent = `
+APP_HOST=localhost
+APP_PORT=123
+APP_ENV=testing
 DB_HOST=localhost
 DB_NAME=test
 DB_PASSWORD=123
@@ -71,4 +74,6 @@ DB_PORT=123
 DB_SGBD=postgresql
 DB_SSL_MODE=disable
 DB_USER=123
+CONFIG_GLOBAL_RATE_LIMIT=123
+CONFIG_DEBUG=true
 `

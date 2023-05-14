@@ -19,7 +19,7 @@ type Migrate struct {
 
 // New creates a new Migrate instance.
 func New(db *sql.DB) *Migrate {
-	driver, err := postgres.WithInstance(db, &postgres.Config{DatabaseName: env.DB.Name})
+	driver, err := postgres.WithInstance(db, &postgres.Config{DatabaseName: string(env.DB.Name)})
 	if err != nil {
 		panic(err)
 	}

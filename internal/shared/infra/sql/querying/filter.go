@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
@@ -14,12 +14,12 @@ import (
 type Filter []string
 
 // AddFilter returns a new Filter with the given field, operator and value.
-func AddFilter(field string, operator string, value any) querying.Filterer {
+func AddFilter(field string, operator string, value any) queryer.Filterer {
 	return Filter{}.Add(field, operator, value)
 }
 
 // Add implements Filterer.
-func (f Filter) Add(field string, operator string, value any) querying.Filterer {
+func (f Filter) Add(field string, operator string, value any) queryer.Filterer {
 	f = append(f, fmt.Sprintf("field=%s,op=%s,value=%v", field, operator, value))
 	return f
 }
@@ -65,7 +65,7 @@ func (f Filter) Value(idx int) string {
 }
 
 // FilterScope returns a GORM scope that applies filtering to the query.
-func FilterScope(filter querying.Filterer) func(db *gorm.DB) *gorm.DB {
+func FilterScope(filter queryer.Filterer) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if filter == nil {
 			return db

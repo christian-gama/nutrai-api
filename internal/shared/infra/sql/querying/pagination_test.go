@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	queryingPort "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
+	"github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"gorm.io/gorm"
@@ -24,10 +24,10 @@ func (s *PaginationSuite) TestPagination() {
 		Name string `gorm:"not null"`
 	}
 
-	type Sut func(*gorm.DB, queryingPort.Paginator) []*Entity
+	type Sut func(*gorm.DB, queryer.Paginator) []*Entity
 
 	makeSut := func(tx *gorm.DB) Sut {
-		return func(tx *gorm.DB, pagination queryingPort.Paginator) []*Entity {
+		return func(tx *gorm.DB, pagination queryer.Paginator) []*Entity {
 			tx.AutoMigrate(&Entity{})
 
 			if err := tx.CreateInBatches([]*Entity{

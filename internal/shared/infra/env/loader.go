@@ -28,17 +28,43 @@ func Load(envFile string) {
 		panic(fmt.Errorf("Error loading DB environment variables: %w", err))
 	}
 
+	if err := envconfig.Process(ctx, App); err != nil {
+		panic(fmt.Errorf("Error loading App environment variables: %w", err))
+	}
+
+	if err := envconfig.Process(ctx, Config); err != nil {
+		panic(fmt.Errorf("Error loading Config environment variables: %w", err))
+	}
+
 	validate()
 }
 
 func validate() {
-	validSslModes := []string{"disable", "allow", "prefer", "require", "verify-ca", "verify-full"}
+	validSslModes := []DBSslMode{
+		SslModeDisable,
+		SslModeAllow,
+		SslModePrefer,
+		SslModeRequire,
+		SslModeVerifyCa,
+		SslModeVerifyFull,
+	}
 	if !slice.Contains(validSslModes, DB.SslMode) {
 		panic(
 			fmt.Errorf(
 				"Invalid env variable: '%s'. Must be one of: %v",
 				DB.SslMode,
 				validSslModes,
+			),
+		)
+	}
+
+	validEnvs := []AppEnv{EnvProduction, EnvDevelopment, EnvTest}
+	if !slice.Contains(validEnvs, App.Env) {
+		panic(
+			fmt.Errorf(
+				"Invalid env variable: '%s'. Must be one of: %v",
+				App.Env,
+				validEnvs,
 			),
 		)
 	}
