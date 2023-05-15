@@ -63,7 +63,6 @@ func (d *Diet) Validate() error {
 	if d.RestrictedFood == nil {
 		errs = errutil.Append(errs, errutil.NewErrRequired("restricted_food"))
 	} else {
-
 		if len(d.RestrictedFood) == 0 {
 			errs = errutil.Append(errs, errutil.NewErrRequired("restricted_food"))
 		}
@@ -73,7 +72,6 @@ func (d *Diet) Validate() error {
 				errs = errutil.Append(errs, err)
 			}
 		}
-
 	}
 
 	if errs.HasErrors() {
