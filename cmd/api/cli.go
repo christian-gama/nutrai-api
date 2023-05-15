@@ -27,11 +27,7 @@ func init() {
 func run(cmd *cobra.Command, args []string) {
 	checkEnvFile()
 	env.Load(envFile)
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	server.Start(ctx, log)
+	server.Start(context.Background(), log)
 }
 
 func checkEnvFile() {
