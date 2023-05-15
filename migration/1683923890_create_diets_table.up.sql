@@ -9,13 +9,11 @@ CREATE TABLE "diets" (
     "goal" VARCHAR(100) NOT NULL,
     "meal_plan" VARCHAR(100) NOT NULL,
     "monthly_cost_usd" DECIMAL(10, 2) NOT NULL,
-    "restricted_food" VARCHAR(100)[] NOT NULL,
     "created_at" TIMESTAMP NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE UNIQUE INDEX "uidx__diets__patient_id" ON diets ("patient_id");
-
 
 ALTER TABLE "diets"
 ADD CONSTRAINT "fk__patient_id__patients.id"

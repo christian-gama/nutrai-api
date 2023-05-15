@@ -2,10 +2,10 @@ package fake
 
 import (
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
+	restrictfood "github.com/christian-gama/nutrai-api/internal/diet/domain/model/restrictedfood"
 	value "github.com/christian-gama/nutrai-api/internal/diet/domain/value/diet"
 	"github.com/christian-gama/nutrai-api/testutils/fake"
-	patientFake "github.com/christian-gama/nutrai-api/testutils/fake/user/domain/model/patient"
-
+	restrictedFoodFake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/restrictedfood"
 	"github.com/go-faker/faker/v4"
 )
 
@@ -17,8 +17,10 @@ func Diet() *diet.Diet {
 		fake.ErrGenerating(err)
 	}
 
-	data.Patient = patientFake.Patient()
-	data.RestrictedFood = []value.RestrictedFood{value.RestrictedFood(faker.Name()), value.RestrictedFood(faker.Name())}
+	data.RestrictedFood = []*restrictfood.RestrictedFood{
+		restrictedFoodFake.RestrictedFood(),
+		restrictedFoodFake.RestrictedFood(),
+	}
 	data.Goal = value.WeightLoss
 	data.MealPlan = value.Vegetarian
 

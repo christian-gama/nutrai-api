@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
+	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/restrictedfood"
 	value "github.com/christian-gama/nutrai-api/internal/diet/domain/value/diet"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/diet"
@@ -38,7 +39,7 @@ func (s *DietTestSuite) TestNewDiet() {
 				SetGoal(data.Goal).
 				SetMealPlan(data.MealPlan).
 				SetMonthlyCostUSD(data.MonthlyCostUSD).
-				SetPatient(data.Patient).
+				SetPatientID(data.PatientID).
 				Build()
 		}
 
@@ -203,7 +204,7 @@ func (s *DietTestSuite) TestNewDiet() {
 		s.Run("RestrictedFood", func() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
-				sut.Data.RestrictedFood = []value.RestrictedFood{}
+				sut.Data.RestrictedFood = []*restrictedfood.RestrictedFood{}
 
 				diet, err := sut.Sut()
 
@@ -213,8 +214,10 @@ func (s *DietTestSuite) TestNewDiet() {
 
 			s.Run("Should return an error when too long", func() {
 				sut := makeSut()
-				sut.Data.RestrictedFood = []value.RestrictedFood{
-					value.RestrictedFood(strings.Repeat("a", 501)),
+				sut.Data.RestrictedFood = []*restrictedfood.RestrictedFood{
+					{
+						Name: value.RestrictedFood(strings.Repeat("a", 101)),
+					},
 				}
 
 				diet, err := sut.Sut()
@@ -231,7 +234,7 @@ func (s *DietTestSuite) TestNewDiet() {
 			sut.Data.Goal = ""
 			sut.Data.MealPlan = ""
 			sut.Data.Name = ""
-			sut.Data.RestrictedFood = []value.RestrictedFood{}
+			sut.Data.RestrictedFood = nil
 
 			diet, err := sut.Sut()
 
