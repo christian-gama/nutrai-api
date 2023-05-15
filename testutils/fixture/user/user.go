@@ -24,7 +24,7 @@ func SaveUser(db *gorm.DB, deps *UserDeps) *UserDeps {
 	if user == nil {
 		user = fake.User()
 
-		user, err := persistence.NewUser(db).
+		user, err := persistence.NewSQLUser(db).
 			Save(context.Background(), repo.SaveUserInput{
 				User: user,
 			})

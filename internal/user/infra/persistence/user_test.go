@@ -27,7 +27,7 @@ func TestUserSuite(t *testing.T) {
 
 func (s *UserSuite) SetupTest() {
 	s.User = func(db *gorm.DB) repo.User {
-		return persistence.NewUser(db)
+		return persistence.NewSQLUser(db)
 	}
 }
 

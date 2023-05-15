@@ -3,9 +3,9 @@ package persistence
 import (
 	"context"
 
-	"github.com/christian-gama/nutrai-api/internal/diet/domain/infra/persistence/schema"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
+	"github.com/christian-gama/nutrai-api/internal/diet/infra/persistence/schema"
 	"github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
 	"github.com/christian-gama/nutrai-api/internal/shared/infra/manager"
 	"gorm.io/gorm"
@@ -17,8 +17,8 @@ type dietImpl struct {
 }
 
 // All implements repo.Diet
-func (p *dietImpl) All(ctx context.Context, input repo.AllDietsInput, preload ...string) (*querying.PaginationOutput[*diet.Diet], error) {
-	return p.manager.All(ctx, manager.AllInput[diet.Diet]{Filterer: input.Filterer, Paginator: input.Paginator, Sorter: input.Sorter}, preload...)
+func (p *dietImpl) All(ctx context.Context, input repo.AllDietsInput) (*querying.PaginationOutput[*diet.Diet], error) {
+	return p.manager.All(ctx, manager.AllInput[diet.Diet]{Filterer: input.Filterer, Paginator: input.Paginator, Sorter: input.Sorter, Preloader: input.Preloader})
 }
 
 // Delete implements repo.Diet
@@ -27,8 +27,8 @@ func (p *dietImpl) Delete(ctx context.Context, input repo.DeleteDietInput) error
 }
 
 // Find implements repo.Diet
-func (p *dietImpl) Find(ctx context.Context, input repo.FindDietInput, preload ...string) (*diet.Diet, error) {
-	return p.manager.Find(ctx, manager.FindInput[diet.Diet]{ID: input.ID, Filterer: input.Filterer}, preload...)
+func (p *dietImpl) Find(ctx context.Context, input repo.FindDietInput) (*diet.Diet, error) {
+	return p.manager.Find(ctx, manager.FindInput[diet.Diet]{ID: input.ID, Filterer: input.Filterer, Preloader: input.Preloader})
 }
 
 // Save implements repo.Diet

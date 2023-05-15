@@ -38,6 +38,7 @@ func (s *DietTestSuite) TestNewDiet() {
 				SetGoal(data.Goal).
 				SetMealPlan(data.MealPlan).
 				SetMonthlyCostUSD(data.MonthlyCostUSD).
+				SetPatient(data.Patient).
 				Build()
 		}
 

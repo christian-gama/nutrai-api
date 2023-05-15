@@ -3,6 +3,7 @@ package diet
 import (
 	value "github.com/christian-gama/nutrai-api/internal/diet/domain/value/diet"
 	sharedvalue "github.com/christian-gama/nutrai-api/internal/shared/domain/value"
+	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
@@ -13,6 +14,7 @@ import (
 // or Mediterranean diet.
 type Diet struct {
 	ID              sharedvalue.ID         `faker:"uint"`
+	Patient         *patient.Patient       `faker:"-"`
 	Name            value.Name             `faker:"name"`
 	Description     value.Description      `faker:"paragraph"`
 	RestrictedFood  []value.RestrictedFood `faker:"-"`
@@ -64,6 +66,12 @@ func (d *Diet) Validate() error {
 		}
 	}
 
+	if d.Patient == nil {
+		errs = errutil.Append(errs, errutil.NewErrRequired("patient"))
+	} else if err := d.Patient.Validate(); err != nil {
+		errs = errutil.Append(errs, err)
+	}
+
 	if errs.HasErrors() {
 		return errs
 	}
@@ -85,6 +93,12 @@ func NewBuilder() *builder {
 // SetID sets the diet's ID.
 func (b *builder) SetID(id sharedvalue.ID) *builder {
 	b.diet.ID = id
+	return b
+}
+
+// SetPatient sets the diet's patient.
+func (b *builder) SetPatient(patient *patient.Patient) *builder {
+	b.diet.Patient = patient
 	return b
 }
 

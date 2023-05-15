@@ -13,35 +13,35 @@ import (
 	"gorm.io/gorm"
 )
 
-// userImpl is the implementation of repo.User.
-type userImpl struct {
+// userSQLImpl is the implementation of repo.User.
+type userSQLImpl struct {
 	manager *manager.Manager[user.User, schema.User]
 }
 
-// NewUser returns a new User.
-func NewUser(db *gorm.DB) repo.User {
-	return &userImpl{
+// NewSQLUser returns a new User.
+func NewSQLUser(db *gorm.DB) repo.User {
+	return &userSQLImpl{
 		manager: manager.NewManager[user.User, schema.User](db),
 	}
 }
 
 // All implements repo.User.
-func (p *userImpl) All(ctx context.Context, input repo.AllUsersInput) (*querying.PaginationOutput[*user.User], error) {
+func (p *userSQLImpl) All(ctx context.Context, input repo.AllUsersInput) (*querying.PaginationOutput[*user.User], error) {
 	return p.manager.All(ctx, manager.AllInput[user.User]{Filterer: input.Filterer, Paginator: input.Paginator, Sorter: input.Sorter, Preloader: input.Preloader})
 }
 
 // Delete implements repo.User.
-func (p *userImpl) Delete(ctx context.Context, input repo.DeleteUserInput) error {
+func (p *userSQLImpl) Delete(ctx context.Context, input repo.DeleteUserInput) error {
 	return p.manager.Delete(ctx, manager.DeleteInput[user.User]{IDs: input.IDs})
 }
 
 // Find implements repo.User.
-func (p *userImpl) Find(ctx context.Context, input repo.FindUserInput) (*user.User, error) {
+func (p *userSQLImpl) Find(ctx context.Context, input repo.FindUserInput) (*user.User, error) {
 	return p.manager.Find(ctx, manager.FindInput[user.User]{ID: input.ID, Filterer: input.Filterer, Preloader: input.Preloader})
 }
 
 // FindByEmail implements repo.User.
-func (p *userImpl) FindByEmail(ctx context.Context, input repo.FindByEmailUserInput) (*user.User, error) {
+func (p *userSQLImpl) FindByEmail(ctx context.Context, input repo.FindByEmailUserInput) (*user.User, error) {
 	db := p.manager.WithContext(ctx)
 	var schema schema.User
 
@@ -57,11 +57,11 @@ func (p *userImpl) FindByEmail(ctx context.Context, input repo.FindByEmailUserIn
 }
 
 // Save implements repo.User.
-func (p *userImpl) Save(ctx context.Context, input repo.SaveUserInput) (*user.User, error) {
+func (p *userSQLImpl) Save(ctx context.Context, input repo.SaveUserInput) (*user.User, error) {
 	return p.manager.Save(ctx, manager.SaveInput[user.User]{Model: input.User})
 }
 
 // Update implements repo.User.
-func (p *userImpl) Update(ctx context.Context, input repo.UpdateUserInput) error {
+func (p *userSQLImpl) Update(ctx context.Context, input repo.UpdateUserInput) error {
 	return p.manager.Update(ctx, manager.UpdateInput[user.User]{Model: input.User, ID: input.ID})
 }

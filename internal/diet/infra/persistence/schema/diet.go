@@ -1,8 +1,12 @@
 package schema
 
+import "github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
+
 // Diet is the database schema for diets.
 type Diet struct {
 	ID              uint `gorm:"primaryKey"`
+	PatientID       uint
+	Patient         *patient.Patient `gorm:"foreignKey:PatientID"`
 	Description     string
 	RestrictedFood  []string
 	DurationInWeeks int16
