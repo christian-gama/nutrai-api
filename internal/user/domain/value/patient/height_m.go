@@ -6,7 +6,8 @@ import (
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
-// HeightM represents a patient height in kilograms.
+// HeightM is a data type that represents a patient's height in meters. It is an essential
+// factor in calculating BMI and determining health and diet plans.
 type HeightM float32
 
 // Float32 returns the float32 representation of the height.

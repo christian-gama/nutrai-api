@@ -3,13 +3,13 @@ package persistence
 import (
 	"context"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/convert"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/manager"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/convert"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/manager"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
-	"github.com/christian-gama/nutrai-api/internal/user/infra/persistence/schema"
+	"github.com/christian-gama/nutrai-api/internal/user/infra/persistence/sql/schema"
 	"gorm.io/gorm"
 )
 
@@ -26,7 +26,7 @@ func NewSQLUser(db *gorm.DB) repo.User {
 }
 
 // All implements repo.User.
-func (p *userSQLImpl) All(ctx context.Context, input repo.AllUsersInput) (*querying.PaginationOutput[*user.User], error) {
+func (p *userSQLImpl) All(ctx context.Context, input repo.AllUsersInput) (*queryer.PaginationOutput[*user.User], error) {
 	return p.manager.All(ctx, manager.AllInput[user.User]{Filterer: input.Filterer, Paginator: input.Paginator, Sorter: input.Sorter, Preloader: input.Preloader})
 }
 

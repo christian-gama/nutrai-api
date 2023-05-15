@@ -13,7 +13,7 @@ import (
 )
 
 type DietSuite struct {
-	suite.SuiteWithConn
+	suite.SuiteWithSQLConn
 	Diet func(db *gorm.DB) repo.Diet
 }
 

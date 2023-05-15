@@ -6,7 +6,9 @@ import (
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
-// Goal represents the goal of the diet.
+// Goal is a data type that encapsulates the objective of a specific diet plan. This can include goals
+// like weight loss, weight gain, maintenance, improved health, energy increase, or muscle gain.
+// It guides the formation and customization of the diet plan.
 type Goal string
 
 // String returns the string representation of the goal.

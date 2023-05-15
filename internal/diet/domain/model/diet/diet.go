@@ -1,8 +1,8 @@
 package diet
 
 import (
+	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	value "github.com/christian-gama/nutrai-api/internal/diet/domain/value/diet"
-	sharedvalue "github.com/christian-gama/nutrai-api/internal/shared/domain/value"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
@@ -13,7 +13,7 @@ import (
 // This model can be used to represent any type of diet plan, such as a low-carb diet, vegan diet,
 // or Mediterranean diet.
 type Diet struct {
-	ID              sharedvalue.ID         `faker:"uint"`
+	ID              coreValue.ID           `faker:"uint"`
 	Patient         *patient.Patient       `faker:"-"`
 	Name            value.Name             `faker:"name"`
 	Description     value.Description      `faker:"paragraph"`
@@ -91,7 +91,7 @@ func NewBuilder() *builder {
 }
 
 // SetID sets the diet's ID.
-func (b *builder) SetID(id sharedvalue.ID) *builder {
+func (b *builder) SetID(id coreValue.ID) *builder {
 	b.diet.ID = id
 	return b
 }

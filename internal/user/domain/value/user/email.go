@@ -7,7 +7,8 @@ import (
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
-// Email represents a user email.
+// Email is a simple data type that represents a user's email address.
+// It serves as a key contact detail for a user in a system.
 type Email string
 
 // String returns the string representation of the email.

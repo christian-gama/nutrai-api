@@ -1,4 +1,6 @@
 {
+  // Setup the test environment variables to make it possible to run tests
+  // through the VSCode test runner.
   "go.testEnvVars": {
     "TEST_MODE": "all",
     "DB_HOST": "localhost",

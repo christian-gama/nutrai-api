@@ -3,9 +3,9 @@ package repo
 import (
 	"context"
 
+	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/value"
 )
 
 // SaveDietInput is the input for the Save method.
@@ -15,17 +15,17 @@ type SaveDietInput struct {
 
 // AllDietsInput is the input for the All method.
 type AllDietsInput struct {
-	querying.Filterer
-	querying.Sorter
-	querying.Paginator
-	querying.Preloader
+	queryer.Filterer
+	queryer.Sorter
+	queryer.Paginator
+	queryer.Preloader
 }
 
 // FindDietInput is the input for the Find method.
 type FindDietInput struct {
 	ID value.ID
-	querying.Filterer
-	querying.Preloader
+	queryer.Filterer
+	queryer.Preloader
 }
 
 // DeleteDietInput is the input for the Delete method.
@@ -42,7 +42,7 @@ type UpdateDietInput struct {
 // Diet is the interface that wraps the basic Diet methods.
 type Diet interface {
 	// All returns all diets.
-	All(ctx context.Context, input AllDietsInput) (*querying.PaginationOutput[*diet.Diet], error)
+	All(ctx context.Context, input AllDietsInput) (*queryer.PaginationOutput[*diet.Diet], error)
 
 	// Delete deletes the diet with the given id.
 	Delete(ctx context.Context, input DeleteDietInput) error

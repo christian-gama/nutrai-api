@@ -8,7 +8,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/user/app/service"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/user/app/command"
 	fakePatient "github.com/christian-gama/nutrai-api/testutils/fake/user/domain/model/patient"
-	userServiceMock "github.com/christian-gama/nutrai-api/testutils/mocks/user/app/service"
+	serviceMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/service"
 	userRepoMock "github.com/christian-gama/nutrai-api/testutils/mocks/user/domain/repo"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"
@@ -25,7 +25,7 @@ func TestSavePatientHandlerSuite(t *testing.T) {
 
 func (s *SavePatientHandlerSuite) TestSaveHandler() {
 	type Mocks struct {
-		HashPasswordHandler *userServiceMock.HashPasswordHandler
+		HashPasswordHandler *serviceMock.Handler[*service.HashPasswordInput, *service.HashPasswordOutput]
 		PatientRepo         *userRepoMock.Patient
 	}
 
@@ -37,7 +37,7 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 	}
 
 	makeSut := func() Sut {
-		hashPasswordHandler := userServiceMock.NewHashPasswordHandler(s.T())
+		hashPasswordHandler := serviceMock.NewHandler[*service.HashPasswordInput, *service.HashPasswordOutput](s.T())
 		patientRepo := userRepoMock.NewPatient(s.T())
 
 		return Sut{
@@ -86,7 +86,8 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 
 		sut.Mocks.HashPasswordHandler.
 			On("Handle", sut.Ctx, mock.Anything).
-			Return(nil, assert.AnError)
+			// Must return a pointer to output because of generics.
+			Return(&service.HashPasswordOutput{}, assert.AnError)
 
 		err := sut.Sut.Handle(sut.Ctx, sut.Input)
 

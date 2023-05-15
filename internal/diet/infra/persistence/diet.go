@@ -3,11 +3,11 @@ package persistence
 import (
 	"context"
 
+	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/manager"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
 	"github.com/christian-gama/nutrai-api/internal/diet/infra/persistence/schema"
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/manager"
 	"gorm.io/gorm"
 )
 
@@ -17,7 +17,7 @@ type dietImpl struct {
 }
 
 // All implements repo.Diet
-func (p *dietImpl) All(ctx context.Context, input repo.AllDietsInput) (*querying.PaginationOutput[*diet.Diet], error) {
+func (p *dietImpl) All(ctx context.Context, input repo.AllDietsInput) (*queryer.PaginationOutput[*diet.Diet], error) {
 	return p.manager.All(ctx, manager.AllInput[diet.Diet]{Filterer: input.Filterer, Paginator: input.Paginator, Sorter: input.Sorter, Preloader: input.Preloader})
 }
 

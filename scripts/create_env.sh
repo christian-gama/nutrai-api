@@ -23,6 +23,11 @@ create_env_file() {
             sed -i "s/DB_PORT=.*/DB_PORT=5434/" "$env_file"
         fi
 
+        if [ "$env_name" == "prod" ]; then
+            sed -i "s/CONFIG_GLOBAL_RATE_LIMIT=.*/CONFIG_GLOBAL_RATE_LIMIT=180/" "$env_file"
+            sed -i "s/CONFIG_DEBUG=.*/CONFIG_DEBUG=false/" "$env_file"
+        fi
+
         echo "Created $env_file"
     else
         echo "$env_file already exists. Skipping."
