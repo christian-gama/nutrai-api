@@ -65,6 +65,7 @@ func Content() gin.HandlerFunc {
 	}
 }
 
+// RateLimiter returns a gin middleware that limits the request rate.
 func RateLimiter(limit env.ConfigGlobalRateLimit, duration time.Duration) gin.HandlerFunc {
 	store := ratelimit.InMemoryStore(&ratelimit.InMemoryOptions{
 		Rate:  duration,

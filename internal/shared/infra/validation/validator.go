@@ -54,6 +54,9 @@ func (va validatorImpl) Validate(anStruct any) error {
 	return nil
 }
 
+// RegisterAlias registers a mapping of a single validation tag that defines a common or
+// complex set of validation(s) to simplify adding validation to structs.
+// It's a wrapper for the validate.RegisterAlias, to avoid import the validator package.
 func RegisterAlias(tag, alias string) {
 	validate.RegisterAlias(tag, alias)
 }

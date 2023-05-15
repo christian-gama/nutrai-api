@@ -48,6 +48,7 @@ func FromModels[Model any, Obj any](obj []Obj, model []Model) []Obj {
 	return obj
 }
 
+// ValidModel is an interface that should be implemented by every model that needs to be validated.
 type ValidModel interface {
 	Validate() error
 }

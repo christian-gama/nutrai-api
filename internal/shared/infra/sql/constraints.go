@@ -8,6 +8,8 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
+// ForeignKeyConstraint is an error that occurs when a foreign key constraint is violated.
+// Example: "insert or update on table \"user\" violates foreign key constraint \"fk__role_id__roles.id\"".
 func ForeignKeyConstraint(err error) error {
 	msg := err.Error()
 
@@ -31,6 +33,8 @@ func ForeignKeyConstraint(err error) error {
 	return NewErrForeignKeyConstraint(namespace, referencedTable)
 }
 
+// CheckConstraint is an error that occurs when a check constraint is violated.
+// Example: "new row for relation \"user\" violates check constraint \"chk__email__email\"".
 func CheckConstraint(err error) error {
 	msg := err.Error()
 
@@ -52,6 +56,8 @@ func CheckConstraint(err error) error {
 	)
 }
 
+// UniqueConstraint is an error that occurs when a unique constraint is violated.
+// Example: "pq: duplicate key value violates unique constraint \"uidx__email__users\"".
 func UniqueConstraint(err error) error {
 	msg := err.Error()
 
@@ -69,6 +75,8 @@ func UniqueConstraint(err error) error {
 	return NewErrUniqueConstraint(strcase.ToLowerCamel(columnName))
 }
 
+// NotNullConstraint is an error that occurs when a not-null constraint is violated.
+// Example: "pq: null value in column \"email\" violates not-null constraint".
 func NotNullConstraint(err error) error {
 	str := err.Error()
 
@@ -86,6 +94,7 @@ func NotNullConstraint(err error) error {
 	return NewErrNotNullConstraint(strcase.ToLowerCamel(columnName))
 }
 
+// NotNullConstraintOfRelation is an error that occurs when a not-null constraint is violated in a relation.
 func NotNullConstraintOfRelation(err error) error {
 	str := err.Error()
 

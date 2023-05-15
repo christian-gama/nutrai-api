@@ -6,7 +6,8 @@ import (
 	"strings"
 )
 
-// Path is the path to be used by a controller.
+// Path is the path to be used by a controller. It shouldn't be called directly, instead use the
+// helper JoinPath, which will automatically join the strings using slash as a separator.
 type Path string
 
 // JoinPath is a helper to create a new Path from a list of strings. It will automatically join

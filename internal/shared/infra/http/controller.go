@@ -34,6 +34,8 @@ type Controller interface {
 	IsPublic() bool
 }
 
+// ControllerOptions is the options for the controller constructor. It's used
+// to setup the controller before using it.
 type ControllerOptions struct {
 	IsPublic bool
 	Params   Params
