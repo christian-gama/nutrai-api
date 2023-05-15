@@ -6,8 +6,8 @@ import (
 	"github.com/christian-gama/nutrai-api/internal"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/router"
 	"github.com/fatih/color"
-	"github.com/gin-gonic/gin"
 )
 
 func init() {
@@ -19,14 +19,14 @@ func main() {
 	fmt.Print("\033[H\033[2J")
 	fmt.Println("Listing all routes:")
 
-	engine := internal.LoadEngine()
-	routes := engine.Routes()
-	printRoutes(routes)
+	internal.Routes()
+
+	printRoutes()
 }
 
 // printRoutes prints all routes in a colorized and formatted way.
-func printRoutes(routes gin.RoutesInfo) {
-	for _, route := range routes {
+func printRoutes() {
+	for _, route := range router.Engine.Routes() {
 		fmt.Printf("%-2s\t%s\n", method(route.Method), path(route.Path))
 	}
 }

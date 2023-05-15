@@ -8,18 +8,18 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/logger"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
-	"github.com/gin-gonic/gin"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/router"
 )
 
 // Start starts the HTTP server.
-func Start(ctx context.Context, engine *gin.Engine, log logger.Logger) {
+func Start(ctx context.Context, log logger.Logger) {
 	log.Infof("Started in %s environment", env.App.Env)
 	log.Infof("Server is running on %s:%d", env.App.Host, env.App.Port)
 
 	server := &http.Server{
 		Addr:              fmt.Sprintf(":%d", env.App.Port),
 		ReadHeaderTimeout: 3 * time.Second,
-		Handler:           engine,
+		Handler:           router.Engine,
 	}
 
 	go func() {

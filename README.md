@@ -6,6 +6,8 @@ This project contains a Go Restful API that helps users manage their diet plans.
 - [Table of Contents](#table-of-contents)
   - [Requirements](#requirements)
   - [Initial Setup](#initial-setup)
+      - [Clone the repository](#clone-the-repository)
+      - [Initialize the project (DO NOT SKIP)](#initialize-the-project-do-not-skip)
   - [How to run](#how-to-run)
     - [Development mode](#development-mode)
     - [Production mode](#production-mode)
@@ -19,16 +21,18 @@ This project contains a Go Restful API that helps users manage their diet plans.
 ## Requirements
 - [Go 1.20](https://golang.org/doc/install)
 - [Docker](https://docs.docker.com/install/)
+- [Docker Compose v2](https://docs.docker.com/compose/install/)
 - [Make](https://www.gnu.org/software/make/)
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
 ## Initial Setup
-1. Clone the repository
+#### Clone the repository
 ```sh
 git clone https://github.com/christian-gama/nutrai-api.git
 ```
 
-2. Initialize the project
+#### Initialize the project (DO NOT SKIP)
+The command to initialize the project will automatically create the environment files if they don't exist and also make the git hooks and scripts executable.
 ```sh
 make init
 ```

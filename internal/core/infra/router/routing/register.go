@@ -1,14 +1,14 @@
 package routing
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/router"
 )
 
 // Register registers all the routes for a group.
-func Register(group *gin.RouterGroup, routes ...*Routing) (*gin.RouterGroup, []*Routing) {
+func Register(groupName string, routes ...*Routing) {
+	group := router.Engine.Group(groupName)
+
 	for _, route := range routes {
 		route.Register(group)
 	}
-
-	return group, routes
 }

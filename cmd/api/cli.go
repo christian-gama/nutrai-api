@@ -4,8 +4,9 @@ import (
 	"context"
 	"os"
 
-	"github.com/christian-gama/nutrai-api/internal"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
 	l "github.com/christian-gama/nutrai-api/internal/core/infra/log"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/server"
 	"github.com/spf13/cobra"
 )
 
@@ -25,11 +26,12 @@ func init() {
 
 func run(cmd *cobra.Command, args []string) {
 	checkEnvFile()
+	env.Load(envFile)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	internal.Bootstrap(ctx, log, envFile)
+	server.Start(ctx, log)
 }
 
 func checkEnvFile() {
