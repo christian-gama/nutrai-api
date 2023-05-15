@@ -71,7 +71,7 @@ func RateLimiter(limit env.ConfigGlobalRateLimit, duration time.Duration) gin.Ha
 		Limit: uint(limit),
 	})
 
-	mw := ratelimit.RateLimiter(store, &ratelimit.Options{
+	handler := ratelimit.RateLimiter(store, &ratelimit.Options{
 		ErrorHandler: func(ctx *gin.Context, info ratelimit.Info) {
 			ctx.AbortWithStatusJSON(http.StatusTooManyRequests, http.Error(
 				errors.New("too many requests"),
@@ -83,5 +83,5 @@ func RateLimiter(limit env.ConfigGlobalRateLimit, duration time.Duration) gin.Ha
 		},
 	})
 
-	return mw
+	return handler
 }
