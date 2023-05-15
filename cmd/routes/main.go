@@ -19,7 +19,7 @@ func main() {
 	fmt.Print("\033[H\033[2J")
 	fmt.Println("Listing all routes:")
 
-	internal.Routes()
+	internal.Routing()
 
 	printRoutes()
 }
