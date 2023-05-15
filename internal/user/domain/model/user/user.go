@@ -6,7 +6,10 @@ import (
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
-// User is the user model.
+// User represents a User model, containing essential credentials and personal identification information
+// for an individual user. This includes a unique identifier, email address, password, and name. This
+// model is used to manage user authentication, authorization, and maintain user-specific information.
+// This model can be used to validate a user's credentials and identify a user across the application,.
 type User struct {
 	ID       coreValue.ID   `faker:"uint"`
 	Email    value.Email    `faker:"email"`

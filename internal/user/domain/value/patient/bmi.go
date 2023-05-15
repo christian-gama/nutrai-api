@@ -1,6 +1,7 @@
 package value
 
-// BMI represents a patient BMI, which is a ratio of the weight of a person to the square of the height.
+// BMI, or Body Mass Index, is a data type that represents a patient's body mass index.
+// It is a key indicator of a patient's health status.
 type BMI float32
 
 // Float32.
