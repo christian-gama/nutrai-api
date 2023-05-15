@@ -25,8 +25,17 @@ init: .cmd-exists-git .cmd-exists-go .cmd-exists-docker .cmd-exists-sh .clear-sc
 
 	@chmod +x ./scripts/*.sh
 	@echo "Scripts configured."
-	@./scripts/create_env.sh
+	@sh ./scripts/manage_env.sh
 
+
+# ==============================================================================================
+# Target: env
+# Brief: This target is used to create or update the environment file.
+# Usage: Run the command 'make env'.
+# ==============================================================================================
+.PHONY: env
+env: .cmd-exists-sh .clear-screen
+	@sh ./scripts/manage_env.sh
 
 # ==============================================================================================
 # Target: run
@@ -51,6 +60,35 @@ endif
 
 
 # ==============================================================================================
+# Target: dev
+# Brief: This target is used to run the project in development mode.
+# Usage: Run the command 'make dev'.
+# ==============================================================================================
+.PHONY: dev
+dev: .cmd-exists-go .clear-screen
+ifneq ($(RUNNING_IN_DOCKER), true)
+	@ENV_FILE=.env.dev $(MAKE) postgres
+	@sh ./scripts/wait_for_db.sh nutrai-psql
+endif
+	@go run github.com/cosmtrek/air@$(AIRVERSION) -- -e .env.dev
+
+
+# ==============================================================================================
+# Target: prod
+# Brief: This target is used to run the project in production mode.
+# Usage: Run the command 'make prod'.
+# ==============================================================================================
+.PHONY: prod
+prod: .cmd-exists-go .clear-screen
+ifneq ($(RUNNING_IN_DOCKER), true)
+	@ENV_FILE=.env.prod $(MAKE) postgres
+	@sh ./scripts/wait_for_db.sh nutrai-psql
+endif
+	@$(MAKE) build
+	@$(BUILD_DIR)/$(APP_NAME) -e .env.prod
+
+
+# ==============================================================================================
 # Target: list-routes
 # Brief: This target is used to list all routes.
 # Usage: Run the command 'make list-routes'.
@@ -61,7 +99,6 @@ ifneq ($(RUNNING_IN_DOCKER), true)
 	@ENV_FILE=.env.dev $(MAKE) postgres
 	@sh ./scripts/wait_for_db.sh nutrai-psql
 endif
-
 	@go run ./cmd/routes/main.go
 
 
@@ -122,7 +159,8 @@ tidy: .cmd-exists-go .clear-screen
 # ==============================================================================================
 .PHONY: test-unit
 test-unit: .cmd-exists-go .clear-screen
-	@TEST_MODE=unit sh -c "./scripts/test.sh $(FLAGS)"
+	@TEST_MODE=unit \
+	sh -c "./scripts/test.sh $(FLAGS)"
 
 
 # ==============================================================================================
@@ -134,7 +172,8 @@ test-unit: .cmd-exists-go .clear-screen
 # ==============================================================================================
 .PHONY: test-integration
 test-integration: .cmd-exists-go .clear-screen .prepare-test-db
-	@TEST_MODE=integration sh -c "./scripts/test.sh $(FLAGS)"
+	@TEST_MODE=integration \
+	sh -c "./scripts/test.sh $(FLAGS)"
 
 
 # ==============================================================================================
@@ -147,7 +186,8 @@ test-integration: .cmd-exists-go .clear-screen .prepare-test-db
 # ==============================================================================================
 .PHONY: test
 test: .cmd-exists-go .clear-screen .prepare-test-db
-	@TEST_MODE=all sh -c "./scripts/test.sh $(FLAGS)"
+	@TEST_MODE=all \
+	sh -c "./scripts/test.sh $(FLAGS)"
 
 
 # ==============================================================================================
@@ -239,7 +279,40 @@ mock: .cmd-exists-go
 # ==============================================================================================
 .PHONY: docker-run
 docker-run: .cmd-exists-docker .clear-screen .check-env-file
-	@RUNNING_IN_DOCKER=true WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d api --build --force-recreate --remove-orphans
+	@RUNNING_IN_DOCKER=true \
+	WORKDIR=$(WORKDIR) \
+	AIRVERSION=$(AIRVERSION) \
+	docker compose --env-file $(ENV_FILE) up -d api
+
+
+# ==============================================================================================
+# Target: docker-dev
+# Brief: This target is used to run the API container in development mode.
+# Usage: Run the command 'make docker-dev'.
+# ==============================================================================================
+.PHONY: docker-dev
+docker-dev: .cmd-exists-docker .clear-screen
+	@RUNNING_IN_DOCKER=true \
+	ENV_FILE=.env.dev \
+	$(MAKE) docker-run
+
+
+# ==============================================================================================
+# Target: docker-prod
+# Brief: This target is used to run the API container in production mode.
+# Usage: Run the command 'make docker-prod'.
+# ==============================================================================================
+.PHONY: docker-prod
+docker-prod: .cmd-exists-docker .clear-screen
+	@RUNNING_IN_DOCKER=true \
+	ENV_FILE=.env.prod \
+	$(MAKE) docker-run
+
+
+# ==============================================================================================
+# Target: docker-prod
+# Brief: This target is used to run the API container in production mode.
+# Usage: Run the command 'make docker-prod'.
 
 
 # ==============================================================================================
