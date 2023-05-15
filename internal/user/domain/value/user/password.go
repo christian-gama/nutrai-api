@@ -4,7 +4,7 @@ import (
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
-// Password represents a user password.
+// Password is a data type that encapsulates a user's secure login credential within a system.
 type Password string
 
 // String returns the string representation of the password.

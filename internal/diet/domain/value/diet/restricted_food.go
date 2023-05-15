@@ -6,7 +6,8 @@ import (
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
-// RestrictedFood removes the food from the diet.
+// RestrictedFood is a data type that signifies a certain food or food group that is to be
+// avoided or limited in a specific diet plan.
 type RestrictedFood string
 
 // String returns the string representation of a RestrictedFood.

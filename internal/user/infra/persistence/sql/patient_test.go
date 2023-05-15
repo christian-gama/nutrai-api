@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	queryingPort "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/value"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/value"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
 	persistence "github.com/christian-gama/nutrai-api/internal/user/infra/persistence/sql"
@@ -179,7 +179,7 @@ func (s *PatientSuite) TestAll() {
 		Sut func(
 			ctx context.Context,
 			input repo.AllPatientsInput,
-		) (*queryingPort.PaginationOutput[*patient.Patient], error)
+		) (*queryer.PaginationOutput[*patient.Patient], error)
 		Ctx   context.Context
 		Input repo.AllPatientsInput
 	}

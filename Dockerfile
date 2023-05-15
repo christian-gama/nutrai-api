@@ -3,14 +3,14 @@ RUN apk update && apk add make
 
 FROM base AS api
 ARG WORKDIR
-ARG AIRVERSION=1.43.0
-RUN go install github.com/cosmtrek/air@v${AIRVERSION}
+ARG AIRVERSION
+RUN go install github.com/cosmtrek/air@${AIRVERSION}
 WORKDIR $WORKDIR
 COPY . ./
 
 FROM base AS test
-ARG GOTESTSUMVERSION=1.9.0
-RUN go install gotest.tools/gotestsum@v${GOTESTSUMVERSION}
+ARG GOTESTSUMVERSION=v1.9.0
+RUN go install gotest.tools/gotestsum@${GOTESTSUMVERSION}
 ARG WORKDIR
 WORKDIR $WORKDIR
 COPY . ./

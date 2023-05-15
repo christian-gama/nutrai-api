@@ -2,29 +2,34 @@ package persistence
 
 import (
 	"context"
+	"errors"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/manager"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/manager"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
 	"github.com/christian-gama/nutrai-api/internal/user/infra/persistence/sql/schema"
 	"gorm.io/gorm"
 )
 
-// patientSQLImpl is the implementation of repo.Patient using SQL.
+// patientSQLImpl is the SQL implementation of repo.Patient.
 type patientSQLImpl struct {
 	manager *manager.Manager[patient.Patient, schema.Patient]
 }
 
 // NewSQLPatient returns a new Patient.
 func NewSQLPatient(db *gorm.DB) repo.Patient {
+	if db == nil {
+		panic(errors.New("db cannot be nil"))
+	}
+
 	return &patientSQLImpl{
 		manager: manager.NewManager[patient.Patient, schema.Patient](db),
 	}
 }
 
 // All implements repo.Patient.
-func (p *patientSQLImpl) All(ctx context.Context, input repo.AllPatientsInput) (*querying.PaginationOutput[*patient.Patient], error) {
+func (p *patientSQLImpl) All(ctx context.Context, input repo.AllPatientsInput) (*queryer.PaginationOutput[*patient.Patient], error) {
 	return p.manager.All(ctx,
 		manager.AllInput[patient.Patient]{
 			Filterer:  input.Filterer,

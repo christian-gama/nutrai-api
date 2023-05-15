@@ -1,14 +1,17 @@
 package user
 
 import (
-	sharedvalue "github.com/christian-gama/nutrai-api/internal/shared/domain/value"
+	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	value "github.com/christian-gama/nutrai-api/internal/user/domain/value/user"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
-// User is the user model.
+// User represents a User model, containing essential credentials and personal identification information
+// for an individual user. This includes a unique identifier, email address, password, and name. This
+// model is used to manage user authentication, authorization, and maintain user-specific information.
+// This model can be used to validate a user's credentials and identify a user across the application,.
 type User struct {
-	ID       sharedvalue.ID `faker:"uint"`
+	ID       coreValue.ID   `faker:"uint"`
 	Email    value.Email    `faker:"email"`
 	Password value.Password `faker:"len=8"`
 	Name     value.Name     `faker:"len=3"`
@@ -49,7 +52,7 @@ func NewBuilder() *builder {
 }
 
 // SetID sets the user ID.
-func (b *builder) SetID(id sharedvalue.ID) *builder {
+func (b *builder) SetID(id coreValue.ID) *builder {
 	b.user.ID = id
 	return b
 }

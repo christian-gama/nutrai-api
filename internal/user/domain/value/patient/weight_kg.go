@@ -6,7 +6,8 @@ import (
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
-// WeightKG represents a patient weight in kilograms.
+// WeightKG is a data type that denotes a patient's weight in kilograms. It is a vital measure in
+// health assessments and planning diet routines.
 type WeightKG float32
 
 // Float32 returns the float32 representation of the weight.

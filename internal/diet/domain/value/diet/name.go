@@ -6,7 +6,8 @@ import (
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
-// Name is the name of a diet. It is used to identify a diet.
+// Name is a data type that represents the title or identifier of a specific diet plan. It provides
+// an easy reference for diet categorization and selection.
 type Name string
 
 // String returns the string representation of the Name.

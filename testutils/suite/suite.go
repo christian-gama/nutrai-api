@@ -9,6 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
+// Suite is the base suite for all test suites. It provides helper methods for
+// testing.
 type Suite struct {
 	suite.Suite
 }
@@ -47,20 +49,24 @@ func (s *Suite) ErrorAsInternal(err error, msgAndArgs ...any) bool {
 	return asserts.ErrorAsInternal(s.T(), err, msgAndArgs...)
 }
 
-// SuiteWithSQLConn is a suite with a connection to the database.
+// SuiteWithSQLConn is the base suite for all test suites that need a SQL connection.
+// It provides helper methods for testing and wraps each test in a transaction, rolling
+// back the transaction after the test is done.
 type SuiteWithSQLConn struct {
 	Suite
 }
 
-func TestSetupTestsSuite(t *testing.T) {
-	t.Helper()
-	suite.Run(t, new(SuiteWithSQLConn))
-}
-
+// Run runs a test in a transaction and rolls back the transaction after the test is done.
+// It is a wrapper around suite.Suite.Run.
 func (s *SuiteWithSQLConn) Run(name string, f func(tx *gorm.DB)) bool {
 	return s.Suite.Run(name, func() {
 		sqlutil.Transaction(s.Fail, func(tx *gorm.DB) {
 			f(tx)
 		})
 	})
+}
+
+func TestSetupTestsSuite(t *testing.T) {
+	t.Helper()
+	suite.Run(t, new(SuiteWithSQLConn))
 }

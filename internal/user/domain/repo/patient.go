@@ -3,8 +3,8 @@ package repo
 import (
 	"context"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/value"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 )
 
@@ -15,17 +15,17 @@ type SavePatientInput struct {
 
 // AllPatientsInput is the input for the All method.
 type AllPatientsInput struct {
-	querying.Filterer
-	querying.Sorter
-	querying.Paginator
-	querying.Preloader
+	queryer.Filterer
+	queryer.Sorter
+	queryer.Paginator
+	queryer.Preloader
 }
 
 // FindPatientInput is the input for the Find method.
 type FindPatientInput struct {
 	ID value.ID
-	querying.Filterer
-	querying.Preloader
+	queryer.Filterer
+	queryer.Preloader
 }
 
 // DeletePatientInput is the input for the Delete method.
@@ -42,7 +42,7 @@ type UpdatePatientInput struct {
 // Patient is the interface that wraps the basic Patient methods.
 type Patient interface {
 	// All returns all patients.
-	All(ctx context.Context, input AllPatientsInput) (*querying.PaginationOutput[*patient.Patient], error)
+	All(ctx context.Context, input AllPatientsInput) (*queryer.PaginationOutput[*patient.Patient], error)
 
 	// Delete deletes the patient with the given id.
 	Delete(ctx context.Context, input DeletePatientInput) error

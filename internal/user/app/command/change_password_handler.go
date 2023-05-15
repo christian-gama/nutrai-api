@@ -2,8 +2,9 @@ package command
 
 import (
 	"context"
+	"errors"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/app/command"
+	"github.com/christian-gama/nutrai-api/internal/core/app/command"
 	"github.com/christian-gama/nutrai-api/internal/user/app/service"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
@@ -19,8 +20,16 @@ type ChangePasswordHandlerImpl struct {
 }
 
 // NewChangePasswordHandler returns a new Save instance.
-func NewChangePasswordHandler(p repo.User, h service.HashPasswordHandler) ChangePasswordHandler {
-	return &ChangePasswordHandlerImpl{p, h}
+func NewChangePasswordHandler(r repo.User, h service.HashPasswordHandler) ChangePasswordHandler {
+	if r == nil {
+		panic(errors.New("repo.User cannot be nil"))
+	}
+
+	if h == nil {
+		panic(errors.New("service.HashPasswordHandler cannot be nil"))
+	}
+
+	return &ChangePasswordHandlerImpl{r, h}
 }
 
 // Handle implements command.Handler.
@@ -31,7 +40,8 @@ func (c *ChangePasswordHandlerImpl) Handle(ctx context.Context, input *ChangePas
 	}
 
 	hashPasswordOutput, err := c.HashPasswordHandler.Handle(
-		ctx, &service.HashPasswordInput{Password: input.Password},
+		ctx,
+		&service.HashPasswordInput{Password: input.Password},
 	)
 	if err != nil {
 		return err

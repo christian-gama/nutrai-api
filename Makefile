@@ -4,7 +4,7 @@ CACHE_DIR ?= $(PWD)/.cache
 BUILD_DIR ?= $(GENERATED_DIR)/build
 MAKE = make --no-print-directory
 APP_NAME = nutrai-api
-AIRVERSION = 1.43.0
+AIRVERSION = v1.43.0
 
 # WORKDIR is used to set the working directory for Dockerfile builds.
 export WORKDIR=/usr/src/app
@@ -32,6 +32,8 @@ init: .cmd-exists-git .cmd-exists-go .cmd-exists-docker .cmd-exists-sh .clear-sc
 # Target: run
 # Brief: This target is used to run the project.
 # Usage: Run the command 'make run [ENV_FILE="<path>"]'.
+# Flags:
+#  ENV_FILE: The path to the environment file. It defaults to '.env.dev'.
 # ==============================================================================================
 .PHONY: run
 run: .cmd-exists-go .clear-screen .check-env-file
@@ -44,8 +46,23 @@ ifeq ($(ENV_FILE), .env.prod)
 	@$(MAKE) build
 	@$(BUILD_DIR)/$(APP_NAME) -e $(ENV_FILE)
 else
-	@go run github.com/cosmtrek/air@v$(AIRVERSION)
+	@go run github.com/cosmtrek/air@$(AIRVERSION) -- -e $(ENV_FILE)
 endif
+
+
+# ==============================================================================================
+# Target: list-routes
+# Brief: This target is used to list all routes.
+# Usage: Run the command 'make list-routes'.
+# ==============================================================================================
+.PHONY: list-routes
+list-routes: .cmd-exists-go .clear-screen
+ifneq ($(RUNNING_IN_DOCKER), true)
+	@ENV_FILE=.env.dev $(MAKE) postgres
+	@sh ./scripts/wait_for_db.sh nutrai-psql
+endif
+
+	@go run ./cmd/routes/main.go
 
 
 # ==============================================================================================
@@ -208,8 +225,9 @@ postgres: .cmd-exists-docker .clear-screen .check-env-file
 # ==============================================================================================
 .PHONY: mock
 mock: .cmd-exists-go
-	@sh -c "./scripts/mock.sh ./internal"
-	@sh -c "./scripts/mock.sh ./pkg"
+	@rm -rf ./testutils/mocks
+	@sh -c "./scripts/mock.sh ./internal" &	\
+	sh -c "./scripts/mock.sh ./pkg"
 
 
 # ==============================================================================================
@@ -253,11 +271,14 @@ docker-run: .cmd-exists-docker .clear-screen .check-env-file
 		echo "Error: expected ENV_FILE"; \
 		exit 1; \
 	fi;
-
-	@if [ "$(ENV_FILE)" != ".env.dev" ] && [ "$(ENV_FILE)" != ".env.prod" ] && [ "$(ENV_FILE)" != ".env.test" ]; then \
-		echo "Error: expected .env.dev, .env.test or .env.prod"; \
-		exit 1; \
-	fi;
+	
+	@case "$(ENV_FILE)" in \
+		.env.dev|.env.test|.env.prod) ;; \
+		*) \
+			echo "Error: expected .env.dev, .env.test or .env.prod"; \
+			exit 1; \
+			;; \
+	esac
 
 
 # ==============================================================================================

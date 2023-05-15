@@ -9,4 +9,5 @@
 
 DEFAULT_CONFIG=".golangci.yml"
 
+echo "Running golangci-lint..."
 go run github.com/golangci/golangci-lint/cmd/golangci-lint@v1.52.2 run --config "$DEFAULT_CONFIG" ./...

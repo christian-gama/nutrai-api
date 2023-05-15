@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/user/app/query"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 	queryFake "github.com/christian-gama/nutrai-api/testutils/fake/user/app/query"
@@ -53,7 +53,7 @@ func (s *AllPatientsHandlerSuite) TestPatientHandler() {
 
 		sut.Mocks.Repo.On("All", sut.Ctx, mock.Anything).
 			Return(
-				&querying.PaginationOutput[*patient.Patient]{
+				&queryer.PaginationOutput[*patient.Patient]{
 					Results: []*patient.Patient{fake.Patient()},
 					Total:   1,
 				},

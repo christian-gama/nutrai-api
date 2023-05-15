@@ -6,7 +6,9 @@ import (
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
-// MealPlan represents the meal plan of a diet.
+// MealPlan is a data type that signifies the specific dietary scheme of a diet plan. This can include
+// ketogenic, vegetarian, vegan, Mediterranean, paleolithic, or low-carb plans. Each meal plan is
+// designed to align with the overall goal of the diet.
 type MealPlan string
 
 // String returns the string representation of the meal plan.

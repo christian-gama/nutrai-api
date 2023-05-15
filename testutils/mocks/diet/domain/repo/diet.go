@@ -8,7 +8,7 @@ import (
 	diet "github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
 	mock "github.com/stretchr/testify/mock"
 
-	querying "github.com/christian-gama/nutrai-api/internal/shared/domain/querying"
+	queryer "github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
 
 	repo "github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
 )
@@ -19,7 +19,7 @@ type Diet struct {
 }
 
 // All provides a mock function with given fields: ctx, input, preload
-func (_m *Diet) All(ctx context.Context, input repo.AllDietsInput, preload ...string) (*querying.PaginationOutput[*diet.Diet], error) {
+func (_m *Diet) All(ctx context.Context, input repo.AllDietsInput, preload ...string) (*queryer.PaginationOutput[*diet.Diet], error) {
 	_va := make([]interface{}, len(preload))
 	for _i := range preload {
 		_va[_i] = preload[_i]
@@ -29,16 +29,16 @@ func (_m *Diet) All(ctx context.Context, input repo.AllDietsInput, preload ...st
 	_ca = append(_ca, _va...)
 	ret := _m.Called(_ca...)
 
-	var r0 *querying.PaginationOutput[*diet.Diet]
+	var r0 *queryer.PaginationOutput[*diet.Diet]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, repo.AllDietsInput, ...string) (*querying.PaginationOutput[*diet.Diet], error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repo.AllDietsInput, ...string) (*queryer.PaginationOutput[*diet.Diet], error)); ok {
 		return rf(ctx, input, preload...)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, repo.AllDietsInput, ...string) *querying.PaginationOutput[*diet.Diet]); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repo.AllDietsInput, ...string) *queryer.PaginationOutput[*diet.Diet]); ok {
 		r0 = rf(ctx, input, preload...)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*querying.PaginationOutput[*diet.Diet])
+			r0 = ret.Get(0).(*queryer.PaginationOutput[*diet.Diet])
 		}
 	}
 

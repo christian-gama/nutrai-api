@@ -6,7 +6,8 @@ import (
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
-// Description is a diet description.
+// Description is a data type that represents a detailed explanation or outline of
+// a specific diet plan.
 type Description string
 
 // String returns the string representation of the Description.

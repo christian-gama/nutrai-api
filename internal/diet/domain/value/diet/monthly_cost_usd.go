@@ -6,7 +6,8 @@ import (
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
-// MonthlyCostUSD represents the monthly cost of a diet in USD.
+// MonthlyCostUSD is a data type that denotes the monthly cost of a specific diet plan, measured in
+// US dollars. It provides a financial aspect of the diet plan.
 type MonthlyCostUSD float32
 
 // Float32 returns the float32 representation of the monthly cost.
