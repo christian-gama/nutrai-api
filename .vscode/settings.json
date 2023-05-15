@@ -6,5 +6,16 @@
     "DB_HOST": "localhost",
     "DB_PORT": 5434,
   },
-  "go.testOnSave": true
+  "go.testOnSave": true,
+  // Automatically break lines at 100 characters.
+  // It's necessary to download the extension "emeraldwalk.runonsave" to make it work.
+  // https://marketplace.visualstudio.com/items?itemName=emeraldwalk.RunOnSave
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.go$",
+        "cmd": "go run github.com/segmentio/golines@v0.11.0 -m 100 --no-reformat-tags --shorten-comments ${file}"
+      }
+    ]
+  },
 }
