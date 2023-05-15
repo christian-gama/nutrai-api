@@ -18,32 +18,25 @@ type Diet struct {
 	mock.Mock
 }
 
-// All provides a mock function with given fields: ctx, input, preload
-func (_m *Diet) All(ctx context.Context, input repo.AllDietsInput, preload ...string) (*queryer.PaginationOutput[*diet.Diet], error) {
-	_va := make([]interface{}, len(preload))
-	for _i := range preload {
-		_va[_i] = preload[_i]
-	}
-	var _ca []interface{}
-	_ca = append(_ca, ctx, input)
-	_ca = append(_ca, _va...)
-	ret := _m.Called(_ca...)
+// All provides a mock function with given fields: ctx, input
+func (_m *Diet) All(ctx context.Context, input repo.AllDietsInput) (*queryer.PaginationOutput[*diet.Diet], error) {
+	ret := _m.Called(ctx, input)
 
 	var r0 *queryer.PaginationOutput[*diet.Diet]
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, repo.AllDietsInput, ...string) (*queryer.PaginationOutput[*diet.Diet], error)); ok {
-		return rf(ctx, input, preload...)
+	if rf, ok := ret.Get(0).(func(context.Context, repo.AllDietsInput) (*queryer.PaginationOutput[*diet.Diet], error)); ok {
+		return rf(ctx, input)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, repo.AllDietsInput, ...string) *queryer.PaginationOutput[*diet.Diet]); ok {
-		r0 = rf(ctx, input, preload...)
+	if rf, ok := ret.Get(0).(func(context.Context, repo.AllDietsInput) *queryer.PaginationOutput[*diet.Diet]); ok {
+		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*queryer.PaginationOutput[*diet.Diet])
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, repo.AllDietsInput, ...string) error); ok {
-		r1 = rf(ctx, input, preload...)
+	if rf, ok := ret.Get(1).(func(context.Context, repo.AllDietsInput) error); ok {
+		r1 = rf(ctx, input)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -65,32 +58,25 @@ func (_m *Diet) Delete(ctx context.Context, input repo.DeleteDietInput) error {
 	return r0
 }
 
-// Find provides a mock function with given fields: ctx, input, preload
-func (_m *Diet) Find(ctx context.Context, input repo.FindDietInput, preload ...string) (*diet.Diet, error) {
-	_va := make([]interface{}, len(preload))
-	for _i := range preload {
-		_va[_i] = preload[_i]
-	}
-	var _ca []interface{}
-	_ca = append(_ca, ctx, input)
-	_ca = append(_ca, _va...)
-	ret := _m.Called(_ca...)
+// Find provides a mock function with given fields: ctx, input
+func (_m *Diet) Find(ctx context.Context, input repo.FindDietInput) (*diet.Diet, error) {
+	ret := _m.Called(ctx, input)
 
 	var r0 *diet.Diet
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, repo.FindDietInput, ...string) (*diet.Diet, error)); ok {
-		return rf(ctx, input, preload...)
+	if rf, ok := ret.Get(0).(func(context.Context, repo.FindDietInput) (*diet.Diet, error)); ok {
+		return rf(ctx, input)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, repo.FindDietInput, ...string) *diet.Diet); ok {
-		r0 = rf(ctx, input, preload...)
+	if rf, ok := ret.Get(0).(func(context.Context, repo.FindDietInput) *diet.Diet); ok {
+		r0 = rf(ctx, input)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*diet.Diet)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, repo.FindDietInput, ...string) error); ok {
-		r1 = rf(ctx, input, preload...)
+	if rf, ok := ret.Get(1).(func(context.Context, repo.FindDietInput) error); ok {
+		r1 = rf(ctx, input)
 	} else {
 		r1 = ret.Error(1)
 	}

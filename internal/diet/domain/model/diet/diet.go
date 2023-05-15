@@ -2,6 +2,7 @@ package diet
 
 import (
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
+	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/restrictedfood"
 	value "github.com/christian-gama/nutrai-api/internal/diet/domain/value/diet"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
@@ -12,14 +13,15 @@ import (
 // This model can be used to represent any type of diet plan, such as a low-carb diet, vegan diet,
 // or Mediterranean diet.
 type Diet struct {
-	ID              coreValue.ID           `faker:"uint"`
-	Name            value.Name             `faker:"name"`
-	Description     value.Description      `faker:"paragraph"`
-	RestrictedFood  []value.RestrictedFood `faker:"-"`
-	DurationInWeeks value.DurationInWeeks  `faker:"boundary_start=1, boundary_end=100"`
-	Goal            value.Goal             `faker:"oneof:WEIGHT_LOSS, WEIGHT_GAIN, MAINTAIN, IMPROVED_HEALTH, INCREASE_ENERGY, MUSCLE_GAIN"`
-	MealPlan        value.MealPlan         `faker:"oneof:ketogenic, vegetarian, vegan, mediterranean, paleolithic, low-carb"`
-	MonthlyCostUSD  value.MonthlyCostUSD   `faker:"boundary_start=12.65, boundary_end=184.05"`
+	ID              coreValue.ID                     `faker:"uint"`
+	PatientID       coreValue.ID                     `faker:"uint"`
+	Name            value.Name                       `faker:"name"`
+	Description     value.Description                `faker:"paragraph"`
+	RestrictedFood  []*restrictedfood.RestrictedFood `faker:"-"`
+	DurationInWeeks value.DurationInWeeks            `faker:"boundary_start=1, boundary_end=100"`
+	Goal            value.Goal                       `faker:"-"`
+	MealPlan        value.MealPlan                   `faker:"-"`
+	MonthlyCostUSD  value.MonthlyCostUSD             `faker:"boundary_start=12.65, boundary_end=184.05"`
 }
 
 // Validate returns an error if the diet is invalid.
@@ -27,6 +29,10 @@ func (d *Diet) Validate() error {
 	var errs *errutil.Error
 
 	if err := d.ID.Validate(); err != nil {
+		errs = errutil.Append(errs, err)
+	}
+
+	if err := d.PatientID.Validate(); err != nil {
 		errs = errutil.Append(errs, err)
 	}
 
@@ -54,14 +60,20 @@ func (d *Diet) Validate() error {
 		errs = errutil.Append(errs, err)
 	}
 
-	if len(d.RestrictedFood) == 0 {
+	if d.RestrictedFood == nil {
 		errs = errutil.Append(errs, errutil.NewErrRequired("restricted_food"))
-	}
+	} else {
 
-	for _, restrictedFood := range d.RestrictedFood {
-		if err := restrictedFood.Validate(); err != nil {
-			errs = errutil.Append(errs, err)
+		if len(d.RestrictedFood) == 0 {
+			errs = errutil.Append(errs, errutil.NewErrRequired("restricted_food"))
 		}
+
+		for _, restrictedFood := range d.RestrictedFood {
+			if err := restrictedFood.Validate(); err != nil {
+				errs = errutil.Append(errs, err)
+			}
+		}
+
 	}
 
 	if errs.HasErrors() {
@@ -85,6 +97,12 @@ func NewBuilder() *builder {
 // SetID sets the diet's ID.
 func (b *builder) SetID(id coreValue.ID) *builder {
 	b.diet.ID = id
+	return b
+}
+
+// SetPatientID sets the diet's patient ID.
+func (b *builder) SetPatientID(patientID coreValue.ID) *builder {
+	b.diet.PatientID = patientID
 	return b
 }
 
@@ -125,7 +143,7 @@ func (b *builder) SetMonthlyCostUSD(monthlyCostUSD value.MonthlyCostUSD) *builde
 }
 
 // SetRestrictedFood sets the diet's restricted food.
-func (b *builder) SetRestrictedFood(restrictedFood []value.RestrictedFood) *builder {
+func (b *builder) SetRestrictedFood(restrictedFood []*restrictedfood.RestrictedFood) *builder {
 	b.diet.RestrictedFood = restrictedFood
 	return b
 }
