@@ -31,5 +31,7 @@ func (p Params) Slice() []string {
 // ToPath returns the params as a path.
 // Example: AddParams("id").ToPath("/resource") -> "/resource/:id".
 func (p Params) ToPath(path Path) Path {
-	return Path(fmt.Sprintf("%s/:%s", strings.TrimSuffix(path.String(), "/"), strings.Join(p, "/:")))
+	return Path(
+		fmt.Sprintf("%s/:%s", strings.TrimSuffix(path.String(), "/"), strings.Join(p, "/:")),
+	)
 }

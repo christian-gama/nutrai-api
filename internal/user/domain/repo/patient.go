@@ -42,7 +42,10 @@ type UpdatePatientInput struct {
 // Patient is the interface that wraps the basic Patient methods.
 type Patient interface {
 	// All returns all patients.
-	All(ctx context.Context, input AllPatientsInput) (*queryer.PaginationOutput[*patient.Patient], error)
+	All(
+		ctx context.Context,
+		input AllPatientsInput,
+	) (*queryer.PaginationOutput[*patient.Patient], error)
 
 	// Delete deletes the patient with the given id.
 	Delete(ctx context.Context, input DeletePatientInput) error

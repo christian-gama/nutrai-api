@@ -40,7 +40,11 @@ type UpdateDietInput struct {
 // Diet is the interface that wraps the basic Diet methods.
 type Diet interface {
 	// All returns all diets.
-	All(ctx context.Context, input AllDietsInput, preload ...string) (*queryer.PaginationOutput[*diet.Diet], error)
+	All(
+		ctx context.Context,
+		input AllDietsInput,
+		preload ...string,
+	) (*queryer.PaginationOutput[*diet.Diet], error)
 
 	// Delete deletes the diet with the given id.
 	Delete(ctx context.Context, input DeleteDietInput) error

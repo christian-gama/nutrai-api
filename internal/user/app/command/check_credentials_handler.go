@@ -35,7 +35,10 @@ func NewCheckCredentialsHandler(r repo.User, h hasher.Hasher) CheckCredentialsHa
 }
 
 // Handle implements command.Handler.
-func (c *checkCredentialsHandlerImpl) Handle(ctx context.Context, input *CheckCredentialsInput) error {
+func (c *checkCredentialsHandlerImpl) Handle(
+	ctx context.Context,
+	input *CheckCredentialsInput,
+) error {
 	user, err := c.FindByEmail(ctx, repo.FindByEmailUserInput{Email: input.Email})
 	if err != nil {
 		return err
@@ -54,7 +57,10 @@ func (c *checkCredentialsHandlerImpl) Handle(ctx context.Context, input *CheckCr
 }
 
 // checkPassword checks if the given password matches the user's hashed password.
-func (c *checkCredentialsHandlerImpl) checkPassword(user *user.User, password value.Password) error {
+func (c *checkCredentialsHandlerImpl) checkPassword(
+	user *user.User,
+	password value.Password,
+) error {
 	if err := c.Hasher.Compare(password, user.Password); err != nil {
 		return errutil.NewErrInvalid("password", "does not match")
 	}

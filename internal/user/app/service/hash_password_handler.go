@@ -26,7 +26,10 @@ func NewHashPasswordHandler(h hasher.Hasher) HashPasswordHandler {
 }
 
 // Handle generates a hash for the given password.
-func (s *hashPasswordHandlerImpl) Handle(ctx context.Context, input *HashPasswordInput) (*HashPasswordOutput, error) {
+func (s *hashPasswordHandlerImpl) Handle(
+	ctx context.Context,
+	input *HashPasswordInput,
+) (*HashPasswordOutput, error) {
 	hashedPassword, err := s.Hash(input.Password)
 	if err != nil {
 		return nil, err

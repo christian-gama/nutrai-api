@@ -25,7 +25,10 @@ func (r RestrictedFood) Validate() error {
 	}
 
 	if len(r) > maxChars {
-		return errutil.NewErrInvalid(fieldName, fmt.Sprintf("cannot be longer than %d characters", maxChars))
+		return errutil.NewErrInvalid(
+			fieldName,
+			fmt.Sprintf("cannot be longer than %d characters", maxChars),
+		)
 	}
 
 	return nil

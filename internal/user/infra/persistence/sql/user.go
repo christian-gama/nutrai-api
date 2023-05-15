@@ -31,7 +31,10 @@ func NewSQLUser(db *gorm.DB) repo.User {
 }
 
 // All implements repo.User.
-func (p *userSQLImpl) All(ctx context.Context, input repo.AllUsersInput) (*queryer.PaginationOutput[*user.User], error) {
+func (p *userSQLImpl) All(
+	ctx context.Context,
+	input repo.AllUsersInput,
+) (*queryer.PaginationOutput[*user.User], error) {
 	return p.manager.All(ctx,
 		manager.AllInput[user.User]{
 			Filterer:  input.Filterer,
@@ -63,7 +66,10 @@ func (p *userSQLImpl) Find(ctx context.Context, input repo.FindUserInput) (*user
 }
 
 // FindByEmail implements repo.User.
-func (p *userSQLImpl) FindByEmail(ctx context.Context, input repo.FindByEmailUserInput) (*user.User, error) {
+func (p *userSQLImpl) FindByEmail(
+	ctx context.Context,
+	input repo.FindByEmailUserInput,
+) (*user.User, error) {
 	db := p.manager.WithContext(ctx)
 	var schema schema.User
 

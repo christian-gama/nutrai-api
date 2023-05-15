@@ -26,11 +26,17 @@ func (n Name) Validate() error {
 	}
 
 	if len(n.String()) < minLen {
-		return errutil.NewErrInvalid(fieldName, fmt.Sprintf("cannot be less than %d characters", minLen))
+		return errutil.NewErrInvalid(
+			fieldName,
+			fmt.Sprintf("cannot be less than %d characters", minLen),
+		)
 	}
 
 	if len(n.String()) > maxLen {
-		return errutil.NewErrInvalid(fieldName, fmt.Sprintf("cannot be greater than %d characters", maxLen))
+		return errutil.NewErrInvalid(
+			fieldName,
+			fmt.Sprintf("cannot be greater than %d characters", maxLen),
+		)
 	}
 
 	return nil

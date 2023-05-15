@@ -37,7 +37,9 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 	}
 
 	makeSut := func() Sut {
-		hashPasswordHandler := serviceMock.NewHandler[*service.HashPasswordInput, *service.HashPasswordOutput](s.T())
+		hashPasswordHandler := serviceMock.NewHandler[*service.HashPasswordInput, *service.HashPasswordOutput](
+			s.T(),
+		)
 		patientRepo := userRepoMock.NewPatient(s.T())
 
 		return Sut{
@@ -78,7 +80,12 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 
 		_ = sut.Sut.Handle(sut.Ctx, sut.Input)
 
-		sut.Mocks.HashPasswordHandler.AssertCalled(s.T(), "Handle", sut.Ctx, &service.HashPasswordInput{Password: password})
+		sut.Mocks.HashPasswordHandler.AssertCalled(
+			s.T(),
+			"Handle",
+			sut.Ctx,
+			&service.HashPasswordInput{Password: password},
+		)
 	})
 
 	s.Run("Should return error when hashing password fails", func() {

@@ -241,7 +241,11 @@ func (s *UserSuite) TestAll() {
 		result, err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.NoError(err)
-		s.Greater(int(result.Results[1].ID), int(result.Results[2].ID), "Should have the correct order")
+		s.Greater(
+			int(result.Results[1].ID),
+			int(result.Results[2].ID),
+			"Should have the correct order",
+		)
 	})
 
 	s.Run("Should return the correct users using sorter as asc", func(db *gorm.DB) {
@@ -256,7 +260,11 @@ func (s *UserSuite) TestAll() {
 		result, err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.NoError(err)
-		s.Greater(int(result.Results[2].ID), int(result.Results[1].ID), "Should have the correct order")
+		s.Greater(
+			int(result.Results[2].ID),
+			int(result.Results[1].ID),
+			"Should have the correct order",
+		)
 	})
 
 	s.Run("Should return the correct users using pagination", func(db *gorm.DB) {

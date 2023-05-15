@@ -43,7 +43,8 @@ func (c *updatePatientHandlerImpl) Handle(ctx context.Context, input *UpdatePati
 	user, err := user.NewBuilder().
 		SetName(input.User.Name).
 		SetEmail(input.User.Email).
-		// The password must keep the same. To change the password, refer to the ChangePassword command.
+		// The password must keep the same. To change the password, refer to the ChangePassword
+		// command.
 		SetPassword(savedPatient.User.Password).
 		Build()
 	if err != nil {

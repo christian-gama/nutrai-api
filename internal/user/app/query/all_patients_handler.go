@@ -28,7 +28,10 @@ func NewAllPatientsHandler(r repo.Patient) AllPatientsHandler {
 }
 
 // Handle implements query.Handler.
-func (q *allPatientsHandlerImpl) Handle(ctx context.Context, input *AllPatientsInput) (*queryer.PaginationOutput[*AllPatientsOutput], error) {
+func (q *allPatientsHandlerImpl) Handle(
+	ctx context.Context,
+	input *AllPatientsInput,
+) (*queryer.PaginationOutput[*AllPatientsOutput], error) {
 	pagination, err := q.Patient.All(ctx, repo.AllPatientsInput{
 		Filterer:  input.Filter,
 		Paginator: &input.Pagination,

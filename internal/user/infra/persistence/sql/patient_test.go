@@ -251,7 +251,11 @@ func (s *PatientSuite) TestAll() {
 		result, err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.NoError(err)
-		s.Greater(int(result.Results[1].ID), int(result.Results[2].ID), "Should have the correct order")
+		s.Greater(
+			int(result.Results[1].ID),
+			int(result.Results[2].ID),
+			"Should have the correct order",
+		)
 	})
 
 	s.Run("Should return the correct patients using sorter as asc", func(db *gorm.DB) {
@@ -266,7 +270,11 @@ func (s *PatientSuite) TestAll() {
 		result, err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.NoError(err)
-		s.Greater(int(result.Results[2].ID), int(result.Results[1].ID), "Should have the correct order")
+		s.Greater(
+			int(result.Results[2].ID),
+			int(result.Results[1].ID),
+			"Should have the correct order",
+		)
 	})
 
 	s.Run("Should return the correct patients using pagination", func(db *gorm.DB) {
@@ -326,7 +334,8 @@ func (s *PatientSuite) TestUpdate() {
 		err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.Require().NoError(err)
-		patient, err := s.Patient(db).Find(sut.Ctx, repo.FindPatientInput{ID: patientDeps.Patient.ID})
+		patient, err := s.Patient(db).
+			Find(sut.Ctx, repo.FindPatientInput{ID: patientDeps.Patient.ID})
 		s.NoError(err)
 		s.EqualValues(50, patient.Age, "Should have the same age")
 	})

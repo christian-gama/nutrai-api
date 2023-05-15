@@ -16,7 +16,11 @@ type Path string
 func JoinPath(path ...string) Path {
 	for _, p := range path {
 		if strings.Contains(p, "/") {
-			panic(errors.New("path must not contain '/'. The path will be automatically joined using '/'"))
+			panic(
+				errors.New(
+					"path must not contain '/'. The path will be automatically joined using '/'",
+				),
+			)
 		}
 	}
 

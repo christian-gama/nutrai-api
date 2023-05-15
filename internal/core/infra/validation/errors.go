@@ -321,7 +321,10 @@ var ErrorMap = map[string]func(field string, param string) error{
 	},
 
 	"iban": func(field string, param string) error {
-		return errutil.NewErrInvalid(field, "is not a valid International Standard Book Number (ISBN)")
+		return errutil.NewErrInvalid(
+			field,
+			"is not a valid International Standard Book Number (ISBN)",
+		)
 	},
 
 	"isbn10": func(field string, param string) error {
@@ -353,7 +356,10 @@ var ErrorMap = map[string]func(field string, param string) error{
 	},
 
 	"iso3166_1_alpha_numeric": func(field string, param string) error {
-		return errutil.NewErrInvalid(field, "is not a valid numeric country code (ISO 3166-1 numeric)")
+		return errutil.NewErrInvalid(
+			field,
+			"is not a valid numeric country code (ISO 3166-1 numeric)",
+		)
 	},
 
 	"iso3166_2": func(field string, param string) error {
@@ -493,7 +499,10 @@ var ErrorMap = map[string]func(field string, param string) error{
 	},
 
 	"gte": func(field string, param string) error {
-		return errutil.NewErrInvalid(field, fmt.Sprintf("is not greater than or equal to %s", param))
+		return errutil.NewErrInvalid(
+			field,
+			fmt.Sprintf("is not greater than or equal to %s", param),
+		)
 	},
 
 	"lt": func(field string, param string) error {
@@ -529,7 +538,10 @@ var ErrorMap = map[string]func(field string, param string) error{
 	},
 
 	"min": func(field string, param string) error {
-		return errutil.NewErrInvalid(field, fmt.Sprintf("is not greater than or equal to %s", param))
+		return errutil.NewErrInvalid(
+			field,
+			fmt.Sprintf("is not greater than or equal to %s", param),
+		)
 	},
 
 	"oneof": func(field string, param string) error {
@@ -584,11 +596,17 @@ var ErrorMap = map[string]func(field string, param string) error{
 	},
 
 	"excluded_without": func(field string, param string) error {
-		return errutil.NewErrInvalid(field, fmt.Sprintf("is not allowed when %s is not present", param))
+		return errutil.NewErrInvalid(
+			field,
+			fmt.Sprintf("is not allowed when %s is not present", param),
+		)
 	},
 
 	"excluded_without_all": func(field string, param string) error {
-		return errutil.NewErrInvalid(field, fmt.Sprintf("is not allowed when %s is not present", param))
+		return errutil.NewErrInvalid(
+			field,
+			fmt.Sprintf("is not allowed when %s is not present", param),
+		)
 	},
 
 	"unique": func(field string, param string) error {

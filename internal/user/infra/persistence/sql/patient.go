@@ -29,7 +29,10 @@ func NewSQLPatient(db *gorm.DB) repo.Patient {
 }
 
 // All implements repo.Patient.
-func (p *patientSQLImpl) All(ctx context.Context, input repo.AllPatientsInput) (*queryer.PaginationOutput[*patient.Patient], error) {
+func (p *patientSQLImpl) All(
+	ctx context.Context,
+	input repo.AllPatientsInput,
+) (*queryer.PaginationOutput[*patient.Patient], error) {
 	return p.manager.All(ctx,
 		manager.AllInput[patient.Patient]{
 			Filterer:  input.Filterer,
@@ -46,7 +49,10 @@ func (p *patientSQLImpl) Delete(ctx context.Context, input repo.DeletePatientInp
 }
 
 // Find implements repo.Patient.
-func (p *patientSQLImpl) Find(ctx context.Context, input repo.FindPatientInput) (*patient.Patient, error) {
+func (p *patientSQLImpl) Find(
+	ctx context.Context,
+	input repo.FindPatientInput,
+) (*patient.Patient, error) {
 	return p.manager.Find(ctx,
 		manager.FindInput[patient.Patient]{
 			ID:        input.ID,
@@ -56,7 +62,10 @@ func (p *patientSQLImpl) Find(ctx context.Context, input repo.FindPatientInput) 
 }
 
 // Save implements repo.Patient.
-func (p *patientSQLImpl) Save(ctx context.Context, input repo.SavePatientInput) (*patient.Patient, error) {
+func (p *patientSQLImpl) Save(
+	ctx context.Context,
+	input repo.SavePatientInput,
+) (*patient.Patient, error) {
 	return p.manager.Save(ctx,
 		manager.SaveInput[patient.Patient]{
 			Model: input.Patient,

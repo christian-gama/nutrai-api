@@ -32,7 +32,9 @@ func (s *AllPatientsSuite) TestHandle() {
 
 	makeSut := func() *Sut {
 		input := fake.AllPatientsInput()
-		allPatients := mocks.NewHandler[*query.AllPatientsInput, *queryer.PaginationOutput[*query.AllPatientsOutput]](s.T())
+		allPatients := mocks.NewHandler[*query.AllPatientsInput, *queryer.PaginationOutput[*query.AllPatientsOutput]](
+			s.T(),
+		)
 		sut := controller.NewAllPatients(allPatients)
 		return &Sut{Sut: sut, AllPatientsHandler: allPatients, Input: *input}
 	}

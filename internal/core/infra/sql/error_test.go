@@ -57,14 +57,16 @@ func (s *ErrorSuite) TestError() {
 		},
 	)
 
-	s.Run("returns an ErrNotNullConstraint if the error is a not-null constraint violation", func() {
-		err := errors.New(`value in column "column" violates not-null constraint`)
+	s.Run(
+		"returns an ErrNotNullConstraint if the error is a not-null constraint violation",
+		func() {
+			err := errors.New(`value in column "column" violates not-null constraint`)
 
-		err = sql.Error(err, "resource")
+			err = sql.Error(err, "resource")
 
-		var e *sql.ErrNotNullConstraint
-		s.ErrorAs(err, &e)
-	},
+			var e *sql.ErrNotNullConstraint
+			s.ErrorAs(err, &e)
+		},
 	)
 
 	s.Run("returns an ErrCheckConstraint if the error is a check constraint violation", func() {
@@ -165,14 +167,16 @@ func (s *ErrorSuite) TestError() {
 		s.ErrorAs(err, &e)
 	})
 
-	s.Run("returns an ErrTooLong if the error is a too long value and cannot extract param", func() {
-		err := errors.New("SQLSTATE 22001")
+	s.Run(
+		"returns an ErrTooLong if the error is a too long value and cannot extract param",
+		func() {
+			err := errors.New("SQLSTATE 22001")
 
-		err = sql.Error(err, "resource")
+			err = sql.Error(err, "resource")
 
-		var e *sql.ErrCheckConstraint
-		s.ErrorAs(err, &e)
-	},
+			var e *sql.ErrCheckConstraint
+			s.ErrorAs(err, &e)
+		},
 	)
 
 	s.Run("returns the original error if it is a unknown error", func() {

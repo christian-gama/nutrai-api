@@ -250,11 +250,23 @@ func (s *DietTestSuite) TestNewDiet() {
 			s.NotNil(diet)
 			s.Equal(sut.Data.Name, diet.Name, "should have the same name")
 			s.Equal(sut.Data.Description, diet.Description, "should have the same description")
-			s.Equal(sut.Data.RestrictedFood, diet.RestrictedFood, "should have the same restricted food")
-			s.Equal(sut.Data.DurationInWeeks, diet.DurationInWeeks, "should have the same duration in weeks")
+			s.Equal(
+				sut.Data.RestrictedFood,
+				diet.RestrictedFood,
+				"should have the same restricted food",
+			)
+			s.Equal(
+				sut.Data.DurationInWeeks,
+				diet.DurationInWeeks,
+				"should have the same duration in weeks",
+			)
 			s.Equal(sut.Data.Goal, diet.Goal, "should have the same goal")
 			s.Equal(sut.Data.MealPlan, diet.MealPlan, "should have the same meal plan")
-			s.Equal(sut.Data.MonthlyCostUSD, diet.MonthlyCostUSD, "should have the same monthly cost in USD")
+			s.Equal(
+				sut.Data.MonthlyCostUSD,
+				diet.MonthlyCostUSD,
+				"should have the same monthly cost in USD",
+			)
 		})
 	})
 }

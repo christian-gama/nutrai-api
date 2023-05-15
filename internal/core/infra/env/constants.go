@@ -27,8 +27,8 @@ const (
 	// will make sure to always connect to the server requested.
 	SslModeRequire DBSslMode = "require"
 
-	// SslModeVerifyCa want data encrypted, and accept the overhead. It want to be sure that connect to
-	// a server that it trusts.
+	// SslModeVerifyCa want data encrypted, and accept the overhead. It want to be sure that connect
+	// to a server that it trusts.
 	SslModeVerifyCa DBSslMode = "verify-ca"
 
 	// SslModeVerifyFull want data encrypted, and accept the overhead. It want to be sure that

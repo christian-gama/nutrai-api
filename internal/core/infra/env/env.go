@@ -12,11 +12,13 @@ type db struct {
 	// specified user with superuser power and a database with the same name.
 	User DBUser `env:"DB_USER,required"`
 
-	// Password must not be empty or undefined. This environment variable sets the superuser password for
+	// Password must not be empty or undefined. This environment variable sets the superuser
+	// password for
 	// the database.
 	Password DBPassword `env:"DB_PASSWORD,required"`
 
-	// Name can be used to define a different name for the default database that is created when the instance
+	// Name can be used to define a different name for the default database that is created when the
+	// instance
 	// is first started.
 	Name DBName `env:"DB_NAME,required"`
 

@@ -192,7 +192,11 @@ func (s *RoutingSuite) TestRegister() {
 	})
 }
 
-func Register(routing *routing.Routing, method http.Method, path string) *httptest.ResponseRecorder {
+func Register(
+	routing *routing.Routing,
+	method http.Method,
+	path string,
+) *httptest.ResponseRecorder {
 	w := httptest.NewRecorder()
 	router := gin.New()
 	v1 := router.Group("/test")

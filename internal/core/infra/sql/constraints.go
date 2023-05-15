@@ -9,7 +9,8 @@ import (
 )
 
 // ForeignKeyConstraint is an error that occurs when a foreign key constraint is violated.
-// Example: "insert or update on table \"user\" violates foreign key constraint \"fk__role_id__roles.id\"".
+// Example: "insert or update on table \"user\" violates foreign key constraint
+// \"fk__role_id__roles.id\"".
 func ForeignKeyConstraint(err error) error {
 	msg := err.Error()
 
@@ -94,7 +95,8 @@ func NotNullConstraint(err error) error {
 	return NewErrNotNullConstraint(strcase.ToLowerCamel(columnName))
 }
 
-// NotNullConstraintOfRelation is an error that occurs when a not-null constraint is violated in a relation.
+// NotNullConstraintOfRelation is an error that occurs when a not-null constraint is violated in a
+// relation.
 func NotNullConstraintOfRelation(err error) error {
 	str := err.Error()
 

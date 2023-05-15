@@ -53,7 +53,8 @@ type ValidModel interface {
 	Validate() error
 }
 
-// ToValidModel converts an object to a model and validates it. It  returns an error if an error occurs.
+// ToValidModel converts an object to a model and validates it. It  returns an error if an error
+// occurs.
 func ToValidModel[Model ValidModel, Obj any](model Model, obj Obj) (Model, error) {
 	model = ToModel(model, obj)
 	if err := model.Validate(); err != nil {

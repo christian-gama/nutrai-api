@@ -27,7 +27,8 @@ var (
 	errTooLongValue           = "SQLSTATE 22001"
 )
 
-// Error is a helper to convert SQL errors into friendly errors. It returns nil if no error is found.
+// Error is a helper to convert SQL errors into friendly errors. It returns nil if no error is
+// found.
 // TODO: refactor this to use maps instead of if-else statements.
 func Error(err error, resource ...string) error {
 	if err == nil {
