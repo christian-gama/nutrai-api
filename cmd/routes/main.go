@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/christian-gama/nutrai-api/internal"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/env"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
 	"github.com/gin-gonic/gin"
 )
 

@@ -1,14 +1,14 @@
 package user
 
 import (
-	sharedvalue "github.com/christian-gama/nutrai-api/internal/shared/domain/value"
+	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	value "github.com/christian-gama/nutrai-api/internal/user/domain/value/user"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
 // User is the user model.
 type User struct {
-	ID       sharedvalue.ID `faker:"uint"`
+	ID       coreValue.ID   `faker:"uint"`
 	Email    value.Email    `faker:"email"`
 	Password value.Password `faker:"len=8"`
 	Name     value.Name     `faker:"len=3"`
@@ -49,7 +49,7 @@ func NewBuilder() *builder {
 }
 
 // SetID sets the user ID.
-func (b *builder) SetID(id sharedvalue.ID) *builder {
+func (b *builder) SetID(id coreValue.ID) *builder {
 	b.user.ID = id
 	return b
 }

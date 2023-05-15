@@ -3,7 +3,7 @@ package controller
 import (
 	"errors"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/http"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/user/app/query"
 	"github.com/gin-gonic/gin"
 )

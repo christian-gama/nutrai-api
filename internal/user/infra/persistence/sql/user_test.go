@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/value"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/value"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
 	persistence "github.com/christian-gama/nutrai-api/internal/user/infra/persistence/sql"

@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/christian-gama/nutrai-api/internal"
-	l "github.com/christian-gama/nutrai-api/pkg/log"
+	l "github.com/christian-gama/nutrai-api/internal/core/infra/log"
 	"github.com/spf13/cobra"
 )
 

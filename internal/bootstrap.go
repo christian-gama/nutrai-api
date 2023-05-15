@@ -4,10 +4,10 @@ import (
 	"context"
 
 	// Initialize custom validation aliases.
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/logger"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/env"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/server"
-	_ "github.com/christian-gama/nutrai-api/internal/shared/infra/validation"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/logger"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/server"
+	_ "github.com/christian-gama/nutrai-api/internal/core/infra/validation"
 )
 
 // Bootstrap is the main function that starts the application.

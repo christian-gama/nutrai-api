@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/user/app/query"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 	queryFake "github.com/christian-gama/nutrai-api/testutils/fake/user/app/query"

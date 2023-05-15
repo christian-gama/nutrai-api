@@ -4,7 +4,7 @@ import (
 	gosql "database/sql"
 	"errors"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql"
 	"gorm.io/gorm"
 )
 

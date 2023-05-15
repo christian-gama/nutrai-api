@@ -10,7 +10,7 @@ import (
 	value "github.com/christian-gama/nutrai-api/internal/user/domain/value/user"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/user/app/command"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
-	commandMock "github.com/christian-gama/nutrai-api/testutils/mocks/shared/app/command"
+	commandMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/command"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

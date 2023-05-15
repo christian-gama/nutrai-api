@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/manager"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/manager"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
 	"github.com/christian-gama/nutrai-api/internal/user/infra/persistence/sql/schema"

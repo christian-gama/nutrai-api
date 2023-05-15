@@ -3,8 +3,8 @@ package repo
 import (
 	"context"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/value"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 )
 

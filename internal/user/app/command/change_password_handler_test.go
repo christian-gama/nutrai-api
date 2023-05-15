@@ -8,7 +8,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/user/app/service"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/user/app/command"
 	userFake "github.com/christian-gama/nutrai-api/testutils/fake/user/domain/model/user"
-	serviceMock "github.com/christian-gama/nutrai-api/testutils/mocks/shared/app/service"
+	serviceMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/service"
 	userRepoMock "github.com/christian-gama/nutrai-api/testutils/mocks/user/domain/repo"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"

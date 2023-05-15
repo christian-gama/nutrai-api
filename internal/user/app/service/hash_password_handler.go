@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/app/service"
+	"github.com/christian-gama/nutrai-api/internal/core/app/service"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/hasher"
 )
 

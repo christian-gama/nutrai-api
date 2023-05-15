@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/christian-gama/nutrai-api/internal"
-	mocks "github.com/christian-gama/nutrai-api/testutils/mocks/shared/domain/logger"
+	mocks "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/logger"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/mock"
 )

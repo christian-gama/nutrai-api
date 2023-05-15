@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/app/command"
-	"github.com/christian-gama/nutrai-api/internal/shared/domain/value"
+	"github.com/christian-gama/nutrai-api/internal/core/app/command"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
 )
 

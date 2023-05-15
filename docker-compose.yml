@@ -1,5 +1,8 @@
 version: '3.9'
 services:
+  # Database service to run both in development and production. The variables
+  # are configured in .env.$APP_ENV and it will run according to the variables
+  # you set there.
   psql:
     container_name: nutrai-psql
     image: postgres:15.2-alpine
@@ -20,6 +23,9 @@ services:
     ports:
       - "$DB_PORT:$DB_PORT"
 
+  # Service to run both in development and production. The variables are
+  # configured in .env.$APP_ENV and it will run according to the variables
+  # you set there.
   api:
     container_name: nutrai-api
     restart: always
@@ -50,6 +56,10 @@ services:
     environment:
       - RUNNING_IN_DOCKER=true
 
+  # Optimized for running tests. Do not use for development. It will run the 
+  # database in a tmpfs, so it will not persist data. Besides that, it will
+  # disable fsync, full_page_writes and synchronous_commit, so it will be much
+  # faster, but it will not be safe for production.
   psql_test:
     container_name: nutrai-psql-test
     image: postgres:15.2-alpine

@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"strings"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/http"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/testutils/httputil"
 	"github.com/gin-gonic/gin"
 )

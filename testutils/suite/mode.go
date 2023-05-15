@@ -30,7 +30,7 @@ func mode() string {
 	return mode
 }
 
-// RunIntegrationTest runs the integration tests if the TEST_MODE is integration or both.
+// RunIntegrationTest runs the integration tests if the TEST_MODE is 'integration' or all.
 func RunIntegrationTest(t *testing.T, s testify.TestingSuite) {
 	if mode() == integrationTests || mode() == allTests {
 		testify.Run(t, s)
@@ -39,7 +39,7 @@ func RunIntegrationTest(t *testing.T, s testify.TestingSuite) {
 	}
 }
 
-// RunUnitTest runs the unit tests if the TEST_MODE is unit or both.
+// RunUnitTest runs the unit tests if the TEST_MODE is 'unit' or 'all'.
 func RunUnitTest(t *testing.T, s testify.TestingSuite) {
 	if mode() == unitTests || mode() == allTests {
 		testify.Run(t, s)

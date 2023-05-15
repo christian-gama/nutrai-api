@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	queryer "github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
+	queryer "github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
 	patient "github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 	mock "github.com/stretchr/testify/mock"
 

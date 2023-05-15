@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/app/command"
+	"github.com/christian-gama/nutrai-api/internal/core/app/command"
 	"github.com/christian-gama/nutrai-api/internal/user/app/service"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"

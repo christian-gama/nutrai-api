@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/sql/querying"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/querying"
 )
 
 func BuildScopeQuery(filter querying.Filter, sortBy querying.Sort, preload querying.Preload) string {

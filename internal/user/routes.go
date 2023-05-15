@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/router/routing"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/router/routing"
 	"github.com/christian-gama/nutrai-api/internal/user/api/controller"
 )
 

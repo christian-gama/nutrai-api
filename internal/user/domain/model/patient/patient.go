@@ -1,7 +1,7 @@
 package patient
 
 import (
-	sharedvalue "github.com/christian-gama/nutrai-api/internal/shared/domain/value"
+	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
 	value "github.com/christian-gama/nutrai-api/internal/user/domain/value/patient"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
@@ -9,7 +9,7 @@ import (
 
 // Patient is the model for a patient.
 type Patient struct {
-	ID       sharedvalue.ID `faker:"uint"`
+	ID       coreValue.ID   `faker:"uint"`
 	User     *user.User     `faker:"-"`
 	WeightKG value.WeightKG `faker:"boundary_start=1, boundary_end=999"`
 	HeightM  value.HeightM  `faker:"boundary_start=1, boundary_end=3"`
@@ -58,7 +58,7 @@ func NewBuilder() *builder {
 }
 
 // SetID sets the ID on the builder.
-func (b *builder) SetID(id sharedvalue.ID) *builder {
+func (b *builder) SetID(id coreValue.ID) *builder {
 	b.patient.ID = id
 	return b
 }

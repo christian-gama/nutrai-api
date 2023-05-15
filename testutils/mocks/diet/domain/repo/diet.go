@@ -8,7 +8,7 @@ import (
 	diet "github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
 	mock "github.com/stretchr/testify/mock"
 
-	queryer "github.com/christian-gama/nutrai-api/internal/shared/domain/queryer"
+	queryer "github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
 
 	repo "github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
 )

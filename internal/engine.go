@@ -1,8 +1,8 @@
 package internal
 
 import (
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/router"
-	"github.com/christian-gama/nutrai-api/internal/shared/infra/router/routing"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/router"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/router/routing"
 	"github.com/christian-gama/nutrai-api/internal/user"
 	"github.com/gin-gonic/gin"
 )
