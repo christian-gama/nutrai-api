@@ -71,22 +71,22 @@ func (s *AllPatientsSuite) TestHandle() {
 
 		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
 			Queries: gintest.BuildScopeQuery(
-				sut.Input.Filter.
+				gintest.FilterOption(sut.Input.Filter.
 					Add("age", "eq", 123).
 					Add("weightKG", "eq", 123).
 					Add("heightM", "eq", 123).
-					Slice(),
+					Slice()),
 
-				sut.Input.Sort.
+				gintest.SortOption(sut.Input.Sort.
 					Add("age", false).
 					Add("weightKG", false).
 					Add("heightM", false).
-					Slice(),
+					Slice()),
 
-				sut.Input.Preload.
+				gintest.PreloadOption(sut.Input.Preload.
 					Add("user").
 					Add("users").
-					Slice(),
+					Slice()),
 			),
 		})
 
@@ -99,9 +99,7 @@ func (s *AllPatientsSuite) TestHandle() {
 
 		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
 			Queries: gintest.BuildScopeQuery(
-				sut.Input.Filter,
-				sut.Input.Sort,
-				sut.Input.Preload.Add("invalid").Slice(),
+				gintest.PreloadOption(sut.Input.Preload.Add("invalid").Slice()),
 			),
 		})
 
@@ -113,9 +111,9 @@ func (s *AllPatientsSuite) TestHandle() {
 
 		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
 			Queries: gintest.BuildScopeQuery(
-				sut.Input.Filter.Add("invalid", "invalid", "invalid").Slice(),
-				sut.Input.Sort,
-				sut.Input.Preload,
+				gintest.FilterOption(
+					sut.Input.Filter.Add("invalid", "invalid", "invalid").Slice(),
+				),
 			),
 		})
 
@@ -127,9 +125,7 @@ func (s *AllPatientsSuite) TestHandle() {
 
 		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
 			Queries: gintest.BuildScopeQuery(
-				sut.Input.Filter,
-				sut.Input.Sort.Add("invalid", false).Slice(),
-				sut.Input.Preload,
+				gintest.SortOption(sut.Input.Sort.Add("invalid", false).Slice()),
 			),
 		})
 

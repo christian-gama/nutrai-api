@@ -2,17 +2,16 @@ package main
 
 import (
 	"context"
+	"log"
 	"os"
 
-	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
-	l "github.com/christian-gama/nutrai-api/internal/core/infra/log"
+	"github.com/christian-gama/nutrai-api/internal"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/server"
 	"github.com/spf13/cobra"
 )
 
 var (
 	envFile string
-	log     = l.MakeLogWithCaller(1)
 	cmd     = &cobra.Command{
 		Use: "api",
 		Run: run,
@@ -26,8 +25,8 @@ func init() {
 
 func run(cmd *cobra.Command, args []string) {
 	checkEnvFile()
-	env.Load(envFile)
-	server.Start(context.Background(), log)
+	internal.Bootstrap(envFile)
+	server.Start(context.Background())
 }
 
 func checkEnvFile() {

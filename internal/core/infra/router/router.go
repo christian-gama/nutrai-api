@@ -7,9 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// setupEngine sets the mode of the router and returns a new router.
+// SetupEngine sets the mode of the router and returns a new router.
 // It will also set up the global middlewares.
-func setupEngine() *gin.Engine {
+func SetupEngine() *gin.Engine {
 	if env.App.Env == env.Development && env.Config.Debug {
 		gin.SetMode(gin.DebugMode)
 	} else {
@@ -26,4 +26,4 @@ func setupEngine() *gin.Engine {
 	return r
 }
 
-var Engine = setupEngine()
+var Engine *gin.Engine

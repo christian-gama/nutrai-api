@@ -2,24 +2,23 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/christian-gama/nutrai-api/internal"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/router"
 	"github.com/fatih/color"
 )
 
 func init() {
-	env.Load(".env.dev")
-	env.Config.Debug = false
+	os.Setenv("CONFIG_DEBUG", "false")
 }
 
 func main() {
 	fmt.Print("\033[H\033[2J")
 	fmt.Println("Listing all routes:")
 
-	internal.Routing()
+	internal.Bootstrap(".env.dev")
 
 	printRoutes()
 }

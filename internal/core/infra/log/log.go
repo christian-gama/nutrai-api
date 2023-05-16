@@ -129,3 +129,14 @@ func (l *loggerImpl) Panic(args ...any) {
 func (l *loggerImpl) Panicf(format string, args ...any) {
 	l.base.Panicf(format, args...)
 }
+
+var (
+	// Default is the default logger.
+	Default = New(&Config{Caller: false, Stack: false})
+
+	// WithCaller is the default logger with caller.
+	WithCaller = New(&Config{Caller: true, CallerSkip: 1, Stack: false})
+
+	// WithStack is the default logger with stack.
+	WithStack = New(&Config{Caller: true, Stack: true})
+)

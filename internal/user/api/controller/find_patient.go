@@ -8,17 +8,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// AllPatients is a controller to fetch all patients.
-type AllPatients = http.Controller
+// FindPatient is a controller to fetch all patients.
+type FindPatient = http.Controller
 
-// NewAllPatients returns a new controller to fetch all patients.
-func NewAllPatients(q query.AllPatientsHandler) AllPatients {
+// NewFindPatient returns a new controller to fetch all patients.
+func NewFindPatient(q query.FindPatientHandler) FindPatient {
 	if q == nil {
-		panic(errors.New("query.AllPatientsHandler cannot be nil"))
+		panic(errors.New("query.FindPatientHandler cannot be nil"))
 	}
 
 	return http.NewController(
-		func(ctx *gin.Context, input *query.AllPatientsInput) {
+		func(ctx *gin.Context, input *query.FindPatientInput) {
 			result, err := q.Handle(ctx.Request.Context(), input)
 			if err != nil {
 				panic(err)
@@ -29,6 +29,7 @@ func NewAllPatients(q query.AllPatientsHandler) AllPatients {
 		http.ControllerOptions{
 			Path:     http.JoinPath(""),
 			Method:   http.MethodGet,
+			Params:   http.AddParams("id"),
 			IsPublic: true,
 		},
 	)

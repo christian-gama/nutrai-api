@@ -8,9 +8,9 @@ import (
 
 // FindPatientInput is the input data of the patient query.
 type FindPatientInput struct {
-	ID coreValue.ID `url:"id" faker:"uint"`
+	ID coreValue.ID `uri:"id" faker:"uint"`
 
-	querying.Preload `form:"preload" faker:"-"`
+	querying.Preload `form:"preload" validate:"query,preload=user"`
 }
 
 // FindPatientOutput is the output data of the patient query.

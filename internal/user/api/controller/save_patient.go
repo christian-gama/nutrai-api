@@ -27,7 +27,7 @@ func NewSavePatient(c command.SavePatientHandler) SavePatient {
 		},
 
 		http.ControllerOptions{
-			Path:     "/",
+			Path:     http.JoinPath(""),
 			Method:   http.MethodPost,
 			IsPublic: true,
 		},
