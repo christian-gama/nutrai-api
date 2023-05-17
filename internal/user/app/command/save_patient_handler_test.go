@@ -69,7 +69,7 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 	s.Run("Should call hashPasswordHandler.Handle with the password", func() {
 		sut := makeSut()
 
-		password := sut.Input.User.Password
+		password := sut.Input.Password
 		sut.Mocks.HashPasswordHandler.
 			On("Handle", sut.Ctx, mock.Anything).
 			Return(&service.HashPasswordOutput{Password: "hashed"}, nil)
@@ -107,7 +107,7 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 		sut.Mocks.HashPasswordHandler.
 			On("Handle", sut.Ctx, mock.Anything).
 			Return(&service.HashPasswordOutput{Password: "hashed"}, nil)
-		sut.Input.User.Email = ""
+		sut.Input.Email = ""
 
 		err := sut.Sut.Handle(sut.Ctx, sut.Input)
 

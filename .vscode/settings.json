@@ -14,7 +14,7 @@
     "commands": [
       {
         "match": "\\.go$",
-        "cmd": "go run github.com/segmentio/golines@v0.11.0 -m 100 --no-reformat-tags --shorten-comments ${file}"
+        "cmd": "go run github.com/segmentio/golines@v0.11.0 -m 100 -w --shorten-comments --no-reformat-tags ${file}"
       }
     ]
   },

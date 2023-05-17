@@ -8,27 +8,27 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// UpdatePatient is a controller to update a patient.
-type UpdatePatient = http.Controller
+// DeleteUser is a controller to delete a user.
+type DeleteUser = http.Controller
 
-// NewUpdatePatient returns a new controller to update a patient.
-func NewUpdatePatient(c command.UpdatePatientHandler) UpdatePatient {
+// NewDeleteUser returns a new controller to delete a user.
+func NewDeleteUser(c command.DeleteUserHandler) DeleteUser {
 	if c == nil {
-		panic(errors.New("command.UpdatePatientHandler cannot be nil"))
+		panic(errors.New("command.DeleteUserHandler cannot be nil"))
 	}
 
 	return http.NewController(
-		func(ctx *gin.Context, input *command.UpdatePatientInput) {
+		func(ctx *gin.Context, input *command.DeleteUserInput) {
 			err := c.Handle(ctx.Request.Context(), input)
 			if err != nil {
 				panic(err)
 			}
-			http.Ok(ctx, nil)
+			http.NoContent(ctx)
 		},
 
 		http.ControllerOptions{
 			Path:   http.JoinPath(""),
-			Method: http.MethodPut,
+			Method: http.MethodDelete,
 			Params: http.AddParams("id"),
 		},
 	)

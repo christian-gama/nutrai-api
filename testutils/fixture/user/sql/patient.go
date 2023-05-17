@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
-	"github.com/christian-gama/nutrai-api/internal/user/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
 	persistence "github.com/christian-gama/nutrai-api/internal/user/infra/persistence/sql"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/user/domain/model/patient"
@@ -14,7 +13,6 @@ import (
 
 type PatientDeps struct {
 	Patient *patient.Patient
-	User    *user.User
 }
 
 func SavePatient(db *gorm.DB, deps *PatientDeps) *PatientDeps {
@@ -22,15 +20,13 @@ func SavePatient(db *gorm.DB, deps *PatientDeps) *PatientDeps {
 		deps = &PatientDeps{}
 	}
 
-	if deps.User == nil {
-		user := SaveUser(db, nil)
-		deps.User = user.User
-	}
-
 	patient := deps.Patient
 	if patient == nil {
 		patient = fake.Patient()
-		patient.User = deps.User
+
+		// Ensure that IDs are not set, so that the database can generate them.
+		patient.User.ID = 0
+		patient.ID = 0
 
 		patient, err := persistence.NewSQLPatient(db).
 			Save(context.Background(), repo.SavePatientInput{

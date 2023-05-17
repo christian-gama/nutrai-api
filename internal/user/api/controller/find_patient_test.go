@@ -32,7 +32,9 @@ func (s *FindPatientSuite) TestHandle() {
 
 	makeSut := func() *Sut {
 		input := fake.FindPatientInput()
-		findPatientHandler := mocks.NewHandler[*query.FindPatientInput, *query.FindPatientOutput](s.T())
+		findPatientHandler := mocks.NewHandler[*query.FindPatientInput, *query.FindPatientOutput](
+			s.T(),
+		)
 		sut := controller.NewFindPatient(findPatientHandler)
 		return &Sut{Sut: sut, FindPatientHandler: findPatientHandler, Input: *input}
 	}
@@ -63,6 +65,20 @@ func (s *FindPatientSuite) TestHandle() {
 		})
 
 		s.Equal(http.StatusBadRequest, ctx.Writer.Status())
+	})
+
+	s.Run("ID", func() {
+		s.Run("should return error when empty", func() {
+			sut := makeSut()
+
+			sut.Input.ID = 0
+
+			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
+				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
+			})
+
+			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
+		})
 	})
 
 	s.Run("panics when FindPatientHandler.Handle returns error", func() {

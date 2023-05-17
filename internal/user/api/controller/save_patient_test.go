@@ -131,11 +131,11 @@ func (s *SavePatientSuite) TestHandle() {
 		})
 	})
 
-	s.Run("User", func() {
+	s.Run("Name", func() {
 		s.Run("should return error when empty", func() {
 			sut := makeSut()
 
-			sut.Input.User = nil
+			sut.Input.Name = ""
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data: sut.Input,
@@ -144,106 +144,92 @@ func (s *SavePatientSuite) TestHandle() {
 			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
 		})
 
-		s.Run("Name", func() {
-			s.Run("should return error when empty", func() {
-				sut := makeSut()
+		s.Run("should return error when greater than 100", func() {
+			sut := makeSut()
 
-				sut.Input.User.Name = ""
+			sut.Input.Name = value.Name(strings.Repeat("a", 101))
 
-				ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-					Data: sut.Input,
-				})
-
-				s.Equal(http.StatusBadRequest, ctx.Writer.Status())
+			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
+				Data: sut.Input,
 			})
 
-			s.Run("should return error when greater than 100", func() {
-				sut := makeSut()
-
-				sut.Input.User.Name = value.Name(strings.Repeat("a", 101))
-
-				ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-					Data: sut.Input,
-				})
-
-				s.Equal(http.StatusBadRequest, ctx.Writer.Status())
-			})
-
-			s.Run("should return error when less than 2", func() {
-				sut := makeSut()
-
-				sut.Input.User.Name = value.Name("a")
-
-				ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-					Data: sut.Input,
-				})
-
-				s.Equal(http.StatusBadRequest, ctx.Writer.Status())
-			})
+			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
 		})
 
-		s.Run("Email", func() {
-			s.Run("should return error when empty", func() {
-				sut := makeSut()
+		s.Run("should return error when less than 2", func() {
+			sut := makeSut()
 
-				sut.Input.User.Email = ""
+			sut.Input.Name = value.Name("a")
 
-				ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-					Data: sut.Input,
-				})
-
-				s.Equal(http.StatusBadRequest, ctx.Writer.Status())
+			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
+				Data: sut.Input,
 			})
 
-			s.Run("should return error when invalid", func() {
-				sut := makeSut()
+			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
+		})
+	})
 
-				sut.Input.User.Email = "invalid_email"
+	s.Run("Email", func() {
+		s.Run("should return error when empty", func() {
+			sut := makeSut()
 
-				ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-					Data: sut.Input,
-				})
+			sut.Input.Email = ""
 
-				s.Equal(http.StatusBadRequest, ctx.Writer.Status())
+			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
+				Data: sut.Input,
 			})
+
+			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
 		})
 
-		s.Run("Password", func() {
-			s.Run("should return error when empty", func() {
-				sut := makeSut()
+		s.Run("should return error when invalid", func() {
+			sut := makeSut()
 
-				sut.Input.User.Password = ""
+			sut.Input.Email = "invalid_email"
 
-				ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-					Data: sut.Input,
-				})
-
-				s.Equal(http.StatusBadRequest, ctx.Writer.Status())
+			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
+				Data: sut.Input,
 			})
 
-			s.Run("should return error when greater than 32", func() {
-				sut := makeSut()
+			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
+		})
+	})
 
-				sut.Input.User.Password = value.Password(strings.Repeat("a", 101))
+	s.Run("Password", func() {
+		s.Run("should return error when empty", func() {
+			sut := makeSut()
 
-				ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-					Data: sut.Input,
-				})
+			sut.Input.Password = ""
 
-				s.Equal(http.StatusBadRequest, ctx.Writer.Status())
+			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
+				Data: sut.Input,
 			})
 
-			s.Run("should return error when less than 8", func() {
-				sut := makeSut()
+			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
+		})
 
-				sut.Input.User.Password = value.Password("a")
+		s.Run("should return error when greater than 32", func() {
+			sut := makeSut()
 
-				ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-					Data: sut.Input,
-				})
+			sut.Input.Password = value.Password(strings.Repeat("a", 101))
 
-				s.Equal(http.StatusBadRequest, ctx.Writer.Status())
+			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
+				Data: sut.Input,
 			})
+
+			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
+		})
+
+		s.Run("should return error when less than 8", func() {
+			sut := makeSut()
+
+			sut.Input.Password = value.Password("a")
+
+			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
+				Data: sut.Input,
+			})
+
+			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
 		})
 	})
 

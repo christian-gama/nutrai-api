@@ -14,6 +14,7 @@ func Routes() *routing.Routing {
 			{Controller: controller.MakeSavePatient()},
 			{Controller: controller.MakeUpdatePatient()},
 			{Controller: controller.MakeFindPatient()},
+			{Controller: controller.MakeDeleteUser()},
 		},
 	}
 }

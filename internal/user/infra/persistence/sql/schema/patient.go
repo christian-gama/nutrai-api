@@ -8,8 +8,7 @@ import (
 // Patient is the database schema for a patient.
 type Patient struct {
 	ID       coreValue.ID `gorm:"primaryKey"`
-	UserID   coreValue.ID
-	User     *User `gorm:"foreignKey:UserID"`
+	User     *User        `gorm:"foreignKey:ID"`
 	WeightKG value.WeightKG
 	HeightM  value.HeightM
 	Age      value.Age

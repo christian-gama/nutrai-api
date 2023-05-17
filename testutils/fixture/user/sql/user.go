@@ -24,6 +24,9 @@ func SaveUser(db *gorm.DB, deps *UserDeps) *UserDeps {
 	if user == nil {
 		user = fake.User()
 
+		// Ensure that IDs are not set, so that the database can generate them.
+		user.ID = 0
+
 		user, err := persistence.NewSQLUser(db).
 			Save(context.Background(), repo.SaveUserInput{
 				User: user,

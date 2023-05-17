@@ -36,15 +36,15 @@ func NewSavePatientHandler(r repo.Patient, h service.HashPasswordHandler) SavePa
 // Handle implements command.Handler.
 func (c *savePatientHandlerImpl) Handle(ctx context.Context, input *SavePatientInput) error {
 	hashPasswordOutput, err := c.HashPasswordHandler.Handle(
-		ctx, &service.HashPasswordInput{Password: input.User.Password},
+		ctx, &service.HashPasswordInput{Password: input.Password},
 	)
 	if err != nil {
 		return err
 	}
 
 	user, err := user.NewBuilder().
-		SetName(input.User.Name).
-		SetEmail(input.User.Email).
+		SetName(input.Name).
+		SetEmail(input.Email).
 		SetPassword(hashPasswordOutput.Password).
 		Build()
 	if err != nil {

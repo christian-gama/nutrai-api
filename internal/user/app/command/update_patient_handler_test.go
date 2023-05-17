@@ -68,7 +68,7 @@ func (s *UpdatePatientHandlerSuite) TestUpdateHandler() {
 			On("Find", sut.Ctx, mock.Anything).
 			Return(fakePatient.Patient(), nil)
 
-		sut.Input.User.Email = ""
+		sut.Input.Email = ""
 
 		err := sut.Sut.Handle(sut.Ctx, sut.Input)
 

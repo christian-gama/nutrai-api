@@ -11,7 +11,6 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/user/domain/repo"
 	persistence "github.com/christian-gama/nutrai-api/internal/user/infra/persistence/sql"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/user/domain/model/patient"
-	userfake "github.com/christian-gama/nutrai-api/testutils/fake/user/domain/model/user"
 	fixture "github.com/christian-gama/nutrai-api/testutils/fixture/user/sql"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"gorm.io/gorm"
@@ -41,9 +40,9 @@ func (s *PatientSuite) TestSave() {
 
 	makeSut := func(db *gorm.DB) Sut {
 		ctx := context.Background()
-		user := userfake.User()
 		patient := fake.Patient()
-		patient.User = user
+		patient.User.ID = 0
+		patient.ID = 0
 		input := repo.SavePatientInput{
 			Patient: patient,
 		}
@@ -60,9 +59,6 @@ func (s *PatientSuite) TestSave() {
 	s.Run("Should create a new patient", func(db *gorm.DB) {
 		sut := makeSut(db)
 
-		userDeps := fixture.SaveUser(db, nil)
-		sut.Input.Patient.User.ID = userDeps.User.ID
-
 		patient, err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.NoError(err)
@@ -72,13 +68,9 @@ func (s *PatientSuite) TestSave() {
 	s.Run("Should return an error when the patient already exists", func(db *gorm.DB) {
 		sut := makeSut(db)
 
-		userDeps := fixture.SaveUser(db, nil)
-		sut.Input.Patient.User.ID = userDeps.User.ID
 		_, err := sut.Sut(sut.Ctx, sut.Input)
 		s.NoError(err)
 
-		userDeps = fixture.SaveUser(db, nil)
-		sut.Input.Patient.User.ID = userDeps.User.ID
 		_, err = sut.Sut(sut.Ctx, sut.Input)
 		s.Error(err)
 	})

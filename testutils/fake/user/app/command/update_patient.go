@@ -8,7 +8,6 @@ import (
 
 func UpdatePatientInput() *command.UpdatePatientInput {
 	data := new(command.UpdatePatientInput)
-	data.User = UpdateUserInput()
 
 	err := faker.FakeData(data)
 	if err != nil {

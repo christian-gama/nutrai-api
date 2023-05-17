@@ -41,8 +41,8 @@ func (c *updatePatientHandlerImpl) Handle(ctx context.Context, input *UpdatePati
 	}
 
 	user, err := user.NewBuilder().
-		SetName(input.User.Name).
-		SetEmail(input.User.Email).
+		SetName(input.Name).
+		SetEmail(input.Email).
 		// The password must keep the same. To change the password, refer to the ChangePassword
 		// command.
 		SetPassword(savedPatient.User.Password).

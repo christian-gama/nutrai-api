@@ -20,5 +20,7 @@ func (s *FactorySuite) TestFactory() {
 		controller.MakeAllPatients()
 		controller.MakeSavePatient()
 		controller.MakeUpdatePatient()
+		controller.MakeFindPatient()
+		controller.MakeDeleteUser()
 	})
 }

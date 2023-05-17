@@ -20,3 +20,7 @@ func MakeUpdatePatient() UpdatePatient {
 func MakeFindPatient() FindPatient {
 	return NewFindPatient(query.MakeFindPatientHandler())
 }
+
+func MakeDeleteUser() DeleteUser {
+	return NewDeleteUser(command.MakeDeleteUserHandler())
+}

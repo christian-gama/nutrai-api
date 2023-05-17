@@ -36,10 +36,6 @@ func Created(ctx *gin.Context, data any) {
 // Ok is a helper function to return a ok response with a
 // default JSON response.
 func Ok(ctx *gin.Context, data any) {
-	if data == nil {
-		data = "the request was successful"
-	}
-
 	ctx.AbortWithStatusJSON(http.StatusOK, Data(data))
 }
 

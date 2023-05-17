@@ -10,6 +10,7 @@ import (
 func Patient() *patient.Patient {
 	data := new(patient.Patient)
 	data.User = userFake.User()
+	data.ID = data.User.ID
 
 	err := faker.FakeData(data)
 	if err != nil {

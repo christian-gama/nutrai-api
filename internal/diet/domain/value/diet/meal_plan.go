@@ -7,7 +7,8 @@ import (
 )
 
 // MealPlan is a data type that signifies the specific dietary scheme of a diet plan. This can
-// include ketogenic, vegetarian, vegan, Mediterranean, paleolithic, or low-carb plans. Each meal plan is
+// include ketogenic, vegetarian, vegan, Mediterranean, paleolithic, or low-carb plans. Each meal
+// plan is
 // designed to align with the overall goal of the diet.
 type MealPlan string
 
