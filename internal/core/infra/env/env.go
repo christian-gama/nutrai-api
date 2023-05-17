@@ -28,6 +28,18 @@ type db struct {
 	SslMode DBSslMode `env:"DB_SSL_MODE,required"`
 }
 
+// jwt is the JWT environment variables.
+type jwt struct {
+	// Secret is the JWT secret key.
+	Secret JwtSecret `env:"JWT_SECRET,required"`
+
+	// AccessExpire is the JWT access token expiration time.
+	AccessExpire JwtExpire `env:"JWT_ACCESS_EXPIRE,required"`
+
+	// RefreshExpire is the JWT refresh token expiration time.
+	RefreshExpire JwtExpire `env:"JWT_REFRESH_EXPIRE,required"`
+}
+
 // app is the application environment variables.
 type app struct {
 	// Host is the application host. It's usually the IP address of the machine
@@ -59,3 +71,6 @@ var App = &app{}
 
 // Config is the configuration environment variables.
 var Config = &config{}
+
+// Jwt is the JWT environment variables.
+var Jwt = &jwt{}

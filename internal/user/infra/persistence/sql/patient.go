@@ -69,10 +69,12 @@ func (p *patientSQLImpl) Save(
 	input repo.SavePatientInput,
 ) (*patient.Patient, error) {
 	err := p.manager.Transaction(func(tx *gorm.DB) error {
-		if _, err := p.userRepo.Save(ctx, repo.SaveUserInput{User: input.Patient.User}); err != nil {
+		user, err := p.userRepo.Save(ctx, repo.SaveUserInput{User: input.Patient.User})
+		if err != nil {
 			return err
 		}
 
+		input.Patient.ID = user.ID
 		if _, err := p.manager.Save(ctx, manager.SaveInput[patient.Patient]{Model: input.Patient}); err != nil {
 			return err
 		}
