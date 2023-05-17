@@ -28,6 +28,8 @@ func (s *PlanSuite) TestNewPlan() {
 		sut := func() (*plan.Plan, error) {
 			return plan.NewBuilder().
 				SetID(data.ID).
+				SetDietID(data.DietID).
+				SetDiet(data.Diet).
 				SetText(data.Text).
 				Build()
 		}
@@ -48,10 +50,34 @@ func (s *PlanSuite) TestNewPlan() {
 			})
 		})
 
+		s.Run("DietID", func() {
+			s.Run("Should return an error when empty", func() {
+				sut := makeSut()
+				sut.Data.DietID = 0
+
+				plan, err := sut.Sut()
+
+				s.ErrorAsRequired(err)
+				s.Nil(plan)
+			})
+		})
+
 		s.Run("Text", func() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
 				sut.Data.Text = ""
+
+				plan, err := sut.Sut()
+
+				s.ErrorAsRequired(err)
+				s.Nil(plan)
+			})
+		})
+
+		s.Run("Diet", func() {
+			s.Run("Should return an error when empty", func() {
+				sut := makeSut()
+				sut.Data.Diet = nil
 
 				plan, err := sut.Sut()
 
@@ -71,6 +97,8 @@ func (s *PlanSuite) TestNewPlan() {
 			s.NotNil(plan)
 			s.Equal(sut.Data.ID, plan.ID, "should have the same id")
 			s.Equal(sut.Data.Text, plan.Text, "should have the same text")
+			s.Equal(sut.Data.DietID, plan.DietID, "should have the same diet id")
+			s.Equal(sut.Data.Diet, plan.Diet, "should have the same diet")
 		})
 	})
 }

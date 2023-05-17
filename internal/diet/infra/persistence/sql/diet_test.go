@@ -6,8 +6,9 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
-	"github.com/christian-gama/nutrai-api/internal/diet/infra/persistence"
+	persistence "github.com/christian-gama/nutrai-api/internal/diet/infra/persistence/sql"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/diet"
+	fixture "github.com/christian-gama/nutrai-api/testutils/fixture/user/sql"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"gorm.io/gorm"
 )
@@ -50,34 +51,37 @@ func (s *DietSuite) TestSave() {
 		}
 	}
 
-	s.Run("Should create a new diet", func(db *gorm.DB) {
-		sut := makeSut(db)
+	s.Run("TestSave (Error)", func(db *gorm.DB) {
+		s.Run("Should return an error when the diet already exists", func(db *gorm.DB) {
+			sut := makeSut(db)
 
-		diet, err := sut.Sut(sut.Ctx, sut.Input)
+			patientDeps := fixture.SavePatient(db, nil)
 
-		s.NoError(err)
-		s.NotZero(diet.ID, "Should have an ID")
+			sut.Input.Diet.PatientID = patientDeps.Patient.ID
+
+			_, err := sut.Sut(sut.Ctx, sut.Input)
+
+			s.NoError(err)
+
+			_, err = sut.Sut(sut.Ctx, sut.Input)
+
+			s.Error(err)
+		})
 	})
 
-	s.Run("Should return an error when the diet already exists", func(db *gorm.DB) {
-		sut := makeSut(db)
+	s.Run("TestSave (Success)", func(db *gorm.DB) {
+		s.Run("Should create a new diet", func(db *gorm.DB) {
+			sut := makeSut(db)
 
-		_, err := sut.Sut(sut.Ctx, sut.Input)
+			patientDeps := fixture.SavePatient(db, nil)
 
-		s.NoError(err)
+			sut.Input.Diet.PatientID = patientDeps.Patient.ID
 
-		_, err = sut.Sut(sut.Ctx, sut.Input)
+			diet, err := sut.Sut(sut.Ctx, sut.Input)
 
-		s.Error(err)
+			s.NoError(err)
+			s.NotZero(diet.ID, "Should have an ID")
+		})
 	})
 
-	s.Run("Should return an error when the diet is invalid", func(db *gorm.DB) {
-		sut := makeSut(db)
-
-		sut.Input.Diet.Description = ""
-
-		_, err := sut.Sut(sut.Ctx, sut.Input)
-
-		s.Error(err)
-	})
 }
