@@ -7,7 +7,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/plan"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
-	"github.com/christian-gama/nutrai-api/internal/diet/infra/persistence"
+	persistence "github.com/christian-gama/nutrai-api/internal/diet/infra/persistence/sql"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/plan"
 	"gorm.io/gorm"
 )

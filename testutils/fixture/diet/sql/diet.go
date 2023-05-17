@@ -6,7 +6,7 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
-	"github.com/christian-gama/nutrai-api/internal/diet/infra/persistence"
+	persistence "github.com/christian-gama/nutrai-api/internal/diet/infra/persistence/sql"
 	"github.com/christian-gama/nutrai-api/internal/user/domain/model/patient"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/diet"
 	userFixture "github.com/christian-gama/nutrai-api/testutils/fixture/user/sql"
