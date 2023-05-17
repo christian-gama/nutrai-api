@@ -1,6 +1,8 @@
 package repo
 
 import (
+	"context"
+
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/plan"
@@ -40,17 +42,17 @@ type UpdatePlanInput struct {
 // Plan is the interface that wraps the basic Plan methods.
 type Plan interface {
 	// All returns all plans.
-	All(input AllPlansInput) (*queryer.PaginationOutput[*plan.Plan], error)
+	All(ctx context.Context, input AllPlansInput) (*queryer.PaginationOutput[*plan.Plan], error)
 
 	// Delete deletes the plan with the given id.
-	Delete(input DeletePlanInput) error
+	Delete(ctx context.Context, input DeletePlanInput) error
 
 	// Find returns the plan with the given id.
-	Find(input FindPlanInput) (*plan.Plan, error)
+	Find(ctx context.Context, input FindPlanInput) (*plan.Plan, error)
 
 	// Save saves the given plan.
-	Save(input SavePlanInput) (*plan.Plan, error)
+	Save(ctx context.Context, input SavePlanInput) (*plan.Plan, error)
 
 	// Update updates the given plan.
-	Update(input UpdatePlanInput) error
+	Update(ctx context.Context, input UpdatePlanInput) error
 }
