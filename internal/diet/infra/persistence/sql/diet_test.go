@@ -24,7 +24,7 @@ func TestDietSuite(t *testing.T) {
 
 func (s *DietSuite) SetupTest() {
 	s.Diet = func(db *gorm.DB) repo.Diet {
-		return persistence.NewDiet(db)
+		return persistence.NewSQLDiet(db)
 	}
 }
 
@@ -83,5 +83,4 @@ func (s *DietSuite) TestSave() {
 			s.NotZero(diet.ID, "Should have an ID")
 		})
 	})
-
 }

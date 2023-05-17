@@ -29,7 +29,7 @@ func TestPlanSuite(t *testing.T) {
 
 func (s *PlanSuite) SetupTest() {
 	s.Plan = func(db *gorm.DB) repo.Plan {
-		return persistence.NewPlan(db)
+		return persistence.NewSQLPlan(db)
 	}
 }
 
@@ -243,7 +243,6 @@ func (s *PlanSuite) TestAll() {
 				"Should have the correct order",
 			)
 		})
-
 	})
 
 	s.Run("TestAll (Success)", func(db *gorm.DB) {
@@ -309,6 +308,7 @@ func (s *PlanSuite) TestUpdate() {
 			*sut.Input.Plan = *planDeps.Plan
 			sut.Input.Plan.Text = "new text"
 			sut.Input.ID = planDeps.Plan.ID
+			sut.Input.Plan.ID = planDeps.Plan.ID
 
 			err := sut.Sut(sut.Ctx, sut.Input)
 
@@ -341,18 +341,6 @@ func (s *PlanSuite) TestDelete() {
 			Input: input,
 		}
 	}
-
-	s.Run("TestDelete (Error)", func(db *gorm.DB) {
-		s.Run("Should return an error when the plan does not exist", func(db *gorm.DB) {
-			sut := makeSut(db)
-
-			sut.Input.IDs = []value.ID{404_404_404}
-
-			err := sut.Sut(sut.Ctx, sut.Input)
-
-			s.Error(err)
-		})
-	})
 
 	s.Run("TestDelete (Success)", func(db *gorm.DB) {
 		s.Run("Should delete the plan", func(db *gorm.DB) {

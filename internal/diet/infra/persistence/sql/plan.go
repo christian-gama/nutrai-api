@@ -41,8 +41,8 @@ func (p *planSQLImpl) Update(ctx context.Context, input repo.UpdatePlanInput) er
 	return p.manager.Update(ctx, manager.UpdateInput[plan.Plan]{Model: input.Plan})
 }
 
-// NewPlan returns a new instance of repo.Plan.
-func NewPlan(db *gorm.DB) repo.Plan {
+// NewSQLPlan returns a new instance of repo.Plan.
+func NewSQLPlan(db *gorm.DB) repo.Plan {
 	return &planSQLImpl{
 		manager: manager.NewManager[plan.Plan, schema.Plan](db),
 	}

@@ -41,8 +41,8 @@ func (p *dietSQLImpl) Update(ctx context.Context, input repo.UpdateDietInput) er
 	return p.manager.Update(ctx, manager.UpdateInput[diet.Diet]{Model: input.Diet})
 }
 
-// NewDiet returns a new instance of repo.Diet.
-func NewDiet(db *gorm.DB) repo.Diet {
+// NewSQLDiet returns a new instance of repo.Diet.
+func NewSQLDiet(db *gorm.DB) repo.Diet {
 	return &dietSQLImpl{
 		manager: manager.NewManager[diet.Diet, schema.Diet](db),
 	}

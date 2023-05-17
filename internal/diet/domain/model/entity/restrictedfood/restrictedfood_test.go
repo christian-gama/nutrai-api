@@ -1,9 +1,9 @@
-package restrictedfood_test
+package diet_test
 
 import (
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/restrictedfood"
+	diet "github.com/christian-gama/nutrai-api/internal/diet/domain/model/entity/restrictedfood"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/restrictedfood"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
@@ -18,15 +18,15 @@ func TestRestrictedFoodSuite(t *testing.T) {
 
 func (s *RestrictedFoodTestSuite) TestNewRestrictedFood() {
 	type Sut struct {
-		Sut  func() (*restrictedfood.RestrictedFood, error)
-		Data *restrictedfood.RestrictedFood
+		Sut  func() (*diet.RestrictedFood, error)
+		Data *diet.RestrictedFood
 	}
 
 	makeSut := func() *Sut {
 		data := fake.RestrictedFood()
 
-		sut := func() (*restrictedfood.RestrictedFood, error) {
-			return restrictedfood.NewBuilder().
+		sut := func() (*diet.RestrictedFood, error) {
+			return diet.NewBuilder().
 				SetID(data.ID).
 				SetName(data.Name).
 				Build()

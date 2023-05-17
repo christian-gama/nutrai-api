@@ -33,7 +33,7 @@ func SaveDiet(db *gorm.DB, deps *DietDeps) *DietDeps {
 		diet = fake.Diet()
 		diet.PatientID = deps.Patient.ID
 
-		diet, err := persistence.NewDiet(db).
+		diet, err := persistence.NewSQLDiet(db).
 			Save(context.Background(), repo.SaveDietInput{
 				Diet: diet,
 			})

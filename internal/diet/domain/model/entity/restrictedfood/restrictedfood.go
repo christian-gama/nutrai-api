@@ -1,4 +1,4 @@
-package restrictedfood
+package diet
 
 import (
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
