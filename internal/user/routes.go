@@ -8,7 +8,7 @@ import (
 // Routes registers the routes for user module.
 func Routes() *routing.Routing {
 	return &routing.Routing{
-		Group: "/v1/user",
+		Group: "/v1/users",
 		Routes: []*routing.Route{
 			{Controller: controller.MakeAllPatients()},
 			{Controller: controller.MakeSavePatient()},
