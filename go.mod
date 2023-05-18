@@ -9,7 +9,9 @@ require (
 	github.com/gin-gonic/gin v1.9.0
 	github.com/go-faker/faker/v4 v4.1.0
 	github.com/go-playground/validator/v10 v10.13.0
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang-migrate/migrate/v4 v4.15.2
+	github.com/google/uuid v1.3.0
 	github.com/iancoleman/strcase v0.2.0
 	github.com/jinzhu/copier v0.3.5
 	github.com/joho/godotenv v1.5.1
