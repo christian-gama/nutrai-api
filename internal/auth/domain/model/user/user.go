@@ -18,6 +18,7 @@ type User struct {
 	Name     value.Name     `faker:"len=3"`
 }
 
+// New returns a new user model.
 func New() *User {
 	return &User{}
 }

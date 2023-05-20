@@ -144,24 +144,24 @@ func (s *ControllerSuite) TestController() {
 	})
 }
 
-type Payload struct {
+type Input struct {
 	Name string `json:"name" validate:"max=10"`
 	ID   int    `uri:"id"    validate:"gte=1"`
 	Age  int    `form:"age"  validate:"lte=100"`
 }
 
 func (s *ControllerSuite) TestHandle() {
-	makeSut := func() (http.Controller, *Payload) {
-		payload := &Payload{
+	makeSut := func() (http.Controller, *Input) {
+		input := &Input{
 			Name: "John Doe",
 			ID:   1,
 			Age:  20,
 		}
 
-		handler := func(c *gin.Context, p *Payload) {
-			s.Equal(payload.Name, p.Name)
-			s.Equal(payload.ID, p.ID)
-			s.Equal(payload.Age, p.Age)
+		handler := func(c *gin.Context, p *Input) {
+			s.Equal(input.Name, p.Name)
+			s.Equal(input.ID, p.ID)
+			s.Equal(input.Age, p.Age)
 		}
 
 		controller := http.NewController(
@@ -174,67 +174,67 @@ func (s *ControllerSuite) TestHandle() {
 			},
 		)
 
-		return controller, payload
+		return controller, input
 	}
 
 	s.Run("returns 200 when all params are valid", func() {
-		sut, payload := makeSut()
+		sut, input := makeSut()
 
 		ctx := gintest.MustRequest(sut, gintest.Option{
-			Data:    map[string]any{"name": payload.Name},
-			Params:  []string{fmt.Sprintf("%d", payload.ID)},
-			Queries: fmt.Sprintf("age=%d", payload.Age),
+			Data:    map[string]any{"name": input.Name},
+			Params:  []string{fmt.Sprintf("%d", input.ID)},
+			Queries: fmt.Sprintf("age=%d", input.Age),
 		})
 
 		s.Equal(http.StatusOK, ctx.Writer.Status())
 	})
 
 	s.Run("returns 400 when params are invalid", func() {
-		sut, payload := makeSut()
-		payload.Name = "this is an invalid name"
+		sut, input := makeSut()
+		input.Name = "this is an invalid name"
 
 		ctx := gintest.MustRequest(sut, gintest.Option{
-			Data:    map[string]any{"name": payload.Name},
-			Params:  []string{fmt.Sprintf("%d", payload.ID)},
-			Queries: fmt.Sprintf("age=%d", payload.Age),
+			Data:    map[string]any{"name": input.Name},
+			Params:  []string{fmt.Sprintf("%d", input.ID)},
+			Queries: fmt.Sprintf("age=%d", input.Age),
 		})
 
 		s.Equal(http.StatusBadRequest, ctx.Writer.Status())
 	})
 
 	s.Run("returns 400 when params are not valid", func() {
-		sut, payload := makeSut()
-		payload.ID = -1
+		sut, input := makeSut()
+		input.ID = -1
 
 		ctx := gintest.MustRequest(sut, gintest.Option{
-			Data:    map[string]any{"name": payload.Name},
-			Params:  []string{fmt.Sprintf("%d", payload.ID)},
-			Queries: fmt.Sprintf("age=%d", payload.Age),
+			Data:    map[string]any{"name": input.Name},
+			Params:  []string{fmt.Sprintf("%d", input.ID)},
+			Queries: fmt.Sprintf("age=%d", input.Age),
 		})
 
 		s.Equal(http.StatusBadRequest, ctx.Writer.Status())
 	})
 
 	s.Run("returns 400 when query is not valid", func() {
-		sut, payload := makeSut()
-		payload.Age = 101
+		sut, input := makeSut()
+		input.Age = 101
 
 		ctx := gintest.MustRequest(sut, gintest.Option{
-			Data:    map[string]any{"name": payload.Name},
-			Params:  []string{fmt.Sprintf("%d", payload.ID)},
-			Queries: fmt.Sprintf("age=%d", payload.Age),
+			Data:    map[string]any{"name": input.Name},
+			Params:  []string{fmt.Sprintf("%d", input.ID)},
+			Queries: fmt.Sprintf("age=%d", input.Age),
 		})
 
 		s.Equal(http.StatusBadRequest, ctx.Writer.Status())
 	})
 
 	s.Run("returns 200 even when query is not provided", func() {
-		sut, payload := makeSut()
-		payload.Age = 0
+		sut, input := makeSut()
+		input.Age = 0
 
 		ctx := gintest.MustRequest(sut, gintest.Option{
-			Data:   map[string]any{"name": payload.Name},
-			Params: []string{fmt.Sprintf("%d", payload.ID)},
+			Data:   map[string]any{"name": input.Name},
+			Params: []string{fmt.Sprintf("%d", input.ID)},
 		})
 
 		s.Equal(http.StatusOK, ctx.Writer.Status())

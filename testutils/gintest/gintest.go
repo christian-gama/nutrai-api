@@ -23,7 +23,9 @@ func MustRequestWithBody(
 	ctx, r, writer := createTestContext()
 	handlerPath := handler.Path()
 	if len(handler.Params()) > 0 {
-		handlerPath = http.Path(fmt.Sprintf("%s/:%s", handlerPath, strings.Join(handler.Params(), "/:")))
+		handlerPath = http.Path(
+			fmt.Sprintf("%s/:%s", handlerPath, strings.Join(handler.Params(), "/:")),
+		)
 	}
 
 	r.Handle(handler.Method().String(), handlerPath.String(), func(ctx *gin.Context) {
@@ -60,7 +62,7 @@ func MustRequestWithBody(
 }
 
 type Option struct {
-	// Data is the payload of the request.
+	// Data is the input of the request.
 	Data any
 
 	// Params are the keys of the path params. E.g:

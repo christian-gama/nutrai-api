@@ -12,6 +12,7 @@ func Routes() *routing.Routing {
 		Routes: []*routing.Route{
 			{Controller: controller.MakeLogin()},
 			{Controller: controller.MakeRegister()},
+			{Controller: controller.MakeRefreshToken()},
 		},
 	}
 }

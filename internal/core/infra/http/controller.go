@@ -15,7 +15,7 @@ import (
 type Handler[P any] func(*gin.Context, *P)
 
 // Controller is a interface that represents a controller for gin.
-// It handles the request and response and binds the data to the payload.
+// It handles the request and response and binds the data to the input.
 // The data can be either a request query string, uri param or a request body.
 type Controller interface {
 	// Handle is the function that will be called by the router.

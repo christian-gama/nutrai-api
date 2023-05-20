@@ -20,7 +20,7 @@ func NewVerifier() jwt.Verifier {
 }
 
 // Verify implements the jwt.Verifier interface.
-func (s *verifierImpl) Verify(t jwtValue.Token) (*jwt.Payload, error) {
+func (s *verifierImpl) Verify(t jwtValue.Token) (*jwt.Claims, error) {
 	token, err := _jwt.Parse(t.String(), keyFunc)
 	if err != nil {
 		return nil, err
@@ -35,13 +35,13 @@ func (s *verifierImpl) Verify(t jwtValue.Token) (*jwt.Payload, error) {
 }
 
 // getPayload converts the claims to a Payload.
-func (s *verifierImpl) getPayload(claims _jwt.MapClaims) *jwt.Payload {
+func (s *verifierImpl) getPayload(claims _jwt.MapClaims) *jwt.Claims {
 	sub := claims["sub"].(map[string]any)
 	data := jwt.Subject{
 		Email: userValue.Email(sub["email"].(string)),
 	}
 
-	return &jwt.Payload{
+	return &jwt.Claims{
 		Aud:  claims["aud"].(string),
 		Exp:  int64(claims["exp"].(float64)),
 		Iat:  int64(claims["iat"].(float64)),

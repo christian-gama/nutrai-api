@@ -11,6 +11,7 @@ import (
 // RegisterHandler handles the register request and returns the access and refresh tokens.
 type RegisterHandler = service.Handler[*RegisterInput, *RegisterOutput]
 
+// registerHandlerImpl is the implementation of the RegisterHandler interface.
 type registerHandlerImpl struct {
 	accessToken     jwt.Generator
 	refreshToken    jwt.Generator

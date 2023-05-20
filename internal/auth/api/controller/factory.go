@@ -16,3 +16,7 @@ func MakeRegister() Register {
 func MakeDeleteUser() DeleteUser {
 	return NewDeleteUser(command.MakeDeleteUserHandler())
 }
+
+func MakeRefreshToken() RefreshToken {
+	return NewRefreshToken(service.MakeRefreshTokenHandler())
+}

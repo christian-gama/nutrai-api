@@ -18,5 +18,7 @@ func TestFactorySuite(t *testing.T) {
 func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
 		controller.MakeLogin()
+		controller.MakeRegister()
+		controller.MakeRefreshToken()
 	})
 }

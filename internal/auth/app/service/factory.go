@@ -20,3 +20,10 @@ func MakeRegisterHandler() RegisterHandler {
 		command.MakeSaveUserHandler(),
 	)
 }
+
+func MakeRefreshTokenHandler() RefreshTokenHandler {
+	return NewRefreshTokenHandler(
+		jwt.MakeAccessTokenGenerator(),
+		jwt.MakeVerifier(),
+	)
+}

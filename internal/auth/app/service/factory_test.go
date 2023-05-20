@@ -19,5 +19,6 @@ func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
 		service.MakeLoginHandler()
 		service.MakeRegisterHandler()
+		service.MakeRefreshTokenHandler()
 	})
 }

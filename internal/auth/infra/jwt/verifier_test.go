@@ -23,7 +23,7 @@ func TestVerifierSuite(t *testing.T) {
 
 func (s *VerifierSuite) TestGenerate() {
 	type Sut struct {
-		Sut            func(token value.Token) (*jwt.Payload, error)
+		Sut            func(token value.Token) (*jwt.Claims, error)
 		TokenGenerator func(duration time.Duration) value.Token
 	}
 
@@ -53,10 +53,10 @@ func (s *VerifierSuite) TestGenerate() {
 
 		token := sut.TokenGenerator(time.Hour)
 
-		payload, err := sut.Sut(token)
+		claims, err := sut.Sut(token)
 		s.NoError(err)
 
-		s.Equal(jwt.AccessTokenType, payload.Type)
+		s.Equal(jwt.AccessTokenType, claims.Type)
 	})
 
 	s.Run("should return an error if the token is invalid", func() {
@@ -64,9 +64,9 @@ func (s *VerifierSuite) TestGenerate() {
 
 		token := sut.TokenGenerator(time.Hour)
 
-		payload, err := sut.Sut(token + "invalid")
+		claims, err := sut.Sut(token + "invalid")
 		s.Error(err)
-		s.Nil(payload)
+		s.Nil(claims)
 	})
 
 	s.Run("should return an error if the token is expired", func() {
@@ -74,9 +74,9 @@ func (s *VerifierSuite) TestGenerate() {
 
 		token := sut.TokenGenerator(-time.Hour)
 
-		payload, err := sut.Sut(token)
+		claims, err := sut.Sut(token)
 		s.Require().Error(err)
 		s.Contains(err.Error(), "expired")
-		s.Nil(payload)
+		s.Nil(claims)
 	})
 }
