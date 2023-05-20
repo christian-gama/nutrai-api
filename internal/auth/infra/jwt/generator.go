@@ -40,17 +40,14 @@ func (g *generatorImpl) Generate(subject *jwt.Subject) (value.Token, error) {
 	}
 
 	claims := g.token.Claims.(_jwt.MapClaims)
+	claims["aud"] = env.App.Host
 	claims["exp"] = time.Now().Add(g.duration).Unix()
 	claims["iat"] = time.Now().Unix()
-	claims["sub"] = map[string]any{
-		"id":    subject.ID,
-		"email": subject.Email,
-	}
 	claims["iss"] = env.App.Host
-	claims["aud"] = env.App.Host
-	claims["type"] = g.tokenType
-	claims["nbf"] = time.Now().Unix()
 	claims["jti"] = g.uuid.Generate()
+	claims["nbf"] = time.Now().Unix()
+	claims["sub"] = map[string]any{"email": subject.Email}
+	claims["type"] = g.tokenType
 
 	signed, err := g.token.SignedString([]byte(env.Jwt.Secret))
 	if err != nil {
@@ -60,13 +57,11 @@ func (g *generatorImpl) Generate(subject *jwt.Subject) (value.Token, error) {
 	return value.Token(signed), nil
 }
 
+// Validate validates the given JWT subject. It returns an error if the subject is nil or if any of
+// its fields are invalid.
 func (g *generatorImpl) Validate(subject *jwt.Subject) error {
 	if subject == nil {
 		return errutil.NewErrInternal(errutil.NewErrRequired("subject").Error())
-	}
-
-	if err := subject.ID.Validate(); err != nil {
-		return errutil.NewErrInternal(err.Error())
 	}
 
 	if err := subject.Email.Validate(); err != nil {

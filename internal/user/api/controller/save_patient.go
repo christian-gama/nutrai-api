@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
 	"github.com/christian-gama/nutrai-api/internal/user/app/command"
 	"github.com/gin-gonic/gin"
 )
@@ -22,7 +21,6 @@ func NewSavePatient(c command.SavePatientHandler) SavePatient {
 		func(ctx *gin.Context, input *command.SavePatientInput) {
 			err := c.Handle(ctx.Request.Context(), input)
 			if err != nil {
-				log.WithCaller.Warn(err, "controller.SavePatient")
 				panic(err)
 			}
 			http.Created(ctx, nil)

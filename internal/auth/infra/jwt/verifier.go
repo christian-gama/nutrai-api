@@ -37,7 +37,6 @@ func (s *verifierImpl) Verify(t value.Token) (*jwt.Payload, error) {
 func (s *verifierImpl) getPayload(claims _jwt.MapClaims) *jwt.Payload {
 	sub := claims["sub"].(map[string]any)
 	data := jwt.Subject{
-		ID:    coreValue.ID(sub["id"].(float64)),
 		Email: value.Email(sub["email"].(string)),
 	}
 

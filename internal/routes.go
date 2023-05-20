@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"github.com/christian-gama/nutrai-api/internal/auth"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/router/routing"
 	"github.com/christian-gama/nutrai-api/internal/user"
 )
@@ -9,5 +10,6 @@ import (
 func Routing() {
 	routing.Register("api",
 		user.Routes(),
+		auth.Routes(),
 	)
 }

@@ -71,14 +71,4 @@ func (s *GeneratorSuite) TestGenerate() {
 		s.Error(err)
 		s.Empty(token)
 	})
-
-	s.Run("should return an error if the subject's id is invalid", func() {
-		sut := makeSut()
-
-		sut.Data.ID = coreValue.ID(0)
-
-		token, err := sut.Sut(sut.Data)
-		s.Error(err)
-		s.Empty(token)
-	})
 }
