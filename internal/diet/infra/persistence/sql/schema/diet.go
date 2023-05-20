@@ -5,7 +5,7 @@ import (
 
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	value "github.com/christian-gama/nutrai-api/internal/diet/domain/value/diet"
-	"github.com/christian-gama/nutrai-api/internal/user/infra/persistence/sql/schema"
+	"github.com/christian-gama/nutrai-api/internal/patient/infra/persistence/sql/schema"
 )
 
 // Diet is the database schema for diets.

@@ -28,7 +28,7 @@ func (s *DietTestSuite) TestNewDiet() {
 		data := fake.Diet()
 
 		sut := func() (*diet.Diet, error) {
-			return diet.NewBuilder().
+			return diet.New().
 				SetID(data.ID).
 				SetName(data.Name).
 				SetDescription(data.Description).

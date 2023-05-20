@@ -22,6 +22,11 @@ type Diet struct {
 	MonthlyCostUSD  value.MonthlyCostUSD  `faker:"boundary_start=12.65, boundary_end=184.05"`
 }
 
+// New returns a new diet.
+func New() *Diet {
+	return &Diet{}
+}
+
 // Validate returns an error if the diet is invalid.
 func (d *Diet) Validate() error {
 	var errs *errutil.Error
@@ -65,70 +70,59 @@ func (d *Diet) Validate() error {
 	return nil
 }
 
-type builder struct {
-	diet *Diet
-}
-
-// NewBuilder creates a new builder for the Diet model.
-func NewBuilder() *builder {
-	return &builder{
-		diet: &Diet{},
-	}
-}
-
 // SetID sets the diet's ID.
-func (b *builder) SetID(id coreValue.ID) *builder {
-	b.diet.ID = id
-	return b
+func (d *Diet) SetID(id coreValue.ID) *Diet {
+	d.ID = id
+	return d
 }
 
 // SetPatientID sets the diet's patient ID.
-func (b *builder) SetPatientID(patientID coreValue.ID) *builder {
-	b.diet.PatientID = patientID
-	return b
+func (d *Diet) SetPatientID(patientID coreValue.ID) *Diet {
+	d.PatientID = patientID
+	return d
 }
 
 // SetName sets the diet's name.
-func (b *builder) SetName(name value.Name) *builder {
-	b.diet.Name = name
-	return b
+func (d *Diet) SetName(name value.Name) *Diet {
+	d.Name = name
+	return d
 }
 
 // SetDescription sets the diet's description.
-func (b *builder) SetDescription(description value.Description) *builder {
-	b.diet.Description = description
-	return b
+func (d *Diet) SetDescription(description value.Description) *Diet {
+	d.Description = description
+	return d
 }
 
 // SetDurationInWeeks sets the diet's duration in weeks.
-func (b *builder) SetDurationInWeeks(durationInWeeks value.DurationInWeeks) *builder {
-	b.diet.DurationInWeeks = durationInWeeks
-	return b
+func (d *Diet) SetDurationInWeeks(durationInWeeks value.DurationInWeeks) *Diet {
+	d.DurationInWeeks = durationInWeeks
+	return d
 }
 
 // SetGoal sets the diet's goal.
-func (b *builder) SetGoal(goal value.Goal) *builder {
-	b.diet.Goal = goal
-	return b
+func (d *Diet) SetGoal(goal value.Goal) *Diet {
+	d.Goal = goal
+	return d
 }
 
 // SetMealPlan sets the diet's meal plan.
-func (b *builder) SetMealPlan(mealPlan value.MealPlan) *builder {
-	b.diet.MealPlan = mealPlan
-	return b
+func (d *Diet) SetMealPlan(mealPlan value.MealPlan) *Diet {
+	d.MealPlan = mealPlan
+	return d
 }
 
 // SetMonthlyCostUSD sets the diet's monthly cost in USD.
-func (b *builder) SetMonthlyCostUSD(monthlyCostUSD value.MonthlyCostUSD) *builder {
-	b.diet.MonthlyCostUSD = monthlyCostUSD
-	return b
+func (d *Diet) SetMonthlyCostUSD(monthlyCostUSD value.MonthlyCostUSD) *Diet {
+	d.MonthlyCostUSD = monthlyCostUSD
+	return d
 }
 
 // Build builds and returns the diet.
-func (b *builder) Build() (*Diet, error) {
-	if err := b.diet.Validate(); err != nil {
+func (d *Diet) Build() (*Diet, error) {
+	if err := d.Validate(); err != nil {
 		return nil, err
 	}
 
-	return b.diet, nil
+	return d, nil
 }

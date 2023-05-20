@@ -3,9 +3,9 @@ package service
 import (
 	"context"
 
+	userCmd "github.com/christian-gama/nutrai-api/internal/auth/app/command"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/jwt"
 	"github.com/christian-gama/nutrai-api/internal/core/app/service"
-	userCmd "github.com/christian-gama/nutrai-api/internal/user/app/command"
 )
 
 // LoginHandler handles the login request and returns the access and refresh tokens.

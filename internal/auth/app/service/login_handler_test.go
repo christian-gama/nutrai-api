@@ -4,12 +4,12 @@ import (
 	"context"
 	"testing"
 
+	userCmd "github.com/christian-gama/nutrai-api/internal/auth/app/command"
 	"github.com/christian-gama/nutrai-api/internal/auth/app/service"
-	"github.com/christian-gama/nutrai-api/internal/auth/domain/value"
-	userCommand "github.com/christian-gama/nutrai-api/internal/user/app/command"
+	value "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/app/service"
 	jwtMocks "github.com/christian-gama/nutrai-api/testutils/mocks/auth/domain/jwt"
-	commandMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/command"
+	cmdMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/command"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -27,7 +27,7 @@ func (s *LoginHandlerSuite) TestHandle() {
 	type Mocks struct {
 		AccessToken             *jwtMocks.Generator
 		RefreshToken            *jwtMocks.Generator
-		CheckCredentialsHandler *commandMock.Handler[*userCommand.CheckCredentialsInput]
+		CheckCredentialsHandler *cmdMock.Handler[*userCmd.CheckCredentialsInput]
 	}
 
 	type Sut struct {
@@ -40,7 +40,7 @@ func (s *LoginHandlerSuite) TestHandle() {
 		mocks := &Mocks{
 			AccessToken:  jwtMocks.NewGenerator(s.T()),
 			RefreshToken: jwtMocks.NewGenerator(s.T()),
-			CheckCredentialsHandler: commandMock.NewHandler[*userCommand.CheckCredentialsInput](
+			CheckCredentialsHandler: cmdMock.NewHandler[*userCmd.CheckCredentialsInput](
 				s.T(),
 			),
 		}

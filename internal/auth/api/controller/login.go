@@ -12,14 +12,14 @@ import (
 type Login = http.Controller
 
 // NewLogin returns a new controller to handle the login of a user.
-func NewLogin(c service.LoginHandler) Login {
-	if c == nil {
+func NewLogin(loginHandler service.LoginHandler) Login {
+	if loginHandler == nil {
 		panic(errors.New("service.LoginHandler cannot be nil"))
 	}
 
 	return http.NewController(
 		func(ctx *gin.Context, input *service.LoginInput) {
-			output, err := c.Handle(ctx.Request.Context(), input)
+			output, err := loginHandler.Handle(ctx.Request.Context(), input)
 			if err != nil {
 				panic(err)
 			}

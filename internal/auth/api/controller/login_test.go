@@ -7,7 +7,8 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/auth/api/controller"
 	"github.com/christian-gama/nutrai-api/internal/auth/app/service"
-	value "github.com/christian-gama/nutrai-api/internal/auth/domain/value"
+	jwtValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
+	userValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/user"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/app/service"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
 	serviceMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/service"
@@ -47,8 +48,8 @@ func (s *LoginSuite) TestHandle() {
 	s.Run("should return an access token and refresh token when login succeeds", func() {
 		sut := makeSut()
 
-		accessToken := value.Token("access")
-		refreshToken := value.Token("refresh")
+		accessToken := jwtValue.Token("access")
+		refreshToken := jwtValue.Token("refresh")
 		sut.Mock.LoginHandler.
 			On("Handle", mock.Anything, sut.Input).
 			Return(&service.LoginOutput{
@@ -115,7 +116,7 @@ func (s *LoginSuite) TestHandle() {
 		s.Run("should return error when greater than 32", func() {
 			sut := makeSut()
 
-			sut.Input.Password = value.Password(strings.Repeat("a", 101))
+			sut.Input.Password = userValue.Password(strings.Repeat("a", 101))
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data: sut.Input,
@@ -127,7 +128,7 @@ func (s *LoginSuite) TestHandle() {
 		s.Run("should return error when less than 8", func() {
 			sut := makeSut()
 
-			sut.Input.Password = value.Password("a")
+			sut.Input.Password = userValue.Password("a")
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data: sut.Input,

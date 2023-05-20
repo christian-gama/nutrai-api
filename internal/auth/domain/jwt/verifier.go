@@ -1,6 +1,6 @@
 package jwt
 
-import "github.com/christian-gama/nutrai-api/internal/auth/domain/value"
+import value "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
 
 // Verifier is the interface that wraps the Verify method.
 type Verifier interface {

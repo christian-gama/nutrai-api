@@ -26,7 +26,7 @@ func (s *RestrictedFoodTestSuite) TestNewRestrictedFood() {
 		data := fake.RestrictedFood()
 
 		sut := func() (*diet.RestrictedFood, error) {
-			return diet.NewBuilder().
+			return diet.New().
 				SetID(data.ID).
 				SetName(data.Name).
 				Build()

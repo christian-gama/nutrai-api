@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/jwt"
-	"github.com/christian-gama/nutrai-api/internal/auth/domain/value"
+	value "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/uuid"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"

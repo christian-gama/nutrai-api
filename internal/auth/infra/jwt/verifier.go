@@ -4,7 +4,8 @@ import (
 	"fmt"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/jwt"
-	"github.com/christian-gama/nutrai-api/internal/auth/domain/value"
+	jwtValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
+	userValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/user"
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
 	_jwt "github.com/golang-jwt/jwt"
@@ -19,7 +20,7 @@ func NewVerifier() jwt.Verifier {
 }
 
 // Verify implements the jwt.Verifier interface.
-func (s *verifierImpl) Verify(t value.Token) (*jwt.Payload, error) {
+func (s *verifierImpl) Verify(t jwtValue.Token) (*jwt.Payload, error) {
 	token, err := _jwt.Parse(t.String(), keyFunc)
 	if err != nil {
 		return nil, err
@@ -37,7 +38,7 @@ func (s *verifierImpl) Verify(t value.Token) (*jwt.Payload, error) {
 func (s *verifierImpl) getPayload(claims _jwt.MapClaims) *jwt.Payload {
 	sub := claims["sub"].(map[string]any)
 	data := jwt.Subject{
-		Email: value.Email(sub["email"].(string)),
+		Email: userValue.Email(sub["email"].(string)),
 	}
 
 	return &jwt.Payload{

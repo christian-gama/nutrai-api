@@ -15,6 +15,11 @@ type Plan struct {
 	Text   value.Plan   `faker:"paragraph"`
 }
 
+// New creates a new Plan.
+func New() *Plan {
+	return &Plan{}
+}
+
 // Validate returns an error if the plan is invalid.
 func (p *Plan) Validate() error {
 	var errs *errutil.Error
@@ -44,46 +49,35 @@ func (p *Plan) Validate() error {
 	return nil
 }
 
-type builder struct {
-	plan *Plan
-}
-
-// NewBuilder creates a new builder for the Plan model.
-func NewBuilder() *builder {
-	return &builder{
-		plan: &Plan{},
-	}
-}
-
 // SetID sets the ID of the Plan.
-func (b *builder) SetID(id coreValue.ID) *builder {
-	b.plan.ID = id
-	return b
+func (p *Plan) SetID(id coreValue.ID) *Plan {
+	p.ID = id
+	return p
 }
 
 // SetDietID sets the DietID of the Plan.
-func (b *builder) SetDietID(dietID coreValue.ID) *builder {
-	b.plan.DietID = dietID
-	return b
+func (p *Plan) SetDietID(dietID coreValue.ID) *Plan {
+	p.DietID = dietID
+	return p
 }
 
 // SetDiet sets the Diet of the Plan.
-func (b *builder) SetDiet(diet *diet.Diet) *builder {
-	b.plan.Diet = diet
-	return b
+func (p *Plan) SetDiet(diet *diet.Diet) *Plan {
+	p.Diet = diet
+	return p
 }
 
 // SetText sets the Text of the Plan.
-func (b *builder) SetText(text value.Plan) *builder {
-	b.plan.Text = text
-	return b
+func (p *Plan) SetText(text value.Plan) *Plan {
+	p.Text = text
+	return p
 }
 
 // Build returns the built Plan.
-func (b *builder) Build() (*Plan, error) {
-	if err := b.plan.Validate(); err != nil {
+func (p *Plan) Build() (*Plan, error) {
+	if err := p.Validate(); err != nil {
 		return nil, err
 	}
 
-	return b.plan, nil
+	return p, nil
 }

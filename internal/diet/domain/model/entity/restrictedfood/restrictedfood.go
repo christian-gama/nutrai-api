@@ -12,6 +12,11 @@ type RestrictedFood struct {
 	Name   value.RestrictedFood `faker:"-"`
 }
 
+// New creates a new restricted food model.
+func New() *RestrictedFood {
+	return &RestrictedFood{}
+}
+
 // Validate returns an error if the restricted food is invalid.
 func (rf *RestrictedFood) Validate() error {
 	var errs *errutil.Error
@@ -35,40 +40,29 @@ func (rf *RestrictedFood) Validate() error {
 	return nil
 }
 
-type builder struct {
-	restrictedFood *RestrictedFood
-}
-
-// NewBuilder creates a new builder for the restricted food model.
-func NewBuilder() *builder {
-	return &builder{
-		restrictedFood: &RestrictedFood{},
-	}
-}
-
 // SetID sets the ID field for the restricted food model.
-func (b *builder) SetID(id coreValue.ID) *builder {
-	b.restrictedFood.ID = id
-	return b
+func (rf *RestrictedFood) SetID(id coreValue.ID) *RestrictedFood {
+	rf.ID = id
+	return rf
 }
 
 // SetDietID sets the DietID field for the restricted food model.
-func (b *builder) SetDietID(dietID coreValue.ID) *builder {
-	b.restrictedFood.DietID = dietID
-	return b
+func (rf *RestrictedFood) SetDietID(dietID coreValue.ID) *RestrictedFood {
+	rf.DietID = dietID
+	return rf
 }
 
 // SetName sets the Name field for the restricted food model.
-func (b *builder) SetName(name value.RestrictedFood) *builder {
-	b.restrictedFood.Name = name
-	return b
+func (rf *RestrictedFood) SetName(name value.RestrictedFood) *RestrictedFood {
+	rf.Name = name
+	return rf
 }
 
 // Build builds and returns the restricted food model.
-func (b *builder) Build() (*RestrictedFood, error) {
-	if err := b.restrictedFood.Validate(); err != nil {
+func (rf *RestrictedFood) Build() (*RestrictedFood, error) {
+	if err := rf.Validate(); err != nil {
 		return nil, err
 	}
 
-	return b.restrictedFood, nil
+	return rf, nil
 }

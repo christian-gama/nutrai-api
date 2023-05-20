@@ -12,14 +12,14 @@ import (
 type Register = http.Controller
 
 // NewRegister returns a new controller to handle the register of a user.
-func NewRegister(c service.RegisterHandler) Register {
-	if c == nil {
+func NewRegister(registerHandler service.RegisterHandler) Register {
+	if registerHandler == nil {
 		panic(errors.New("service.RegisterHandler cannot be nil"))
 	}
 
 	return http.NewController(
 		func(ctx *gin.Context, input *service.RegisterInput) {
-			output, err := c.Handle(ctx.Request.Context(), input)
+			output, err := registerHandler.Handle(ctx.Request.Context(), input)
 			if err != nil {
 				panic(err)
 			}

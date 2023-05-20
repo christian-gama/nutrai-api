@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/jwt"
-	"github.com/christian-gama/nutrai-api/internal/auth/domain/value"
+	value "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
 	. "github.com/christian-gama/nutrai-api/internal/auth/infra/jwt"
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	mocks "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/uuid"

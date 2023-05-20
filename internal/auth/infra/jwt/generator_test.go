@@ -5,7 +5,8 @@ import (
 	"time"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/jwt"
-	"github.com/christian-gama/nutrai-api/internal/auth/domain/value"
+	jwtValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
+	userValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/user"
 	. "github.com/christian-gama/nutrai-api/internal/auth/infra/jwt"
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	mocks "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/uuid"
@@ -23,7 +24,7 @@ func TestGeneratorSuite(t *testing.T) {
 
 func (s *GeneratorSuite) TestGenerate() {
 	type Sut struct {
-		Sut  func(data *jwt.Subject) (value.Token, error)
+		Sut  func(data *jwt.Subject) (jwtValue.Token, error)
 		Data *jwt.Subject
 	}
 
@@ -65,7 +66,7 @@ func (s *GeneratorSuite) TestGenerate() {
 	s.Run("should return an error if the subject's email is invalid", func() {
 		sut := makeSut()
 
-		sut.Data.Email = coreValue.Email("invalid")
+		sut.Data.Email = userValue.Email("invalid")
 
 		token, err := sut.Sut(sut.Data)
 		s.Error(err)
