@@ -5,58 +5,66 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/user/api/controller"
-	"github.com/christian-gama/nutrai-api/internal/user/app/command"
-	value "github.com/christian-gama/nutrai-api/internal/user/domain/value/user"
-	fake "github.com/christian-gama/nutrai-api/testutils/fake/user/app/command"
+	"github.com/christian-gama/nutrai-api/internal/auth/api/controller"
+	"github.com/christian-gama/nutrai-api/internal/auth/app/service"
+	value "github.com/christian-gama/nutrai-api/internal/auth/domain/value"
+	userValue "github.com/christian-gama/nutrai-api/internal/user/domain/value/user"
+	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/app/service"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
-	commandMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/command"
+	serviceMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/service"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
 
-type SavePatientSuite struct {
+type RegisterSuite struct {
 	suite.Suite
 }
 
-func TestSavePatientSuite(t *testing.T) {
-	suite.RunUnitTest(t, new(SavePatientSuite))
+func TestRegisterSuite(t *testing.T) {
+	suite.RunUnitTest(t, new(RegisterSuite))
 }
 
-func (s *SavePatientSuite) TestHandle() {
+func (s *RegisterSuite) TestHandle() {
 	type Mock struct {
-		SavePatientHandler *commandMock.Handler[*command.SavePatientInput]
+		RegisterHandler *serviceMock.Handler[*service.RegisterInput, *service.RegisterOutput]
 	}
 
 	type Sut struct {
-		Sut   controller.SavePatient
-		Input *command.SavePatientInput
+		Sut   controller.Register
+		Input *service.RegisterInput
 		Mock  *Mock
 	}
 
 	makeSut := func() *Sut {
-		input := fake.SavePatientInput()
+		input := fake.RegisterInput()
 		mock := &Mock{
-			SavePatientHandler: commandMock.NewHandler[*command.SavePatientInput](s.T()),
+			RegisterHandler: serviceMock.NewHandler[*service.RegisterInput, *service.RegisterOutput](
+				s.T(),
+			),
 		}
-		sut := controller.NewSavePatient(mock.SavePatientHandler)
+		sut := controller.NewRegister(mock.RegisterHandler)
 		return &Sut{Sut: sut, Mock: mock, Input: input}
 	}
 
-	s.Run("should save a patient", func() {
+	s.Run("should register a patient", func() {
 		sut := makeSut()
 
-		sut.Mock.SavePatientHandler.
+		access := value.Token("access")
+		refresh := value.Token("refresh")
+		sut.Mock.RegisterHandler.
 			On("Handle", mock.Anything, sut.Input).
-			Return(nil)
+			Return(&service.RegisterOutput{
+				Access:  access,
+				Refresh: refresh,
+			}, nil)
 
 		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
 			Data: sut.Input,
 		})
 
 		s.Equal(http.StatusCreated, ctx.Writer.Status())
-		sut.Mock.SavePatientHandler.AssertCalled(s.T(), "Handle", mock.Anything, sut.Input)
+		sut.Mock.RegisterHandler.AssertCalled(s.T(), "Handle", mock.Anything, sut.Input)
 	})
 
 	s.Run("Age", func() {
@@ -153,7 +161,7 @@ func (s *SavePatientSuite) TestHandle() {
 		s.Run("should return error when greater than 100", func() {
 			sut := makeSut()
 
-			sut.Input.Name = value.Name(strings.Repeat("a", 101))
+			sut.Input.Name = userValue.Name(strings.Repeat("a", 101))
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data: sut.Input,
@@ -165,7 +173,7 @@ func (s *SavePatientSuite) TestHandle() {
 		s.Run("should return error when less than 2", func() {
 			sut := makeSut()
 
-			sut.Input.Name = value.Name("a")
+			sut.Input.Name = userValue.Name("a")
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data: sut.Input,
@@ -217,7 +225,7 @@ func (s *SavePatientSuite) TestHandle() {
 		s.Run("should return error when greater than 32", func() {
 			sut := makeSut()
 
-			sut.Input.Password = value.Password(strings.Repeat("a", 101))
+			sut.Input.Password = userValue.Password(strings.Repeat("a", 101))
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data: sut.Input,
@@ -229,7 +237,7 @@ func (s *SavePatientSuite) TestHandle() {
 		s.Run("should return error when less than 8", func() {
 			sut := makeSut()
 
-			sut.Input.Password = value.Password("a")
+			sut.Input.Password = userValue.Password("a")
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data: sut.Input,
@@ -333,7 +341,7 @@ func (s *SavePatientSuite) TestHandle() {
 		s.Run("should return error when greater than 100", func() {
 			sut := makeSut()
 
-			sut.Input.Name = value.Name(strings.Repeat("a", 101))
+			sut.Input.Name = userValue.Name(strings.Repeat("a", 101))
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data: sut.Input,
@@ -345,7 +353,7 @@ func (s *SavePatientSuite) TestHandle() {
 		s.Run("should return error when less than 2", func() {
 			sut := makeSut()
 
-			sut.Input.Name = value.Name("a")
+			sut.Input.Name = userValue.Name("a")
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data: sut.Input,
@@ -397,7 +405,7 @@ func (s *SavePatientSuite) TestHandle() {
 		s.Run("should return error when greater than 32", func() {
 			sut := makeSut()
 
-			sut.Input.Password = value.Password(strings.Repeat("a", 101))
+			sut.Input.Password = userValue.Password(strings.Repeat("a", 101))
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data: sut.Input,
@@ -409,7 +417,7 @@ func (s *SavePatientSuite) TestHandle() {
 		s.Run("should return error when less than 8", func() {
 			sut := makeSut()
 
-			sut.Input.Password = value.Password("a")
+			sut.Input.Password = userValue.Password("a")
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data: sut.Input,
@@ -419,12 +427,12 @@ func (s *SavePatientSuite) TestHandle() {
 		})
 	})
 
-	s.Run("panics when SavePatientHandler.Handle returns error", func() {
+	s.Run("panics when RegisterHandler.Handle returns error", func() {
 		sut := makeSut()
 
-		sut.Mock.SavePatientHandler.
+		sut.Mock.RegisterHandler.
 			On("Handle", mock.Anything, sut.Input).
-			Return(assert.AnError)
+			Return(nil, assert.AnError)
 
 		s.Panics(func() {
 			gintest.MustRequest(sut.Sut, gintest.Option{

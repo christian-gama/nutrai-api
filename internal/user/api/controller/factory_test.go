@@ -18,7 +18,6 @@ func TestFactorySuite(t *testing.T) {
 func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
 		controller.MakeAllPatients()
-		controller.MakeSavePatient()
 		controller.MakeUpdatePatient()
 		controller.MakeFindPatient()
 		controller.MakeDeleteUser()

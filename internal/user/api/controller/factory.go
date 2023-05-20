@@ -9,10 +9,6 @@ func MakeAllPatients() AllPatients {
 	return NewAllPatients(query.MakeAllPatientsHandler())
 }
 
-func MakeSavePatient() SavePatient {
-	return NewSavePatient(command.MakeSavePatientHandler())
-}
-
 func MakeUpdatePatient() UpdatePatient {
 	return NewUpdatePatient(command.MakeUpdatePatientHandler())
 }

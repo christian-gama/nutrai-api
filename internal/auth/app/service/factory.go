@@ -12,3 +12,11 @@ func MakeLoginHandler() LoginHandler {
 		command.MakeCheckCredentialsHandler(),
 	)
 }
+
+func MakeRegisterHandler() RegisterHandler {
+	return NewRegisterHandler(
+		jwt.MakeAccessTokenGenerator(),
+		jwt.MakeRefreshTokenGenerator(),
+		command.MakeSavePatientHandler(),
+	)
+}

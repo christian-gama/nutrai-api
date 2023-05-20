@@ -11,6 +11,7 @@ func Routes() *routing.Routing {
 		Group: "/v1/auth",
 		Routes: []*routing.Route{
 			{Controller: controller.MakeLogin()},
+			{Controller: controller.MakeRegister()},
 		},
 	}
 }

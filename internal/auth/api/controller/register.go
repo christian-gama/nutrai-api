@@ -8,26 +8,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Login is a controller that handles the login of a user.
-type Login = http.Controller
+// Register is a controller that handles the register of a user.
+type Register = http.Controller
 
-// NewLogin returns a new controller to handle the login of a user.
-func NewLogin(c service.LoginHandler) Login {
+// NewRegister returns a new controller to handle the register of a user.
+func NewRegister(c service.RegisterHandler) Register {
 	if c == nil {
-		panic(errors.New("service.LoginHandler cannot be nil"))
+		panic(errors.New("service.RegisterHandler cannot be nil"))
 	}
 
 	return http.NewController(
-		func(ctx *gin.Context, input *service.LoginInput) {
+		func(ctx *gin.Context, input *service.RegisterInput) {
 			output, err := c.Handle(ctx.Request.Context(), input)
 			if err != nil {
 				panic(err)
 			}
-			http.Ok(ctx, output)
+			http.Created(ctx, output)
 		},
 
 		http.ControllerOptions{
-			Path:     http.JoinPath("login"),
+			Path:     http.JoinPath("register"),
 			Method:   http.MethodPost,
 			IsPublic: true,
 		},

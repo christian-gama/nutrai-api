@@ -18,5 +18,6 @@ func TestFactorySuite(t *testing.T) {
 func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
 		service.MakeLoginHandler()
+		service.MakeRegisterHandler()
 	})
 }
