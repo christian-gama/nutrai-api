@@ -24,34 +24,38 @@ func TestAllPatientsHandlerSuite(t *testing.T) {
 }
 
 func (s *AllPatientsHandlerSuite) TestPatientHandler() {
-	type Mocks struct {
-		Repo *mocks.Patient
+	type Mock struct {
+		PatientRepo *mocks.Patient
 	}
 
 	type Sut struct {
 		Sut   query.AllPatientsHandler
 		Ctx   context.Context
 		Input *query.AllPatientsInput
-		Mocks *Mocks
+		Mock  *Mock
 	}
 
 	makeSut := func() Sut {
-		patientRepo := mocks.NewPatient(s.T())
+		mock := &Mock{
+			PatientRepo: mocks.NewPatient(s.T()),
+		}
+
+		input := queryFake.AllPatientsInput()
+
+		sut := query.NewAllPatientsHandler(mock.PatientRepo)
 
 		return Sut{
-			Sut:   query.NewAllPatientsHandler(patientRepo),
+			Sut:   sut,
 			Ctx:   context.Background(),
-			Input: queryFake.AllPatientsInput(),
-			Mocks: &Mocks{
-				Repo: patientRepo,
-			},
+			Input: input,
+			Mock:  mock,
 		}
 	}
 
 	s.Run("Should return a PatientOutput", func() {
 		sut := makeSut()
 
-		sut.Mocks.Repo.On("All", sut.Ctx, mock.Anything).
+		sut.Mock.PatientRepo.On("All", sut.Ctx, mock.Anything).
 			Return(
 				&queryer.PaginationOutput[*patient.Patient]{
 					Results: []*patient.Patient{fake.Patient()},
@@ -71,7 +75,8 @@ func (s *AllPatientsHandlerSuite) TestPatientHandler() {
 	s.Run("Should return an error when the repository fails", func() {
 		sut := makeSut()
 
-		sut.Mocks.Repo.On("All", sut.Ctx, mock.Anything, mock.Anything).Return(nil, assert.AnError)
+		sut.Mock.PatientRepo.On("All", sut.Ctx, mock.Anything, mock.Anything).
+			Return(nil, assert.AnError)
 
 		output, err := sut.Sut.Handle(sut.Ctx, sut.Input)
 

@@ -22,27 +22,31 @@ func TestFindPatientHandlerSuite(t *testing.T) {
 }
 
 func (s *FindPatientHandlerSuite) TestPatientHandler() {
-	type Mocks struct {
-		Repo *mocks.Patient
+	type Mock struct {
+		PatientRepo *mocks.Patient
 	}
 
 	type Sut struct {
 		Sut   query.FindPatientHandler
 		Ctx   context.Context
 		Input *query.FindPatientInput
-		Mocks *Mocks
+		Mock  *Mock
 	}
 
 	makeSut := func() Sut {
-		patientRepo := mocks.NewPatient(s.T())
+		mock := &Mock{
+			PatientRepo: mocks.NewPatient(s.T()),
+		}
+
+		input := queryFake.FindPatientInput()
+
+		sut := query.NewFindPatientHandler(mock.PatientRepo)
 
 		return Sut{
-			Sut:   query.NewFindPatientHandler(patientRepo),
+			Sut:   sut,
 			Ctx:   context.Background(),
-			Input: queryFake.FindPatientInput(),
-			Mocks: &Mocks{
-				Repo: patientRepo,
-			},
+			Input: input,
+			Mock:  mock,
 		}
 	}
 
@@ -51,7 +55,7 @@ func (s *FindPatientHandlerSuite) TestPatientHandler() {
 
 		patient := fake.Patient()
 		patient.ID = sut.Input.ID
-		sut.Mocks.Repo.On("Find", sut.Ctx, mock.Anything).Return(patient, nil)
+		sut.Mock.PatientRepo.On("Find", sut.Ctx, mock.Anything).Return(patient, nil)
 
 		output, err := sut.Sut.Handle(sut.Ctx, sut.Input)
 
@@ -63,7 +67,7 @@ func (s *FindPatientHandlerSuite) TestPatientHandler() {
 	s.Run("Should return an error when the repository fails", func() {
 		sut := makeSut()
 
-		sut.Mocks.Repo.On("Find", sut.Ctx, mock.Anything).Return(nil, assert.AnError)
+		sut.Mock.PatientRepo.On("Find", sut.Ctx, mock.Anything).Return(nil, assert.AnError)
 
 		output, err := sut.Sut.Handle(sut.Ctx, sut.Input)
 

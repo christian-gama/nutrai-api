@@ -39,8 +39,8 @@ func (s *UserSuite) TestSave() {
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
-		ctx := context.Background()
 		user := fake.User()
+
 		input := repo.SaveUserInput{
 			User: user,
 		}
@@ -49,7 +49,7 @@ func (s *UserSuite) TestSave() {
 
 		return Sut{
 			Sut:   sut,
-			Ctx:   ctx,
+			Ctx:   context.Background(),
 			Input: input,
 		}
 	}

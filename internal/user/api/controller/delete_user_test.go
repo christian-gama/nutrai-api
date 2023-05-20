@@ -24,23 +24,27 @@ func TestDeleteUserSuite(t *testing.T) {
 }
 
 func (s *DeleteUserSuite) TestHandle() {
-	type Sut struct {
-		Sut               controller.DeleteUser
-		Input             *command.DeleteUserInput
+	type Mock struct {
 		DeleteUserHandler *commandMock.Handler[*command.DeleteUserInput]
+	}
+
+	type Sut struct {
+		Sut   controller.DeleteUser
+		Input *command.DeleteUserInput
+		Mock  *Mock
 	}
 
 	makeSut := func() *Sut {
 		input := fake.DeleteUserInput()
-		deleteUser := commandMock.NewHandler[*command.DeleteUserInput](s.T())
-		sut := controller.NewDeleteUser(deleteUser)
-		return &Sut{Sut: sut, DeleteUserHandler: deleteUser, Input: input}
+		mock := &Mock{DeleteUserHandler: commandMock.NewHandler[*command.DeleteUserInput](s.T())}
+		sut := controller.NewDeleteUser(mock.DeleteUserHandler)
+		return &Sut{Sut: sut, Mock: mock, Input: input}
 	}
 
 	s.Run("should delete a user", func() {
 		sut := makeSut()
 
-		sut.DeleteUserHandler.
+		sut.Mock.DeleteUserHandler.
 			On("Handle", mock.Anything, sut.Input).
 			Return(nil)
 
@@ -50,7 +54,7 @@ func (s *DeleteUserSuite) TestHandle() {
 		})
 
 		s.Equal(http.StatusNoContent, ctx.Writer.Status())
-		sut.DeleteUserHandler.AssertCalled(s.T(), "Handle", mock.Anything, sut.Input)
+		sut.Mock.DeleteUserHandler.AssertCalled(s.T(), "Handle", mock.Anything, sut.Input)
 	})
 
 	s.Run("ID", func() {
@@ -71,7 +75,7 @@ func (s *DeleteUserSuite) TestHandle() {
 	s.Run("panics when DeleteUserHandler.Handle returns error", func() {
 		sut := makeSut()
 
-		sut.DeleteUserHandler.
+		sut.Mock.DeleteUserHandler.
 			On("Handle", mock.Anything, sut.Input).
 			Return(assert.AnError)
 

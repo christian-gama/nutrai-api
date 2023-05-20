@@ -39,10 +39,8 @@ func (s *PatientSuite) TestSave() {
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
-		ctx := context.Background()
 		patient := fake.Patient()
-		patient.User.ID = 0
-		patient.ID = 0
+
 		input := repo.SavePatientInput{
 			Patient: patient,
 		}
@@ -51,7 +49,7 @@ func (s *PatientSuite) TestSave() {
 
 		return Sut{
 			Sut:   sut,
-			Ctx:   ctx,
+			Ctx:   context.Background(),
 			Input: input,
 		}
 	}

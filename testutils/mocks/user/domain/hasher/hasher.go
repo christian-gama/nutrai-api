@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	value "github.com/christian-gama/nutrai-api/internal/user/domain/value/user"
+	value "github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	mock "github.com/stretchr/testify/mock"
 )
 

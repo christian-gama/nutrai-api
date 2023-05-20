@@ -22,7 +22,7 @@ func TestUpdateHandlerSuite(t *testing.T) {
 }
 
 func (s *UpdatePatientHandlerSuite) TestUpdateHandler() {
-	type Mocks struct {
+	type Mock struct {
 		PatientRepo *userRepoMock.Patient
 	}
 
@@ -30,17 +30,23 @@ func (s *UpdatePatientHandlerSuite) TestUpdateHandler() {
 		Sut   command.UpdatePatientHandler
 		Ctx   context.Context
 		Input *command.UpdatePatientInput
-		Mocks *Mocks
+		Mock  *Mock
 	}
 
 	makeSut := func() Sut {
-		patientRepo := userRepoMock.NewPatient(s.T())
+		mock := &Mock{
+			PatientRepo: userRepoMock.NewPatient(s.T()),
+		}
+
+		input := fake.UpdatePatientInput()
+
+		sut := command.NewUpdatePatientHandler(mock.PatientRepo)
 
 		return Sut{
-			Sut:   command.NewUpdatePatientHandler(patientRepo),
+			Sut:   sut,
 			Ctx:   context.Background(),
-			Input: fake.UpdatePatientInput(),
-			Mocks: &Mocks{patientRepo},
+			Input: input,
+			Mock:  mock,
 		}
 	}
 
@@ -48,11 +54,11 @@ func (s *UpdatePatientHandlerSuite) TestUpdateHandler() {
 		sut := makeSut()
 
 		patient := fakePatient.Patient()
-		sut.Mocks.PatientRepo.
+		sut.Mock.PatientRepo.
 			On("Find", sut.Ctx, mock.Anything).
 			Return(patient, nil)
 
-		sut.Mocks.PatientRepo.
+		sut.Mock.PatientRepo.
 			On("Update", sut.Ctx, mock.Anything).
 			Return(nil)
 
@@ -64,7 +70,7 @@ func (s *UpdatePatientHandlerSuite) TestUpdateHandler() {
 	s.Run("Should return error when converting input to model fails", func() {
 		sut := makeSut()
 
-		sut.Mocks.PatientRepo.
+		sut.Mock.PatientRepo.
 			On("Find", sut.Ctx, mock.Anything).
 			Return(fakePatient.Patient(), nil)
 
@@ -79,11 +85,11 @@ func (s *UpdatePatientHandlerSuite) TestUpdateHandler() {
 		sut := makeSut()
 
 		patient := fakePatient.Patient()
-		sut.Mocks.PatientRepo.
+		sut.Mock.PatientRepo.
 			On("Find", sut.Ctx, mock.Anything).
 			Return(patient, nil)
 
-		sut.Mocks.PatientRepo.On("Update", sut.Ctx, mock.Anything).Return(assert.AnError)
+		sut.Mock.PatientRepo.On("Update", sut.Ctx, mock.Anything).Return(assert.AnError)
 
 		err := sut.Sut.Handle(sut.Ctx, sut.Input)
 

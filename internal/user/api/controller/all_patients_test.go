@@ -24,25 +24,31 @@ func TestAllPatientsSuite(t *testing.T) {
 }
 
 func (s *AllPatientsSuite) TestHandle() {
-	type Sut struct {
-		Sut                controller.AllPatients
-		Input              query.AllPatientsInput
+	type Mock struct {
 		AllPatientsHandler *mocks.Handler[*query.AllPatientsInput, *queryer.PaginationOutput[*query.AllPatientsOutput]]
+	}
+
+	type Sut struct {
+		Sut   controller.AllPatients
+		Input query.AllPatientsInput
+		Mock  *Mock
 	}
 
 	makeSut := func() *Sut {
 		input := fake.AllPatientsInput()
-		allPatients := mocks.NewHandler[*query.AllPatientsInput, *queryer.PaginationOutput[*query.AllPatientsOutput]](
-			s.T(),
-		)
-		sut := controller.NewAllPatients(allPatients)
-		return &Sut{Sut: sut, AllPatientsHandler: allPatients, Input: *input}
+		mocks := &Mock{
+			AllPatientsHandler: mocks.NewHandler[*query.AllPatientsInput, *queryer.PaginationOutput[*query.AllPatientsOutput]](
+				s.T(),
+			),
+		}
+		sut := controller.NewAllPatients(mocks.AllPatientsHandler)
+		return &Sut{Sut: sut, Mock: mocks, Input: *input}
 	}
 
 	s.Run("should fetch all patients successfuly", func() {
 		sut := makeSut()
 
-		sut.AllPatientsHandler.
+		sut.Mock.AllPatientsHandler.
 			On("Handle", mock.Anything, mock.Anything).
 			Return(&queryer.PaginationOutput[*query.AllPatientsOutput]{
 				Total: 1,
@@ -54,13 +60,13 @@ func (s *AllPatientsSuite) TestHandle() {
 		ctx := gintest.MustRequest(sut.Sut, gintest.Option{})
 
 		s.Equal(http.StatusOK, ctx.Writer.Status())
-		sut.AllPatientsHandler.AssertCalled(s.T(), "Handle", mock.Anything, mock.Anything)
+		sut.Mock.AllPatientsHandler.AssertCalled(s.T(), "Handle", mock.Anything, mock.Anything)
 	})
 
 	s.Run("should fetch all patients successfuly using queries", func() {
 		sut := makeSut()
 
-		sut.AllPatientsHandler.
+		sut.Mock.AllPatientsHandler.
 			On("Handle", mock.Anything, mock.Anything).
 			Return(&queryer.PaginationOutput[*query.AllPatientsOutput]{
 				Total: 1,
@@ -91,7 +97,7 @@ func (s *AllPatientsSuite) TestHandle() {
 		})
 
 		s.Equal(http.StatusOK, ctx.Writer.Status())
-		sut.AllPatientsHandler.AssertCalled(s.T(), "Handle", mock.Anything, mock.Anything)
+		sut.Mock.AllPatientsHandler.AssertCalled(s.T(), "Handle", mock.Anything, mock.Anything)
 	})
 
 	s.Run("invalid Preload", func() {
@@ -135,7 +141,7 @@ func (s *AllPatientsSuite) TestHandle() {
 	s.Run("panics when AllPatientsHandler.Handle returns error", func() {
 		sut := makeSut()
 
-		sut.AllPatientsHandler.
+		sut.Mock.AllPatientsHandler.
 			On("Handle", mock.Anything, mock.Anything).
 			Return(nil, assert.AnError)
 

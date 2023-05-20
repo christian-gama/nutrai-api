@@ -26,23 +26,29 @@ func TestUpdatePatientSuite(t *testing.T) {
 }
 
 func (s *UpdatePatientSuite) TestHandle() {
-	type Sut struct {
-		Sut                  controller.UpdatePatient
-		Input                *command.UpdatePatientInput
+	type Mock struct {
 		UpdatePatientHandler *commandMock.Handler[*command.UpdatePatientInput]
+	}
+
+	type Sut struct {
+		Sut   controller.UpdatePatient
+		Input *command.UpdatePatientInput
+		Mock  *Mock
 	}
 
 	makeSut := func() *Sut {
 		input := fake.UpdatePatientInput()
-		updatePatient := commandMock.NewHandler[*command.UpdatePatientInput](s.T())
-		sut := controller.NewUpdatePatient(updatePatient)
-		return &Sut{Sut: sut, UpdatePatientHandler: updatePatient, Input: input}
+		mock := &Mock{
+			UpdatePatientHandler: commandMock.NewHandler[*command.UpdatePatientInput](s.T()),
+		}
+		sut := controller.NewUpdatePatient(mock.UpdatePatientHandler)
+		return &Sut{Sut: sut, Mock: mock, Input: input}
 	}
 
 	s.Run("should update a patient", func() {
 		sut := makeSut()
 
-		sut.UpdatePatientHandler.
+		sut.Mock.UpdatePatientHandler.
 			On("Handle", mock.Anything, sut.Input).
 			Return(nil)
 
@@ -52,7 +58,7 @@ func (s *UpdatePatientSuite) TestHandle() {
 		})
 
 		s.Equal(http.StatusOK, ctx.Writer.Status())
-		sut.UpdatePatientHandler.AssertCalled(s.T(), "Handle", mock.Anything, sut.Input)
+		sut.Mock.UpdatePatientHandler.AssertCalled(s.T(), "Handle", mock.Anything, sut.Input)
 	})
 
 	s.Run("ID", func() {
@@ -226,7 +232,7 @@ func (s *UpdatePatientSuite) TestHandle() {
 	s.Run("panics when UpdatePatientHandler.Handle returns error", func() {
 		sut := makeSut()
 
-		sut.UpdatePatientHandler.
+		sut.Mock.UpdatePatientHandler.
 			On("Handle", mock.Anything, sut.Input).
 			Return(assert.AnError)
 

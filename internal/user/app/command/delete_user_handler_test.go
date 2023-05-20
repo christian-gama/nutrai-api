@@ -22,7 +22,7 @@ func TestDeleteUserSuite(t *testing.T) {
 }
 
 func (s *DeleteUserSuite) TestDeleteUser() {
-	type Mocks struct {
+	type Mock struct {
 		UserRepo *userMock.User
 	}
 
@@ -30,21 +30,23 @@ func (s *DeleteUserSuite) TestDeleteUser() {
 		Sut   command.DeleteUserHandler
 		Ctx   context.Context
 		Input *command.DeleteUserInput
-		Mocks *Mocks
+		Mock  *Mock
 	}
 
 	makeSut := func() *Sut {
-		userRepo := userMock.NewUser(s.T())
+		mock := &Mock{
+			UserRepo: userMock.NewUser(s.T()),
+		}
+
 		input := fake.DeleteUserInput()
-		sut := command.NewDeleteUserHandler(userRepo)
+
+		sut := command.NewDeleteUserHandler(mock.UserRepo)
 
 		return &Sut{
 			Sut:   sut,
 			Ctx:   context.Background(),
 			Input: input,
-			Mocks: &Mocks{
-				UserRepo: userRepo,
-			},
+			Mock:  mock,
 		}
 	}
 
@@ -52,8 +54,8 @@ func (s *DeleteUserSuite) TestDeleteUser() {
 		sut := makeSut()
 
 		user := userFake.User()
-		sut.Mocks.UserRepo.On("Find", sut.Ctx, mock.Anything).Return(user, nil)
-		sut.Mocks.UserRepo.On("Delete", sut.Ctx, mock.Anything).Return(nil)
+		sut.Mock.UserRepo.On("Find", sut.Ctx, mock.Anything).Return(user, nil)
+		sut.Mock.UserRepo.On("Delete", sut.Ctx, mock.Anything).Return(nil)
 
 		err := sut.Sut.Handle(sut.Ctx, sut.Input)
 
@@ -63,7 +65,7 @@ func (s *DeleteUserSuite) TestDeleteUser() {
 	s.Run("Should return an error if the user does not exist", func() {
 		sut := makeSut()
 
-		sut.Mocks.UserRepo.On("Find", sut.Ctx, mock.Anything).Return(nil, assert.AnError)
+		sut.Mock.UserRepo.On("Find", sut.Ctx, mock.Anything).Return(nil, assert.AnError)
 
 		err := sut.Sut.Handle(sut.Ctx, sut.Input)
 

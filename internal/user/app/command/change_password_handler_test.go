@@ -24,7 +24,7 @@ func TestChangePasswordHandlerSuite(t *testing.T) {
 }
 
 func (s *ChangePasswordHandlerSuite) TestSaveHandler() {
-	type Mocks struct {
+	type Mock struct {
 		HashPasswordHandler *serviceMock.Handler[*service.HashPasswordInput, *service.HashPasswordOutput]
 		UserRepo            *userRepoMock.User
 	}
@@ -33,35 +33,41 @@ func (s *ChangePasswordHandlerSuite) TestSaveHandler() {
 		Sut   command.ChangePasswordHandler
 		Ctx   context.Context
 		Input *command.ChangePasswordInput
-		Mocks *Mocks
+		Mock  *Mock
 	}
 
 	makeSut := func() Sut {
-		hashPasswordHandler := serviceMock.NewHandler[*service.HashPasswordInput, *service.HashPasswordOutput](
-			s.T(),
-		)
-		userRepo := userRepoMock.NewUser(s.T())
+		mock := &Mock{
+			HashPasswordHandler: serviceMock.NewHandler[*service.HashPasswordInput, *service.HashPasswordOutput](
+				s.T(),
+			),
+			UserRepo: userRepoMock.NewUser(s.T()),
+		}
+
+		input := fake.ChangePasswordInput()
+
+		sut := command.NewChangePasswordHandler(mock.UserRepo, mock.HashPasswordHandler)
 
 		return Sut{
-			Sut:   command.NewChangePasswordHandler(userRepo, hashPasswordHandler),
+			Sut:   sut,
 			Ctx:   context.Background(),
-			Input: fake.ChangePasswordInput(),
-			Mocks: &Mocks{hashPasswordHandler, userRepo},
+			Input: input,
+			Mock:  mock,
 		}
 	}
 
 	s.Run("Should return nil when change password successfully", func() {
 		sut := makeSut()
 
-		sut.Mocks.UserRepo.
+		sut.Mock.UserRepo.
 			On("Find", sut.Ctx, mock.Anything).
 			Return(userFake.User(), nil)
 
-		sut.Mocks.HashPasswordHandler.
+		sut.Mock.HashPasswordHandler.
 			On("Handle", sut.Ctx, mock.Anything).
 			Return(&service.HashPasswordOutput{Password: "hashed"}, nil)
 
-		sut.Mocks.UserRepo.
+		sut.Mock.UserRepo.
 			On("Update", sut.Ctx, mock.Anything).
 			Return(nil)
 
@@ -74,21 +80,21 @@ func (s *ChangePasswordHandlerSuite) TestSaveHandler() {
 		sut := makeSut()
 
 		password := sut.Input.Password
-		sut.Mocks.UserRepo.
+		sut.Mock.UserRepo.
 			On("Find", sut.Ctx, mock.Anything).
 			Return(userFake.User(), nil)
 
-		sut.Mocks.HashPasswordHandler.
+		sut.Mock.HashPasswordHandler.
 			On("Handle", sut.Ctx, mock.Anything).
 			Return(&service.HashPasswordOutput{Password: "hashed"}, nil)
 
-		sut.Mocks.UserRepo.
+		sut.Mock.UserRepo.
 			On("Update", sut.Ctx, mock.Anything).
 			Return(nil)
 
 		_ = sut.Sut.Handle(sut.Ctx, sut.Input)
 
-		sut.Mocks.HashPasswordHandler.AssertCalled(
+		sut.Mock.HashPasswordHandler.AssertCalled(
 			s.T(),
 			"Handle",
 			sut.Ctx,
@@ -99,7 +105,7 @@ func (s *ChangePasswordHandlerSuite) TestSaveHandler() {
 	s.Run("Should return error when user not found", func() {
 		sut := makeSut()
 
-		sut.Mocks.UserRepo.
+		sut.Mock.UserRepo.
 			On("Find", sut.Ctx, mock.Anything).
 			Return(nil, assert.AnError)
 
@@ -111,11 +117,11 @@ func (s *ChangePasswordHandlerSuite) TestSaveHandler() {
 	s.Run("Should return error when hashing password fails", func() {
 		sut := makeSut()
 
-		sut.Mocks.UserRepo.
+		sut.Mock.UserRepo.
 			On("Find", sut.Ctx, mock.Anything).
 			Return(userFake.User(), nil)
 
-		sut.Mocks.HashPasswordHandler.
+		sut.Mock.HashPasswordHandler.
 			On("Handle", sut.Ctx, mock.Anything).
 			// Must return a pointer to output because of generics.
 			Return(&service.HashPasswordOutput{}, assert.AnError)
@@ -128,11 +134,11 @@ func (s *ChangePasswordHandlerSuite) TestSaveHandler() {
 	s.Run("Should return error when converting input to model fails", func() {
 		sut := makeSut()
 
-		sut.Mocks.UserRepo.
+		sut.Mock.UserRepo.
 			On("Find", sut.Ctx, mock.Anything).
 			Return(userFake.User(), nil)
 
-		sut.Mocks.HashPasswordHandler.
+		sut.Mock.HashPasswordHandler.
 			On("Handle", sut.Ctx, mock.Anything).
 			Return(&service.HashPasswordOutput{Password: ""}, nil)
 
@@ -144,15 +150,15 @@ func (s *ChangePasswordHandlerSuite) TestSaveHandler() {
 	s.Run("Should return error when updating the password fails", func() {
 		sut := makeSut()
 
-		sut.Mocks.UserRepo.
+		sut.Mock.UserRepo.
 			On("Find", sut.Ctx, mock.Anything).
 			Return(userFake.User(), nil)
 
-		sut.Mocks.HashPasswordHandler.
+		sut.Mock.HashPasswordHandler.
 			On("Handle", sut.Ctx, mock.Anything).
 			Return(&service.HashPasswordOutput{Password: "hashed"}, nil)
 
-		sut.Mocks.UserRepo.
+		sut.Mock.UserRepo.
 			On("Update", sut.Ctx, mock.Anything).
 			Return(assert.AnError)
 

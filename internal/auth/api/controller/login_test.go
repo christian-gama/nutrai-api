@@ -25,29 +25,35 @@ func TestLoginSuite(t *testing.T) {
 }
 
 func (s *LoginSuite) TestHandle() {
-	type Sut struct {
-		Sut          controller.Login
-		Input        *service.LoginInput
+	type Mock struct {
 		LoginHandler *serviceMock.Handler[*service.LoginInput, *service.LoginOutput]
+	}
+
+	type Sut struct {
+		Sut   controller.Login
+		Input *service.LoginInput
+		Mock  *Mock
 	}
 
 	makeSut := func() *Sut {
 		input := fake.LoginInput()
-		loginHandler := serviceMock.NewHandler[*service.LoginInput, *service.LoginOutput](s.T())
-		sut := controller.NewLogin(loginHandler)
-		return &Sut{Sut: sut, LoginHandler: loginHandler, Input: input}
+		mocks := &Mock{
+			LoginHandler: serviceMock.NewHandler[*service.LoginInput, *service.LoginOutput](s.T()),
+		}
+		sut := controller.NewLogin(mocks.LoginHandler)
+		return &Sut{Sut: sut, Mock: mocks, Input: input}
 	}
 
 	s.Run("should return an access token and refresh token when login succeeds", func() {
 		sut := makeSut()
 
-		Access := value.Token("access")
-		Refresh := value.Token("refresh")
-		sut.LoginHandler.
+		accessToken := value.Token("access")
+		refreshToken := value.Token("refresh")
+		sut.Mock.LoginHandler.
 			On("Handle", mock.Anything, sut.Input).
 			Return(&service.LoginOutput{
-				Access:  Access,
-				Refresh: Refresh,
+				Access:  accessToken,
+				Refresh: refreshToken,
 			}, nil)
 
 		ctx, body := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
@@ -55,8 +61,16 @@ func (s *LoginSuite) TestHandle() {
 		})
 
 		s.Equal(http.StatusOK, ctx.Writer.Status())
-		s.EqualValues(Access, body.Data.(map[string]any)["access"], "should return access token")
-		s.EqualValues(Refresh, body.Data.(map[string]any)["refresh"], "should return refresh token")
+		s.EqualValues(
+			accessToken,
+			body.Data.(map[string]any)["access"],
+			"should return access token",
+		)
+		s.EqualValues(
+			refreshToken,
+			body.Data.(map[string]any)["refresh"],
+			"should return refresh token",
+		)
 	})
 
 	s.Run("Email", func() {
@@ -126,7 +140,7 @@ func (s *LoginSuite) TestHandle() {
 	s.Run("panics when LoginHandler.Handle returns error", func() {
 		sut := makeSut()
 
-		sut.LoginHandler.
+		sut.Mock.LoginHandler.
 			On("Handle", mock.Anything, sut.Input).
 			Return(nil, assert.AnError)
 

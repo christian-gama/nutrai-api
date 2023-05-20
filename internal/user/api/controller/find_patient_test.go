@@ -24,25 +24,31 @@ func TestFindPatientSuite(t *testing.T) {
 }
 
 func (s *FindPatientSuite) TestHandle() {
-	type Sut struct {
-		Sut                controller.FindPatient
-		Input              query.FindPatientInput
+	type Mock struct {
 		FindPatientHandler *mocks.Handler[*query.FindPatientInput, *query.FindPatientOutput]
+	}
+
+	type Sut struct {
+		Sut   controller.FindPatient
+		Input query.FindPatientInput
+		Mock  *Mock
 	}
 
 	makeSut := func() *Sut {
 		input := fake.FindPatientInput()
-		findPatientHandler := mocks.NewHandler[*query.FindPatientInput, *query.FindPatientOutput](
-			s.T(),
-		)
-		sut := controller.NewFindPatient(findPatientHandler)
-		return &Sut{Sut: sut, FindPatientHandler: findPatientHandler, Input: *input}
+		mock := &Mock{
+			FindPatientHandler: mocks.NewHandler[*query.FindPatientInput, *query.FindPatientOutput](
+				s.T(),
+			),
+		}
+		sut := controller.NewFindPatient(mock.FindPatientHandler)
+		return &Sut{Sut: sut, Mock: mock, Input: *input}
 	}
 
 	s.Run("should find one patient successfuly", func() {
 		sut := makeSut()
 
-		sut.FindPatientHandler.
+		sut.Mock.FindPatientHandler.
 			On("Handle", mock.Anything, mock.Anything).
 			Return(&query.AllPatientsOutput{ID: sut.Input.ID}, nil)
 
@@ -51,7 +57,7 @@ func (s *FindPatientSuite) TestHandle() {
 		})
 
 		s.Equal(http.StatusOK, ctx.Writer.Status())
-		sut.FindPatientHandler.AssertCalled(s.T(), "Handle", mock.Anything, mock.Anything)
+		sut.Mock.FindPatientHandler.AssertCalled(s.T(), "Handle", mock.Anything, mock.Anything)
 	})
 
 	s.Run("invalid Preload", func() {
@@ -84,7 +90,7 @@ func (s *FindPatientSuite) TestHandle() {
 	s.Run("panics when FindPatientHandler.Handle returns error", func() {
 		sut := makeSut()
 
-		sut.FindPatientHandler.
+		sut.Mock.FindPatientHandler.
 			On("Handle", mock.Anything, mock.Anything).
 			Return(nil, assert.AnError)
 

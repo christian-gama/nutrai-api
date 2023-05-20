@@ -24,7 +24,7 @@ func TestSavePatientHandlerSuite(t *testing.T) {
 }
 
 func (s *SavePatientHandlerSuite) TestSaveHandler() {
-	type Mocks struct {
+	type Mock struct {
 		HashPasswordHandler *serviceMock.Handler[*service.HashPasswordInput, *service.HashPasswordOutput]
 		PatientRepo         *userRepoMock.Patient
 	}
@@ -33,31 +33,37 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 		Sut   command.SavePatientHandler
 		Ctx   context.Context
 		Input *command.SavePatientInput
-		Mocks *Mocks
+		Mock  *Mock
 	}
 
 	makeSut := func() Sut {
-		hashPasswordHandler := serviceMock.NewHandler[*service.HashPasswordInput, *service.HashPasswordOutput](
-			s.T(),
-		)
-		patientRepo := userRepoMock.NewPatient(s.T())
+		mock := &Mock{
+			HashPasswordHandler: serviceMock.NewHandler[*service.HashPasswordInput, *service.HashPasswordOutput](
+				s.T(),
+			),
+			PatientRepo: userRepoMock.NewPatient(s.T()),
+		}
+
+		input := fake.SavePatientInput()
+
+		sut := command.NewSavePatientHandler(mock.PatientRepo, mock.HashPasswordHandler)
 
 		return Sut{
-			Sut:   command.NewSavePatientHandler(patientRepo, hashPasswordHandler),
+			Sut:   sut,
 			Ctx:   context.Background(),
-			Input: fake.SavePatientInput(),
-			Mocks: &Mocks{hashPasswordHandler, patientRepo},
+			Input: input,
+			Mock:  mock,
 		}
 	}
 
 	s.Run("Should return nil when saving patient succeeds", func() {
 		sut := makeSut()
 
-		sut.Mocks.HashPasswordHandler.
+		sut.Mock.HashPasswordHandler.
 			On("Handle", sut.Ctx, mock.Anything).
 			Return(&service.HashPasswordOutput{Password: "hashed"}, nil)
 
-		sut.Mocks.PatientRepo.
+		sut.Mock.PatientRepo.
 			On("Save", sut.Ctx, mock.Anything).
 			Return(fakePatient.Patient(), nil)
 
@@ -70,17 +76,17 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 		sut := makeSut()
 
 		password := sut.Input.Password
-		sut.Mocks.HashPasswordHandler.
+		sut.Mock.HashPasswordHandler.
 			On("Handle", sut.Ctx, mock.Anything).
 			Return(&service.HashPasswordOutput{Password: "hashed"}, nil)
 
-		sut.Mocks.PatientRepo.
+		sut.Mock.PatientRepo.
 			On("Save", sut.Ctx, mock.Anything).
 			Return(fakePatient.Patient(), nil)
 
 		_ = sut.Sut.Handle(sut.Ctx, sut.Input)
 
-		sut.Mocks.HashPasswordHandler.AssertCalled(
+		sut.Mock.HashPasswordHandler.AssertCalled(
 			s.T(),
 			"Handle",
 			sut.Ctx,
@@ -91,7 +97,7 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 	s.Run("Should return error when hashing password fails", func() {
 		sut := makeSut()
 
-		sut.Mocks.HashPasswordHandler.
+		sut.Mock.HashPasswordHandler.
 			On("Handle", sut.Ctx, mock.Anything).
 			// Must return a pointer to output because of generics.
 			Return(&service.HashPasswordOutput{}, assert.AnError)
@@ -104,7 +110,7 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 	s.Run("Should return error when converting input to model fails", func() {
 		sut := makeSut()
 
-		sut.Mocks.HashPasswordHandler.
+		sut.Mock.HashPasswordHandler.
 			On("Handle", sut.Ctx, mock.Anything).
 			Return(&service.HashPasswordOutput{Password: "hashed"}, nil)
 		sut.Input.Email = ""
@@ -117,11 +123,11 @@ func (s *SavePatientHandlerSuite) TestSaveHandler() {
 	s.Run("Should return error when saving patient fails", func() {
 		sut := makeSut()
 
-		sut.Mocks.HashPasswordHandler.
+		sut.Mock.HashPasswordHandler.
 			On("Handle", sut.Ctx, mock.Anything).
 			Return(&service.HashPasswordOutput{Password: "hashed"}, nil)
 
-		sut.Mocks.PatientRepo.On("Save", sut.Ctx, mock.Anything).Return(nil, assert.AnError)
+		sut.Mock.PatientRepo.On("Save", sut.Ctx, mock.Anything).Return(nil, assert.AnError)
 
 		err := sut.Sut.Handle(sut.Ctx, sut.Input)
 

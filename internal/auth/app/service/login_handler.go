@@ -8,6 +8,7 @@ import (
 	userCmd "github.com/christian-gama/nutrai-api/internal/user/app/command"
 )
 
+// LoginHandler handles the login request and returns the access and refresh tokens.
 type LoginHandler = service.Handler[*LoginInput, *LoginOutput]
 
 type loginHandlerImpl struct {
@@ -16,6 +17,7 @@ type loginHandlerImpl struct {
 	checkCredentialsHandler userCmd.CheckCredentialsHandler
 }
 
+// NewLoginHandler creates a new LoginHandler instance.
 func NewLoginHandler(
 	accessToken jwt.Generator,
 	refreshToken jwt.Generator,
@@ -28,6 +30,7 @@ func NewLoginHandler(
 	}
 }
 
+// Handle implements the LoginHandler interface.
 func (h *loginHandlerImpl) Handle(ctx context.Context, input *LoginInput) (*LoginOutput, error) {
 	if err := h.checkCredentialsHandler.Handle(ctx, &userCmd.CheckCredentialsInput{
 		Email:    input.Email,
@@ -36,12 +39,13 @@ func (h *loginHandlerImpl) Handle(ctx context.Context, input *LoginInput) (*Logi
 		return nil, err
 	}
 
-	access, err := h.accessToken.Generate(&jwt.Subject{Email: input.Email})
+	subject := &jwt.Subject{Email: input.Email}
+	access, err := h.accessToken.Generate(subject)
 	if err != nil {
 		return nil, err
 	}
 
-	refresh, err := h.refreshToken.Generate(&jwt.Subject{Email: input.Email})
+	refresh, err := h.refreshToken.Generate(subject)
 	if err != nil {
 		return nil, err
 	}
