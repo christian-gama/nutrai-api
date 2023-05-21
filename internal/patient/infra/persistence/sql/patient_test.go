@@ -10,6 +10,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/repo"
 	persistence "github.com/christian-gama/nutrai-api/internal/patient/infra/persistence/sql"
+	"github.com/christian-gama/nutrai-api/internal/patient/infra/persistence/sql/schema"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/patient/domain/model/patient"
 	userFixture "github.com/christian-gama/nutrai-api/testutils/fixture/auth/sql"
 	fixture "github.com/christian-gama/nutrai-api/testutils/fixture/patient/sql"
@@ -73,6 +74,7 @@ func (s *PatientSuite) TestSave() {
 		sut.Input.Patient.ID = userDeps.User.ID
 		_, err := sut.Sut(sut.Ctx, sut.Input)
 		s.NoError(err)
+		s.SQLRecordExist(db, &schema.Patient{})
 
 		_, err = sut.Sut(sut.Ctx, sut.Input)
 		s.Error(err)
@@ -117,16 +119,20 @@ func (s *PatientSuite) TestDelete() {
 		err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.NoError(err)
+		s.SQLRecordDoesNotExist(db, &schema.Patient{})
 	})
 
-	s.Run("Should delete nothing if the patient does not exist", func(db *gorm.DB) {
+	s.Run("Should delete nothing if the patient ID is invalid", func(db *gorm.DB) {
 		sut := makeSut(db)
 
-		sut.Input.IDs = []value.ID{404_404_404}
+		patientDeps := fixture.SavePatient(db, nil)
+
+		sut.Input.IDs = []value.ID{patientDeps.Patient.ID + 1}
 
 		err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.NoError(err)
+		s.SQLRecordExist(db, &schema.Patient{})
 	})
 }
 
@@ -338,9 +344,6 @@ func (s *PatientSuite) TestUpdate() {
 		err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.Require().NoError(err)
-		patient, err := s.Patient(db).
-			Find(sut.Ctx, repo.FindPatientInput{ID: patientDeps.Patient.ID})
-		s.NoError(err)
-		s.EqualValues(50, patient.Age, "Should have the same age")
+		s.HasChanged(patientDeps.Patient, sut.Input.Patient)
 	})
 }

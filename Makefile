@@ -12,6 +12,7 @@ export WORKDIR=/usr/src/app
 # ENV_FILE is used to load the environment variables from the .env file.
 -include $(ENV_FILE)
 
+
 # ==============================================================================================
 # Target: init
 # Brief: This target is used to initialize the project.
@@ -47,8 +48,11 @@ env: .cmd-exists-sh .clear-screen
 .PHONY: run
 run: .cmd-exists-go .clear-screen .check-env-file
 ifneq ($(RUNNING_IN_DOCKER), true)
-	@$(MAKE) postgres
-	@sh ./scripts/wait_for_db.sh nutrai-psql
+	@ENV_FILE=.env.dev $(MAKE) postgres
+	@ENV_FILE=.env.dev $(MAKE) rabbitmq
+
+	@sh ./scripts/wait_for.sh nutrai-psql
+	@sh ./scripts/wait_for.sh nutrai-rabbitmq
 endif
 
 ifeq ($(ENV_FILE), .env.prod)
@@ -66,11 +70,7 @@ endif
 # ==============================================================================================
 .PHONY: dev
 dev: .cmd-exists-go .clear-screen
-ifneq ($(RUNNING_IN_DOCKER), true)
-	@ENV_FILE=.env.dev $(MAKE) postgres
-	@sh ./scripts/wait_for_db.sh nutrai-psql
-endif
-	@go run github.com/cosmtrek/air@$(AIRVERSION) -- -e .env.dev
+	@ENV_FILE=.env.dev $(MAKE) run
 
 
 # ==============================================================================================
@@ -82,7 +82,7 @@ endif
 prod: .cmd-exists-go .clear-screen
 ifneq ($(RUNNING_IN_DOCKER), true)
 	@ENV_FILE=.env.prod $(MAKE) postgres
-	@sh ./scripts/wait_for_db.sh nutrai-psql
+	@sh ./scripts/wait_for.sh nutrai-psql
 endif
 	@$(MAKE) build
 	@$(BUILD_DIR)/$(APP_NAME) -e .env.prod
@@ -97,7 +97,7 @@ endif
 list-routes: .cmd-exists-go .clear-screen
 ifneq ($(RUNNING_IN_DOCKER), true)
 	@ENV_FILE=.env.dev $(MAKE) postgres
-	@sh ./scripts/wait_for_db.sh nutrai-psql
+	@sh ./scripts/wait_for.sh nutrai-psql
 endif
 	@go run ./cmd/routes/main.go
 
@@ -171,7 +171,7 @@ test-unit: .cmd-exists-go .clear-screen
 # 	--watch: Watch for changes and run tests.
 # ==============================================================================================
 .PHONY: test-integration
-test-integration: .cmd-exists-go .clear-screen .prepare-test-db
+test-integration: .cmd-exists-go .clear-screen .prepare-test
 	@TEST_MODE=integration \
 	sh -c "./scripts/test.sh $(FLAGS)"
 
@@ -185,7 +185,7 @@ test-integration: .cmd-exists-go .clear-screen .prepare-test-db
 #  --cover: Run tests with coverage.
 # ==============================================================================================
 .PHONY: test
-test: .cmd-exists-go .clear-screen .prepare-test-db
+test: .cmd-exists-go .clear-screen .prepare-test
 	@TEST_MODE=all \
 	sh -c "./scripts/test.sh $(FLAGS)"
 
@@ -196,7 +196,7 @@ test: .cmd-exists-go .clear-screen .prepare-test-db
 # Usage: Run the command 'make test-ci'.
 # ==============================================================================================
 .PHONY: test-ci
-test-ci: .cmd-exists-go .clear-screen .prepare-test-db
+test-ci: .cmd-exists-go .clear-screen .prepare-test
 	@TEST_MODE=all go test -v ./...
 
 
@@ -255,6 +255,21 @@ postgres: .cmd-exists-docker .clear-screen .check-env-file
 		WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d psql_test; \
 	else \
 		WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d psql; \
+	fi;
+
+# ==============================================================================================
+# Target: rabbitmq
+# Brief: This target is used to run the rabbitmq container.
+# Usage: Run the command 'make rabbitmq [ENV_FILE="<env_file>"]'.
+# Args:
+# 	ENV_FILE: The env file to be loaded.
+# ==============================================================================================
+.PHONY: rabbitmq
+rabbitmq: .cmd-exists-docker .clear-screen .check-env-file
+	@if [ "$(ENV_FILE)" = ".env.test" ]; then \
+		WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d rabbitmq_test; \
+	else \
+		WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d rabbitmq; \
 	fi;
 
 
@@ -355,13 +370,15 @@ docker-prod: .cmd-exists-docker .clear-screen
 
 
 # ==============================================================================================
-# Target: .prepare-test-db
+# Target: .prepare-test
 # Brief: This is a helper target to prepare the test environment.
 # Usage: It is not meant to be called directly, but by other targets.
 # ==============================================================================================
-.prepare-test-db: .cmd-exists-go .cmd-exists-docker .clear-screen
+.prepare-test: .cmd-exists-go .cmd-exists-docker .clear-screen
 	@WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file .env.test up -d psql_test
-	@sh ./scripts/wait_for_db.sh nutrai-psql-test
+	@WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file .env.test up -d rabbitmq_test
+	@sh ./scripts/wait_for.sh nutrai-psql-test & \
+	sh ./scripts/wait_for.sh nutrai-rabbitmq-test
 	@go run ./cmd/migrate/*.go -e .env.test reset
 
 
@@ -372,4 +389,14 @@ docker-prod: .cmd-exists-docker .clear-screen
 # ==============================================================================================
 .prepare-db: .cmd-exists-docker .clear-screen
 	@WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d psql
-	@sh ./scripts/wait_for_db.sh nutrai-psql
+	@sh ./scripts/wait_for.sh nutrai-psql
+
+
+# ==============================================================================================
+# Target: .prepare-rabbitmq
+# Brief: This is a helper target to prepare the rabbitmq container.
+# Usage: It is not meant to be called directly, but by other targets.
+# ==============================================================================================
+.prepare-rabbitmq: .cmd-exists-docker .clear-screen
+	@WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d rabbitmq
+	@sh ./scripts/wait_for.sh nutrai-rabbitmq

@@ -29,6 +29,14 @@ type (
 	ConfigDebug           bool
 )
 
+// RabbitMQ.
+type (
+	RabbitMQHost     string
+	RabbitMQPort     int
+	RabbitMQUser     string
+	RabbitMQPassword string
+)
+
 // JWT.
 type (
 	JwtSecret string

@@ -10,4 +10,5 @@ func Bootstrap(envFile string) {
 	env.Load(envFile)
 	router.Engine = router.SetupEngine()
 	Routing()
+	Workers()
 }

@@ -63,6 +63,13 @@ type config struct {
 	Debug ConfigDebug `env:"CONFIG_DEBUG,required"`
 }
 
+type rabbitMQ struct {
+	User     RabbitMQUser     `env:"RABBITMQ_USER,required"`
+	Password RabbitMQPassword `env:"RABBITMQ_PASSWORD,required"`
+	Host     RabbitMQHost     `env:"RABBITMQ_HOST,required"`
+	Port     RabbitMQPort     `env:"RABBITMQ_PORT,required"`
+}
+
 // DB is the database environment variables.c.
 var DB = &db{}
 
@@ -71,6 +78,9 @@ var App = &app{}
 
 // Config is the configuration environment variables.
 var Config = &config{}
+
+// RabbitMQ is the RabbitMQ environment variables.
+var RabbitMQ = &rabbitMQ{}
 
 // Jwt is the JWT environment variables.
 var Jwt = &jwt{}

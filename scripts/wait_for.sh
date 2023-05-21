@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==============================================================================================
-# Title:    wait_for_db.sh
+# Title:    wait_for.sh
 # Brief:    Wait for Database to be up and running.
 # Author:   christiangama.dev@gmail.com
 # Creation: 2023-05-07

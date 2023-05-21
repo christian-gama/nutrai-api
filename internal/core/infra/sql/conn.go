@@ -4,6 +4,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/christian-gama/nutrai-api/internal/core/domain/logger"
 	"gorm.io/gorm"
 )
 
@@ -13,11 +14,12 @@ type dialector func(dsn string) gorm.Dialector
 type conn struct {
 	dialector
 	opt *gorm.Config
+	log logger.Logger
 }
 
 // NewConn creates a new instance of a GORM connection.
-func NewConn(dialector dialector, opt *gorm.Config) *conn {
-	return &conn{dialector: dialector, opt: opt}
+func NewConn(dialector dialector, opt *gorm.Config, logger logger.Logger) *conn {
+	return &conn{dialector: dialector, opt: opt, log: logger}
 }
 
 // Open will open a new GORM connection.
@@ -25,6 +27,7 @@ func (c *conn) Open() (db *gorm.DB) {
 	const maxRetries = 5
 	const retryInterval = 1 * time.Second
 
+	c.log.Infof("\tConnecting to database")
 	connect := func() (*gorm.DB, error) {
 		db, err := gorm.Open(c.dialector(Dsn()), c.opt)
 		if err != nil {

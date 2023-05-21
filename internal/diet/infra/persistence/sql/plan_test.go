@@ -10,6 +10,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/plan"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
 	persistence "github.com/christian-gama/nutrai-api/internal/diet/infra/persistence/sql"
+	"github.com/christian-gama/nutrai-api/internal/diet/infra/persistence/sql/schema"
 	dietFake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/diet"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/plan"
 	fixture "github.com/christian-gama/nutrai-api/testutils/fixture/diet/sql"
@@ -313,12 +314,7 @@ func (s *PlanSuite) TestUpdate() {
 			err := sut.Sut(sut.Ctx, sut.Input)
 
 			s.Require().NoError(err)
-			plan, err := s.Plan(db).
-				Find(sut.Ctx, repo.FindPlanInput{
-					ID: planDeps.Plan.ID,
-				})
-			s.NoError(err)
-			s.Equal("new text", plan.Text)
+			s.HasChanged(planDeps.Plan, sut.Input.Plan)
 		})
 	})
 }
@@ -353,12 +349,7 @@ func (s *PlanSuite) TestDelete() {
 			err := sut.Sut(sut.Ctx, sut.Input)
 
 			s.Require().NoError(err)
-			plan, err := s.Plan(db).
-				Find(sut.Ctx, repo.FindPlanInput{
-					ID: planDeps.Plan.ID,
-				})
-			s.Error(err)
-			s.Nil(plan)
+			s.SQLRecordDoesNotExist(db, &schema.Plan{})
 		})
 	})
 }

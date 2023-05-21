@@ -23,6 +23,22 @@ services:
     ports:
       - "$DB_PORT:$DB_PORT"
 
+  rabbitmq:
+    container_name: nutrai-rabbitmq
+    image: rabbitmq:3.11.8-alpine
+    restart: always
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+    environment:
+      - RABBITMQ_DEFAULT_USER=$RABBITMQ_USER
+      - RABBITMQ_DEFAULT_PASS=$RABBITMQ_PASSWORD
+      - RABBITMQ_NODE_PORT=$RABBITMQ_PORT
+    ports:
+      - "$RABBITMQ_PORT:$RABBITMQ_PORT"
+
   # Service to run both in development and production. The variables are
   # configured in .env.$APP_ENV and it will run according to the variables
   # you set there.
@@ -80,3 +96,21 @@ services:
       - POSTGRES_PORT=$DB_PORT
     tmpfs:
       - /var/lib/postgresql/data
+
+  rabbitmq_test:
+    container_name: nutrai-rabbitmq-test
+    image: rabbitmq:3.11.8-alpine
+    restart: always
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+    environment:
+      - RABBITMQ_DEFAULT_USER=$RABBITMQ_USER
+      - RABBITMQ_DEFAULT_PASS=$RABBITMQ_PASSWORD
+      - RABBITMQ_NODE_PORT=$RABBITMQ_PORT
+    ports:
+      - "$RABBITMQ_PORT:$RABBITMQ_PORT"
+    tmpfs:
+      - /var/lib/rabbitmq

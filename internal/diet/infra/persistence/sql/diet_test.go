@@ -7,6 +7,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
 	persistence "github.com/christian-gama/nutrai-api/internal/diet/infra/persistence/sql"
+	"github.com/christian-gama/nutrai-api/internal/diet/infra/persistence/sql/schema"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/diet"
 	fixture "github.com/christian-gama/nutrai-api/testutils/fixture/patient/sql"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
@@ -60,11 +61,10 @@ func (s *DietSuite) TestSave() {
 			sut.Input.Diet.PatientID = patientDeps.Patient.ID
 
 			_, err := sut.Sut(sut.Ctx, sut.Input)
-
 			s.NoError(err)
+			s.SQLRecordExist(db, &schema.Diet{})
 
 			_, err = sut.Sut(sut.Ctx, sut.Input)
-
 			s.Error(err)
 		})
 	})
@@ -81,6 +81,7 @@ func (s *DietSuite) TestSave() {
 
 			s.NoError(err)
 			s.NotZero(diet.ID, "Should have an ID")
+			s.SQLRecordExist(db, &schema.Diet{})
 		})
 	})
 }

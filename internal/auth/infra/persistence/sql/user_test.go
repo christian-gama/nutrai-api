@@ -7,6 +7,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/repo"
 	persistence "github.com/christian-gama/nutrai-api/internal/auth/infra/persistence/sql"
+	"github.com/christian-gama/nutrai-api/internal/auth/infra/persistence/sql/schema"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/querying"
@@ -61,6 +62,7 @@ func (s *UserSuite) TestSave() {
 
 		s.NoError(err)
 		s.NotZero(user.ID, "Should have an ID")
+		s.SQLRecordExist(db, &schema.User{})
 	})
 
 	s.Run("Should return an error when the user already exists", func(db *gorm.DB) {
@@ -324,8 +326,6 @@ func (s *UserSuite) TestUpdate() {
 		err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.Require().NoError(err)
-		user, err := s.User(db).Find(sut.Ctx, repo.FindUserInput{ID: userDeps.User.ID})
-		s.NoError(err)
-		s.EqualValues("new name", user.Name, "Should have the new name")
+		s.HasChanged(userDeps.User, sut.Input.User)
 	})
 }

@@ -73,9 +73,11 @@ update_environment_specific_variables() {
     case "$env_name" in
         "dev")
             sed -i "s/DB_PORT=.*/DB_PORT=5433/" "$env_file"
+            sed -i "s/RABBITMQ_PORT=.*/RABBITMQ_PORT=5673/" "$env_file"
             ;;
         "test")
             sed -i "s/DB_PORT=.*/DB_PORT=5434/" "$env_file"
+            sed -i "s/RABBITMQ_PORT=.*/RABBITMQ_PORT=5674/" "$env_file"
             ;;
         "prod")
             sed -i "s/CONFIG_GLOBAL_RATE_LIMIT=.*/CONFIG_GLOBAL_RATE_LIMIT=180/" "$env_file"

@@ -40,6 +40,10 @@ func Load(envFile string) {
 		panic(fmt.Errorf("Error loading Jwt environment variables: %w", err))
 	}
 
+	if err := envconfig.Process(ctx, RabbitMQ); err != nil {
+		panic(fmt.Errorf("Error loading RabbitMQ environment variables: %w", err))
+	}
+
 	validate()
 }
 
@@ -89,8 +93,10 @@ func checkDocker(envFile string) {
 	if runningInDocker == "true" {
 		if envFile == ".env.test" {
 			os.Setenv("DB_HOST", "psql_test")
+			os.Setenv("RABBITMQ_HOST", "rabbitmq_test")
 		} else {
 			os.Setenv("DB_HOST", "psql")
+			os.Setenv("RABBITMQ_HOST", "rabbitmq")
 		}
 	}
 }
