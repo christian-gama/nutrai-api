@@ -9,11 +9,12 @@ import (
 
 // Patient is the database schema for a patient.
 type Patient struct {
-	ID       coreValue.ID `gorm:"primaryKey"`
-	WeightKG value.WeightKG
-	HeightM  value.HeightM
-	Age      value.Age
-	BMI      value.BMI `gorm:"->"`
+	ID        coreValue.ID `gorm:"primaryKey"`
+	WeightKG  value.WeightKG
+	HeightM   value.HeightM
+	Age       value.Age
+	BMI       value.BMI  `gorm:"->"`
+	Allergies []*Allergy `gorm:"foreignKey:PatientID"`
 }
 
 // TableName returns the table name for the Patient schema.

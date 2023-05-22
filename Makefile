@@ -80,12 +80,7 @@ dev: .cmd-exists-go .clear-screen
 # ==============================================================================================
 .PHONY: prod
 prod: .cmd-exists-go .clear-screen
-ifneq ($(RUNNING_IN_DOCKER), true)
-	@ENV_FILE=.env.prod $(MAKE) postgres
-	@sh ./scripts/wait_for.sh nutrai-psql
-endif
-	@$(MAKE) build
-	@$(BUILD_DIR)/$(APP_NAME) -e .env.prod
+	@ENV_FILE=.env.prod $(MAKE) run
 
 
 # ==============================================================================================

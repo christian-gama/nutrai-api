@@ -6,19 +6,24 @@ import (
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
+// RestrictedFood represents a model that details the foods which are restricted or not allowed in a
+// specific diet plan. This model is related to the Diet model through the DietID. Each Diet can
+// have multiple RestrictedFood entries, allowing for the representation of complex dietary
+// restrictions.
+// The Name attribute specifies the name of the food that is restricted in the diet plan.
 type RestrictedFood struct {
 	ID     coreValue.ID         `faker:"uint"`
 	DietID coreValue.ID         `faker:"uint"`
 	Name   value.RestrictedFood `faker:"-"`
 }
 
-// New creates a new restricted food model.
-func New() *RestrictedFood {
+// New creates a new RestrictedFood instance.
+func NewRestrictedFood() *RestrictedFood {
 	return &RestrictedFood{}
 }
 
 // Validate returns an error if the restricted food is invalid.
-func (rf *RestrictedFood) Validate() error {
+func (rf *RestrictedFood) Validate() (*RestrictedFood, error) {
 	var errs *errutil.Error
 
 	if err := rf.ID.Validate(); err != nil {
@@ -34,10 +39,10 @@ func (rf *RestrictedFood) Validate() error {
 	}
 
 	if errs.HasErrors() {
-		return errs
+		return nil, errs
 	}
 
-	return nil
+	return rf, nil
 }
 
 // SetID sets the ID field for the restricted food model.
@@ -56,13 +61,4 @@ func (rf *RestrictedFood) SetDietID(dietID coreValue.ID) *RestrictedFood {
 func (rf *RestrictedFood) SetName(name value.RestrictedFood) *RestrictedFood {
 	rf.Name = name
 	return rf
-}
-
-// Build builds and returns the restricted food model.
-func (rf *RestrictedFood) Build() (*RestrictedFood, error) {
-	if err := rf.Validate(); err != nil {
-		return nil, err
-	}
-
-	return rf, nil
 }

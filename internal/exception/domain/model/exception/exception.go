@@ -20,8 +20,8 @@ func New() *Exception {
 }
 
 // Validate validates the Exception fields. It implements the validator interface.
-func (e *Exception) Validate() error {
-	return nil
+func (e *Exception) Validate() (*Exception, error) {
+	return e, nil
 }
 
 // SetCreatedAt sets the createdAt field.
@@ -46,9 +46,4 @@ func (e *Exception) SetMessage(message string) *Exception {
 func (e *Exception) SetStack(stack string) *Exception {
 	e.Stack = stack
 	return e
-}
-
-// Build builds the Error.
-func (e *Exception) Build() (*Exception, error) {
-	return e, nil
 }

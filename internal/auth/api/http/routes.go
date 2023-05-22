@@ -15,4 +15,12 @@ func Routes() {
 			{Controller: controller.MakeRefreshToken()},
 		},
 	})
+
+	router.Routes = append(router.Routes, &router.Routing{
+		Group: "/v1/users",
+		Routes: []*router.Route{
+			{Controller: controller.MakeDeleteUser()},
+			{Controller: controller.MakeChangePassword()},
+		},
+	})
 }

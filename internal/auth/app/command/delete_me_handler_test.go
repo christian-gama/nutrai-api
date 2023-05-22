@@ -27,9 +27,9 @@ func (s *DeleteUserSuite) TestDeleteUser() {
 	}
 
 	type Sut struct {
-		Sut   command.DeleteUserHandler
+		Sut   command.DeleteMeHandler
 		Ctx   context.Context
-		Input *command.DeleteUserInput
+		Input *command.DeleteMeInput
 		Mock  *Mock
 	}
 
@@ -38,9 +38,9 @@ func (s *DeleteUserSuite) TestDeleteUser() {
 			UserRepo: userMock.NewUser(s.T()),
 		}
 
-		input := fake.DeleteUserInput()
+		input := fake.DeleteMeInput()
 
-		sut := command.NewDeleteUserHandler(mock.UserRepo)
+		sut := command.NewDeleteMeHandler(mock.UserRepo)
 
 		return &Sut{
 			Sut:   sut,

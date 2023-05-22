@@ -31,7 +31,7 @@ func (s *ErrorSuite) TestNewError() {
 				SetID(data.ID).
 				SetMessage(data.Message).
 				SetStack(data.Stack).
-				Build()
+				Validate()
 		}
 
 		return &Sut{Sut: sut, Data: data}

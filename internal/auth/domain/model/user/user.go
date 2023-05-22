@@ -18,13 +18,13 @@ type User struct {
 	Name     value.Name     `faker:"len=3"`
 }
 
-// New returns a new user model.
-func New() *User {
+// NewUser returns a new user instance.
+func NewUser() *User {
 	return &User{}
 }
 
 // Validate returns an error if the user is invalid.
-func (u *User) Validate() error {
+func (u *User) Validate() (*User, error) {
 	var errs *errutil.Error
 
 	if err := u.Email.Validate(); err != nil {
@@ -40,10 +40,10 @@ func (u *User) Validate() error {
 	}
 
 	if errs.HasErrors() {
-		return errs
+		return nil, errs
 	}
 
-	return nil
+	return u, nil
 }
 
 // SetID sets the user ID.
@@ -68,13 +68,4 @@ func (u *User) SetPassword(password value.Password) *User {
 func (u *User) SetName(name value.Name) *User {
 	u.Name = name
 	return u
-}
-
-// Build returns the user model.
-func (u *User) Build() (*User, error) {
-	if err := u.Validate(); err != nil {
-		return nil, err
-	}
-
-	return u, nil
 }

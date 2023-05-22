@@ -36,6 +36,8 @@ services:
       - RABBITMQ_DEFAULT_USER=$RABBITMQ_USER
       - RABBITMQ_DEFAULT_PASS=$RABBITMQ_PASSWORD
       - RABBITMQ_NODE_PORT=$RABBITMQ_PORT
+    volumes:
+      - ./.generated/rabbitmq_data/$APP_ENV:/var/lib/rabbitmq
     ports:
       - "$RABBITMQ_PORT:$RABBITMQ_PORT"
 
@@ -60,15 +62,24 @@ services:
       - .env.$APP_ENV
     depends_on:
       - psql
+      - rabbitmq
     links:
       - psql
+      - rabbitmq
     volumes:
       - ./.cache/go:/root/.cache
       - ./.generated/build:$WORKDIR/.generated/build
       - ./.generated/coverage:$WORKDIR/.generated/coverage
       - ./cmd:$WORKDIR/cmd
+      - ./pkg:$WORKDIR/pkg
       - ./internal:$WORKDIR/internal
       - ./testutils:$WORKDIR/testutils
+      - ./go.mod:$WORKDIR/go.mod
+      - ./go.sum:$WORKDIR/go.sum
+      - ./Makefile:$WORKDIR/Makefile
+      - ./scripts:$WORKDIR/scripts
+      - ./config:$WORKDIR/config
+      - ./vendor:$WORKDIR/vendor
     environment:
       - RUNNING_IN_DOCKER=true
 

@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
 	"github.com/gin-gonic/gin"
 )
 
@@ -57,5 +58,29 @@ func ExtractParams[Params any](ctx *gin.Context, params *Params) {
 	err := extract(ctx, params, ctx.ShouldBindUri)
 	if err != nil && !strings.Contains(err.Error(), "EOF") {
 		BadRequest(ctx, fmt.Errorf("could not extract params: %w", err))
+	}
+}
+
+// ExtractCurrentUser extracts the current user from the request. It expects the input to have a
+// field with the tag `ctx:"currentUser"`.
+func ExtractCurrentUser[Data any](ctx *gin.Context, data *Data) {
+	if ctx.IsAborted() {
+		return
+	}
+
+	v := reflect.ValueOf(data).Elem()
+	for i := 0; i < v.NumField(); i++ {
+		field := v.Field(i)
+		tag := v.Type().Field(i).Tag.Get("ctx")
+
+		if tag == "currentUser" {
+			currentUser, err := store.GetUser(ctx)
+			if err != nil {
+				field.Set(reflect.Zero(field.Type()))
+				InternalServerError(ctx, err)
+			}
+
+			field.Set(reflect.ValueOf(currentUser))
+		}
 	}
 }

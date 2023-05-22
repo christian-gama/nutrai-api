@@ -8,7 +8,6 @@ import (
 
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
-	"github.com/iancoleman/strcase"
 )
 
 var (
@@ -39,7 +38,7 @@ func Error(err error, resource ...string) error {
 	if len(resource) == 0 {
 		resourceName = "resource"
 	} else {
-		resourceName = resource[0]
+		resourceName = getFriendlyTableName(resource[0])
 	}
 
 	var errs *errutil.Error
@@ -117,14 +116,4 @@ func Error(err error, resource ...string) error {
 	}
 
 	return errutil.Append(errs, err)
-}
-
-func getColumnName(err error) string {
-	splittedColumn := strings.Split(err.Error(), "column \"")
-	if len(splittedColumn) < 2 {
-		return "field"
-	}
-
-	columnName := strings.Split(splittedColumn[1], "\"")[0]
-	return fmt.Sprintf("field '%s'", strcase.ToLowerCamel(columnName))
 }

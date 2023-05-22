@@ -29,11 +29,11 @@ func (s *UserTestSuite) TestNewUser() {
 		data := fake.User()
 
 		sut := func() (*user.User, error) {
-			return user.New().
+			return user.NewUser().
 				SetEmail(data.Email).
 				SetPassword(data.Password).
 				SetName(data.Name).
-				Build()
+				Validate()
 		}
 
 		return &Sut{Sut: sut, Data: data}

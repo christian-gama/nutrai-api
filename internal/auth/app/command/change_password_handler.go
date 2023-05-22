@@ -33,7 +33,7 @@ func NewChangePasswordHandler(userRepo repo.User, hasher hasher.Hasher) ChangePa
 
 // Handle implements command.Handler.
 func (c *ChangePasswordHandlerImpl) Handle(ctx context.Context, input *ChangePasswordInput) error {
-	savedUser, err := c.Find(ctx, repo.FindUserInput{ID: input.ID})
+	savedUser, err := c.Find(ctx, repo.FindUserInput{ID: input.User.ID})
 	if err != nil {
 		return err
 	}
@@ -45,10 +45,10 @@ func (c *ChangePasswordHandlerImpl) Handle(ctx context.Context, input *ChangePas
 
 	user, err := savedUser.
 		SetPassword(hashedPassword).
-		Build()
+		Validate()
 	if err != nil {
 		return err
 	}
 
-	return c.Update(ctx, repo.UpdateUserInput{User: user, ID: input.ID})
+	return c.Update(ctx, repo.UpdateUserInput{User: user, ID: user.ID})
 }

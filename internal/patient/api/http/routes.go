@@ -11,6 +11,7 @@ func Routes() {
 		Group: "/v1/patients",
 		Routes: []*router.Route{
 			{Controller: controller.MakeAllPatients()},
+			{Controller: controller.MakeSavePatient()},
 			{Controller: controller.MakeUpdatePatient()},
 			{Controller: controller.MakeFindPatient()},
 		},

@@ -20,5 +20,7 @@ func (s *FactorySuite) TestFactory() {
 		controller.MakeLogin()
 		controller.MakeRegister()
 		controller.MakeRefreshToken()
+		controller.MakeDeleteUser()
+		controller.MakeChangePassword()
 	})
 }

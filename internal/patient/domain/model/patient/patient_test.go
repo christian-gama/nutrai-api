@@ -1,9 +1,11 @@
 package patient_test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/model/patient"
+	value "github.com/christian-gama/nutrai-api/internal/patient/domain/value/patient"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/patient/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
@@ -27,12 +29,13 @@ func (s *PatientTestSuite) TestNewPatient() {
 		data := fake.Patient()
 
 		sut := func() (*patient.Patient, error) {
-			return patient.New().
+			return patient.NewPatient().
 				SetAge(data.Age).
 				SetHeightM(data.HeightM).
 				SetWeightKG(data.WeightKG).
-				SetUserID(data.UserID).
-				Build()
+				SetID(data.ID).
+				SetAllergies(data.Allergies).
+				Validate()
 		}
 
 		return &Sut{Sut: sut, Data: data}
@@ -150,6 +153,19 @@ func (s *PatientTestSuite) TestNewPatient() {
 		})
 	})
 
+	s.Run("Allergies", func() {
+		s.Run("Should return an error when an allergy is invalid", func() {
+			sut := makeSut()
+
+			sut.Data.Allergies[0].Name = value.Allergy(strings.Repeat("a", 101))
+
+			patient, err := sut.Sut()
+
+			s.ErrorAsInvalid(err)
+			s.Nil(patient)
+		})
+	})
+
 	s.Run("TestNewPatient (Success)", func() {
 		s.Run("Should return a patient when all fields are valid", func() {
 			sut := makeSut()
@@ -161,6 +177,7 @@ func (s *PatientTestSuite) TestNewPatient() {
 			s.Equal(sut.Data.WeightKG, patient.WeightKG, "should have the same weight")
 			s.Equal(sut.Data.HeightM, patient.HeightM, "should have the same height")
 			s.Equal(sut.Data.Age, patient.Age, "should have the same age")
+			s.Equal(sut.Data.Allergies, patient.Allergies, "should have the same allergies")
 		})
 	})
 }

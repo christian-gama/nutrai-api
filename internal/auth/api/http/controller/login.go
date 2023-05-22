@@ -18,7 +18,7 @@ func NewLogin(loginHandler service.LoginHandler) Login {
 	}
 
 	return http.NewController(
-		func(ctx *gin.Context, input *service.LoginInput, meta *http.Meta) {
+		func(ctx *gin.Context, input *service.LoginInput) {
 			output, err := loginHandler.Handle(ctx.Request.Context(), input)
 			if err != nil {
 				panic(err)

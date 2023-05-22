@@ -26,7 +26,7 @@ func ForeignKeyConstraint(err error) error {
 
 	matches := fkRegexp.FindStringSubmatch(msg)
 
-	table := matches[1]
+	table := getFriendlyTableName(matches[1])
 	column := matches[2]
 	namespace := fmt.Sprintf("%s.%s", strcase.ToLowerCamel(table), strcase.ToLowerCamel(column))
 	referencedTable := matches[3]

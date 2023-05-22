@@ -553,7 +553,7 @@ var ErrorMap = map[string]func(field string, param string) error{
 	},
 
 	"required_if": func(field string, param string) error {
-		return errutil.NewErrInvalid(field, "%s is required")
+		return errutil.NewErrInvalid(field, "%s is required", param)
 	},
 
 	"required_unless": func(field string, param string) error {

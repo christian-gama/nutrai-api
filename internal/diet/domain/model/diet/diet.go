@@ -22,13 +22,13 @@ type Diet struct {
 	MonthlyCostUSD  value.MonthlyCostUSD  `faker:"boundary_start=12.65, boundary_end=184.05"`
 }
 
-// New returns a new diet.
-func New() *Diet {
+// NewDiet returns a new Diet instance.
+func NewDiet() *Diet {
 	return &Diet{}
 }
 
 // Validate returns an error if the diet is invalid.
-func (d *Diet) Validate() error {
+func (d *Diet) Validate() (*Diet, error) {
 	var errs *errutil.Error
 
 	if err := d.ID.Validate(); err != nil {
@@ -64,10 +64,10 @@ func (d *Diet) Validate() error {
 	}
 
 	if errs.HasErrors() {
-		return errs
+		return nil, errs
 	}
 
-	return nil
+	return d, nil
 }
 
 // SetID sets the diet's ID.
@@ -116,13 +116,4 @@ func (d *Diet) SetMealPlan(mealPlan value.MealPlan) *Diet {
 func (d *Diet) SetMonthlyCostUSD(monthlyCostUSD value.MonthlyCostUSD) *Diet {
 	d.MonthlyCostUSD = monthlyCostUSD
 	return d
-}
-
-// Build builds and returns the diet.
-func (d *Diet) Build() (*Diet, error) {
-	if err := d.Validate(); err != nil {
-		return nil, err
-	}
-
-	return d, nil
 }

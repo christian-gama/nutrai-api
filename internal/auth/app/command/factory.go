@@ -19,8 +19,8 @@ func MakeCheckCredentialsHandler() CheckCredentialsHandler {
 	)
 }
 
-func MakeDeleteUserHandler() DeleteUserHandler {
-	return NewDeleteUserHandler(
+func MakeDeleteMeHandler() DeleteMeHandler {
+	return NewDeleteMeHandler(
 		persistence.MakeSQLUser(),
 	)
 }

@@ -3,10 +3,13 @@ package controller_test
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"testing"
 
+	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
 	"github.com/christian-gama/nutrai-api/internal/patient/api/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/patient/app/command"
+	value "github.com/christian-gama/nutrai-api/internal/patient/domain/value/patient"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/patient/app/command"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
 	commandMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/command"
@@ -54,8 +57,9 @@ func (s *UpdatePatientSuite) TestHandle() {
 			Return(nil)
 
 		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
-			Data:   sut.Input,
-			Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
+			Data:        sut.Input,
+			Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
+			CurrentUser: sut.Input.User,
 		})
 
 		s.Equal(http.StatusOK, ctx.Writer.Status())
@@ -69,8 +73,9 @@ func (s *UpdatePatientSuite) TestHandle() {
 			sut.Input.ID = 0
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-				Data:   sut.Input,
-				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
+				Data:        sut.Input,
+				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
+				CurrentUser: sut.Input.User,
 			})
 
 			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -84,8 +89,9 @@ func (s *UpdatePatientSuite) TestHandle() {
 			sut.Input.Age = 17
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-				Data:   sut.Input,
-				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
+				Data:        sut.Input,
+				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
+				CurrentUser: sut.Input.User,
 			})
 
 			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -97,8 +103,9 @@ func (s *UpdatePatientSuite) TestHandle() {
 			sut.Input.Age = 101
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-				Data:   sut.Input,
-				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
+				Data:        sut.Input,
+				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
+				CurrentUser: sut.Input.User,
 			})
 
 			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -112,8 +119,9 @@ func (s *UpdatePatientSuite) TestHandle() {
 			sut.Input.WeightKG = 29
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-				Data:   sut.Input,
-				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
+				Data:        sut.Input,
+				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
+				CurrentUser: sut.Input.User,
 			})
 
 			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -125,8 +133,9 @@ func (s *UpdatePatientSuite) TestHandle() {
 			sut.Input.WeightKG = 601
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-				Data:   sut.Input,
-				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
+				Data:        sut.Input,
+				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
+				CurrentUser: sut.Input.User,
 			})
 
 			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -140,8 +149,9 @@ func (s *UpdatePatientSuite) TestHandle() {
 			sut.Input.HeightM = 0.99
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-				Data:   sut.Input,
-				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
+				Data:        sut.Input,
+				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
+				CurrentUser: sut.Input.User,
 			})
 
 			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -153,11 +163,42 @@ func (s *UpdatePatientSuite) TestHandle() {
 			sut.Input.HeightM = 3.01
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-				Data:   sut.Input,
-				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
+				Data:        sut.Input,
+				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
+				CurrentUser: sut.Input.User,
 			})
 
 			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
+		})
+	})
+
+	s.Run("Allergies", func() {
+		s.Run("should return error when invalid", func() {
+			sut := makeSut()
+
+			sut.Input.Allergies = []*command.UpdateAllergyInput{
+				{Name: value.Allergy(strings.Repeat("a", 101))},
+			}
+
+			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
+				Data:        sut.Input,
+				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
+				CurrentUser: sut.Input.User,
+			})
+
+			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
+		})
+	})
+
+	s.Run("should panic when user is not in context", func() {
+		sut := makeSut()
+
+		s.PanicsWithValue(store.ErrUserNotFound, func() {
+			gintest.MustRequest(sut.Sut, gintest.Option{
+				Data:        sut.Input,
+				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
+				CurrentUser: nil,
+			})
 		})
 	})
 
@@ -170,8 +211,9 @@ func (s *UpdatePatientSuite) TestHandle() {
 
 		s.Panics(func() {
 			gintest.MustRequest(sut.Sut, gintest.Option{
-				Data:   sut.Input,
-				Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
+				Data:        sut.Input,
+				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
+				CurrentUser: sut.Input.User,
 			})
 		})
 	})

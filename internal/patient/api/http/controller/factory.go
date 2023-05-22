@@ -16,3 +16,7 @@ func MakeUpdatePatient() UpdatePatient {
 func MakeFindPatient() FindPatient {
 	return NewFindPatient(query.MakeFindPatientHandler())
 }
+
+func MakeSavePatient() SavePatient {
+	return NewSavePatient(command.MakeSavePatientHandler())
+}

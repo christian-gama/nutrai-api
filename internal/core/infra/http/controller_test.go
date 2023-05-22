@@ -21,10 +21,10 @@ func TestControllerSuite(t *testing.T) {
 func (s *ControllerSuite) TestNewController() {
 	makeSut := func() (
 		func(handler http.Handler[any], opts http.ControllerOptions) http.Controller,
-		func(*gin.Context, *any, *http.Meta),
+		func(*gin.Context, *any),
 		http.ControllerOptions,
 	) {
-		handler := func(*gin.Context, *any, *http.Meta) {}
+		handler := func(*gin.Context, *any) {}
 		opts := http.ControllerOptions{
 			Method:   http.MethodGet,
 			Path:     http.JoinPath(""),
@@ -101,7 +101,7 @@ func (s *ControllerSuite) TestNewController() {
 
 func (s *ControllerSuite) TestController() {
 	sut := http.NewController(
-		func(*gin.Context, *any, *http.Meta) {},
+		func(*gin.Context, *any) {},
 
 		http.ControllerOptions{
 			Method:   http.MethodPut,
@@ -158,7 +158,7 @@ func (s *ControllerSuite) TestHandle() {
 			Age:  20,
 		}
 
-		handler := func(c *gin.Context, p *Input, meta *http.Meta) {
+		handler := func(c *gin.Context, p *Input) {
 			s.Equal(input.Name, p.Name)
 			s.Equal(input.ID, p.ID)
 			s.Equal(input.Age, p.Age)

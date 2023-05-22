@@ -69,9 +69,15 @@ func Response(ctx *gin.Context, handler func()) {
 					return
 				}
 
-				var invalidErr *errutil.ErrInvalid
-				if errors.As(err, &invalidErr) {
+				var errInvalid *errutil.ErrInvalid
+				if errors.As(err, &errInvalid) {
 					BadRequest(ctx, err)
+					return
+				}
+
+				var errUnauthorized *errutil.ErrUnauthorized
+				if errors.As(err, &errUnauthorized) {
+					Unauthorized(ctx, err)
 					return
 				}
 

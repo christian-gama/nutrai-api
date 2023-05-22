@@ -4,9 +4,9 @@
   "go.testEnvVars": {
     "TEST_MODE": "all",
     "DB_HOST": "localhost",
-    "DB_PORT": 5434,
+    "DB_PORT": "5434",
     "RABBITMQ_HOST": "localhost",
-    "RABBITMQ_PORT": 5674,
+    "RABBITMQ_PORT": "5674",
   },
   "go.testOnSave": true,
   // Automatically break lines at 100 characters.

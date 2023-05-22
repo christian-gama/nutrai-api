@@ -15,6 +15,9 @@ const (
 	// MethodPut is the HTTP PUT method.
 	MethodPut Method = "PUT"
 
+	// MethodPatch is the HTTP PATCH method.
+	MethodPatch Method = "PATCH"
+
 	// MethodDelete is the HTTP DELETE method.
 	MethodDelete Method = "DELETE"
 )

@@ -43,7 +43,6 @@ func (q *findPatientHandlerImpl) Handle(
 		Age:      patient.Age,
 		HeightM:  patient.HeightM,
 		WeightKG: patient.WeightKG,
-		UserID:   patient.UserID,
 		BMI:      patient.BMI,
 	}, nil
 }

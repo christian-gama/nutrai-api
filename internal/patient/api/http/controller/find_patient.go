@@ -18,7 +18,7 @@ func NewFindPatient(findPatientHandler query.FindPatientHandler) FindPatient {
 	}
 
 	return http.NewController(
-		func(ctx *gin.Context, input *query.FindPatientInput, meta *http.Meta) {
+		func(ctx *gin.Context, input *query.FindPatientInput) {
 			result, err := findPatientHandler.Handle(ctx.Request.Context(), input)
 			if err != nil {
 				panic(err)

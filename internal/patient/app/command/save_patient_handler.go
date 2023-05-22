@@ -28,12 +28,18 @@ func NewSavePatientHandler(patientRepo repo.Patient) SavePatientHandler {
 
 // Handle implements command.Handler.
 func (c *savePatientHandlerImpl) Handle(ctx context.Context, input *SavePatientInput) error {
-	patient, err := patient.New().
+	allergies := make([]*patient.Allergy, len(input.Allergies))
+	for i, allergy := range input.Allergies {
+		allergies[i] = patient.NewAllergy().SetName(allergy.Name)
+	}
+
+	patient, err := patient.NewPatient().
 		SetAge(input.Age).
 		SetHeightM(input.HeightM).
 		SetWeightKG(input.WeightKG).
-		SetUserID(0).
-		Build()
+		SetID(input.User.ID).
+		SetAllergies(allergies).
+		Validate()
 	if err != nil {
 		return err
 	}

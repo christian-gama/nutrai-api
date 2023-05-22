@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/core/app/command"
+	"github.com/christian-gama/nutrai-api/internal/patient/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/repo"
 )
 
@@ -36,11 +37,19 @@ func (c *updatePatientHandlerImpl) Handle(ctx context.Context, input *UpdatePati
 		return err
 	}
 
+	allergies := make([]*patient.Allergy, len(input.Allergies))
+	for i, allergy := range input.Allergies {
+		// No need to Build (validate) the allergy here, since it will be validated by the patient
+		// itself.
+		allergies[i] = patient.NewAllergy().SetName(allergy.Name)
+	}
+
 	patient, err := savedPatient.
 		SetAge(input.Age).
 		SetHeightM(input.HeightM).
 		SetWeightKG(input.WeightKG).
-		Build()
+		SetAllergies(allergies).
+		Validate()
 	if err != nil {
 		return err
 	}

@@ -1,8 +1,6 @@
 package value
 
 import (
-	"fmt"
-
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
@@ -26,11 +24,11 @@ func (w HeightM) Validate() error {
 	}
 
 	if w <= minHeight {
-		return errutil.NewErrInvalid(fieldName, fmt.Sprintf("cannot be less than %d", minHeight))
+		return errutil.NewErrInvalid(fieldName, "cannot be less than %d", minHeight)
 	}
 
 	if w >= maxHeight {
-		return errutil.NewErrInvalid(fieldName, fmt.Sprintf("cannot be greater than %d", maxHeight))
+		return errutil.NewErrInvalid(fieldName, "cannot be greater than %d", maxHeight)
 	}
 
 	return nil

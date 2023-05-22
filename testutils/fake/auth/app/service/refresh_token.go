@@ -2,7 +2,7 @@ package fake
 
 import (
 	"github.com/christian-gama/nutrai-api/internal/auth/app/service"
-	"github.com/christian-gama/nutrai-api/testutils/fake"
+	. "github.com/christian-gama/nutrai-api/testutils/fake"
 	"github.com/go-faker/faker/v4"
 )
 
@@ -11,7 +11,7 @@ func RefreshTokenInput() *service.RefreshTokenInput {
 
 	err := faker.FakeData(data)
 	if err != nil {
-		fake.ErrGenerating(err)
+		ErrGenerating(err)
 	}
 
 	return data

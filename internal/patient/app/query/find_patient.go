@@ -16,6 +16,5 @@ type FindPatientOutput struct {
 	Age      value.Age      `json:"age"`
 	HeightM  value.HeightM  `json:"heightM"`
 	WeightKG value.WeightKG `json:"weightKG"`
-	UserID   coreValue.ID   `json:"user,omitempty"`
 	BMI      value.BMI      `json:"bmi"`
 }

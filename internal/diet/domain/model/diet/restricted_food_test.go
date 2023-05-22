@@ -3,8 +3,8 @@ package diet_test
 import (
 	"testing"
 
-	diet "github.com/christian-gama/nutrai-api/internal/diet/domain/model/entity/restrictedfood"
-	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/restrictedfood"
+	diet "github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
+	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/diet"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
 
@@ -26,10 +26,10 @@ func (s *RestrictedFoodTestSuite) TestNewRestrictedFood() {
 		data := fake.RestrictedFood()
 
 		sut := func() (*diet.RestrictedFood, error) {
-			return diet.New().
+			return diet.NewRestrictedFood().
 				SetID(data.ID).
 				SetName(data.Name).
-				Build()
+				Validate()
 		}
 
 		return &Sut{Sut: sut, Data: data}

@@ -2,7 +2,6 @@ package controller
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/patient/app/command"
@@ -19,9 +18,7 @@ func NewUpdatePatient(updatePatientHandler command.UpdatePatientHandler) UpdateP
 	}
 
 	return http.NewController(
-		func(ctx *gin.Context, input *command.UpdatePatientInput, meta *http.Meta) {
-			fmt.Printf("currentUser is %v", meta.CurrentUser())
-
+		func(ctx *gin.Context, input *command.UpdatePatientInput) {
 			err := updatePatientHandler.Handle(ctx.Request.Context(), input)
 			if err != nil {
 				panic(err)

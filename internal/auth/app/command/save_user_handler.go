@@ -39,11 +39,11 @@ func (c *saveUserHandlerImpl) Handle(ctx context.Context, input *SaveUserInput) 
 		return err
 	}
 
-	patient, err := user.New().
+	patient, err := user.NewUser().
 		SetEmail(input.Email).
 		SetName(input.Name).
 		SetPassword(hashedPassword).
-		Build()
+		Validate()
 	if err != nil {
 		return err
 	}

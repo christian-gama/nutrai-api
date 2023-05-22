@@ -5,6 +5,7 @@ import (
 	"errors"
 	"runtime/debug"
 
+	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/exception/app/command"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
@@ -52,6 +53,10 @@ func NewSaveExceptionHandler(
 								Message: msg,
 								Stack:   string(debug.Stack()),
 							})
+					}
+
+					if env.App.Env == env.Production {
+						msg = "something went wrong, please try again later"
 					}
 
 					ctx.AbortWithStatusJSON(

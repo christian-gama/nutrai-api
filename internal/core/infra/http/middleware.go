@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Middlewarel is an interface that represents a middleware for gin.
+// Middleware is an interface that represents a middleware for gin.
 // It extracts the body, query and params from the request and passes it to the handler.
 type Middleware interface {
 	// Handle is the function that will be called by the router.
@@ -31,5 +31,5 @@ func NewMiddleware(handler func(*gin.Context)) Middleware {
 
 // Handle implements Middleware.
 func (c *middlewareImpl) Handle(ctx *gin.Context) {
-	c.Handler(ctx)
+	Response(ctx, func() { c.Handler(ctx) })
 }

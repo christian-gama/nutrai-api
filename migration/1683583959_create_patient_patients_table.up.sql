@@ -1,7 +1,7 @@
 BEGIN;
 
 CREATE TABLE "patient_patients" (
-    "id" BIGSERIAL PRIMARY KEY,
+    "id" BIGINT NOT NULL,
     "weight_kg" FLOAT NOT NULL,
     "height_m" FLOAT NOT NULL,
     "age" INTEGER NOT NULL

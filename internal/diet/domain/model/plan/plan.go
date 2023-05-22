@@ -7,7 +7,9 @@ import (
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
-// Plan represents a Plan model, which includes information about a specific diet plan.
+// Plan represents a detailed blueprint of a specific diet regimen, linked to the Diet model through
+// the DietID. This model provides a comprehensive plan that helps individuals to effectively follow
+// the diet.
 type Plan struct {
 	ID     coreValue.ID `faker:"uint"`
 	DietID coreValue.ID `faker:"uint"`
@@ -15,13 +17,13 @@ type Plan struct {
 	Text   value.Plan   `faker:"paragraph"`
 }
 
-// New creates a new Plan.
-func New() *Plan {
+// NewPlan creates a new Plan instance.
+func NewPlan() *Plan {
 	return &Plan{}
 }
 
 // Validate returns an error if the plan is invalid.
-func (p *Plan) Validate() error {
+func (p *Plan) Validate() (*Plan, error) {
 	var errs *errutil.Error
 
 	if err := p.ID.Validate(); err != nil {
@@ -38,15 +40,15 @@ func (p *Plan) Validate() error {
 
 	if p.Diet == nil {
 		errs = errutil.Append(errs, errutil.NewErrRequired("diet"))
-	} else if err := p.Diet.Validate(); err != nil {
+	} else if _, err := p.Diet.Validate(); err != nil {
 		errs = errutil.Append(errs, err)
 	}
 
 	if errs != nil {
-		return errs
+		return nil, errs
 	}
 
-	return nil
+	return p, nil
 }
 
 // SetID sets the ID of the Plan.
@@ -71,13 +73,4 @@ func (p *Plan) SetDiet(diet *diet.Diet) *Plan {
 func (p *Plan) SetText(text value.Plan) *Plan {
 	p.Text = text
 	return p
-}
-
-// Build returns the built Plan.
-func (p *Plan) Build() (*Plan, error) {
-	if err := p.Validate(); err != nil {
-		return nil, err
-	}
-
-	return p, nil
 }

@@ -13,10 +13,14 @@ func MakeRegister() Register {
 	return NewRegister(service.MakeRegisterHandler())
 }
 
-func MakeDeleteUser() DeleteUser {
-	return NewDeleteUser(command.MakeDeleteUserHandler())
+func MakeDeleteUser() DeleteMe {
+	return NewDeleteMe(command.MakeDeleteMeHandler())
 }
 
 func MakeRefreshToken() RefreshToken {
 	return NewRefreshToken(service.MakeRefreshTokenHandler())
+}
+
+func MakeChangePassword() ChangePassword {
+	return NewChangePassword(command.MakeChangePasswordHandler())
 }

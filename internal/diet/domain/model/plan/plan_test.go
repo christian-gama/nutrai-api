@@ -26,12 +26,12 @@ func (s *PlanSuite) TestNewPlan() {
 		data := fake.Plan()
 
 		sut := func() (*plan.Plan, error) {
-			return plan.New().
+			return plan.NewPlan().
 				SetID(data.ID).
 				SetDietID(data.DietID).
 				SetDiet(data.Diet).
 				SetText(data.Text).
-				Build()
+				Validate()
 		}
 
 		return &Sut{Sut: sut, Data: data}

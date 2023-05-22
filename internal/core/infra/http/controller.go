@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
-	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/validation"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
@@ -15,7 +13,7 @@ import (
 )
 
 // Handler is a function that handles a HTTP request.
-type Handler[P any] func(*gin.Context, *P, *Meta)
+type Handler[P any] func(*gin.Context, *P)
 
 // Controller is a interface that represents a controller for gin.
 // It handles the request and response and binds the data to the input.
@@ -48,7 +46,7 @@ type ControllerOptions struct {
 
 // controllerImpl is the implementation of the Controller interface.
 type controllerImpl[Input any] struct {
-	handler  func(ctx *gin.Context, input *Input, meta *Meta)
+	handler  func(ctx *gin.Context, input *Input)
 	method   Method
 	path     Path
 	isPublic bool
@@ -88,6 +86,7 @@ func (c controllerImpl[Input]) Handle(ctx *gin.Context) {
 	ExtractBody(ctx, &c.input)
 	ExtractQuery(ctx, &c.input)
 	ExtractParams(ctx, &c.input)
+	ExtractCurrentUser(ctx, &c.input)
 
 	if ctx.IsAborted() {
 		return
@@ -101,29 +100,8 @@ func (c controllerImpl[Input]) Handle(ctx *gin.Context) {
 			panic(err)
 		}
 
-		c.handler(ctx, &c.input, &Meta{
-			Method:      c.Method,
-			Path:        c.Path,
-			IsPublic:    c.IsPublic,
-			Params:      c.Params,
-			CurrentUser: c.currentUser(ctx),
-		})
+		c.handler(ctx, &c.input)
 	})
-}
-
-func (c controllerImpl[Input]) currentUser(ctx *gin.Context) func() *user.User {
-	return func() *user.User {
-		if c.isPublic {
-			return nil
-		}
-
-		u, err := store.GetUser(ctx)
-		if err != nil {
-			panic(err)
-		}
-
-		return u
-	}
 }
 
 // Handler implements Controller.
@@ -181,7 +159,7 @@ func (c *controllerImpl[P]) validate() {
 	}
 
 	methods := []Method{
-		MethodDelete, MethodGet, MethodPost, MethodPut,
+		MethodDelete, MethodGet, MethodPost, MethodPut, MethodPatch,
 	}
 
 	if !slice.Contains(methods, c.method) {

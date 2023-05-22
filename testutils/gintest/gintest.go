@@ -6,6 +6,8 @@ import (
 	"net/http/httptest"
 	"strings"
 
+	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
+	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/testutils/httputil"
 	"github.com/gin-gonic/gin"
@@ -21,7 +23,9 @@ func MustRequestWithBody(
 	opt Option,
 ) (ctx *gin.Context, body *http.ResponseBody) {
 	ctx, r, writer := createTestContext()
+
 	handlerPath := handler.Path()
+
 	if len(handler.Params()) > 0 {
 		handlerPath = http.Path(
 			fmt.Sprintf("%s/:%s", handlerPath, strings.Join(handler.Params(), "/:")),
@@ -29,6 +33,10 @@ func MustRequestWithBody(
 	}
 
 	r.Handle(handler.Method().String(), handlerPath.String(), func(ctx *gin.Context) {
+		if opt.CurrentUser != nil {
+			store.SetUser(ctx, opt.CurrentUser)
+		}
+
 		handler.Handle(ctx)
 	})
 
@@ -78,6 +86,10 @@ type Option struct {
 	//
 	// It would be equivalent to /items?id=1&name=foo
 	Queries string
+
+	// CurrentUser is the user.User that will be set in the context of the request to simulate an
+	// authenticated user.
+	CurrentUser *user.User
 }
 
 func createTestContext() (*gin.Context, *gin.Engine, *httptest.ResponseRecorder) {

@@ -13,16 +13,16 @@ import (
 // information such as name, contact details, and health history. The weight, height, and BMI
 // could be used to calculate dietary needs, track health progress, or establish fitness goals.
 type Patient struct {
-	ID       coreValue.ID   `faker:"uint"`
-	UserID   coreValue.ID   `faker:"uint"`
-	WeightKG value.WeightKG `faker:"boundary_start=1, boundary_end=999"`
-	HeightM  value.HeightM  `faker:"boundary_start=1, boundary_end=3"`
-	Age      value.Age      `faker:"boundary_start=1, boundary_end=100"`
-	BMI      value.BMI      `faker:"boundary_start=16, boundary_end=30"`
+	ID        coreValue.ID   `faker:"uint"`
+	WeightKG  value.WeightKG `faker:"boundary_start=1, boundary_end=999"`
+	HeightM   value.HeightM  `faker:"boundary_start=1, boundary_end=3"`
+	Age       value.Age      `faker:"boundary_start=1, boundary_end=100"`
+	BMI       value.BMI      `faker:"boundary_start=16, boundary_end=30"`
+	Allergies []*Allergy
 }
 
 // Validate returns an error if the patient is invalid.
-func (p *Patient) Validate() error {
+func (p *Patient) Validate() (*Patient, error) {
 	var errs *errutil.Error
 
 	if err := p.WeightKG.Validate(); err != nil {
@@ -37,27 +37,27 @@ func (p *Patient) Validate() error {
 		errs = errutil.Append(errs, err)
 	}
 
-	if errs.HasErrors() {
-		return errs
+	for _, allergy := range p.Allergies {
+		if _, err := allergy.Validate(); err != nil {
+			errs = errutil.Append(errs, err)
+		}
 	}
 
-	return nil
+	if errs.HasErrors() {
+		return nil, errs
+	}
+
+	return p, nil
 }
 
-// New returns a new patient builder.
-func New() *Patient {
+// NewPatient returns a new patient instance.
+func NewPatient() *Patient {
 	return &Patient{}
 }
 
 // SetID sets the ID on the builder.
 func (p *Patient) SetID(id coreValue.ID) *Patient {
 	p.ID = id
-	return p
-}
-
-// SetUserID sets the user on the builder.
-func (p *Patient) SetUserID(userID coreValue.ID) *Patient {
-	p.UserID = userID
 	return p
 }
 
@@ -79,11 +79,8 @@ func (p *Patient) SetAge(age value.Age) *Patient {
 	return p
 }
 
-// Build builds the patient.
-func (p *Patient) Build() (*Patient, error) {
-	if err := p.Validate(); err != nil {
-		return nil, err
-	}
-
-	return p, nil
+// SetAllergies sets the allergies on the builder.
+func (p *Patient) SetAllergies(allergies []*Allergy) *Patient {
+	p.Allergies = allergies
+	return p
 }
