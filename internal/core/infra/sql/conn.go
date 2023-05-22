@@ -27,7 +27,7 @@ func (c *conn) Open() (db *gorm.DB) {
 	const maxRetries = 5
 	const retryInterval = 1 * time.Second
 
-	c.log.Infof("\tConnecting to database")
+	c.log.Infof("\tConnecting to SQL database")
 	connect := func() (*gorm.DB, error) {
 		db, err := gorm.Open(c.dialector(Dsn()), c.opt)
 		if err != nil {

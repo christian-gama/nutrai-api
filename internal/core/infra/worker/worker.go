@@ -21,7 +21,7 @@ func Create(fn func(), n int) {
 		n = runtime.NumCPU()
 	}
 
-	log.WithCaller.Infof("Creating %d %s for %s", n, worker, name(fn))
+	log.MakeWithCaller().Infof("Creating %d %s for %s", n, worker, name(fn))
 	for i := 0; i < n; i++ {
 		go fn()
 	}

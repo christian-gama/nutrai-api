@@ -17,5 +17,5 @@ type RestrictedFood struct {
 
 // TableName returns the table name for the RestrictedFood schema.
 func (RestrictedFood) TableName() string {
-	return table.Name(module.Name, "restricted_foods")
+	return table.Name(module.Module, "restricted_foods")
 }

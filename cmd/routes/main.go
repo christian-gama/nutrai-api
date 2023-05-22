@@ -6,12 +6,13 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/router"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router"
 	"github.com/fatih/color"
 )
 
 func init() {
 	os.Setenv("CONFIG_DEBUG", "false")
+	os.Setenv("CONFIG_LOG_LEVEL", "panic")
 }
 
 func main() {
@@ -25,7 +26,7 @@ func main() {
 
 // printRoutes prints all routes in a colorized and formatted way.
 func printRoutes() {
-	for _, route := range router.Engine.Routes() {
+	for _, route := range router.Router.Routes() {
 		fmt.Printf("%-2s\t%s\n", method(route.Method), path(route.Path))
 	}
 }

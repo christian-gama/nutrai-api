@@ -15,5 +15,5 @@ type User struct {
 
 // TableName returns the table name for the User schema.
 func (u User) TableName() string {
-	return table.Name(module.Name, "users")
+	return table.Name(module.Module, "users")
 }

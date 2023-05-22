@@ -68,16 +68,18 @@ update_environment_specific_variables() {
     env_name="$1"
     env_file="$2"
 
-    sed -i "s/APP_ENV=.*/APP_ENV=$env_name/" "$env_file"
+    sed -i "s/APP_ENV=.*/APP_ENV=\"$env_name\"/" "$env_file"
 
     case "$env_name" in
         "dev")
             sed -i "s/DB_PORT=.*/DB_PORT=5433/" "$env_file"
             sed -i "s/RABBITMQ_PORT=.*/RABBITMQ_PORT=5673/" "$env_file"
+            sed -i "s/CONFIG_LOG_LEVEL=.*/CONFIG_LOG_LEVEL=\"debug\"/" "$env_file"
             ;;
         "test")
             sed -i "s/DB_PORT=.*/DB_PORT=5434/" "$env_file"
             sed -i "s/RABBITMQ_PORT=.*/RABBITMQ_PORT=5674/" "$env_file"
+            sed -i "s/CONFIG_LOG_LEVEL=.*/CONFIG_LOG_LEVEL=\"panic\"/" "$env_file"
             ;;
         "prod")
             sed -i "s/CONFIG_GLOBAL_RATE_LIMIT=.*/CONFIG_GLOBAL_RATE_LIMIT=180/" "$env_file"

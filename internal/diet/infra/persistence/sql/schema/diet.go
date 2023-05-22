@@ -27,5 +27,5 @@ type Diet struct {
 
 // TableName returns the table name for the Diet schema.
 func (Diet) TableName() string {
-	return table.Name(module.Name, "diets")
+	return table.Name(module.Module, "diets")
 }

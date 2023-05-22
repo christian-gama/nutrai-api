@@ -19,7 +19,7 @@ var (
 
 func MakePublisher(exchange string, routingKey string) message.Publisher {
 	if publisherConnection == nil {
-		publisherConnection = NewConnection(log.WithCaller, "publisher")
+		publisherConnection = NewConnection(log.MakeWithCaller(), "publisher")
 	}
 
 	return NewPublisher(publisherConnection, exchange, routingKey)
@@ -27,8 +27,8 @@ func MakePublisher(exchange string, routingKey string) message.Publisher {
 
 func MakeConsumer(exchange string, queue string, routingKey string) message.Consumer {
 	if consumerConnection == nil {
-		consumerConnection = NewConnection(log.WithCaller, "consumer")
+		consumerConnection = NewConnection(log.MakeWithCaller(), "consumer")
 	}
 
-	return NewConsumer(consumerConnection, exchange, routingKey, queue, log.WithCaller)
+	return NewConsumer(consumerConnection, exchange, routingKey, queue, log.MakeWithCaller())
 }

@@ -35,3 +35,20 @@ const (
 	// connect to a server that it trusts and that it is talking to the right one.
 	SslModeVerifyFull DBSslMode = "verify-full"
 )
+
+const (
+	// LogLevelInfo is the info string representation of the log level.
+	LogLevelInfo ConfigLogLevel = "info"
+
+	// LogLevelWarn is the warn string representation of the log level.
+	LogLevelWarn ConfigLogLevel = "warn"
+
+	// LogLevelError is the error string representation of the log level.
+	LogLevelError ConfigLogLevel = "error"
+
+	// LogLevelDebug is the debug string representation of the log level.
+	LogLevelDebug ConfigLogLevel = "debug"
+
+	// LogLevelPanic is the panic string representation of the log level.
+	LogLevelPanic ConfigLogLevel = "panic"
+)

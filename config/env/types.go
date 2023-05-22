@@ -27,6 +27,7 @@ type (
 type (
 	ConfigGlobalRateLimit int
 	ConfigDebug           bool
+	ConfigLogLevel        string
 )
 
 // RabbitMQ.

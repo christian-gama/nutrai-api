@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/christian-gama/nutrai-api/internal"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/server"
+	httpserver "github.com/christian-gama/nutrai-api/internal/core/infra/http/server"
 	"github.com/spf13/cobra"
 )
 
@@ -26,7 +26,7 @@ func init() {
 func run(cmd *cobra.Command, args []string) {
 	checkEnvFile()
 	internal.Bootstrap(envFile)
-	server.Start(context.Background())
+	httpserver.Start(context.Background())
 }
 
 func checkEnvFile() {

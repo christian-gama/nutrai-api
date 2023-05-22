@@ -17,5 +17,5 @@ type Plan struct {
 
 // TableName returns the name of the table.
 func (Plan) TableName() string {
-	return table.Name(module.Name, "plans")
+	return table.Name(module.Module, "plans")
 }

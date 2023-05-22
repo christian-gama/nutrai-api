@@ -18,5 +18,5 @@ type Patient struct {
 
 // TableName returns the table name for the Patient schema.
 func (p Patient) TableName() string {
-	return table.Name(module.Name, "patients")
+	return table.Name(module.Module, "patients")
 }

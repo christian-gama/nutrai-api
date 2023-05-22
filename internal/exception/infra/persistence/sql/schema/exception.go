@@ -18,5 +18,5 @@ type Exception struct {
 
 // TableName returns the table name.
 func (Exception) TableName() string {
-	return table.Name(module.Name, "exceptions")
+	return table.Name(module.Module, "exceptions")
 }

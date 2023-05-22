@@ -1,9 +1,11 @@
 package log
 
 import (
+	"log"
 	"os"
 	"strings"
 
+	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/logger"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -48,7 +50,10 @@ func New(config *Config) logger.Logger {
 	}
 
 	encoder := zapcore.NewConsoleEncoder(cfg)
-	core := zapcore.NewCore(encoder, zapcore.AddSync(os.Stdout), zap.InfoLevel)
+	if _, ok := level[env.Config.LogLevel]; !ok {
+		log.Panicf("invalid log level: %s", env.Config.LogLevel)
+	}
+	core := zapcore.NewCore(encoder, zapcore.AddSync(os.Stdout), level[env.Config.LogLevel])
 
 	options := []zap.Option{}
 	if config.Stack {
@@ -129,14 +134,3 @@ func (l *loggerImpl) Panic(args ...any) {
 func (l *loggerImpl) Panicf(format string, args ...any) {
 	l.base.Panicf(format, args...)
 }
-
-var (
-	// Default is the default logger.
-	Default = New(&Config{Caller: false, Stack: false})
-
-	// WithCaller is the default logger with caller.
-	WithCaller = New(&Config{Caller: true, CallerSkip: 1, Stack: false})
-
-	// WithStack is the default logger with stack.
-	WithStack = New(&Config{Caller: true, Stack: true})
-)

@@ -13,7 +13,7 @@ func MakePostgres() *gorm.DB {
 		return postgresConnection
 	}
 
-	conn := NewConn(postgres.Open, &gorm.Config{}, log.WithCaller)
+	conn := NewConn(postgres.Open, &gorm.Config{}, log.MakeWithCaller())
 	postgresConnection = conn.Open()
 
 	return postgresConnection

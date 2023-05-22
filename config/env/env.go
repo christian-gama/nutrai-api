@@ -61,6 +61,9 @@ type config struct {
 	// Debug is the debug mode. It will enable some debug features like the stack
 	// trace in the response body.
 	Debug ConfigDebug `env:"CONFIG_DEBUG,required"`
+
+	// LogLevel is the logging configuration for the application.
+	LogLevel ConfigLogLevel `env:"CONFIG_LOG_LEVEL,required"`
 }
 
 type rabbitMQ struct {

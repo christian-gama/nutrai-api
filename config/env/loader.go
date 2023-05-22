@@ -76,6 +76,23 @@ func validate() {
 			),
 		)
 	}
+
+	validLogLevels := []ConfigLogLevel{
+		LogLevelInfo,
+		LogLevelWarn,
+		LogLevelError,
+		LogLevelDebug,
+		LogLevelPanic,
+	}
+	if !slice.Contains(validLogLevels, Config.LogLevel) {
+		panic(
+			fmt.Errorf(
+				"Invalid env variable: '%s'. Must be one of: %v",
+				Config.LogLevel,
+				validLogLevels,
+			),
+		)
+	}
 }
 
 // Path returns the absolute path of the given environment file (envFile) in the Go module's
