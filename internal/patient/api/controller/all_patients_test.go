@@ -88,28 +88,11 @@ func (s *AllPatientsSuite) TestHandle() {
 					Add("weightKG", false).
 					Add("heightM", false).
 					Slice()),
-
-				gintest.PreloadOption(sut.Input.Preload.
-					Add("user").
-					Add("users").
-					Slice()),
 			),
 		})
 
 		s.Equal(http.StatusOK, ctx.Writer.Status())
 		sut.Mock.AllPatientsHandler.AssertCalled(s.T(), "Handle", mock.Anything, mock.Anything)
-	})
-
-	s.Run("invalid Preload", func() {
-		sut := makeSut()
-
-		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
-			Queries: gintest.BuildScopeQuery(
-				gintest.PreloadOption(sut.Input.Preload.Add("invalid").Slice()),
-			),
-		})
-
-		s.Equal(http.StatusBadRequest, ctx.Writer.Status())
 	})
 
 	s.Run("invalid Filter", func() {

@@ -60,19 +60,6 @@ func (s *FindPatientSuite) TestHandle() {
 		sut.Mock.FindPatientHandler.AssertCalled(s.T(), "Handle", mock.Anything, mock.Anything)
 	})
 
-	s.Run("invalid Preload", func() {
-		sut := makeSut()
-
-		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
-			Queries: gintest.BuildScopeQuery(
-				gintest.PreloadOption(sut.Input.Preload.Add("invalid").Slice()),
-			),
-			Params: []string{fmt.Sprintf("%v", sut.Input.ID)},
-		})
-
-		s.Equal(http.StatusBadRequest, ctx.Writer.Status())
-	})
-
 	s.Run("ID", func() {
 		s.Run("should return error when empty", func() {
 			sut := makeSut()

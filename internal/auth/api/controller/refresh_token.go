@@ -18,7 +18,7 @@ func NewRefreshToken(refreshTokenHandler service.RefreshTokenHandler) RefreshTok
 	}
 
 	return http.NewController(
-		func(ctx *gin.Context, input *service.RefreshTokenInput) {
+		func(ctx *gin.Context, input *service.RefreshTokenInput, meta *http.Meta) {
 			output, err := refreshTokenHandler.Handle(ctx.Request.Context(), input)
 			if err != nil {
 				panic(err)

@@ -36,10 +36,13 @@ func (s *UpdatePatientSuite) TestHandle() {
 
 	makeSut := func() *Sut {
 		input := fake.UpdatePatientInput()
+
 		mock := &Mock{
 			UpdatePatientHandler: commandMock.NewHandler[*command.UpdatePatientInput](s.T()),
 		}
+
 		sut := controller.NewUpdatePatient(mock.UpdatePatientHandler)
+
 		return &Sut{Sut: sut, Mock: mock, Input: input}
 	}
 

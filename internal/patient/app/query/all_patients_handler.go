@@ -6,7 +6,6 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/core/app/query"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/convert"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/repo"
 )
 
@@ -36,11 +35,26 @@ func (q *allPatientsHandlerImpl) Handle(
 		Filterer:  input.Filter,
 		Paginator: &input.Pagination,
 		Sorter:    input.Sort,
-		Preloader: input.Preload,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	return convert.FromModel(&queryer.PaginationOutput[*AllPatientsOutput]{}, pagination), nil
+	output := &queryer.PaginationOutput[*AllPatientsOutput]{
+		Total:   pagination.Total,
+		Results: []*FindPatientOutput{},
+	}
+
+	for _, patient := range pagination.Results {
+		output.Results = append(output.Results, &FindPatientOutput{
+			ID:       patient.ID,
+			Age:      patient.Age,
+			HeightM:  patient.HeightM,
+			WeightKG: patient.WeightKG,
+			UserID:   patient.UserID,
+			BMI:      patient.BMI,
+		})
+	}
+
+	return output, nil
 }

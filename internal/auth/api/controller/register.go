@@ -18,7 +18,7 @@ func NewRegister(registerHandler service.RegisterHandler) Register {
 	}
 
 	return http.NewController(
-		func(ctx *gin.Context, input *service.RegisterInput) {
+		func(ctx *gin.Context, input *service.RegisterInput, meta *http.Meta) {
 			output, err := registerHandler.Handle(ctx.Request.Context(), input)
 			if err != nil {
 				panic(err)

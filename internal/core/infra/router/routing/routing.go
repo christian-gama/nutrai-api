@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/christian-gama/nutrai-api/internal/auth/api/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
 	"github.com/gin-gonic/gin"
@@ -53,7 +54,9 @@ func (r *Routing) Register(router *gin.RouterGroup) {
 
 	for _, route := range r.Routes {
 		r.validate(route)
+
 		route.Middlewares = append(route.Middlewares, route.Controller)
+
 		handlers := slice.
 			Map(route.Middlewares, func(middleware http.Middleware) gin.HandlerFunc {
 				return middleware.Handle
@@ -63,6 +66,13 @@ func (r *Routing) Register(router *gin.RouterGroup) {
 		path := route.Controller.Path()
 		if len(route.Controller.Params()) > 0 {
 			path = route.Controller.Params().ToPath(path)
+		}
+
+		// Must be unshifted because the auth middleware must be the first one.
+		if !route.Controller.IsPublic() {
+			handlers = slice.
+				Unshift(handlers, middleware.MakeAuthHandler().Handle).
+				Build()
 		}
 
 		if group != nil {

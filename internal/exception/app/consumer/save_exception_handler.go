@@ -11,7 +11,7 @@ import (
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
-// SaveException is the handler for the 'errors.join' event.
+// SaveException is the handler for the SaveException command.
 type SaveExceptionHandler interface {
 	Handle()
 	ConsumerHandler(body []byte) error
@@ -44,6 +44,7 @@ func (j *saveExceptionHandlerImpl) Handle() {
 	j.Consumer.Handle(j.ConsumerHandler)
 }
 
+// ConsumerHandler handles the event.
 func (j *saveExceptionHandlerImpl) ConsumerHandler(body []byte) error {
 	var e exception.Exception
 	if err := json.Unmarshal(body, &e); err != nil {

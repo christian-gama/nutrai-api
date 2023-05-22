@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
+	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/validation"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
@@ -12,7 +14,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Handler[P any] func(*gin.Context, *P)
+// Handler is a function that handles a HTTP request.
+type Handler[P any] func(*gin.Context, *P, *Meta)
 
 // Controller is a interface that represents a controller for gin.
 // It handles the request and response and binds the data to the input.
@@ -45,7 +48,7 @@ type ControllerOptions struct {
 
 // controllerImpl is the implementation of the Controller interface.
 type controllerImpl[Input any] struct {
-	handler  func(*gin.Context, *Input)
+	handler  func(ctx *gin.Context, input *Input, meta *Meta)
 	method   Method
 	path     Path
 	isPublic bool
@@ -98,8 +101,29 @@ func (c controllerImpl[Input]) Handle(ctx *gin.Context) {
 			panic(err)
 		}
 
-		c.handler(ctx, &c.input)
+		c.handler(ctx, &c.input, &Meta{
+			Method:      c.Method,
+			Path:        c.Path,
+			IsPublic:    c.IsPublic,
+			Params:      c.Params,
+			CurrentUser: c.currentUser(ctx),
+		})
 	})
+}
+
+func (c controllerImpl[Input]) currentUser(ctx *gin.Context) func() *user.User {
+	return func() *user.User {
+		if c.isPublic {
+			return nil
+		}
+
+		u, err := store.GetUser(ctx)
+		if err != nil {
+			panic(err)
+		}
+
+		return u
+	}
 }
 
 // Handler implements Controller.

@@ -18,7 +18,7 @@ func NewAllPatients(allPatientsHandler query.AllPatientsHandler) AllPatients {
 	}
 
 	return http.NewController(
-		func(ctx *gin.Context, input *query.AllPatientsInput) {
+		func(ctx *gin.Context, input *query.AllPatientsInput, meta *http.Meta) {
 			result, err := allPatientsHandler.Handle(ctx.Request.Context(), input)
 			if err != nil {
 				panic(err)

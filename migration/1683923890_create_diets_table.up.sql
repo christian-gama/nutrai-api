@@ -15,6 +15,8 @@ CREATE TABLE "diets" (
 
 CREATE UNIQUE INDEX "uidx__diets__patient_id" ON diets ("patient_id");
 
+CREATE INDEX "idx__diets__name" ON diets ("name");
+
 ALTER TABLE "diets"
 ADD CONSTRAINT "fk__patient_id__patients.id"
 FOREIGN KEY ("patient_id")

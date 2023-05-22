@@ -4,6 +4,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/router/routing"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
@@ -44,6 +45,10 @@ func (h *Controller) IsPublic() bool {
 
 func (h *Controller) Params() http.Params {
 	return h.params
+}
+
+func (h *Controller) CurrentUser(*gin.Context) *user.User {
+	return nil
 }
 
 type Middleware struct {

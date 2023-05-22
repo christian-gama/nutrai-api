@@ -18,7 +18,7 @@ func NewDeleteUser(deleteUserHandler command.DeleteUserHandler) DeleteUser {
 	}
 
 	return http.NewController(
-		func(ctx *gin.Context, input *command.DeleteUserInput) {
+		func(ctx *gin.Context, input *command.DeleteUserInput, meta *http.Meta) {
 			err := deleteUserHandler.Handle(ctx.Request.Context(), input)
 			if err != nil {
 				panic(err)

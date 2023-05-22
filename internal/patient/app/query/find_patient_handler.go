@@ -5,7 +5,6 @@ import (
 	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/core/app/query"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/convert"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/repo"
 )
 
@@ -33,11 +32,18 @@ func (q *findPatientHandlerImpl) Handle(
 ) (*FindPatientOutput, error) {
 	patient, err := q.Patient.Find(
 		ctx,
-		repo.FindPatientInput{ID: input.ID, Preloader: input.Preload},
+		repo.FindPatientInput{ID: input.ID},
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	return convert.FromModel(&FindPatientOutput{}, patient), nil
+	return &FindPatientOutput{
+		ID:       patient.ID,
+		Age:      patient.Age,
+		HeightM:  patient.HeightM,
+		WeightKG: patient.WeightKG,
+		UserID:   patient.UserID,
+		BMI:      patient.BMI,
+	}, nil
 }
