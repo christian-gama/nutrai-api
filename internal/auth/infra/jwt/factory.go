@@ -1,8 +1,8 @@
 package jwt
 
 import (
+	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/jwt"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/uuid"
 )
 

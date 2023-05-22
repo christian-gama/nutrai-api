@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
+	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/pkg/path"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	testify "github.com/stretchr/testify/suite"

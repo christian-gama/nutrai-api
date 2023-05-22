@@ -5,8 +5,8 @@ import (
 	"time"
 
 	ratelimit "github.com/JGLTechnologies/gin-rate-limit"
+	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/bench"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/pkg/unit"
 	"github.com/gin-contrib/cors"

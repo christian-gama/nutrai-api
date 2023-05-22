@@ -3,7 +3,7 @@ package router
 import (
 	"time"
 
-	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
+	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/gin-gonic/gin"
 )
 

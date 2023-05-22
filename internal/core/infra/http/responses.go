@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
+	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
 	"github.com/gin-gonic/gin"
 )

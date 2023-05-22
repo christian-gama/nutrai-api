@@ -3,11 +3,11 @@ package jwt
 import (
 	"fmt"
 
+	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/jwt"
 	jwtValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
 	userValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/user"
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
 	_jwt "github.com/golang-jwt/jwt"
 )
 

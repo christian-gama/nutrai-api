@@ -3,7 +3,7 @@ package sql
 import (
 	"fmt"
 
-	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
+	"github.com/christian-gama/nutrai-api/config/env"
 )
 
 // Dsn returns the database connection string.

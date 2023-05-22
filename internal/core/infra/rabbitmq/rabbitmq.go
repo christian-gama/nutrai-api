@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/logger"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 

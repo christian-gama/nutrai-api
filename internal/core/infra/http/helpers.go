@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
+	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/gin-gonic/gin"
 )

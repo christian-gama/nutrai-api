@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
+	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/migrate"
 	"github.com/spf13/cobra"
 )
