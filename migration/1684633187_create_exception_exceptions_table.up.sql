@@ -1,6 +1,6 @@
 BEGIN;
 
-CREATE TABLE "exceptions" (
+CREATE TABLE "exception_exceptions" (
     "id" BIGSERIAL PRIMARY KEY,
     "message" TEXT NOT NULL,
     "stack" TEXT NOT NULL,

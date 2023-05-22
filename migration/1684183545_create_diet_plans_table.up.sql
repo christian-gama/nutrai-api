@@ -1,6 +1,6 @@
 BEGIN;
 
-CREATE TABLE "plans" (
+CREATE TABLE "diet_plans" (
     "id" BIGSERIAL PRIMARY KEY,
     "diet_id" BIGINT NOT NULL,
     "text" VARCHAR(1000) NOT NULL,
@@ -8,12 +8,12 @@ CREATE TABLE "plans" (
     "updated_at" TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-CREATE UNIQUE INDEX "uidx__plans__diet_id" ON plans ("diet_id");
+CREATE UNIQUE INDEX "uidx__plans__diet_id" ON "diet_plans" ("diet_id");
 
-ALTER TABLE "plans"
+ALTER TABLE "diet_plans"
 ADD CONSTRAINT "fk__diet_id__diets.id"
 FOREIGN KEY ("diet_id")
-REFERENCES "diets" ("id")
+REFERENCES "diet_diets" ("id")
 ON DELETE CASCADE ON UPDATE CASCADE;
 
 COMMIT;

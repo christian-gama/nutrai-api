@@ -2,7 +2,9 @@ package schema
 
 import (
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/table"
 	value "github.com/christian-gama/nutrai-api/internal/diet/domain/value/diet"
+	"github.com/christian-gama/nutrai-api/internal/diet/module"
 )
 
 // RestrictedFood is the database schema for restricted foods.
@@ -15,5 +17,5 @@ type RestrictedFood struct {
 
 // TableName returns the table name for the RestrictedFood schema.
 func (RestrictedFood) TableName() string {
-	return "restricted_foods"
+	return table.Name(module.Name, "restricted_foods")
 }

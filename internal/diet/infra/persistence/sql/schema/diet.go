@@ -4,7 +4,9 @@ import (
 	"time"
 
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/table"
 	value "github.com/christian-gama/nutrai-api/internal/diet/domain/value/diet"
+	"github.com/christian-gama/nutrai-api/internal/diet/module"
 	"github.com/christian-gama/nutrai-api/internal/patient/infra/persistence/sql/schema"
 )
 
@@ -24,6 +26,6 @@ type Diet struct {
 }
 
 // TableName returns the table name for the Diet schema.
-func (d Diet) TableName() string {
-	return "diets"
+func (Diet) TableName() string {
+	return table.Name(module.Name, "diets")
 }

@@ -2,7 +2,9 @@ package schema
 
 import (
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/table"
 	value "github.com/christian-gama/nutrai-api/internal/diet/domain/value/diet"
+	"github.com/christian-gama/nutrai-api/internal/diet/module"
 )
 
 // Plan is the database schema for plans.
@@ -15,5 +17,5 @@ type Plan struct {
 
 // TableName returns the name of the table.
 func (Plan) TableName() string {
-	return "plans"
+	return table.Name(module.Name, "plans")
 }
