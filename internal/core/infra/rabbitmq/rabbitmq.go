@@ -2,6 +2,7 @@ package rabbitmq
 
 import (
 	"log"
+	"time"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/logger"
 	"github.com/christian-gama/nutrai-api/pkg/retry"
@@ -26,7 +27,7 @@ func (r *rabbitMQConn) Open() *RabbitMQ {
 
 	const attempts = 90
 	var err error
-	retry.Retry(attempts, func() error {
+	retry.Retry(attempts, time.Second, func() error {
 		rmq, err := amqp.Dial(uri())
 		if err == nil {
 			r.conn = rmq

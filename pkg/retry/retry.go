@@ -4,8 +4,9 @@ import (
 	"time"
 )
 
-func Retry(attempts int, callback func() error) error {
-	ticker := time.NewTicker(1 * time.Second)
+// Retry will retry the callback function until it returns nil or the number of attempts is reached.
+func Retry(attempts int, sleep time.Duration, callback func() error) error {
+	ticker := time.NewTicker(sleep)
 	defer ticker.Stop()
 
 	if attempts <= 0 {

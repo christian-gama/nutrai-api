@@ -29,7 +29,7 @@ func (c *conn) Open() (db *gorm.DB) {
 	c.log.Loading("\tConnecting to SQL database")
 
 	var err error
-	err = retry.Retry(attempts, func() error {
+	err = retry.Retry(attempts, time.Second, func() error {
 		db, err = gorm.Open(c.dialector(dsn()), c.opt)
 		return err
 	})
