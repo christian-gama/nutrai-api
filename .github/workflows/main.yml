@@ -17,9 +17,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install dependencies
-        run: make tidy
-
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
@@ -42,9 +39,6 @@ jobs:
 
       - name: Setup environment
         run: ./scripts/manage_env.sh
-
-      - name: Install dependencies
-        run: make tidy
 
       - name: Cache test dependencies
         uses: actions/cache@v3
