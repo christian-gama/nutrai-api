@@ -22,6 +22,11 @@ func NewPlan() *Plan {
 	return &Plan{}
 }
 
+// String implements the fmt.Stringer interface.
+func (Plan) String() string {
+	return "plan"
+}
+
 // Validate returns an error if the plan is invalid.
 func (p *Plan) Validate() (*Plan, error) {
 	var errs *errutil.Error

@@ -22,6 +22,11 @@ func NewRestrictedFood() *RestrictedFood {
 	return &RestrictedFood{}
 }
 
+// String implements the fmt.Stringer interface.
+func (RestrictedFood) String() string {
+	return "restricted food"
+}
+
 // Validate returns an error if the restricted food is invalid.
 func (rf *RestrictedFood) Validate() (*RestrictedFood, error) {
 	var errs *errutil.Error

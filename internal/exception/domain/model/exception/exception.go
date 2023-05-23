@@ -19,6 +19,11 @@ func New() *Exception {
 	return &Exception{}
 }
 
+// String implements the fmt.Stringer interface.
+func (Exception) String() string {
+	return "exception"
+}
+
 // Validate validates the Exception fields. It implements the validator interface.
 func (e *Exception) Validate() (*Exception, error) {
 	return e, nil

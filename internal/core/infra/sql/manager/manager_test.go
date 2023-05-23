@@ -28,6 +28,10 @@ func (s Sample) TableName() string {
 	return "samples"
 }
 
+func (s Sample) String() string {
+	return "sample"
+}
+
 func FakeSample() *Sample {
 	data := new(Sample)
 	err := faker.FakeData(data)

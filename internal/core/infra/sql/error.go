@@ -29,22 +29,15 @@ var (
 // Error is a helper to convert SQL errors into friendly errors. It returns nil if no error is
 // found.
 // TODO: refactor this to use maps instead of if-else statements.
-func Error(err error, resource ...string) error {
+func Error[Model fmt.Stringer](err error, model Model) error {
 	if err == nil {
 		return nil
-	}
-
-	var resourceName string
-	if len(resource) == 0 {
-		resourceName = "resource"
-	} else {
-		resourceName = getFriendlyTableName(resource[0])
 	}
 
 	var errs *errutil.Error
 
 	if strings.Contains(err.Error(), errNotFound) {
-		return errutil.Append(errs, NewErrNotFound(resourceName))
+		return errutil.Append(errs, NewErrNotFound(model.String()))
 	}
 
 	if strings.Contains(err.Error(), errUniqueConstraint) {
@@ -68,7 +61,7 @@ func Error(err error, resource ...string) error {
 	}
 
 	if strings.Contains(err.Error(), errTooManyClients) {
-		panic(errutil.Append(errs, NewErrUnavailable(resourceName)))
+		panic(errutil.Append(errs, NewErrUnavailable(model.String())))
 	}
 
 	if strings.Contains(err.Error(), errNoRowsAffected) {

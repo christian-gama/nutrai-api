@@ -72,16 +72,17 @@ func (p *userSQLImpl) FindByEmail(
 ) (*user.User, error) {
 	db := p.manager.WithContext(ctx)
 	var schema schema.User
+	var model user.User
 
 	if err := db.
 		Model(&schema).
 		Where("email = ?", input.Email).
 		First(&schema).
 		Error; err != nil {
-		return nil, sql.Error(err, schema.TableName())
+		return nil, sql.Error(err, model)
 	}
 
-	return convert.ToModel(&user.User{}, &schema), nil
+	return convert.ToModel(&model, &schema), nil
 }
 
 // Save implements repo.User.

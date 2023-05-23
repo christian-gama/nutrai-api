@@ -17,6 +17,11 @@ func NewAllergy() *Allergy {
 	return &Allergy{}
 }
 
+// String implements the fmt.Stringer interface.
+func (Allergy) String() string {
+	return "allergy"
+}
+
 // Validate validates the Allergy fields.
 func (a *Allergy) Validate() (*Allergy, error) {
 	var errs *errutil.Error

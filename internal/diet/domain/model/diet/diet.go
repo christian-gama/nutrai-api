@@ -27,6 +27,11 @@ func NewDiet() *Diet {
 	return &Diet{}
 }
 
+// String implements the fmt.Stringer interface.
+func (Diet) String() string {
+	return "diet"
+}
+
 // Validate returns an error if the diet is invalid.
 func (d *Diet) Validate() (*Diet, error) {
 	var errs *errutil.Error

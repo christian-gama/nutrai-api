@@ -23,6 +23,11 @@ func NewUser() *User {
 	return &User{}
 }
 
+// String implements the fmt.Stringer interface.
+func (User) String() string {
+	return "user"
+}
+
 // Validate returns an error if the user is invalid.
 func (u *User) Validate() (*User, error) {
 	var errs *errutil.Error

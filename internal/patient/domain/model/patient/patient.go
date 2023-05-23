@@ -21,6 +21,16 @@ type Patient struct {
 	Allergies []*Allergy
 }
 
+// NewPatient returns a new patient instance.
+func NewPatient() *Patient {
+	return &Patient{}
+}
+
+// String implements the fmt.Stringer interface.
+func (Patient) String() string {
+	return "patient"
+}
+
 // Validate returns an error if the patient is invalid.
 func (p *Patient) Validate() (*Patient, error) {
 	var errs *errutil.Error
@@ -48,11 +58,6 @@ func (p *Patient) Validate() (*Patient, error) {
 	}
 
 	return p, nil
-}
-
-// NewPatient returns a new patient instance.
-func NewPatient() *Patient {
-	return &Patient{}
 }
 
 // SetID sets the ID on the builder.
