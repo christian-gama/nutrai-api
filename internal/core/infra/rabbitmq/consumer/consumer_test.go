@@ -25,8 +25,8 @@ func TestConsumer(t *testing.T) {
 
 func (s *ConsumerSuite) SetupSuite() {
 	s.log = loggerMock.NewLogger(s.T())
-	s.log.On("Infof", mock.Anything, mock.Anything)
-	s.rmq = rabbitmq.NewConnection(s.log, "test")
+	s.log.On("Loading", mock.Anything, mock.Anything)
+	s.rmq = rabbitmq.NewConn(s.log, "test").Open()
 	s.consumer = consumer.NewConsumer(
 		s.rmq,
 		s.log,

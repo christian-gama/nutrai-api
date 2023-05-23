@@ -19,8 +19,8 @@ func TestRabbitMQ(t *testing.T) {
 
 func (s *RabbitMQSuite) TestNewConnection() {
 	log := mocks.NewLogger(s.T())
-	log.On("Infof", mock.Anything, mock.Anything)
-	rmq := rabbitmq.NewConnection(log, "test")
+	log.On("Loading", mock.Anything, mock.Anything)
+	rmq := rabbitmq.NewConn(log, "test").Open()
 	defer rmq.Close()
 
 	channel := rmq.ChannelPool()
@@ -32,8 +32,8 @@ func (s *RabbitMQSuite) TestNewConnection() {
 
 func (s *RabbitMQSuite) TestChannelPool() {
 	log := mocks.NewLogger(s.T())
-	log.On("Infof", mock.Anything, mock.Anything)
-	rmq := rabbitmq.NewConnection(log, "test")
+	log.On("Loading", mock.Anything, mock.Anything)
+	rmq := rabbitmq.NewConn(log, "test").Open()
 	defer rmq.Close()
 
 	channel := rmq.ChannelPool()
@@ -44,8 +44,8 @@ func (s *RabbitMQSuite) TestChannelPool() {
 
 func (s *RabbitMQSuite) TestReleaseChannelPool() {
 	log := mocks.NewLogger(s.T())
-	log.On("Infof", mock.Anything, mock.Anything)
-	rmq := rabbitmq.NewConnection(log, "test")
+	log.On("Loading", mock.Anything, mock.Anything)
+	rmq := rabbitmq.NewConn(log, "test").Open()
 	defer rmq.Close()
 
 	s.NotPanics(func() {

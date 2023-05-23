@@ -21,7 +21,6 @@ func NewVerifier() jwt.Verifier {
 
 // Verify implements the jwt.Verifier interface.
 func (s *verifierImpl) Verify(t jwtValue.Token) (*jwt.Claims, error) {
-	fmt.Println("t", t)
 	token, err := _jwt.Parse(t.String(), keyFunc)
 	if err != nil {
 		return nil, err

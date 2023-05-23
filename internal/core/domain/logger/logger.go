@@ -40,4 +40,7 @@ type Logger interface {
 	// With returns a new Logger instance with the specified key/value pairs appended to its
 	// context.
 	With(args ...any) Logger
+
+	// Loading logs a message at level Info on the standard logger.
+	Loading(format string, args ...any)
 }

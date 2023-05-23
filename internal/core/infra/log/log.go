@@ -1,6 +1,7 @@
 package log
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -90,12 +91,13 @@ func (l *loggerImpl) Errorf(format string, args ...any) {
 
 // Fatal implements logger.Logger.
 func (l *loggerImpl) Fatal(args ...any) {
-	l.base.Fatal(args...)
+	l.base.Fatal(FatalColor(args...))
 }
 
 // Fatalf implements logger.Logger.
 func (l *loggerImpl) Fatalf(format string, args ...any) {
-	l.base.Fatalf(format, args...)
+	msg := fmt.Sprintf(format, args...)
+	l.base.Fatalf(FatalColor(msg))
 }
 
 // Info implements logger.Logger.
@@ -133,4 +135,8 @@ func (l *loggerImpl) Panic(args ...any) {
 // Panicf implements logger.Logger.
 func (l *loggerImpl) Panicf(format string, args ...any) {
 	l.base.Panicf(format, args...)
+}
+
+func (l *loggerImpl) Loading(format string, args ...any) {
+	l.base.Info(LoadingColor(format, args...))
 }

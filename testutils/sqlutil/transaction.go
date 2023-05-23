@@ -15,6 +15,13 @@ func Transaction(
 	fn func(tx *gorm.DB),
 ) {
 	db := conn.MakePostgres()
+	defer func() {
+		sqlErr, err := db.DB()
+		if err != nil {
+			failFn("failed to get sql.DB", "error: %v", err)
+		}
+		sqlErr.Close()
+	}()
 
 	tx := func(tx *gorm.DB) error {
 		defer func() {

@@ -230,15 +230,15 @@ func (s *PatientSuite) TestAll() {
 		sut := makeSut(db)
 
 		patientDeps := fixture.SavePatient(db, nil)
-		length := 3
+		length := 2
 		for i := 0; i < length; i++ {
 			fixture.SavePatient(db, nil)
 		}
 
 		sut.Input.Filterer = sut.Input.Filterer.Add(
-			"age",
+			"ID",
 			querying.EqOperator,
-			patientDeps.Patient.Age,
+			patientDeps.Patient.ID,
 		)
 
 		result, err := sut.Sut(sut.Ctx, sut.Input)

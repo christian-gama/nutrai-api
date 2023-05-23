@@ -44,8 +44,6 @@ func (p *exceptionSQLImpl) DeleteOld(
 		return fmt.Errorf("could not delete exception: %w", result.Error)
 	}
 
-	fmt.Println("rows affected:", result.RowsAffected)
-
 	return nil
 }
 

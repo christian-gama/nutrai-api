@@ -1,10 +1,10 @@
 package conn
 
 import (
-	"log"
 	"time"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/logger"
+	"github.com/christian-gama/nutrai-api/pkg/retry"
 	"gorm.io/gorm"
 )
 
@@ -24,32 +24,17 @@ func NewConn(dialector dialector, opt *gorm.Config, logger logger.Logger) *conn 
 
 // Open will open a new GORM connection.
 func (c *conn) Open() (db *gorm.DB) {
-	const maxRetries = 5
-	const retryInterval = 1 * time.Second
+	const attempts = 90
 
-	c.log.Infof("\tConnecting to SQL database")
-	connect := func() (*gorm.DB, error) {
-		db, err := gorm.Open(c.dialector(dsn()), c.opt)
-		if err != nil {
-			return nil, err
-		}
-		return db, nil
-	}
-
-	ticker := time.NewTicker(retryInterval)
-	defer ticker.Stop()
+	c.log.Loading("\tConnecting to SQL database")
 
 	var err error
-	for i := 0; i < maxRetries; i++ {
-		db, err = connect()
-		if err == nil {
-			break
-		}
-		<-ticker.C
-	}
-
+	err = retry.Retry(attempts, func() error {
+		db, err = gorm.Open(c.dialector(dsn()), c.opt)
+		return err
+	})
 	if err != nil {
-		log.Fatalf("Failed to connect to database after %d retries", maxRetries)
+		c.log.Fatalf("\tFailed to connect to database after %d retries: %v", attempts, err)
 	}
 
 	return c.connectionPool(db)
@@ -62,8 +47,8 @@ func (c *conn) connectionPool(db *gorm.DB) *gorm.DB {
 		panic(err)
 	}
 
-	sqlDB.SetMaxIdleConns(10)
-	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetMaxIdleConns(15)
+	sqlDB.SetMaxOpenConns(150)
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
 	return db

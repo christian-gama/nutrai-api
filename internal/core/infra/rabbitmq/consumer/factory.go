@@ -21,7 +21,7 @@ func MakeConsumer(opts ...func(*options)) message.Consumer {
 	log := log.MakeWithCaller()
 
 	if consumerConnection == nil {
-		consumerConnection = rabbitmq.NewConnection(log, "consumer")
+		consumerConnection = rabbitmq.NewConn(log, "consumer").Open()
 	}
 
 	return NewConsumer(consumerConnection, log, opts...)

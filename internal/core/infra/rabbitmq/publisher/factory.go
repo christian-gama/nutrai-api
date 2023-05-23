@@ -19,7 +19,7 @@ var (
 
 func MakePublisher(opts ...func(*options)) message.Publisher {
 	if publisherConnection == nil {
-		publisherConnection = rabbitmq.NewConnection(log.MakeWithCaller(), "publisher")
+		publisherConnection = rabbitmq.NewConn(log.MakeWithCaller(), "publisher").Open()
 	}
 
 	return NewPublisher(publisherConnection, opts...)

@@ -1,10 +1,11 @@
 package router
 
-import "github.com/christian-gama/nutrai-api/internal/core/domain/logger"
+import "github.com/christian-gama/nutrai-api/internal/core/infra/log"
 
 // Register registers all the routes for a group.
-func Register(log logger.Logger) {
-	log.Info("Registering routes")
+func Register() {
+	log := log.MakeWithCaller()
+	log.Loading("Registering routes")
 
 	group := Router.Group("api")
 

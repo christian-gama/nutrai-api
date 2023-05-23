@@ -75,15 +75,21 @@ update_environment_specific_variables() {
             sed -i "s/DB_PORT=.*/DB_PORT=5433/" "$env_file"
             sed -i "s/RABBITMQ_PORT=.*/RABBITMQ_PORT=5673/" "$env_file"
             sed -i "s/CONFIG_LOG_LEVEL=.*/CONFIG_LOG_LEVEL=\"debug\"/" "$env_file"
+            sed -i "s/JWT_ACCESS_EXPIRE=.*/JWT_ACCESS_EXPIRE=\"24h\"/" "$env_file"
+            sed -i "s/JWT_REFRESH_EXPIRE=.*/JWT_REFRESH_EXPIRE=\"90d\"/" "$env_file"
             ;;
         "test")
             sed -i "s/DB_PORT=.*/DB_PORT=5434/" "$env_file"
             sed -i "s/RABBITMQ_PORT=.*/RABBITMQ_PORT=5674/" "$env_file"
             sed -i "s/CONFIG_LOG_LEVEL=.*/CONFIG_LOG_LEVEL=\"panic\"/" "$env_file"
+            sed -i "s/JWT_ACCESS_EXPIRE=.*/JWT_ACCESS_EXPIRE=\"999d\"/" "$env_file"
+            sed -i "s/JWT_REFRESH_EXPIRE=.*/JWT_REFRESH_EXPIRE=\"999d\"/" "$env_file"
             ;;
         "prod")
             sed -i "s/CONFIG_GLOBAL_RATE_LIMIT=.*/CONFIG_GLOBAL_RATE_LIMIT=180/" "$env_file"
-            sed -i "s/CONFIG_DEBUG=.*/CONFIG_DEBUG=false/" "$env_file"
+            sed -i "s/CONFIG_LOG_LEVEL=.*/CONFIG_LOG_LEVEL=\"info\"/" "$env_file"
+            sed -i "s/JWT_ACCESS_EXPIRE=.*/JWT_ACCESS_EXPIRE=\"10m\"/" "$env_file"
+            sed -i "s/JWT_REFRESH_EXPIRE=.*/JWT_REFRESH_EXPIRE=\"30d\"/" "$env_file"
             ;;
     esac
 }

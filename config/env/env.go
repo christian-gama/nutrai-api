@@ -13,13 +13,11 @@ type db struct {
 	User DBUser `env:"DB_USER,required"`
 
 	// Password must not be empty or undefined. This environment variable sets the superuser
-	// password for
-	// the database.
+	// password for	the database.
 	Password DBPassword `env:"DB_PASSWORD,required"`
 
 	// Name can be used to define a different name for the default database that is created when the
-	// instance
-	// is first started.
+	// instance is first started.
 	Name DBName `env:"DB_NAME,required"`
 
 	// SslMode is the database SSL mode. It expects "disable", "allow", "prefer", "require",
@@ -67,10 +65,20 @@ type config struct {
 }
 
 type rabbitMQ struct {
-	User     RabbitMQUser     `env:"RABBITMQ_USER,required"`
+	// User is the RabbitMQ user.User name to create when RabbitMQ creates a new database from
+	// scratch.
+	User RabbitMQUser `env:"RABBITMQ_USER,required"`
+
+	// Password is the default user password.
 	Password RabbitMQPassword `env:"RABBITMQ_PASSWORD,required"`
-	Host     RabbitMQHost     `env:"RABBITMQ_HOST,required"`
-	Port     RabbitMQPort     `env:"RABBITMQ_PORT,required"`
+
+	// Host is the RabbitMQ host (IP address or domain) to connect to.
+	Host RabbitMQHost `env:"RABBITMQ_HOST,required"`
+
+	// RabbitMQ nodes will use a port from a certain range known as the inter-node communication
+	// port range. The same port is used by CLI tools when they need to contact the node. The range
+	// can be modified.
+	Port RabbitMQPort `env:"RABBITMQ_PORT,required"`
 }
 
 // DB is the database environment variables.c.
@@ -89,7 +97,12 @@ var RabbitMQ = &rabbitMQ{}
 var Jwt = &jwt{}
 
 var (
-	IsProduction  bool
+	// IsProduction is true if the application is running in production mode.
+	IsProduction bool
+
+	// IsDevelopment is true if the application is running in development mode.
 	IsDevelopment bool
-	IsTest        bool
+
+	// IsTest is true if the application is running in test mode.
+	IsTest bool
 )

@@ -25,9 +25,9 @@ func TestPublisher(t *testing.T) {
 
 func (s *PublisherSuite) SetupTest() {
 	s.log = mocks.NewLogger(s.T())
-	s.log.On("Infof", mock.Anything, mock.Anything)
+	s.log.On("Loading", mock.Anything, mock.Anything)
 
-	s.rmq = rabbitmq.NewConnection(s.log, "test")
+	s.rmq = rabbitmq.NewConn(s.log, "test").Open()
 
 	s.publisher = publisher.NewPublisher(
 		s.rmq,

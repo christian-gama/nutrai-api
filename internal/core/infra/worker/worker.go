@@ -1,6 +1,7 @@
 package worker
 
 import (
+	"fmt"
 	"reflect"
 	"runtime"
 	"strings"
@@ -21,7 +22,13 @@ func Create(fn func(), n int) {
 		n = runtime.NumCPU()
 	}
 
-	log.MakeWithCaller().Infof("Creating %d %s for %s", n, worker, name(fn))
+	log.MakeWithCaller().
+		Loading(
+			"Creating %s %s %s",
+			log.LoadingDetailColor(fmt.Sprint(n)),
+			log.LoadingColor("%s for", worker),
+			log.LoadingDetailColor(name(fn)),
+		)
 	for i := 0; i < n; i++ {
 		go fn()
 	}

@@ -38,6 +38,7 @@ init: .cmd-exists-git .cmd-exists-go .cmd-exists-docker .cmd-exists-sh .clear-sc
 env: .cmd-exists-sh .clear-screen
 	@sh ./scripts/manage_env.sh
 
+
 # ==============================================================================================
 # Target: run
 # Brief: This target is used to run the project.
@@ -50,9 +51,6 @@ run: .cmd-exists-go .clear-screen .check-env-file
 ifneq ($(RUNNING_IN_DOCKER), true)
 	@ENV_FILE=.env.dev $(MAKE) postgres
 	@ENV_FILE=.env.dev $(MAKE) rabbitmq
-
-	@sh ./scripts/wait_for.sh nutrai-psql
-	@sh ./scripts/wait_for.sh nutrai-rabbitmq
 endif
 
 ifeq ($(ENV_FILE), .env.prod)
@@ -92,7 +90,7 @@ prod: .cmd-exists-go .clear-screen
 list-routes: .cmd-exists-go .clear-screen
 ifneq ($(RUNNING_IN_DOCKER), true)
 	@ENV_FILE=.env.dev $(MAKE) postgres
-	@sh ./scripts/wait_for.sh nutrai-psql
+	@ENV_FILE=.env.dev $(MAKE) rabbitmq
 endif
 	@go run ./cmd/routes/main.go
 
@@ -148,41 +146,50 @@ tidy: .cmd-exists-go .clear-screen
 # ==============================================================================================
 # Target: test-unit
 # Brief: This target is used to run unit tests.
-# Usage: Run the command 'make test-unit [FLAGS="<flags>"]'.
-# Flags: 
-#  --watch: Watch for changes and run tests.
+# Usage:
+#   FLAG=<watch|cover> make test-unit # Runs tests normally without any special flags
+#   COUNT=<count> make-test-unit # Runs tests <count> times
+# Environment variables:
+#   COUNT: Number of times to run each test. Cannot be used with other flags.
+#   FLAG:  Defines the flag to run the tests with. Possible values: "cover", "watch".
 # ==============================================================================================
 .PHONY: test-unit
 test-unit: .cmd-exists-go .clear-screen
-	@TEST_MODE=unit \
-	sh -c "./scripts/test.sh $(FLAGS)"
+	@TEST_MODE=unit COUNT=$(COUNT) FLAG=$(FLAG) \
+	sh -c "./scripts/test.sh"
 
 
 # ==============================================================================================
 # Target: test-integration
 # Brief: This target is used to run integration tests.
 # Usage: Run the command 'make test-unit [FLAGS="<flags>"]'.
-# Flags: 
-# 	--watch: Watch for changes and run tests.
+# Usage:
+#   FLAG=<watch|cover> make test-integration # Runs tests normally without any special flags
+#   COUNT=<count> make-integration # Runs tests <count> times
+## Environment variables:
+#   COUNT: Number of times to run each test. Cannot be used with other flags.
+#   FLAG:  Defines the flag to run the tests with. Possible values: "cover", "watch".
 # ==============================================================================================
 .PHONY: test-integration
 test-integration: .cmd-exists-go .clear-screen .prepare-test
-	@TEST_MODE=integration \
-	sh -c "./scripts/test.sh $(FLAGS)"
+	@TEST_MODE=integration COUNT=$(COUNT) FLAG=$(FLAG) \
+	sh -c "./scripts/test.sh"
 
 
 # ==============================================================================================
 # Target: test
 # Brief: This target is used to run all tests.
-# Usage: Run the command 'make test [FLAGS="<flags>"]'.
-# Flags:
-#  --watch: Watch for changes and run tests.
-#  --cover: Run tests with coverage.
+# Usage:
+#   FLAG=<watch|cover> make test # Runs tests normally without any special flags
+#   COUNT=<count> make test # Runs tests <count> times
+# Environment variables:
+#   COUNT: Number of times to run each test. Cannot be used with other flags.
+#   FLAG:  Defines the flag to run the tests with. Possible values: "cover", "watch".
 # ==============================================================================================
 .PHONY: test
 test: .cmd-exists-go .clear-screen .prepare-test
-	@TEST_MODE=all \
-	sh -c "./scripts/test.sh $(FLAGS)"
+	@TEST_MODE=all COUNT=$(COUNT) FLAG=$(FLAG) \
+	sh -c "./scripts/test.sh"
 
 
 # ==============================================================================================
@@ -217,7 +224,9 @@ create-migration: .cmd-exists-go .clear-screen
 # 	VERSION: The version to be migrated.
 # ==============================================================================================
 .PHONY: migrate
-migrate: .cmd-exists-docker .clear-screen .check-env-file .prepare-db
+migrate: .cmd-exists-docker .clear-screen .check-env-file
+	@ENV_FILE=$(ENV_FILE) $(MAKE) postgres
+
 	@if [ -z "$(MIGRATION)" ]; then \
 		echo "Error: expected MIGRATION"; \
 		exit 1; \
@@ -320,12 +329,6 @@ docker-prod: .cmd-exists-docker .clear-screen
 
 
 # ==============================================================================================
-# Target: docker-prod
-# Brief: This target is used to run the API container in production mode.
-# Usage: Run the command 'make docker-prod'.
-
-
-# ==============================================================================================
 # Target: .cmd-exists-%
 # Brief: This is a helper target to check if a command exists. It will exit with code 1 if it does not.
 # Usage: It is not meant to be called directly, but by other targets.
@@ -372,26 +375,5 @@ docker-prod: .cmd-exists-docker .clear-screen
 .prepare-test: .cmd-exists-go .cmd-exists-docker .clear-screen
 	@WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file .env.test up -d psql_test
 	@WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file .env.test up -d rabbitmq_test
-	@sh ./scripts/wait_for.sh nutrai-psql-test & \
-	sh ./scripts/wait_for.sh nutrai-rabbitmq-test
 	@go run ./cmd/migrate/*.go -e .env.test reset
 
-
-# ==============================================================================================
-# Target: .prepare-db
-# Brief: This is a helper target to prepare the database.
-# Usage: It is not meant to be called directly, but by other targets.
-# ==============================================================================================
-.prepare-db: .cmd-exists-docker .clear-screen
-	@WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d psql
-	@sh ./scripts/wait_for.sh nutrai-psql
-
-
-# ==============================================================================================
-# Target: .prepare-rabbitmq
-# Brief: This is a helper target to prepare the rabbitmq container.
-# Usage: It is not meant to be called directly, but by other targets.
-# ==============================================================================================
-.prepare-rabbitmq: .cmd-exists-docker .clear-screen
-	@WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d rabbitmq
-	@sh ./scripts/wait_for.sh nutrai-rabbitmq
