@@ -95,7 +95,6 @@ endif
 	@go run ./cmd/routes/main.go
 
 
-
 # ==============================================================================================
 # Target: list-env
 # Brief: This target is used to list all environment variables.
@@ -274,6 +273,7 @@ postgres: .cmd-exists-docker .clear-screen .check-env-file
 		WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d psql; \
 	fi;
 
+
 # ==============================================================================================
 # Target: rabbitmq
 # Brief: This target is used to run the rabbitmq container.
@@ -357,6 +357,7 @@ docker-list-env: .cmd-exists-docker .clear-screen .check-env-file
 		api \
 		make list-env
 
+
 # ==============================================================================================
 # Target: .cmd-exists-%
 # Brief: This is a helper target to check if a command exists. It will exit with code 1 if it does not.
@@ -405,4 +406,3 @@ docker-list-env: .cmd-exists-docker .clear-screen .check-env-file
 	@WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file .env.test up -d psql_test
 	@WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file .env.test up -d rabbitmq_test
 	@go run ./cmd/migrate/*.go -e .env.test reset
-
