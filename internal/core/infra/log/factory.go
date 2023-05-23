@@ -2,14 +2,19 @@ package log
 
 import "github.com/christian-gama/nutrai-api/internal/core/domain/logger"
 
-func MakeLogWithCaller(skip int) logger.Logger {
-	return New(&Config{Caller: true, CallerSkip: skip, Stack: false})
-}
-
-func MakeLog() logger.Logger {
+func MakeDefault() logger.Logger {
 	return New(&Config{Caller: false, Stack: false})
 }
 
-func MakeLogWithStack() logger.Logger {
+func MakeWithCaller(skip ...int) logger.Logger {
+	s := 1
+	if len(skip) > 0 {
+		s = skip[0]
+	}
+
+	return New(&Config{Caller: true, CallerSkip: s, Stack: false})
+}
+
+func MakeWithStack() logger.Logger {
 	return New(&Config{Caller: true, Stack: true})
 }

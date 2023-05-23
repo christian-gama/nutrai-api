@@ -6,40 +6,51 @@ import (
 	"net/http/httptest"
 	"strings"
 
-	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
+	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
+	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
 	"github.com/christian-gama/nutrai-api/testutils/httputil"
 	"github.com/gin-gonic/gin"
 )
 
-func MustRequest(handler http.Controller, opt Option) (ctx *gin.Context) {
+func MustRequest(handler controller.Controller, opt Option) (ctx *gin.Context) {
 	ctx, _ = MustRequestWithBody(handler, opt)
 	return ctx
 }
 
 func MustRequestWithBody(
-	handler http.Controller,
+	handler controller.Controller,
 	opt Option,
-) (ctx *gin.Context, body *http.ResponseBody) {
+) (ctx *gin.Context, body *response.Body) {
 	ctx, r, writer := createTestContext()
+
 	handlerPath := handler.Path()
+
 	if len(handler.Params()) > 0 {
-		handlerPath = http.Path(fmt.Sprintf("%s/:%s", handlerPath, strings.Join(handler.Params(), "/:")))
+		handlerPath = controller.Path(
+			fmt.Sprintf("%s/:%s", handlerPath, strings.Join(handler.Params(), "/:")),
+		)
 	}
 
 	r.Handle(handler.Method().String(), handlerPath.String(), func(ctx *gin.Context) {
+		if opt.CurrentUser != nil {
+			store.SetUser(ctx, opt.CurrentUser)
+		}
+
 		handler.Handle(ctx)
 	})
 
 	var err error
 	path := handler.Path()
 	if len(opt.Params) > 0 {
-		path = http.Path(strings.TrimSuffix(path.String(), "/"))
-		path = http.Path(fmt.Sprintf("%s/%s", path, strings.Join(opt.Params, "/")))
+		path = controller.Path(strings.TrimSuffix(path.String(), "/"))
+		path = controller.Path(fmt.Sprintf("%s/%s", path, strings.Join(opt.Params, "/")))
 	}
 
 	path += "?page=1&limit=100"
 	if opt.Queries != "" {
-		path = http.Path(fmt.Sprintf("%s&%s", path, opt.Queries))
+		path = controller.Path(fmt.Sprintf("%s&%s", path, opt.Queries))
 	}
 
 	ctx.Request, err = gohttp.NewRequest(
@@ -60,7 +71,7 @@ func MustRequestWithBody(
 }
 
 type Option struct {
-	// Data is the payload of the request.
+	// Data is the input of the request.
 	Data any
 
 	// Params are the keys of the path params. E.g:
@@ -76,6 +87,10 @@ type Option struct {
 	//
 	// It would be equivalent to /items?id=1&name=foo
 	Queries string
+
+	// CurrentUser is the user.User that will be set in the context of the request to simulate an
+	// authenticated user.
+	CurrentUser *user.User
 }
 
 func createTestContext() (*gin.Context, *gin.Engine, *httptest.ResponseRecorder) {

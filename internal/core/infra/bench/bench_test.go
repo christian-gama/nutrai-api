@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/christian-gama/nutrai-api/internal/core/infra/bench"
-	mocks "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/logger"
+	loggerMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/logger"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/mock"
 )
@@ -32,7 +32,7 @@ func (s *BenchSuite) TestDuration() {
 
 func (s *BenchSuite) TestPrintDuration() {
 	s.Run("prints the duration of the function", func() {
-		log := mocks.NewLogger(s.T())
+		log := loggerMock.NewLogger(s.T())
 		resource := "test"
 		log.On("Infof", "%s took %dms to complete", resource, mock.AnythingOfType("int64")).
 			Return().

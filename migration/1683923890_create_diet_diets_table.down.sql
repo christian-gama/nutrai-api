@@ -1,0 +1,5 @@
+BEGIN;
+
+DROP TABLE IF EXISTS "diet_diets";
+
+COMMIT;

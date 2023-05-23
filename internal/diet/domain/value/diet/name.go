@@ -25,7 +25,10 @@ func (n Name) Validate() error {
 	}
 
 	if len(n) > maxChars {
-		return errutil.NewErrInvalid(fieldName, fmt.Sprintf("cannot be longer than %d characters", maxChars))
+		return errutil.NewErrInvalid(
+			fieldName,
+			fmt.Sprintf("cannot be longer than %d characters", maxChars),
+		)
 	}
 
 	return nil

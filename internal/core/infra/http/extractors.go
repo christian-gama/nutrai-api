@@ -6,29 +6,32 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
+	"github.com/christian-gama/nutrai-api/pkg/structutil"
 	"github.com/gin-gonic/gin"
 )
 
-func extract[Payload any](ctx *gin.Context, payload *Payload, extractFn func(any) error) error {
+// extract is a generic function to extract data from a context into an input structure. The actual
+// extraction is performed by the provided extractFn function.
+func extract[Input any](ctx *gin.Context, input *Input, extractFn func(any) error) error {
 	if ctx.IsAborted() {
 		return nil
 	}
 
-	if reflect.TypeOf(payload).Kind() == reflect.Ptr &&
-		reflect.TypeOf(payload).Elem().Kind() == reflect.Interface {
+	if structutil.IsPointerToInterface(input) {
 		return nil
 	}
 
-	v := reflect.ValueOf(payload)
-	if v.Kind() != reflect.Ptr {
-		panic(errors.New("payload must be a pointer"))
+	if !structutil.IsPointer(input) {
+		panic(errors.New("input must be a pointer"))
 	}
 
-	if v.IsNil() {
-		panic(errors.New("payload is nil"))
+	if structutil.IsNil(input) {
+		panic(errors.New("input cannot be nil"))
 	}
 
-	err := extractFn(payload)
+	err := extractFn(input)
 	if err != nil && !strings.Contains(err.Error(), "EOF") {
 		return err
 	}
@@ -37,25 +40,45 @@ func extract[Payload any](ctx *gin.Context, payload *Payload, extractFn func(any
 }
 
 // ExtractBody extracts the body from the request body.
-func ExtractBody[Body any](ctx *gin.Context, payload *Body) {
-	err := extract(ctx, payload, ctx.ShouldBindJSON)
+func ExtractBody[Body any](ctx *gin.Context, body *Body) {
+	err := extract(ctx, body, ctx.ShouldBindJSON)
 	if err != nil {
-		BadRequest(ctx, fmt.Errorf("could not extract body: %w", err))
+		response.BadRequest(ctx, fmt.Errorf("could not extract body: %w", err))
 	}
 }
 
 // ExtractQuery extracts the query from the query string.
-func ExtractQuery[Query any](ctx *gin.Context, payload *Query) {
-	err := extract(ctx, payload, ctx.ShouldBindQuery)
+func ExtractQuery[Query any](ctx *gin.Context, query *Query) {
+	err := extract(ctx, query, ctx.ShouldBindQuery)
 	if err != nil {
-		BadRequest(ctx, fmt.Errorf("could not extract query: %w", err))
+		response.BadRequest(ctx, fmt.Errorf("could not extract query: %w", err))
 	}
 }
 
 // ExtractParams extracts the params from the request URI.
-func ExtractParams[Params any](ctx *gin.Context, payload *Params) {
-	err := extract(ctx, payload, ctx.ShouldBindUri)
+func ExtractParams[Params any](ctx *gin.Context, params *Params) {
+	err := extract(ctx, params, ctx.ShouldBindUri)
 	if err != nil && !strings.Contains(err.Error(), "EOF") {
-		BadRequest(ctx, fmt.Errorf("could not extract params: %w", err))
+		response.BadRequest(ctx, fmt.Errorf("could not extract params: %w", err))
 	}
+}
+
+// ExtractCurrentUser extracts the current user from the request. It expects the input to have a
+// field with the tag `ctx:"currentUser"`.
+func ExtractCurrentUser[Data any](ctx *gin.Context, data *Data) {
+	if ctx.IsAborted() {
+		return
+	}
+
+	structutil.TraverseFields(data, func(opts *structutil.FieldIterationOptions) {
+		if opts.Tag.Get("ctx") == "currentUser" {
+			currentUser, err := store.GetUser(ctx)
+			if err != nil {
+				opts.Field.Set(reflect.Zero(opts.Field.Type()))
+				response.InternalServerError(ctx, err)
+			}
+
+			opts.Field.Set(reflect.ValueOf(currentUser))
+		}
+	})
 }

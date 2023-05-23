@@ -17,13 +17,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install dependencies
-        run: make tidy
-
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.52.2
+      
+      - name: Cache lint dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+          key: ${{ runner.os }}-lint-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-lint
 
   test:
     runs-on: ubuntu-latest
@@ -32,10 +38,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup environment
-        run: ./scripts/create_env.sh
-
-      - name: Install dependencies
-        run: make tidy
+        run: ./scripts/manage_env.sh
 
       - name: Cache test dependencies
         uses: actions/cache@v3

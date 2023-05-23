@@ -1,21 +1,26 @@
 package internal
 
 import (
-	"context"
-
-	// Initialize custom validation aliases.
-	"github.com/christian-gama/nutrai-api/internal/core/domain/logger"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/server"
-	_ "github.com/christian-gama/nutrai-api/internal/core/infra/validation"
+	"github.com/christian-gama/nutrai-api/config/env"
+	"github.com/christian-gama/nutrai-api/internal/auth"
+	"github.com/christian-gama/nutrai-api/internal/core"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/module"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router"
+	"github.com/christian-gama/nutrai-api/internal/diet"
+	"github.com/christian-gama/nutrai-api/internal/exception"
+	"github.com/christian-gama/nutrai-api/internal/patient"
 )
 
-// Bootstrap is the main function that starts the application.
-func Bootstrap(ctx context.Context, log logger.Logger, envFile string) {
-	env.Load(envFile)
-	log.Infof("Booting the application")
+// Bootstrap is responsible for booting up the application.
+func Bootstrap(envFile string) {
+	env.NewLoader(envFile).Load()
 
-	engine := LoadEngine()
+	// Order matters.
+	module.Initialize(exception.Init)
+	module.Initialize(auth.Init)
+	module.Initialize(core.Init)
+	module.Initialize(patient.Init)
+	module.Initialize(diet.Init)
 
-	server.Start(ctx, engine, log)
+	router.Register()
 }

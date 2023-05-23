@@ -6,7 +6,7 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/value"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/sql"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/conn"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/manager"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
@@ -26,6 +26,10 @@ type Sample struct {
 
 func (s Sample) TableName() string {
 	return "samples"
+}
+
+func (s Sample) String() string {
+	return "sample"
 }
 
 func FakeSample() *Sample {
@@ -57,12 +61,12 @@ func (s *SQLManagerSuite) SetupTest() {
 		return manager.NewManager[Sample, Sample](db)
 	}
 
-	db := sql.MakePostgres()
+	db := conn.MakePostgres()
 	db.AutoMigrate(&Sample{})
 }
 
 func (s *SQLManagerSuite) AfterTest() {
-	db := sql.MakePostgres()
+	db := conn.MakePostgres()
 	db.Migrator().DropTable(&Sample{})
 }
 
@@ -96,6 +100,7 @@ func (s *SQLManagerSuite) TestSave() {
 
 		s.NoError(err)
 		s.NotZero(sample.ID, "Should have an ID")
+		s.SQLRecordExist(db, &Sample{})
 	})
 
 	s.Run("Should return an error when the sample already exists", func(db *gorm.DB) {
@@ -103,6 +108,7 @@ func (s *SQLManagerSuite) TestSave() {
 
 		_, err := sut.Sut(sut.Ctx, sut.Input)
 		s.NoError(err)
+		s.SQLRecordExist(db, &Sample{})
 
 		_, err = sut.Sut(sut.Ctx, sut.Input)
 		s.Error(err)
@@ -138,6 +144,7 @@ func (s *SQLManagerSuite) TestDelete() {
 		err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.NoError(err)
+		s.SQLRecordDoesNotExist(db, &Sample{})
 	})
 
 	s.Run("Should delete nothing if the sample does not exist", func(db *gorm.DB) {
@@ -148,6 +155,20 @@ func (s *SQLManagerSuite) TestDelete() {
 		err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.NoError(err)
+		s.SQLRecordDoesNotExist(db, &Sample{})
+	})
+
+	s.Run("Should delete nothing if the sample exists but the ID is invalid", func(db *gorm.DB) {
+		sut := makeSut(db)
+
+		sample := SaveSample(db)
+
+		sut.Input.IDs = []value.ID{sample.ID + 1}
+
+		err := sut.Sut(sut.Ctx, sut.Input)
+
+		s.NoError(err)
+		s.SQLRecordExist(db, &Sample{})
 	})
 }
 
@@ -277,7 +298,11 @@ func (s *SQLManagerSuite) TestAll() {
 		result, err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.NoError(err)
-		s.Greater(int(result.Results[1].ID), int(result.Results[2].ID), "Should have the correct order")
+		s.Greater(
+			int(result.Results[1].ID),
+			int(result.Results[2].ID),
+			"Should have the correct order",
+		)
 	})
 
 	s.Run("Should return the correct samples using sorter as asc", func(db *gorm.DB) {
@@ -292,7 +317,11 @@ func (s *SQLManagerSuite) TestAll() {
 		result, err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.NoError(err)
-		s.Greater(int(result.Results[2].ID), int(result.Results[1].ID), "Should have the correct order")
+		s.Greater(
+			int(result.Results[2].ID),
+			int(result.Results[1].ID),
+			"Should have the correct order",
+		)
 	})
 
 	s.Run("Should return the correct samples using pagination", func(db *gorm.DB) {
@@ -352,8 +381,6 @@ func (s *SQLManagerSuite) TestUpdate() {
 		err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.Require().NoError(err)
-		sample, err = s.Sample(db).Find(sut.Ctx, manager.FindInput[Sample]{ID: sample.ID})
-		s.NoError(err)
-		s.EqualValues("new name", sample.Name, "Should have the new name")
+		s.HasChanged(sample, sut.Input.Model)
 	})
 }

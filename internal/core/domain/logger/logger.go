@@ -37,6 +37,10 @@ type Logger interface {
 	// Panicf logs a message at level Panic on the standard logger.
 	Panicf(format string, args ...any)
 
-	// With returns a new Logger instance with the specified key/value pairs appended to its context.
+	// With returns a new Logger instance with the specified key/value pairs appended to its
+	// context.
 	With(args ...any) Logger
+
+	// Loading logs a message at level Info on the standard logger.
+	Loading(format string, args ...any)
 }

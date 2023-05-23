@@ -72,6 +72,14 @@ func (_m *Logger) Infof(format string, args ...interface{}) {
 	_m.Called(_ca...)
 }
 
+// Loading provides a mock function with given fields: format, args
+func (_m *Logger) Loading(format string, args ...interface{}) {
+	var _ca []interface{}
+	_ca = append(_ca, format)
+	_ca = append(_ca, args...)
+	_m.Called(_ca...)
+}
+
 // Panic provides a mock function with given fields: args
 func (_m *Logger) Panic(args ...interface{}) {
 	var _ca []interface{}

@@ -23,6 +23,27 @@ services:
     ports:
       - "$DB_PORT:$DB_PORT"
 
+  # RabbitMQ service to run both in development and production. The variables
+  # are configured in .env.$APP_ENV and it will run according to the variables
+  # you set there.
+  rabbitmq:
+    container_name: nutrai-rabbitmq
+    image: rabbitmq:3.11.8-alpine
+    restart: always
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+    environment:
+      - RABBITMQ_DEFAULT_USER=$RABBITMQ_USER
+      - RABBITMQ_DEFAULT_PASS=$RABBITMQ_PASSWORD
+      - RABBITMQ_NODE_PORT=$RABBITMQ_PORT
+    volumes:
+      - ./.generated/rabbitmq_data/$APP_ENV:/var/lib/rabbitmq
+    ports:
+      - "$RABBITMQ_PORT:$RABBITMQ_PORT"
+
   # Service to run both in development and production. The variables are
   # configured in .env.$APP_ENV and it will run according to the variables
   # you set there.
@@ -32,7 +53,7 @@ services:
     command: sh -c "make run ENV_FILE=.env.$APP_ENV"
     build:
       context: .
-      target: api
+      target: ${APP_ENV}
       dockerfile: Dockerfile
       args:
         - WORKDIR=$WORKDIR
@@ -44,15 +65,24 @@ services:
       - .env.$APP_ENV
     depends_on:
       - psql
+      - rabbitmq
     links:
       - psql
+      - rabbitmq
     volumes:
       - ./.cache/go:/root/.cache
       - ./.generated/build:$WORKDIR/.generated/build
       - ./.generated/coverage:$WORKDIR/.generated/coverage
       - ./cmd:$WORKDIR/cmd
+      - ./pkg:$WORKDIR/pkg
       - ./internal:$WORKDIR/internal
       - ./testutils:$WORKDIR/testutils
+      - ./go.mod:$WORKDIR/go.mod
+      - ./go.sum:$WORKDIR/go.sum
+      - ./Makefile:$WORKDIR/Makefile
+      - ./scripts:$WORKDIR/scripts
+      - ./config:$WORKDIR/config
+      - ./vendor:$WORKDIR/vendor
     environment:
       - RUNNING_IN_DOCKER=true
 
@@ -80,3 +110,23 @@ services:
       - POSTGRES_PORT=$DB_PORT
     tmpfs:
       - /var/lib/postgresql/data
+
+  # Optimized for running tests. Do not use for development. It will run the
+  # rabbitmq in a tmpfs, so it will not persist data.
+  rabbitmq_test:
+    container_name: nutrai-rabbitmq-test
+    image: rabbitmq:3.11.8-alpine
+    restart: always
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+    environment:
+      - RABBITMQ_DEFAULT_USER=$RABBITMQ_USER
+      - RABBITMQ_DEFAULT_PASS=$RABBITMQ_PASSWORD
+      - RABBITMQ_NODE_PORT=$RABBITMQ_PORT
+    ports:
+      - "$RABBITMQ_PORT:$RABBITMQ_PORT"
+    tmpfs:
+      - /var/lib/rabbitmq

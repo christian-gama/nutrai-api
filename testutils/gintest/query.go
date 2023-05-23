@@ -7,8 +7,47 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/querying"
 )
 
-func BuildScopeQuery(filter querying.Filter, sortBy querying.Sort, preload querying.Preload) string {
+type QueryOption struct {
+	Filter  querying.Filter
+	Sort    querying.Sort
+	Preload querying.Preload
+}
+
+func FilterOption(filter querying.Filter) QueryOption {
+	return QueryOption{Filter: filter}
+}
+
+func SortOption(sort querying.Sort) QueryOption {
+	return QueryOption{Sort: sort}
+}
+
+func PreloadOption(preload querying.Preload) QueryOption {
+	return QueryOption{Preload: preload}
+}
+
+func BuildScopeQuery(options ...QueryOption) string {
+	if len(options) == 0 {
+		return ""
+	}
+
 	queries := []string{}
+	var filter querying.Filter
+	var sortBy querying.Sort
+	var preload querying.Preload
+
+	for _, option := range options {
+		if option.Filter != nil {
+			filter = append(filter, option.Filter...)
+		}
+
+		if option.Sort != nil {
+			sortBy = append(sortBy, option.Sort...)
+		}
+
+		if option.Preload != nil {
+			preload = append(preload, option.Preload...)
+		}
+	}
 
 	filterStr := ""
 	if len(filter) > 0 {

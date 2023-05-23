@@ -4,7 +4,8 @@ import (
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
-// ID is a data type that serves as a unique identifier for a specific domain entity, such as a user.
+// ID is a data type that serves as a unique identifier for a specific domain entity, such as a
+// user.
 // It is crucial for managing and referencing entities within the system.
 type ID uint
 

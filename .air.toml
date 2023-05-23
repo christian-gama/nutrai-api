@@ -8,16 +8,8 @@ tmp_dir = "tmp"
 args_bin = []
 bin = "./tmp/main"
 cmd = "go build -o ./tmp/main ./cmd/api/*.go"
-delay = 0
-exclude_dir = [
-  "assets",
-  "tmp",
-  "vendor",
-  "testdata",
-  ".git",
-  ".idea",
-  ".generated",
-]
+delay = 1000
+exclude_dir = ["assets", "tmp", "testdata", ".git", ".idea", ".generated"]
 exclude_file = []
 exclude_regex = ["_test.go"]
 exclude_unchanged = false
@@ -26,7 +18,7 @@ full_bin = ""
 include_dir = []
 include_ext = ["go", "tpl", "tmpl", "html", "tmpl", "yml", "toml", "conf"]
 include_file = []
-kill_delay = "0s"
+kill_delay = 10
 log = "build-errors.log"
 poll = false
 poll_interval = 0

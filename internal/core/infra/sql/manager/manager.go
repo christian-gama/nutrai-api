@@ -2,28 +2,28 @@ package manager
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/convert"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/sql"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/querying"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/sqlerr"
 	"gorm.io/gorm"
-	"gorm.io/gorm/schema"
 )
 
 // Manager is a generic SQL manager for a model and a schema.
-type Manager[Model any, Schema schema.Tabler] struct {
+type Manager[Model fmt.Stringer, Schema any] struct {
 	*gorm.DB
-	name string
+	model Model
 }
 
 // NewManager returns a new Manager.
-func NewManager[Model any, Schema schema.Tabler](db *gorm.DB) *Manager[Model, Schema] {
-	var schema Schema
+func NewManager[Model fmt.Stringer, Schema any](db *gorm.DB) *Manager[Model, Schema] {
+	var m Model
 
 	return &Manager[Model, Schema]{
-		DB:   db,
-		name: schema.TableName(),
+		DB:    db,
+		model: m,
 	}
 }
 
@@ -39,7 +39,7 @@ func (m *Manager[Model, Schema]) Save(
 	if err := db.
 		Create(&schema).
 		Error; err != nil {
-		return nil, sql.Error(err, m.name)
+		return nil, sqlerr.Error(err, m.model)
 	}
 
 	return convert.ToModel(input.Model, &schema), nil
@@ -62,7 +62,7 @@ func (m *Manager[Model, Schema]) Find(
 		Where("id = ?", input.ID).
 		First(&schema).
 		Error; err != nil {
-		return nil, sql.Error(err, m.name)
+		return nil, sqlerr.Error(err, m.model)
 	}
 
 	var model Model
@@ -86,7 +86,7 @@ func (m *Manager[Model, Schema]) All(
 		).
 		Find(&schemas).
 		Error; err != nil {
-		return nil, sql.Error(err, m.name)
+		return nil, sqlerr.Error(err, m.model)
 	}
 
 	var totalCount int64
@@ -96,7 +96,7 @@ func (m *Manager[Model, Schema]) All(
 		Scopes(querying.FilterScope(input.Filterer)).
 		Count(&totalCount).Error
 	if err != nil {
-		return nil, sql.Error(err, m.name)
+		return nil, sqlerr.Error(err, m.model)
 	}
 
 	pagination := &queryer.PaginationOutput[*Model]{}
@@ -125,7 +125,7 @@ func (m *Manager[Model, Schema]) Delete(
 		Where(input.IDs).
 		Delete(&schema).
 		Error; err != nil {
-		return sql.Error(err, m.name)
+		return sqlerr.Error(err, m.model)
 	}
 
 	return nil
@@ -146,7 +146,7 @@ func (m *Manager[Model, Schema]) Update(
 		Where("id = ?", input.ID).
 		Updates(&schema).
 		Error; err != nil {
-		return sql.Error(err, m.name)
+		return sqlerr.Error(err, m.model)
 	}
 
 	return nil

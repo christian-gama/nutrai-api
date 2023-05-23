@@ -18,12 +18,14 @@ type AllDietsInput struct {
 	queryer.Filterer
 	queryer.Sorter
 	queryer.Paginator
+	queryer.Preloader
 }
 
 // FindDietInput is the input for the Find method.
 type FindDietInput struct {
 	ID value.ID
 	queryer.Filterer
+	queryer.Preloader
 }
 
 // DeleteDietInput is the input for the Delete method.
@@ -40,13 +42,13 @@ type UpdateDietInput struct {
 // Diet is the interface that wraps the basic Diet methods.
 type Diet interface {
 	// All returns all diets.
-	All(ctx context.Context, input AllDietsInput, preload ...string) (*queryer.PaginationOutput[*diet.Diet], error)
+	All(ctx context.Context, input AllDietsInput) (*queryer.PaginationOutput[*diet.Diet], error)
 
 	// Delete deletes the diet with the given id.
 	Delete(ctx context.Context, input DeleteDietInput) error
 
 	// Find returns the diet with the given id.
-	Find(ctx context.Context, input FindDietInput, preload ...string) (*diet.Diet, error)
+	Find(ctx context.Context, input FindDietInput) (*diet.Diet, error)
 
 	// Save saves the given diet.
 	Save(ctx context.Context, input SaveDietInput) (*diet.Diet, error)

@@ -27,6 +27,11 @@ func (e *Error) Error() string {
 	return output
 }
 
+// String implements fmt.Stringer interface.
+func (e *Error) String() string {
+	return e.Error()
+}
+
 // HasErrors returns true if the error contains errors.
 func (e *Error) HasErrors() bool {
 	if e == nil || len(e.Errors) == 0 {

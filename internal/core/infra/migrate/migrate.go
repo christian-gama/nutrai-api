@@ -5,7 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/christian-gama/nutrai-api/internal/core/infra/env"
+	"github.com/christian-gama/nutrai-api/config/env"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/logger"
 	"github.com/christian-gama/nutrai-api/pkg/path"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -15,10 +16,11 @@ import (
 // Migrate is a struct that contains the migrate.Migrate instance.
 type Migrate struct {
 	mig *migrate.Migrate
+	log logger.Logger
 }
 
 // New creates a new Migrate instance.
-func New(db *sql.DB) *Migrate {
+func New(db *sql.DB, log logger.Logger) *Migrate {
 	driver, err := postgres.WithInstance(db, &postgres.Config{DatabaseName: string(env.DB.Name)})
 	if err != nil {
 		panic(err)
@@ -31,12 +33,12 @@ func New(db *sql.DB) *Migrate {
 		panic(err)
 	}
 
-	return &Migrate{m}
+	return &Migrate{m, log}
 }
 
 // Up migrates the database to the most recent version available.
 func (m *Migrate) Up() {
-	fmt.Println("Migrating database UP...")
+	m.log.Info("Migrating database UP...")
 
 	if err := m.mig.Up(); err != nil {
 		if errors.Is(err, migrate.ErrNoChange) {
@@ -50,7 +52,7 @@ func (m *Migrate) Up() {
 
 // Down migrates the database to the previous version.
 func (m *Migrate) Down() {
-	fmt.Println("Migrating database DOWN...")
+	m.log.Info("Migrating database DOWN...")
 
 	if err := m.mig.Down(); err != nil {
 		if errors.Is(err, migrate.ErrNoChange) {
@@ -64,7 +66,7 @@ func (m *Migrate) Down() {
 
 // Drop drops all tables.
 func (m *Migrate) Drop() {
-	fmt.Println("Dropping all tables...")
+	m.log.Info("Dropping all tables...")
 
 	if err := m.mig.Drop(); err != nil {
 		panic(err)
@@ -73,7 +75,7 @@ func (m *Migrate) Drop() {
 
 // Force migrates the database to a specific version.
 func (m *Migrate) Force(version int) {
-	fmt.Printf("Migrating database to version %d...\n", version)
+	m.log.Infof("Migrating database to version %d...", version)
 
 	if err := m.mig.Force(version); err != nil {
 		panic(err)
@@ -86,12 +88,13 @@ func (m *Migrate) Version() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("Current database version: %d\n", version)
+
+	m.log.Infof("Current database version: %d", version)
 }
 
 // Steps migrates the database by a number of versions.
 func (m *Migrate) Steps(steps int) {
-	fmt.Printf("Migrating database by %d steps...\n", steps)
+	m.log.Infof("Migrating database by %d steps...", steps)
 
 	if err := m.mig.Steps(steps); err != nil {
 		panic(err)
@@ -100,7 +103,7 @@ func (m *Migrate) Steps(steps int) {
 
 // Reset will down then up the database.
 func (m *Migrate) Reset() {
-	fmt.Println("Resetting database...")
+	m.log.Info("Resetting database...")
 
 	if err := m.mig.Down(); err != nil {
 		if !errors.Is(err, migrate.ErrNoChange) {

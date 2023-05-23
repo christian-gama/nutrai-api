@@ -1,9 +1,12 @@
 package log
 
 import (
+	"fmt"
+	"log"
 	"os"
 	"strings"
 
+	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/logger"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -48,7 +51,10 @@ func New(config *Config) logger.Logger {
 	}
 
 	encoder := zapcore.NewConsoleEncoder(cfg)
-	core := zapcore.NewCore(encoder, zapcore.AddSync(os.Stdout), zap.InfoLevel)
+	if _, ok := level[env.Config.LogLevel]; !ok {
+		log.Panicf("invalid log level: %s", env.Config.LogLevel)
+	}
+	core := zapcore.NewCore(encoder, zapcore.AddSync(os.Stdout), level[env.Config.LogLevel])
 
 	options := []zap.Option{}
 	if config.Stack {
@@ -85,12 +91,13 @@ func (l *loggerImpl) Errorf(format string, args ...any) {
 
 // Fatal implements logger.Logger.
 func (l *loggerImpl) Fatal(args ...any) {
-	l.base.Fatal(args...)
+	l.base.Fatal(FatalColor(args...))
 }
 
 // Fatalf implements logger.Logger.
 func (l *loggerImpl) Fatalf(format string, args ...any) {
-	l.base.Fatalf(format, args...)
+	msg := fmt.Sprintf(format, args...)
+	l.base.Fatalf(FatalColor(msg))
 }
 
 // Info implements logger.Logger.
@@ -128,4 +135,8 @@ func (l *loggerImpl) Panic(args ...any) {
 // Panicf implements logger.Logger.
 func (l *loggerImpl) Panicf(format string, args ...any) {
 	l.base.Panicf(format, args...)
+}
+
+func (l *loggerImpl) Loading(format string, args ...any) {
+	l.base.Info(LoadingColor(format, args...))
 }

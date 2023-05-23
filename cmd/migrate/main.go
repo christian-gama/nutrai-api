@@ -2,13 +2,19 @@ package main
 
 import (
 	"fmt"
-	"time"
+
+	"github.com/christian-gama/nutrai-api/internal/core/infra/bench"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
 )
 
-func main() {
-	start := time.Now()
-	cmd.Execute()
-	elapsed := time.Since(start)
+func init() {
+	fmt.Print("\033[H\033[2J")
+}
 
-	fmt.Printf("Finished in %s\n", elapsed)
+func main() {
+	duration := bench.Duration(func() {
+		cmd.Execute()
+	})
+
+	log.MakeWithCaller().Infof("\tFinished in %s", duration)
 }

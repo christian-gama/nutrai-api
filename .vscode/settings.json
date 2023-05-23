@@ -4,7 +4,25 @@
   "go.testEnvVars": {
     "TEST_MODE": "all",
     "DB_HOST": "localhost",
-    "DB_PORT": 5434,
+    "DB_PORT": "5434",
+    "RABBITMQ_HOST": "localhost",
+    "RABBITMQ_PORT": "5674",
   },
-  "go.testOnSave": true
+  "go.testOnSave": true,
+  // Automatically break lines at 100 characters.
+  // It's necessary to download the extension "emeraldwalk.runonsave" to make it work.
+  // https://marketplace.visualstudio.com/items?itemName=emeraldwalk.RunOnSave
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.go$",
+        "cmd": "go run github.com/segmentio/golines@v0.11.0 -m 100 -w --shorten-comments --no-reformat-tags ${file}"
+      }
+    ]
+  },
+  "go.lintTool": "golangci-lint",
+  "go.lintFlags": [
+    "--fast"
+  ],
+  "go.lintOnSave": "workspace",
 }

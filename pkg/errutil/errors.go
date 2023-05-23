@@ -28,8 +28,8 @@ type ErrInvalid struct {
 // NewErrInvalid returns a new ErrInvalid.
 //
 // Returns a message like "Param is invalid: Reason".
-func NewErrInvalid(param, reason string) error {
-	return &ErrInvalid{Param: param, Reason: reason}
+func NewErrInvalid(param, reason string, args ...any) error {
+	return &ErrInvalid{Param: param, Reason: fmt.Sprintf(reason, args...)}
 }
 
 // Error implements the error interface.
@@ -62,11 +62,45 @@ type ErrInternal struct {
 // NewErrInternal returns a new ErrInternal.
 //
 // Returns a message like "internal error: Reason".
-func NewErrInternal(reason string) error {
-	return &ErrInternal{Reason: reason}
+func NewErrInternal(reason string, args ...any) error {
+	return &ErrInternal{Reason: fmt.Sprintf(reason, args...)}
 }
 
 // Error implements the error interface.
 func (e *ErrInternal) Error() string {
 	return fmt.Sprintf("internal error: %s", e.Reason)
+}
+
+// ErrUnauthorized is returned when a user is not authorized.
+type ErrUnauthorized struct {
+	Reason string
+}
+
+// NewErrUnauthorized returns a new ErrUnauthorized.
+//
+// Returns a message like "unauthorized: Reason".
+func NewErrUnauthorized(reason string, args ...any) error {
+	return &ErrUnauthorized{Reason: fmt.Sprintf(reason, args...)}
+}
+
+// Error implements the error interface.
+func (e *ErrUnauthorized) Error() string {
+	return fmt.Sprintf("unauthorized: %s", e.Reason)
+}
+
+// TooManyRequests is returned when a user has made too many requests.
+type TooManyRequests struct {
+	Reason string
+}
+
+// NewErrTooManyRequests returns a new TooManyRequests.
+//
+// Returns a message like "too many requests: Reason".
+func NewErrTooManyRequests(reason string, args ...any) error {
+	return &TooManyRequests{Reason: fmt.Sprintf(reason, args...)}
+}
+
+// Error implements the error interface.
+func (e *TooManyRequests) Error() string {
+	return fmt.Sprintf("too many requests: %s", e.Reason)
 }
