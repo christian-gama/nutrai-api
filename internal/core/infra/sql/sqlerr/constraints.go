@@ -3,8 +3,10 @@ package sqlerr
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 
+	"github.com/christian-gama/nutrai-api/pkg/slice"
 	"github.com/iancoleman/strcase"
 )
 
@@ -116,4 +118,28 @@ func notNullConstraintOfRelation(err error) error {
 	output := fmt.Sprintf("%s.%s", relationName, columnName)
 
 	return newErrNotNullConstraint(output)
+}
+
+func tooLongConstraint(err error) error {
+	reg := regexp.MustCompile(`varying\(([0-9]+)\)`)
+	matches := reg.FindStringSubmatch(err.Error())
+
+	if len(matches) == 0 {
+		return newErrCheckConstraint("field", "too long")
+	}
+
+	value := slice.
+		Map(matches[1:], func(value string) int {
+			v, err := strconv.Atoi(value)
+			if err != nil {
+				panic(
+					fmt.Errorf(fmt.Sprintf("failed to convert '%s' to int", value)),
+				)
+			}
+
+			return v
+		}).
+		Build()
+
+	return newErrTooLong(getColumnName(err), value[0])
 }
