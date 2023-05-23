@@ -23,6 +23,9 @@ services:
     ports:
       - "$DB_PORT:$DB_PORT"
 
+  # RabbitMQ service to run both in development and production. The variables
+  # are configured in .env.$APP_ENV and it will run according to the variables
+  # you set there.
   rabbitmq:
     container_name: nutrai-rabbitmq
     image: rabbitmq:3.11.8-alpine
@@ -108,6 +111,8 @@ services:
     tmpfs:
       - /var/lib/postgresql/data
 
+  # Optimized for running tests. Do not use for development. It will run the
+  # rabbitmq in a tmpfs, so it will not persist data.
   rabbitmq_test:
     container_name: nutrai-rabbitmq-test
     image: rabbitmq:3.11.8-alpine
