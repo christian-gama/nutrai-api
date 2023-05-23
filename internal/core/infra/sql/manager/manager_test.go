@@ -6,7 +6,7 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/value"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/sql"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/connection"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/manager"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
@@ -61,12 +61,12 @@ func (s *SQLManagerSuite) SetupTest() {
 		return manager.NewManager[Sample, Sample](db)
 	}
 
-	db := sql.MakePostgres()
+	db := connection.MakePostgres()
 	db.AutoMigrate(&Sample{})
 }
 
 func (s *SQLManagerSuite) AfterTest() {
-	db := sql.MakePostgres()
+	db := connection.MakePostgres()
 	db.Migrator().DropTable(&Sample{})
 }
 

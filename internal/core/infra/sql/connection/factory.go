@@ -1,4 +1,4 @@
-package sql
+package connection
 
 import (
 	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
@@ -13,7 +13,7 @@ func MakePostgres() *gorm.DB {
 		return postgresConnection
 	}
 
-	conn := NewConn(postgres.Open, &gorm.Config{}, log.MakeWithCaller())
+	conn := NewConnection(postgres.Open, &gorm.Config{}, log.MakeWithCaller())
 	postgresConnection = conn.Open()
 
 	return postgresConnection

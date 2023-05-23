@@ -17,13 +17,15 @@ func (m *Module) Name() string {
 	return m.name
 }
 
-// String implements the Stringer interface. It returns the module's name.
-func (m *Module) String() string {
+// String implements the fmt.Stringer interface.
+func (m Module) String() string {
 	return m.name
 }
 
-func Initialize(log logger.Logger, fn func() (*Module, func())) {
-	module, init := fn()
+// Initialize performs the initialization of a module, logging the process and calling the given
+// function.
+func Initialize(log logger.Logger, callback func() (*Module, func())) {
+	module, init := callback()
 	log.Infof("Initializing '%s' module", module)
 	init()
 }

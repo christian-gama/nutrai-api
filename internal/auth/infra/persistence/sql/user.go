@@ -9,8 +9,8 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/auth/infra/persistence/sql/schema"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/convert"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/sql"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/manager"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/sqlerr"
 	"gorm.io/gorm"
 )
 
@@ -79,7 +79,7 @@ func (p *userSQLImpl) FindByEmail(
 		Where("email = ?", input.Email).
 		First(&schema).
 		Error; err != nil {
-		return nil, sql.Error(err, model)
+		return nil, sqlerr.Error(err, model)
 	}
 
 	return convert.ToModel(&model, &schema), nil
