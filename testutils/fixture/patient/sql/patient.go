@@ -30,18 +30,18 @@ func SavePatient(db *gorm.DB, deps *PatientDeps) *PatientDeps {
 	patient := deps.Patient
 	if patient == nil {
 		patient = fake.Patient()
-		patient.ID = deps.User.ID
-
-		patient, err := persistence.NewSQLPatient(db).
-			Save(context.Background(), repo.SavePatientInput{
-				Patient: patient,
-			})
-		if err != nil {
-			panic(fmt.Errorf("could not create patient: %w", err))
-		}
-
-		deps.Patient = patient
 	}
+
+	patient.ID = deps.User.ID
+	patient, err := persistence.NewSQLPatient(db).
+		Save(context.Background(), repo.SavePatientInput{
+			Patient: patient,
+		})
+	if err != nil {
+		panic(fmt.Errorf("could not create patient: %w", err))
+	}
+
+	deps.Patient = patient
 
 	return deps
 }

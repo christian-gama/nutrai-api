@@ -23,17 +23,17 @@ func SaveException(db *gorm.DB, deps *ExceptionDeps) *ExceptionDeps {
 	exception := deps.Exception
 	if exception == nil {
 		exception = fake.Exception()
-
-		exception, err := persistence.NewSQLException(db).
-			Save(context.Background(), repo.SaveExceptionInput{
-				Exception: exception,
-			})
-		if err != nil {
-			panic(fmt.Errorf("could not create exception: %w", err))
-		}
-
-		deps.Exception = exception
 	}
+
+	exception, err := persistence.NewSQLException(db).
+		Save(context.Background(), repo.SaveExceptionInput{
+			Exception: exception,
+		})
+	if err != nil {
+		panic(fmt.Errorf("could not create exception: %w", err))
+	}
+
+	deps.Exception = exception
 
 	return deps
 }

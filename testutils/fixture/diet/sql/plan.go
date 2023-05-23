@@ -30,18 +30,18 @@ func SavePlan(db *gorm.DB, deps *PlanDeps) *PlanDeps {
 	plan := deps.Plan
 	if plan == nil {
 		plan = fake.Plan()
-		plan.Diet = deps.Diet
-
-		plan, err := persistence.NewSQLPlan(db).
-			Save(context.Background(), repo.SavePlanInput{
-				Plan: plan,
-			})
-		if err != nil {
-			panic(fmt.Errorf("could not create plan: %w", err))
-		}
-
-		deps.Plan = plan
 	}
+
+	plan.Diet = deps.Diet
+	plan, err := persistence.NewSQLPlan(db).
+		Save(context.Background(), repo.SavePlanInput{
+			Plan: plan,
+		})
+	if err != nil {
+		panic(fmt.Errorf("could not create plan: %w", err))
+	}
+
+	deps.Plan = plan
 
 	return deps
 }

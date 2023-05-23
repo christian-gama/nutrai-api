@@ -229,16 +229,20 @@ func (s *PatientSuite) TestAll() {
 	s.Run("Should return the correct patients using filter", func(db *gorm.DB) {
 		sut := makeSut(db)
 
-		patientDeps := fixture.SavePatient(db, nil)
+		patient := fake.Patient()
+		patient.Age = 100
+		patientDeps := fixture.SavePatient(db, &fixture.PatientDeps{Patient: patient})
 		length := 2
 		for i := 0; i < length; i++ {
-			fixture.SavePatient(db, nil)
+			patient := fake.Patient()
+			patient.Age = 18
+			fixture.SavePatient(db, &fixture.PatientDeps{Patient: patient})
 		}
 
 		sut.Input.Filterer = sut.Input.Filterer.Add(
-			"ID",
-			querying.EqOperator,
-			patientDeps.Patient.ID,
+			"age",
+			querying.GteOperator,
+			patientDeps.Patient.Age,
 		)
 
 		result, err := sut.Sut(sut.Ctx, sut.Input)

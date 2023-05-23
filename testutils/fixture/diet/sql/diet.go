@@ -31,18 +31,18 @@ func SaveDiet(db *gorm.DB, deps *DietDeps) *DietDeps {
 	diet := deps.Diet
 	if diet == nil {
 		diet = fake.Diet()
-		diet.PatientID = deps.Patient.ID
-
-		diet, err := persistence.NewSQLDiet(db).
-			Save(context.Background(), repo.SaveDietInput{
-				Diet: diet,
-			})
-		if err != nil {
-			panic(fmt.Errorf("could not create diet: %w", err))
-		}
-
-		deps.Diet = diet
 	}
+
+	diet.PatientID = deps.Patient.ID
+	diet, err := persistence.NewSQLDiet(db).
+		Save(context.Background(), repo.SaveDietInput{
+			Diet: diet,
+		})
+	if err != nil {
+		panic(fmt.Errorf("could not create diet: %w", err))
+	}
+
+	deps.Diet = diet
 
 	return deps
 }
