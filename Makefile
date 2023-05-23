@@ -95,6 +95,19 @@ endif
 	@go run ./cmd/routes/main.go
 
 
+
+# ==============================================================================================
+# Target: list-env
+# Brief: This target is used to list all environment variables.
+# Usage: Run the command 'make list-env ENV_FILE="<path>"'.
+# Flags:
+#  ENV_FILE: The path to the environment file.
+# ==============================================================================================
+.PHONY: list-env
+list-env: .cmd-exists-go .clear-screen .check-env-file
+	@go run ./cmd/env/*.go -e $(ENV_FILE)
+
+
 # ==============================================================================================
 # Target: build
 # Brief: This target is used to build the project. It will generate a binary file at the BUILD_DIR.
@@ -311,8 +324,7 @@ docker-run: .cmd-exists-docker .clear-screen .check-env-file
 # ==============================================================================================
 .PHONY: docker-dev
 docker-dev: .cmd-exists-docker .clear-screen
-	@RUNNING_IN_DOCKER=true \
-	ENV_FILE=.env.dev \
+	@ENV_FILE=.env.dev \
 	$(MAKE) docker-run
 
 
@@ -323,10 +335,27 @@ docker-dev: .cmd-exists-docker .clear-screen
 # ==============================================================================================
 .PHONY: docker-prod
 docker-prod: .cmd-exists-docker .clear-screen
-	@RUNNING_IN_DOCKER=true \
-	ENV_FILE=.env.prod \
+	@ENV_FILE=.env.prod \
 	$(MAKE) docker-run
 
+
+# ==============================================================================================
+# Target: docker-list-env
+# Brief: This target is used to list all environment variables in the docker container.
+# Usage: Run the command 'make docker-list-env ENV_FILE="<path>"'.
+# Flags:
+# 	ENV_FILE: The path to the environment file.
+# ==============================================================================================
+.PHONY: docker-list-env
+docker-list-env: .cmd-exists-docker .clear-screen .check-env-file
+	@WORKDIR=$(WORKDIR) APP_NAME=$(APP_NAME) docker compose \
+		--env-file "$(ENV_FILE)" \
+		run \
+		--name $(APP_NAME)-list-env \
+		--rm \
+		-e ENV_FILE=$(ENV_FILE) \
+		api \
+		make list-env
 
 # ==============================================================================================
 # Target: .cmd-exists-%

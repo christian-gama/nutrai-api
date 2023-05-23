@@ -4,9 +4,11 @@ import "reflect"
 
 // FieldIterationOptions is the options for the callback function of TraverseFields.
 type FieldIterationOptions struct {
-	Field reflect.Value
-	Tag   reflect.StructTag
-	Index int
+	Field     reflect.Value
+	Tag       reflect.StructTag
+	Index     int
+	FieldName string
+	Value     reflect.Value
 }
 
 // TraverseFields applies a callback function to each field of a given struct.
@@ -18,9 +20,11 @@ func TraverseFields(s any, callback func(opts *FieldIterationOptions)) {
 		tag := v.Type().Field(i).Tag
 
 		callback(&FieldIterationOptions{
-			Field: field,
-			Tag:   tag,
-			Index: i,
+			Field:     field,
+			Tag:       tag,
+			Index:     i,
+			FieldName: v.Type().Field(i).Name,
+			Value:     v,
 		})
 	}
 }
