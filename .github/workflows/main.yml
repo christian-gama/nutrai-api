@@ -24,6 +24,15 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.52.2
+      
+      - name: Cache lint dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+          key: ${{ runner.os }}-lint-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-lint
 
   test:
     runs-on: ubuntu-latest
