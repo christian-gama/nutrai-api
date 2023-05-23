@@ -1,10 +1,12 @@
-package http
+package controller
 
 import (
 	"errors"
 	"fmt"
 	"strings"
 
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/validation"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
@@ -23,7 +25,7 @@ type Controller interface {
 	Handle(ctx *gin.Context)
 
 	// Method is the HTTP method that the handler will listen to.
-	Method() Method
+	Method() http.Method
 
 	// Path is the path that the handler will listen to.
 	Path() Path
@@ -37,17 +39,17 @@ type Controller interface {
 
 // ControllerOptions is the options for the controller constructor. It's used
 // to setup the controller before using it.
-type ControllerOptions struct {
+type Options struct {
 	IsPublic bool
 	Params   Params
 	Path     Path
-	Method   Method
+	Method   http.Method
 }
 
 // controllerImpl is the implementation of the Controller interface.
 type controllerImpl[Input any] struct {
 	handler  func(ctx *gin.Context, input *Input)
-	method   Method
+	method   http.Method
 	path     Path
 	isPublic bool
 	params   Params
@@ -58,7 +60,7 @@ type controllerImpl[Input any] struct {
 // NewController creates a new controller.
 func NewController[Input any](
 	handler Handler[Input],
-	opts ControllerOptions,
+	opts Options,
 ) Controller {
 	if handler == nil {
 		panic(errors.New("handler is nil"))
@@ -83,16 +85,16 @@ func NewController[Input any](
 
 // Handle implements Controller.
 func (c controllerImpl[Input]) Handle(ctx *gin.Context) {
-	ExtractBody(ctx, &c.input)
-	ExtractQuery(ctx, &c.input)
-	ExtractParams(ctx, &c.input)
-	ExtractCurrentUser(ctx, &c.input)
+	http.ExtractBody(ctx, &c.input)
+	http.ExtractQuery(ctx, &c.input)
+	http.ExtractParams(ctx, &c.input)
+	http.ExtractCurrentUser(ctx, &c.input)
 
 	if ctx.IsAborted() {
 		return
 	}
 
-	Response(ctx, func() {
+	response.Response(ctx, func() {
 		validator := validation.MakeValidator()
 
 		err := validator.Validate(c.input)
@@ -105,7 +107,7 @@ func (c controllerImpl[Input]) Handle(ctx *gin.Context) {
 }
 
 // Handler implements Controller.
-func (c *controllerImpl[P]) Method() Method {
+func (c *controllerImpl[P]) Method() http.Method {
 	return c.method
 }
 
@@ -129,7 +131,7 @@ func (c *controllerImpl[P]) validate() {
 	var result *errutil.Error
 
 	for _, param := range c.params {
-		if !hasValidCharacters(unit.Alphabet, param) {
+		if !c.hasValidCharacters(unit.Alphabet, param) {
 			result = errutil.Append(
 				result,
 				fmt.Errorf("the param %s contains invalid characters", param),
@@ -151,15 +153,15 @@ func (c *controllerImpl[P]) validate() {
 		)
 	}
 
-	if !hasValidCharacters(append(unit.AlphaNumeric, []rune("-/")...), c.path.String()) {
+	if !c.hasValidCharacters(append(unit.AlphaNumeric, []rune("-/")...), c.path.String()) {
 		result = errutil.Append(
 			result,
 			fmt.Errorf("the path %s contains invalid characters", c.path),
 		)
 	}
 
-	methods := []Method{
-		MethodDelete, MethodGet, MethodPost, MethodPut, MethodPatch,
+	methods := []http.Method{
+		http.MethodDelete, http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch,
 	}
 
 	if !slice.Contains(methods, c.method) {
@@ -171,7 +173,7 @@ func (c *controllerImpl[P]) validate() {
 	}
 }
 
-func hasValidCharacters(allowed []rune, s string) bool {
+func (c *controllerImpl[Input]) hasValidCharacters(allowed []rune, s string) bool {
 	for _, r := range s {
 		if !slice.Contains(allowed, r) {
 			return false

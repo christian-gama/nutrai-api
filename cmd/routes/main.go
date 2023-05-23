@@ -11,14 +11,13 @@ import (
 )
 
 func init() {
+	fmt.Print("\033[H\033[2J")
+
 	os.Setenv("CONFIG_DEBUG", "false")
 	os.Setenv("CONFIG_LOG_LEVEL", "panic")
 }
 
 func main() {
-	fmt.Print("\033[H\033[2J")
-	fmt.Println("Listing all routes:")
-
 	internal.Bootstrap(".env.dev")
 
 	printRoutes()
@@ -27,7 +26,7 @@ func main() {
 // printRoutes prints all routes in a colorized and formatted way.
 func printRoutes() {
 	for _, route := range router.Router.Routes() {
-		fmt.Printf("%-2s\t%s\n", method(route.Method), path(route.Path))
+		fmt.Printf("%-12s\t%s\n", method(route.Method), path(route.Path))
 	}
 }
 
@@ -35,14 +34,15 @@ func printRoutes() {
 func method(method string) string {
 	methodsMap := map[http.Method]func(a ...any) string{
 		http.MethodGet:    color.New(color.FgGreen, color.Bold).SprintFunc(),
-		http.MethodPost:   color.New(color.FgMagenta, color.Bold).SprintFunc(),
+		http.MethodPost:   color.New(color.FgYellow, color.Bold).SprintFunc(),
 		http.MethodPut:    color.New(color.FgCyan, color.Bold).SprintFunc(),
 		http.MethodDelete: color.New(color.FgRed, color.Bold).SprintFunc(),
+		http.MethodPatch:  color.New(color.FgMagenta, color.Bold).SprintFunc(),
 	}
 	return methodsMap[http.Method(method)](method)
 }
 
 // path returns a colorized string.
 func path(path string) string {
-	return color.New(color.FgHiYellow).SprintFunc()(path)
+	return color.New(color.FgHiWhite).SprintFunc()(path)
 }

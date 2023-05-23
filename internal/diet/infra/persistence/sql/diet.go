@@ -17,8 +17,19 @@ type dietSQLImpl struct {
 }
 
 // All implements repo.Diet.
-func (p *dietSQLImpl) All(ctx context.Context, input repo.AllDietsInput) (*queryer.PaginationOutput[*diet.Diet], error) {
-	return p.manager.All(ctx, manager.AllInput[diet.Diet]{Filterer: input.Filterer, Paginator: input.Paginator, Sorter: input.Sorter, Preloader: input.Preloader})
+func (p *dietSQLImpl) All(
+	ctx context.Context,
+	input repo.AllDietsInput,
+) (*queryer.PaginationOutput[*diet.Diet], error) {
+	return p.manager.All(
+		ctx,
+		manager.AllInput[diet.Diet]{
+			Filterer:  input.Filterer,
+			Paginator: input.Paginator,
+			Sorter:    input.Sorter,
+			Preloader: input.Preloader,
+		},
+	)
 }
 
 // Delete implements repo.Diet.
@@ -28,7 +39,14 @@ func (p *dietSQLImpl) Delete(ctx context.Context, input repo.DeleteDietInput) er
 
 // Find implements repo.Diet.
 func (p *dietSQLImpl) Find(ctx context.Context, input repo.FindDietInput) (*diet.Diet, error) {
-	return p.manager.Find(ctx, manager.FindInput[diet.Diet]{ID: input.ID, Filterer: input.Filterer, Preloader: input.Preloader})
+	return p.manager.Find(
+		ctx,
+		manager.FindInput[diet.Diet]{
+			ID:        input.ID,
+			Filterer:  input.Filterer,
+			Preloader: input.Preloader,
+		},
+	)
 }
 
 // Save implements repo.Diet.

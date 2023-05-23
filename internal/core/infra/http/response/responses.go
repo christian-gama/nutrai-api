@@ -1,4 +1,4 @@
-package http
+package response
 
 import (
 	"net/http"
@@ -68,4 +68,14 @@ func NoContent(ctx *gin.Context) {
 	log.Debugf("No Content")
 
 	ctx.AbortWithStatus(http.StatusNoContent)
+}
+
+// TooManyRequests is a helper function to return a too many requests error with a default JSON
+// response.
+func TooManyRequests(ctx *gin.Context, err error) {
+	log := log.MakeWithCaller()
+	log.Debugf("Too Many Requests: %s", err.Error())
+
+	ctx.Errors = append(ctx.Errors, ctx.Error(err))
+	ctx.AbortWithStatusJSON(http.StatusTooManyRequests, Error(err))
 }

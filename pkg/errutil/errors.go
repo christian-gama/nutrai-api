@@ -87,3 +87,20 @@ func NewErrUnauthorized(reason string, args ...any) error {
 func (e *ErrUnauthorized) Error() string {
 	return fmt.Sprintf("unauthorized: %s", e.Reason)
 }
+
+// TooManyRequests is returned when a user has made too many requests.
+type TooManyRequests struct {
+	Reason string
+}
+
+// NewErrTooManyRequests returns a new TooManyRequests.
+//
+// Returns a message like "too many requests: Reason".
+func NewErrTooManyRequests(reason string, args ...any) error {
+	return &TooManyRequests{Reason: fmt.Sprintf(reason, args...)}
+}
+
+// Error implements the error interface.
+func (e *TooManyRequests) Error() string {
+	return fmt.Sprintf("too many requests: %s", e.Reason)
+}

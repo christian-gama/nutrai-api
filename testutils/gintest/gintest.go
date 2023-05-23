@@ -8,26 +8,27 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
 	"github.com/christian-gama/nutrai-api/testutils/httputil"
 	"github.com/gin-gonic/gin"
 )
 
-func MustRequest(handler http.Controller, opt Option) (ctx *gin.Context) {
+func MustRequest(handler controller.Controller, opt Option) (ctx *gin.Context) {
 	ctx, _ = MustRequestWithBody(handler, opt)
 	return ctx
 }
 
 func MustRequestWithBody(
-	handler http.Controller,
+	handler controller.Controller,
 	opt Option,
-) (ctx *gin.Context, body *http.ResponseBody) {
+) (ctx *gin.Context, body *response.Body) {
 	ctx, r, writer := createTestContext()
 
 	handlerPath := handler.Path()
 
 	if len(handler.Params()) > 0 {
-		handlerPath = http.Path(
+		handlerPath = controller.Path(
 			fmt.Sprintf("%s/:%s", handlerPath, strings.Join(handler.Params(), "/:")),
 		)
 	}
@@ -43,13 +44,13 @@ func MustRequestWithBody(
 	var err error
 	path := handler.Path()
 	if len(opt.Params) > 0 {
-		path = http.Path(strings.TrimSuffix(path.String(), "/"))
-		path = http.Path(fmt.Sprintf("%s/%s", path, strings.Join(opt.Params, "/")))
+		path = controller.Path(strings.TrimSuffix(path.String(), "/"))
+		path = controller.Path(fmt.Sprintf("%s/%s", path, strings.Join(opt.Params, "/")))
 	}
 
 	path += "?page=1&limit=100"
 	if opt.Queries != "" {
-		path = http.Path(fmt.Sprintf("%s&%s", path, opt.Queries))
+		path = controller.Path(fmt.Sprintf("%s&%s", path, opt.Queries))
 	}
 
 	ctx.Request, err = gohttp.NewRequest(

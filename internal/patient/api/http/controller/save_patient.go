@@ -4,12 +4,14 @@ import (
 	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
 	"github.com/christian-gama/nutrai-api/internal/patient/app/command"
 	"github.com/gin-gonic/gin"
 )
 
 // SavePatient is a controller to save a patient.
-type SavePatient = http.Controller
+type SavePatient = controller.Controller
 
 // NewSavePatient returns a new controller to save a patient.
 func NewSavePatient(c command.SavePatientHandler) SavePatient {
@@ -17,17 +19,17 @@ func NewSavePatient(c command.SavePatientHandler) SavePatient {
 		panic(errors.New("command.SavePatientHandler cannot be nil"))
 	}
 
-	return http.NewController(
+	return controller.NewController(
 		func(ctx *gin.Context, input *command.SavePatientInput) {
 			err := c.Handle(ctx.Request.Context(), input)
 			if err != nil {
 				panic(err)
 			}
-			http.Created(ctx, nil)
+			response.Created(ctx, nil)
 		},
 
-		http.ControllerOptions{
-			Path:   http.JoinPath(""),
+		controller.Options{
+			Path:   controller.JoinPath(""),
 			Method: http.MethodPost,
 		},
 	)

@@ -1,8 +1,6 @@
 package module
 
-import (
-	"github.com/christian-gama/nutrai-api/internal/core/domain/logger"
-)
+import "github.com/christian-gama/nutrai-api/internal/core/domain/logger"
 
 // Module is a struct that represents a module.
 type Module struct {
@@ -19,10 +17,13 @@ func (m *Module) Name() string {
 	return m.name
 }
 
-// Init is a function that initializes the module with a logger and a function that contains the
-// module's logic.
+// String implements the Stringer interface. It returns the module's name.
+func (m *Module) String() string {
+	return m.name
+}
 
-func (m *Module) Init(log logger.Logger, f func()) {
-	log.Infof("Initializing '%s' module", m.name)
-	f()
+func Initialize(log logger.Logger, fn func() (*Module, func())) {
+	module, init := fn()
+	log.Infof("Initializing '%s' module", module)
+	init()
 }

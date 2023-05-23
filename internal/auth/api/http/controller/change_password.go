@@ -5,11 +5,13 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/auth/app/command"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
 	"github.com/gin-gonic/gin"
 )
 
 // ChangePassword is a controller to change the current user's password.
-type ChangePassword = http.Controller
+type ChangePassword = controller.Controller
 
 // NewChangePassword returns a new controller to change the current user's password.
 func NewChangePassword(changePasswordHandler command.ChangePasswordHandler) ChangePassword {
@@ -17,18 +19,31 @@ func NewChangePassword(changePasswordHandler command.ChangePasswordHandler) Chan
 		panic(errors.New("command.ChangePasswordHandler cannot be nil"))
 	}
 
-	return http.NewController(
-		func(ctx *gin.Context, input *command.ChangePasswordInput) {
-			err := changePasswordHandler.Handle(ctx.Request.Context(), input)
-			if err != nil {
-				panic(err)
-			}
-			http.Ok(ctx, nil)
-		},
+	m := &changePasswordHandlerImpl{
+		changePasswordHandler: changePasswordHandler,
+	}
 
-		http.ControllerOptions{
-			Path:   http.JoinPath(""),
+	return controller.NewController(
+		m.Handle,
+		controller.Options{
+			Path:   controller.JoinPath(""),
 			Method: http.MethodPatch,
 		},
 	)
+}
+
+type changePasswordHandlerImpl struct {
+	changePasswordHandler command.ChangePasswordHandler
+}
+
+func (h *changePasswordHandlerImpl) Handle(
+	ctx *gin.Context,
+	input *command.ChangePasswordInput,
+) {
+	err := h.changePasswordHandler.Handle(ctx.Request.Context(), input)
+	if err != nil {
+		panic(err)
+	}
+
+	response.Ok(ctx, nil)
 }

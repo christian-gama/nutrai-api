@@ -28,7 +28,7 @@ func (s *LoaderSuite) TestLoad() {
 			file, envFileName := createTempEnv(validEnvContent)
 			defer os.Remove(file.Name())
 
-			env.Load(envFileName)
+			env.NewLoader(envFileName).Load()
 
 			s.NotZero(env.DB.Host, "env.DB.Host")
 			s.NotZero(env.DB.Name, "env.DB.Name")
@@ -39,7 +39,7 @@ func (s *LoaderSuite) TestLoad() {
 		})
 
 		s.Panics(func() {
-			env.Load("invalid")
+			env.NewLoader("invalid").Load()
 		})
 	})
 }

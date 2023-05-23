@@ -1,55 +1,12 @@
-package http
+package response
 
 import (
 	"errors"
 	"fmt"
-	"runtime/debug"
 
-	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/gin-gonic/gin"
 )
-
-// Error returns a JSON with the error. The status is always false.
-// It will normalize the incoming error to a *errutil.Error, in case
-// it's not. In a non-production environment, it will also return
-// the stack trace.
-func Error(err error) *ResponseBody {
-	var errs *errutil.Error
-	if e, ok := err.(*errutil.Error); ok {
-		errs = e
-	} else {
-		errs = errutil.Append(errs, err)
-	}
-
-	if env.App.Env != env.Production && env.Config.Debug {
-		return ErrorDebug(errs)
-	}
-
-	return &ResponseBody{
-		Status: false,
-		Data:   errs.Error(),
-	}
-}
-
-// ErrorDebug returns a JSON with the error and the stack trace. The status is always false.
-func ErrorDebug(err error) *ResponseBody {
-	stack := string(debug.Stack())
-
-	return &ResponseBody{
-		Status: false,
-		Data:   err.Error(),
-		Stack:  stack,
-	}
-}
-
-// Data returns a JSON with the data. The status is always true.
-func Data(data any) *ResponseBody {
-	return &ResponseBody{
-		Status: true,
-		Data:   data,
-	}
-}
 
 // Response returns a JSON with the data based on the result of the handler.
 // If the handler panics, it will return a JSON with the error according to the error type.

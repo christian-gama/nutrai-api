@@ -17,6 +17,8 @@ type RabbitMQ struct {
 
 // NewConnection creates a new RabbitMQ connection.
 func NewConnection(log logger.Logger, mode string) *RabbitMQ {
+	log.Infof("Connecting to RabbitMQ (%s)", mode)
+
 	uri := fmt.Sprintf("amqp://%s:%s@%s:%d/",
 		env.RabbitMQ.User,
 		env.RabbitMQ.Password,
@@ -24,7 +26,6 @@ func NewConnection(log logger.Logger, mode string) *RabbitMQ {
 		env.RabbitMQ.Port,
 	)
 
-	log.Infof("Connecting to RabbitMQ (%s)", mode)
 	maxAttempts := 3
 	var err error
 	var conn *amqp.Connection
@@ -55,6 +56,11 @@ func (r *RabbitMQ) ChannelPool() *amqp.Channel {
 // ReleaseChannelPool releases a channel to the pool.
 func (r *RabbitMQ) ReleaseChannelPool(ch *amqp.Channel) {
 	r.ch <- ch
+}
+
+// Connection returns the RabbitMQ connection.
+func (r *RabbitMQ) Connection() *amqp.Connection {
+	return r.conn
 }
 
 // makeChannelPool creates a channel pool.

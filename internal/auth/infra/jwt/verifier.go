@@ -35,7 +35,8 @@ func (s *verifierImpl) Verify(t jwtValue.Token) (*jwt.Claims, error) {
 	return s.getPayload(claims), nil
 }
 
-// getPayload converts the claims to a Payload.
+// getPayload is a helper method that converts the claims from a JWT token into a structured
+// jwt.Claims object. It extracts and formats the relevant fields from the raw claims.
 func (s *verifierImpl) getPayload(claims _jwt.MapClaims) *jwt.Claims {
 	sub := claims["sub"].(map[string]any)
 	data := jwt.Subject{
@@ -54,7 +55,8 @@ func (s *verifierImpl) getPayload(claims _jwt.MapClaims) *jwt.Claims {
 	}
 }
 
-// keyFunc implements the jwt.Keyfunc func type.
+// keyFunc is a helper function that validates the signing method of a JWT token and returns the
+// secret key used for signing the token. If the signing method is not HMAC, it returns an error.
 func keyFunc(token *_jwt.Token) (any, error) {
 	if _, ok := token.Method.(*_jwt.SigningMethodHMAC); !ok {
 		return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])

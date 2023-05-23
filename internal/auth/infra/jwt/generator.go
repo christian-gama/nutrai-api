@@ -35,10 +35,24 @@ func NewGenerator(
 
 // Generate implements jwt.Generator.
 func (g *generatorImpl) Generate(subject *jwt.Subject) (value.Token, error) {
-	if err := g.Validate(subject); err != nil {
+	if err := g.validate(subject); err != nil {
 		return "", err
 	}
 
+	g.setClaims(subject)
+
+	signed, err := g.signToken()
+	if err != nil {
+		return "", err
+	}
+
+	return value.Token(signed), nil
+}
+
+// setClaims is a helper method that sets the claims of a JWT token based on the provided subject.
+// Claims include various details like audience, expiry time, issuer, subject etc. It validates
+// these claims before setting them into the token.
+func (g *generatorImpl) setClaims(subject *jwt.Subject) {
 	claims := g.token.Claims.(_jwt.MapClaims)
 	claims["aud"] = env.App.Host
 	claims["exp"] = time.Now().Add(g.duration).Unix()
@@ -48,18 +62,22 @@ func (g *generatorImpl) Generate(subject *jwt.Subject) (value.Token, error) {
 	claims["nbf"] = time.Now().Unix()
 	claims["sub"] = map[string]any{"email": subject.Email}
 	claims["type"] = g.tokenType
+}
 
+// signToken is a helper method that signs the JWT token with a secret key, which is used for later
+// verification of the token's authenticity.
+func (g *generatorImpl) signToken() (string, error) {
 	signed, err := g.token.SignedString([]byte(env.Jwt.Secret))
 	if err != nil {
 		return "", err
 	}
 
-	return value.Token(signed), nil
+	return signed, nil
 }
 
-// Validate validates the given JWT subject. It returns an error if the subject is nil or if any of
-// its fields are invalid.
-func (g *generatorImpl) Validate(subject *jwt.Subject) error {
+// validate is a helper method that checks the validity of a JWT subject. It ensures the subject is
+// not nil and its email is valid. If not, it returns an error.
+func (g *generatorImpl) validate(subject *jwt.Subject) error {
 	if subject == nil {
 		return errutil.NewErrInternal(errutil.NewErrRequired("subject").Error())
 	}

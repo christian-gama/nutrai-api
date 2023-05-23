@@ -9,5 +9,5 @@ func init() {
 	faker.InitializeProviders()
 	faker.Setup()
 
-	env.Load(".env.test")
+	env.NewLoader(".env.test").Load()
 }

@@ -1,10 +1,13 @@
-package http
+package middleware
 
 import (
 	"errors"
 
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
 	"github.com/gin-gonic/gin"
 )
+
+type Handler func(*gin.Context)
 
 // Middleware is an interface that represents a middleware for gin.
 // It extracts the body, query and params from the request and passes it to the handler.
@@ -19,7 +22,7 @@ type middlewareImpl struct {
 }
 
 // NewMiddleware creates a new middleware.
-func NewMiddleware(handler func(*gin.Context)) Middleware {
+func NewMiddleware(handler Handler) Middleware {
 	if handler == nil {
 		panic(errors.New("handler is nil"))
 	}
@@ -31,5 +34,5 @@ func NewMiddleware(handler func(*gin.Context)) Middleware {
 
 // Handle implements Middleware.
 func (c *middlewareImpl) Handle(ctx *gin.Context) {
-	Response(ctx, func() { c.Handler(ctx) })
+	response.Response(ctx, func() { c.Handler(ctx) })
 }

@@ -6,11 +6,11 @@ import (
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
 
-type AuthHandlerSuite struct {
+type AuthSuite struct {
 	suite.Suite
 }
 
-func TestAuthHandlerSuite(t *testing.T) {
+func TestAuthSuite(t *testing.T) {
 	t.Skipf("TODO: implement me")
-	suite.RunUnitTest(t, new(AuthHandlerSuite))
+	suite.RunUnitTest(t, new(AuthSuite))
 }

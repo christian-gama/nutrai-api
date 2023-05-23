@@ -1,8 +1,9 @@
-package rabbitmq
+package publisher
 
 import (
 	"github.com/christian-gama/nutrai-api/internal/core/domain/message"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/rabbitmq"
 )
 
 // Separate the connections for publishers and consumers to achieve high throughput. RabbitMQ can
@@ -13,22 +14,13 @@ import (
 // Reference:
 // https://www.cloudamqp.com/blog/part1-rabbitmq-best-practice.html#separate-connections-for-publisher-and-consumer
 var (
-	consumerConnection  *RabbitMQ
-	publisherConnection *RabbitMQ
+	publisherConnection *rabbitmq.RabbitMQ
 )
 
-func MakePublisher(exchange string, routingKey string) message.Publisher {
+func MakePublisher(opts ...func(*options)) message.Publisher {
 	if publisherConnection == nil {
-		publisherConnection = NewConnection(log.MakeWithCaller(), "publisher")
+		publisherConnection = rabbitmq.NewConnection(log.MakeWithCaller(), "publisher")
 	}
 
-	return NewPublisher(publisherConnection, exchange, routingKey)
-}
-
-func MakeConsumer(exchange string, queue string, routingKey string) message.Consumer {
-	if consumerConnection == nil {
-		consumerConnection = NewConnection(log.MakeWithCaller(), "consumer")
-	}
-
-	return NewConsumer(consumerConnection, exchange, routingKey, queue, log.MakeWithCaller())
+	return NewPublisher(publisherConnection, opts...)
 }

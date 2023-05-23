@@ -7,6 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Router is the global router of the application.
+var Router *gin.Engine
+
 // SetupRouter sets the mode of the router and returns a new router.
 // It will also set up the global middlewares.
 func SetupRouter() {
@@ -25,5 +28,3 @@ func SetupRouter() {
 
 	Router = r
 }
-
-var Router *gin.Engine

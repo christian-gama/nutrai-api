@@ -5,11 +5,13 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/auth/app/service"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
 	"github.com/gin-gonic/gin"
 )
 
 // Login is a controller that handles the login of a user.
-type Login = http.Controller
+type Login = controller.Controller
 
 // NewLogin returns a new controller to handle the login of a user.
 func NewLogin(loginHandler service.LoginHandler) Login {
@@ -17,17 +19,17 @@ func NewLogin(loginHandler service.LoginHandler) Login {
 		panic(errors.New("service.LoginHandler cannot be nil"))
 	}
 
-	return http.NewController(
+	return controller.NewController(
 		func(ctx *gin.Context, input *service.LoginInput) {
 			output, err := loginHandler.Handle(ctx.Request.Context(), input)
 			if err != nil {
 				panic(err)
 			}
-			http.Ok(ctx, output)
+			response.Ok(ctx, output)
 		},
 
-		http.ControllerOptions{
-			Path:     http.JoinPath("login"),
+		controller.Options{
+			Path:     controller.JoinPath("login"),
 			Method:   http.MethodPost,
 			IsPublic: true,
 		},

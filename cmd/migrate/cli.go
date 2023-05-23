@@ -126,5 +126,5 @@ func setupEnvFile() {
 		glog.Fatalf("The file %s does not exist", envFile)
 	}
 
-	env.Load(envFile)
+	env.NewLoader(envFile).Load()
 }

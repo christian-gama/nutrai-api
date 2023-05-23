@@ -87,3 +87,9 @@ var RabbitMQ = &rabbitMQ{}
 
 // Jwt is the JWT environment variables.
 var Jwt = &jwt{}
+
+var (
+	IsProduction  bool
+	IsDevelopment bool
+	IsTest        bool
+)

@@ -1,10 +1,11 @@
-package http_test
+package controller_test
 
 import (
 	"fmt"
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/gin-gonic/gin"
@@ -20,18 +21,18 @@ func TestControllerSuite(t *testing.T) {
 
 func (s *ControllerSuite) TestNewController() {
 	makeSut := func() (
-		func(handler http.Handler[any], opts http.ControllerOptions) http.Controller,
+		func(handler controller.Handler[any], opts controller.Options) controller.Controller,
 		func(*gin.Context, *any),
-		http.ControllerOptions,
+		controller.Options,
 	) {
 		handler := func(*gin.Context, *any) {}
-		opts := http.ControllerOptions{
+		opts := controller.Options{
 			Method:   http.MethodGet,
-			Path:     http.JoinPath(""),
+			Path:     controller.JoinPath(""),
 			IsPublic: true,
-			Params:   http.AddParams("id"),
+			Params:   controller.AddParams("id"),
 		}
-		sut := http.NewController[any]
+		sut := controller.NewController[any]
 
 		return sut, handler, opts
 	}
@@ -67,7 +68,7 @@ func (s *ControllerSuite) TestNewController() {
 	s.Run("panic when params are invalid", func() {
 		sut, handler, opts := makeSut()
 
-		opts.Params = http.Params{"invalid param"}
+		opts.Params = controller.Params{"invalid param"}
 
 		s.Panics(func() { sut(handler, opts) })
 	})
@@ -75,7 +76,7 @@ func (s *ControllerSuite) TestNewController() {
 	s.Run("panic when params are not unique", func() {
 		sut, handler, opts := makeSut()
 
-		opts.Params = http.AddParams("id").Add("id")
+		opts.Params = controller.AddParams("id").Add("id")
 
 		s.Panics(func() { sut(handler, opts) })
 	})
@@ -100,14 +101,14 @@ func (s *ControllerSuite) TestNewController() {
 }
 
 func (s *ControllerSuite) TestController() {
-	sut := http.NewController(
+	sut := controller.NewController(
 		func(*gin.Context, *any) {},
 
-		http.ControllerOptions{
+		controller.Options{
 			Method:   http.MethodPut,
-			Path:     http.JoinPath(""),
+			Path:     controller.JoinPath(""),
 			IsPublic: true,
-			Params:   http.AddParams("id"),
+			Params:   controller.AddParams("id"),
 		},
 	)
 
@@ -151,7 +152,7 @@ type Input struct {
 }
 
 func (s *ControllerSuite) TestHandle() {
-	makeSut := func() (http.Controller, *Input) {
+	makeSut := func() (controller.Controller, *Input) {
 		input := &Input{
 			Name: "John Doe",
 			ID:   1,
@@ -164,13 +165,13 @@ func (s *ControllerSuite) TestHandle() {
 			s.Equal(input.Age, p.Age)
 		}
 
-		controller := http.NewController(
+		controller := controller.NewController(
 			handler,
-			http.ControllerOptions{
+			controller.Options{
 				Method:   http.MethodPut,
-				Path:     http.JoinPath(""),
+				Path:     controller.JoinPath(""),
 				IsPublic: true,
-				Params:   http.AddParams("id"),
+				Params:   controller.AddParams("id"),
 			},
 		)
 

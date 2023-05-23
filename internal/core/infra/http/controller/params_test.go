@@ -1,9 +1,9 @@
-package http_test
+package controller_test
 
 import (
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
 
@@ -17,25 +17,25 @@ func TestParamsSuite(t *testing.T) {
 
 func (s *ParamsSuite) TestAddParams() {
 	s.Run("returns a Params with the given param", func() {
-		params := http.AddParams("id")
+		params := controller.AddParams("id")
 
-		s.EqualValues(http.Params{"id"}, params)
+		s.EqualValues(controller.Params{"id"}, params)
 	})
 
 	s.Run("returns a Params with the given params", func() {
-		params := http.AddParams("id").Add("name")
+		params := controller.AddParams("id").Add("name")
 
-		s.EqualValues(http.Params{"id", "name"}, params)
+		s.EqualValues(controller.Params{"id", "name"}, params)
 	})
 
 	s.Run("returns a path with multiple params", func() {
-		params := http.AddParams("id").Add("name")
+		params := controller.AddParams("id").Add("name")
 
 		s.EqualValues("/resource/:id/:name", params.ToPath("/resource"))
 	})
 
 	s.Run("returns a path with one param", func() {
-		params := http.AddParams("id")
+		params := controller.AddParams("id")
 
 		s.EqualValues("/resource/:id", params.ToPath("/resource"))
 	})

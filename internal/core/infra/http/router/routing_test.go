@@ -6,6 +6,8 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/gin-gonic/gin"
@@ -22,8 +24,8 @@ func TestRoutingSuite(t *testing.T) {
 type Controller struct {
 	status  int
 	method  http.Method
-	path    http.Path
-	params  http.Params
+	path    controller.Path
+	params  controller.Params
 	handler func(*gin.Context) string
 }
 
@@ -35,7 +37,7 @@ func (h *Controller) Method() http.Method {
 	return h.method
 }
 
-func (h *Controller) Path() http.Path {
+func (h *Controller) Path() controller.Path {
 	return h.path
 }
 
@@ -43,7 +45,7 @@ func (h *Controller) IsPublic() bool {
 	return true
 }
 
-func (h *Controller) Params() http.Params {
+func (h *Controller) Params() controller.Params {
 	return h.params
 }
 
@@ -78,7 +80,7 @@ func (s *RoutingSuite) TestRegister() {
 						status:  http.StatusOK,
 						handler: func(ctx *gin.Context) string { return "Hello, World!" },
 						method:  http.MethodGet,
-						path:    http.JoinPath(""),
+						path:    controller.JoinPath(""),
 					},
 				},
 			},
@@ -99,7 +101,7 @@ func (s *RoutingSuite) TestRegister() {
 						handler: func(ctx *gin.Context) string { return "Hello, World!" },
 						method:  http.MethodGet,
 						path:    "/",
-						params:  http.AddParams("id"),
+						params:  controller.AddParams("id"),
 					},
 				},
 			},
@@ -134,7 +136,7 @@ func (s *RoutingSuite) TestRegister() {
 		routes := &router.Routing{
 			Routes: []*router.Route{
 				{
-					Middlewares: []http.Middleware{
+					Middlewares: []middleware.Middleware{
 						MakeMiddleware("test", "success"),
 					},
 					Controller: &Controller{
@@ -175,7 +177,7 @@ func (s *RoutingSuite) TestRegister() {
 
 	s.Run("works with global middleware correctly", func() {
 		routes := &router.Routing{
-			Middlewares: []http.Middleware{
+			Middlewares: []middleware.Middleware{
 				MakeMiddleware("test", "success"),
 			},
 			Routes: []*router.Route{

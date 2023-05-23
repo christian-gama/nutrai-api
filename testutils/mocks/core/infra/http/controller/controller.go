@@ -3,8 +3,11 @@
 package mocks
 
 import (
-	http "github.com/christian-gama/nutrai-api/internal/core/infra/http"
+	controller "github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
 	gin "github.com/gin-gonic/gin"
+
+	http "github.com/christian-gama/nutrai-api/internal/core/infra/http"
+
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -47,15 +50,15 @@ func (_m *Controller) Method() http.Method {
 }
 
 // Params provides a mock function with given fields:
-func (_m *Controller) Params() http.Params {
+func (_m *Controller) Params() controller.Params {
 	ret := _m.Called()
 
-	var r0 http.Params
-	if rf, ok := ret.Get(0).(func() http.Params); ok {
+	var r0 controller.Params
+	if rf, ok := ret.Get(0).(func() controller.Params); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(http.Params)
+			r0 = ret.Get(0).(controller.Params)
 		}
 	}
 
@@ -63,14 +66,14 @@ func (_m *Controller) Params() http.Params {
 }
 
 // Path provides a mock function with given fields:
-func (_m *Controller) Path() http.Path {
+func (_m *Controller) Path() controller.Path {
 	ret := _m.Called()
 
-	var r0 http.Path
-	if rf, ok := ret.Get(0).(func() http.Path); ok {
+	var r0 controller.Path
+	if rf, ok := ret.Get(0).(func() controller.Path); ok {
 		r0 = rf()
 	} else {
-		r0 = ret.Get(0).(http.Path)
+		r0 = ret.Get(0).(controller.Path)
 	}
 
 	return r0

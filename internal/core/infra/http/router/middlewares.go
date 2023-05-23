@@ -2,12 +2,15 @@ package router
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	ratelimit "github.com/JGLTechnologies/gin-rate-limit"
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/bench"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/unit"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -49,7 +52,7 @@ func limitBodySize() gin.HandlerFunc {
 		const maxBodySize = 3 * unit.Megabyte
 
 		if ctx.Request.ContentLength > maxBodySize {
-			http.BadRequest(ctx, errors.New("request body too large"))
+			response.BadRequest(ctx, errors.New("request body too large"))
 			return
 		}
 
@@ -74,9 +77,12 @@ func rateLimiter(limit env.ConfigGlobalRateLimit, duration time.Duration) gin.Ha
 
 	handler := ratelimit.RateLimiter(store, &ratelimit.Options{
 		ErrorHandler: func(ctx *gin.Context, info ratelimit.Info) {
-			ctx.AbortWithStatusJSON(http.StatusTooManyRequests, http.Error(
-				errors.New("too many requests"),
-			))
+			response.TooManyRequests(
+				ctx,
+				errutil.NewErrTooManyRequests(
+					fmt.Sprintf("must wait until %s", info.ResetTime),
+				),
+			)
 		},
 
 		KeyFunc: func(ctx *gin.Context) string {

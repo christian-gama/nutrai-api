@@ -35,7 +35,7 @@ func (s *SaveExceptionSuite) TestHandle() {
 	}
 
 	type Sut struct {
-		Sut     middleware.SaveExceptionHandler
+		Sut     middleware.SaveException
 		Mock    *Mock
 		Request *gohttp.Request
 		Engine  *gin.Engine
@@ -47,7 +47,7 @@ func (s *SaveExceptionSuite) TestHandle() {
 			SaveExceptionHandler: commandMock.NewHandler[*command.SaveExceptionInput](s.T()),
 		}
 
-		sut := middleware.NewSaveExceptionHandler(mock.SaveExceptionHandler)
+		sut := middleware.NewSaveException(mock.SaveExceptionHandler)
 
 		// Create a new Gin test context.
 		writer := httptest.NewRecorder()

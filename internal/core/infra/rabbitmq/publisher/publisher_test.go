@@ -1,10 +1,12 @@
-package rabbitmq_test
+package publisher_test
 
 import (
 	"testing"
 
+	"github.com/christian-gama/nutrai-api/internal/core/domain/event"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/message"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/rabbitmq"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/rabbitmq/publisher"
 	mocks "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/logger"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/mock"
@@ -24,8 +26,14 @@ func TestPublisher(t *testing.T) {
 func (s *PublisherSuite) SetupTest() {
 	s.log = mocks.NewLogger(s.T())
 	s.log.On("Infof", mock.Anything, mock.Anything)
+
 	s.rmq = rabbitmq.NewConnection(s.log, "test")
-	s.publisher = rabbitmq.NewPublisher(s.rmq, "test-exchange", "test-routing-key")
+
+	s.publisher = publisher.NewPublisher(
+		s.rmq,
+		publisher.WithExchange("test"),
+		publisher.WithRoutingKey(event.New("test", event.Save)),
+	)
 }
 
 func (s *PublisherSuite) TestNewPublisher() {

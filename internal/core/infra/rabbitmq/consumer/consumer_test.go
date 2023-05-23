@@ -1,10 +1,12 @@
-package rabbitmq_test
+package consumer_test
 
 import (
 	"testing"
 
+	"github.com/christian-gama/nutrai-api/internal/core/domain/event"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/message"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/rabbitmq"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/rabbitmq/consumer"
 	loggerMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/logger"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/mock"
@@ -25,12 +27,11 @@ func (s *ConsumerSuite) SetupSuite() {
 	s.log = loggerMock.NewLogger(s.T())
 	s.log.On("Infof", mock.Anything, mock.Anything)
 	s.rmq = rabbitmq.NewConnection(s.log, "test")
-	s.consumer = rabbitmq.NewConsumer(
+	s.consumer = consumer.NewConsumer(
 		s.rmq,
-		"test-exchange",
-		"test-routing-key",
-		"test-queue",
 		s.log,
+		consumer.WithExchange("test"),
+		consumer.WithRoutingKey(event.New("test", event.Save)),
 	)
 }
 

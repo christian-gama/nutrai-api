@@ -7,26 +7,28 @@ import (
 	"strings"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
+	"github.com/christian-gama/nutrai-api/pkg/structutil"
 	"github.com/gin-gonic/gin"
 )
 
+// extract is a generic function to extract data from a context into an input structure. The actual
+// extraction is performed by the provided extractFn function.
 func extract[Input any](ctx *gin.Context, input *Input, extractFn func(any) error) error {
 	if ctx.IsAborted() {
 		return nil
 	}
 
-	if reflect.TypeOf(input).Kind() == reflect.Ptr &&
-		reflect.TypeOf(input).Elem().Kind() == reflect.Interface {
+	if structutil.IsPointerToInterface(input) {
 		return nil
 	}
 
-	v := reflect.ValueOf(input)
-	if v.Kind() != reflect.Ptr {
+	if !structutil.IsPointer(input) {
 		panic(errors.New("input must be a pointer"))
 	}
 
-	if v.IsNil() {
-		panic(errors.New("input is nil"))
+	if structutil.IsNil(input) {
+		panic(errors.New("input cannot be nil"))
 	}
 
 	err := extractFn(input)
@@ -41,7 +43,7 @@ func extract[Input any](ctx *gin.Context, input *Input, extractFn func(any) erro
 func ExtractBody[Body any](ctx *gin.Context, body *Body) {
 	err := extract(ctx, body, ctx.ShouldBindJSON)
 	if err != nil {
-		BadRequest(ctx, fmt.Errorf("could not extract body: %w", err))
+		response.BadRequest(ctx, fmt.Errorf("could not extract body: %w", err))
 	}
 }
 
@@ -49,7 +51,7 @@ func ExtractBody[Body any](ctx *gin.Context, body *Body) {
 func ExtractQuery[Query any](ctx *gin.Context, query *Query) {
 	err := extract(ctx, query, ctx.ShouldBindQuery)
 	if err != nil {
-		BadRequest(ctx, fmt.Errorf("could not extract query: %w", err))
+		response.BadRequest(ctx, fmt.Errorf("could not extract query: %w", err))
 	}
 }
 
@@ -57,7 +59,7 @@ func ExtractQuery[Query any](ctx *gin.Context, query *Query) {
 func ExtractParams[Params any](ctx *gin.Context, params *Params) {
 	err := extract(ctx, params, ctx.ShouldBindUri)
 	if err != nil && !strings.Contains(err.Error(), "EOF") {
-		BadRequest(ctx, fmt.Errorf("could not extract params: %w", err))
+		response.BadRequest(ctx, fmt.Errorf("could not extract params: %w", err))
 	}
 }
 
@@ -68,19 +70,15 @@ func ExtractCurrentUser[Data any](ctx *gin.Context, data *Data) {
 		return
 	}
 
-	v := reflect.ValueOf(data).Elem()
-	for i := 0; i < v.NumField(); i++ {
-		field := v.Field(i)
-		tag := v.Type().Field(i).Tag.Get("ctx")
-
-		if tag == "currentUser" {
+	structutil.TraverseFields(data, func(opts *structutil.FieldIterationOptions) {
+		if opts.Tag.Get("ctx") == "currentUser" {
 			currentUser, err := store.GetUser(ctx)
 			if err != nil {
-				field.Set(reflect.Zero(field.Type()))
-				InternalServerError(ctx, err)
+				opts.Field.Set(reflect.Zero(opts.Field.Type()))
+				response.InternalServerError(ctx, err)
 			}
 
-			field.Set(reflect.ValueOf(currentUser))
+			opts.Field.Set(reflect.ValueOf(currentUser))
 		}
-	}
+	})
 }
