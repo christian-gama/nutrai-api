@@ -66,7 +66,7 @@ func (m *saveExceptionHandlerImpl) handleException(ctx *gin.Context, r any) {
 		},
 	)
 
-	if env.App.Env == env.Production {
+	if env.IsProduction {
 		message = "something went wrong, please try again later"
 	}
 

@@ -16,6 +16,8 @@ type loader struct {
 	docker  *docker
 }
 
+// NewLoader returns a new instance of loader. It receives the name of the environment file
+// (envFile) to be loaded.
 func NewLoader(envFile string) *loader {
 	return &loader{
 		ctx:     context.Background(),
@@ -24,6 +26,8 @@ func NewLoader(envFile string) *loader {
 	}
 }
 
+// Load loads the environment variables from the given environment file (envFile) and validates
+// them.
 func (e *loader) Load() {
 	e.docker.check()
 
@@ -42,6 +46,7 @@ func (e *loader) Load() {
 	)
 }
 
+// loadEnvironmentVariables loads the environment variables into the given variables.
 func (e *loader) loadEnvironmentVariables() {
 	variables := []any{DB, App, Config, Jwt, RabbitMQ}
 

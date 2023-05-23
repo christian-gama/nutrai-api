@@ -19,7 +19,7 @@ func Error(err error) *Body {
 		errs = errutil.Append(errs, err)
 	}
 
-	if env.App.Env != env.Production && env.Config.Debug {
+	if env.IsProduction && env.Config.Debug {
 		return ErrorDebug(errs)
 	}
 

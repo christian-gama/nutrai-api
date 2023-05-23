@@ -26,7 +26,6 @@ type (
 // Config.
 type (
 	ConfigGlobalRateLimit int
-	ConfigDebug           bool
 	ConfigLogLevel        string
 )
 
