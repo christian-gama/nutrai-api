@@ -1,4 +1,4 @@
-package connection
+package conn
 
 import (
 	"log"
@@ -11,19 +11,19 @@ import (
 // dialector is a function that returns a GORM dialector.
 type dialector func(dsn string) gorm.Dialector
 
-type connection struct {
+type conn struct {
 	dialector
 	opt *gorm.Config
 	log logger.Logger
 }
 
-// NewConnection creates a new instance of a GORM connection.
-func NewConnection(dialector dialector, opt *gorm.Config, logger logger.Logger) *connection {
-	return &connection{dialector: dialector, opt: opt, log: logger}
+// NewConn creates a new instance of a GORM connection.
+func NewConn(dialector dialector, opt *gorm.Config, logger logger.Logger) *conn {
+	return &conn{dialector: dialector, opt: opt, log: logger}
 }
 
 // Open will open a new GORM connection.
-func (c *connection) Open() (db *gorm.DB) {
+func (c *conn) Open() (db *gorm.DB) {
 	const maxRetries = 5
 	const retryInterval = 1 * time.Second
 
@@ -56,7 +56,7 @@ func (c *connection) Open() (db *gorm.DB) {
 }
 
 // connectionPool will setup the connection pool.
-func (c *connection) connectionPool(db *gorm.DB) *gorm.DB {
+func (c *conn) connectionPool(db *gorm.DB) *gorm.DB {
 	sqlDB, err := db.DB()
 	if err != nil {
 		panic(err)

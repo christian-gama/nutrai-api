@@ -4,7 +4,7 @@ import (
 	gosql "database/sql"
 	"errors"
 
-	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/connection"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/conn"
 	"gorm.io/gorm"
 )
 
@@ -14,7 +14,7 @@ func Transaction(
 	failFn func(failureMessage string, msgAndArgs ...interface{}) bool,
 	fn func(tx *gorm.DB),
 ) {
-	db := connection.MakePostgres()
+	db := conn.MakePostgres()
 
 	tx := func(tx *gorm.DB) error {
 		defer func() {

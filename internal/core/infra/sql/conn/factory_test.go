@@ -1,9 +1,9 @@
-package connection_test
+package conn_test
 
 import (
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/connection"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/conn"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
 
@@ -17,6 +17,6 @@ func TestFactorySuite(t *testing.T) {
 
 func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
-		connection.MakePostgres()
+		conn.MakePostgres()
 	})
 }
