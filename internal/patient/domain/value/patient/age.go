@@ -22,15 +22,15 @@ func (w Age) Validate() error {
 	const maxAge = 120
 
 	if w == 0 {
-		return errutil.NewErrRequired(fieldName)
+		return errutil.Required(fieldName)
 	}
 
 	if w < minAge {
-		return errutil.NewErrInvalid(fieldName, fmt.Sprintf("cannot be less than %d", minAge))
+		return errutil.Invalid(fieldName, fmt.Sprintf("cannot be less than %d", minAge))
 	}
 
 	if w >= maxAge {
-		return errutil.NewErrInvalid(fieldName, fmt.Sprintf("cannot be greater than %d", maxAge))
+		return errutil.Invalid(fieldName, fmt.Sprintf("cannot be greater than %d", maxAge))
 	}
 
 	return nil

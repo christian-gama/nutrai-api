@@ -21,7 +21,7 @@ func (e Email) Validate() error {
 	const fieldName = "Email"
 
 	if e == "" {
-		return errutil.NewErrRequired(fieldName)
+		return errutil.Required(fieldName)
 	}
 
 	if _, err := mail.ParseAddress(e.String()); err != nil {
@@ -29,7 +29,7 @@ func (e Email) Validate() error {
 		msg := strings.Split(err.Error(), ":")[1]
 		msg = strings.TrimSpace(msg)
 
-		return errutil.NewErrInvalid(fieldName, msg)
+		return errutil.Invalid(fieldName, msg)
 	}
 
 	return nil

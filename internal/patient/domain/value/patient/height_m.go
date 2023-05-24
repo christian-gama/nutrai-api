@@ -20,15 +20,15 @@ func (w HeightM) Validate() error {
 	const maxHeight = 3
 
 	if w == 0 {
-		return errutil.NewErrRequired(fieldName)
+		return errutil.Required(fieldName)
 	}
 
 	if w <= minHeight {
-		return errutil.NewErrInvalid(fieldName, "cannot be less than %d", minHeight)
+		return errutil.Invalid(fieldName, "cannot be less than %d", minHeight)
 	}
 
 	if w >= maxHeight {
-		return errutil.NewErrInvalid(fieldName, "cannot be greater than %d", maxHeight)
+		return errutil.Invalid(fieldName, "cannot be greater than %d", maxHeight)
 	}
 
 	return nil

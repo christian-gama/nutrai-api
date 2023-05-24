@@ -44,7 +44,7 @@ func (p *Plan) Validate() (*Plan, error) {
 	}
 
 	if p.Diet == nil {
-		errs = errutil.Append(errs, errutil.NewErrRequired("diet"))
+		errs = errutil.Append(errs, errutil.Required("diet"))
 	} else if _, err := p.Diet.Validate(); err != nil {
 		errs = errutil.Append(errs, err)
 	}

@@ -31,7 +31,7 @@ func (m MealPlan) Validate() error {
 	}
 
 	if len(m) == 0 {
-		return errutil.NewErrRequired(fieldName)
+		return errutil.Required(fieldName)
 	}
 
 	for _, validMealPlan := range validMealPlans {
@@ -40,7 +40,7 @@ func (m MealPlan) Validate() error {
 		}
 	}
 
-	return errutil.NewErrInvalid(fieldName, fmt.Sprintf("must be one of %v", validMealPlans))
+	return errutil.Invalid(fieldName, fmt.Sprintf("must be one of %v", validMealPlans))
 }
 
 const (

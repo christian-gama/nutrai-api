@@ -15,7 +15,7 @@ func (a Allergy) Validate() error {
 	const maxLen = 100
 
 	if len(a) > maxLen {
-		return errutil.NewErrInvalid(fieldName, "must be less than %d characters", maxLen)
+		return errutil.Invalid(fieldName, "must be less than %d characters", maxLen)
 	}
 
 	return nil

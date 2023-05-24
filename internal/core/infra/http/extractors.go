@@ -70,7 +70,7 @@ func ExtractCurrentUser[Data any](ctx *gin.Context, data *Data) {
 		return
 	}
 
-	structutil.TraverseFields(data, func(opts *structutil.FieldIterationOptions) {
+	structutil.IterateFields(data, func(opts *structutil.FieldIterationOptions) {
 		if opts.Tag.Get("ctx") == "currentUser" {
 			currentUser, err := store.GetUser(ctx)
 			if err != nil {

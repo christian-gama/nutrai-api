@@ -39,8 +39,6 @@ func (c *updatePatientHandlerImpl) Handle(ctx context.Context, input *UpdatePati
 
 	allergies := make([]*patient.Allergy, len(input.Allergies))
 	for i, allergy := range input.Allergies {
-		// No need to Build (validate) the allergy here, since it will be validated by the patient
-		// itself.
 		allergies[i] = patient.NewAllergy().SetName(allergy.Name)
 	}
 

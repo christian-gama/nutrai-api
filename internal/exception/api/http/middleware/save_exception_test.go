@@ -78,7 +78,7 @@ func (s *SaveExceptionSuite) TestHandle() {
 		sut := makeSut()
 
 		sut.Engine.Handle(method.String(), path, func(c *gin.Context) {
-			panic(errutil.NewErrInternal("something went wrong, please try again later"))
+			panic(errutil.InternalServerError("something went wrong, please try again later"))
 		})
 
 		sut.Mock.SaveExceptionHandler.
@@ -94,7 +94,7 @@ func (s *SaveExceptionSuite) TestHandle() {
 		sut := makeSut()
 
 		sut.Engine.Handle(method.String(), path, func(c *gin.Context) {
-			panic(errutil.NewErrInvalid("test", "test"))
+			panic(errutil.Invalid("test", "test"))
 		})
 
 		sut.Mock.SaveExceptionHandler.

@@ -29,7 +29,7 @@ func run(cmd *cobra.Command, args []string) {
 
 	for envName, envStruct := range envsMap {
 		fmt.Println(color.New(color.FgHiMagenta).Sprintf("ENVIRONMENT: %s", envName))
-		structutil.TraverseFields(envStruct, func(opts *structutil.FieldIterationOptions) {
+		structutil.IterateFields(envStruct, func(opts *structutil.FieldIterationOptions) {
 			fmt.Printf(
 				"%v: %v\n",
 				color.New(color.FgGreen).Sprintf(opts.FieldName),

@@ -32,7 +32,7 @@ func NewSaveExceptionHandler(publisher message.Publisher) SaveExceptionHandler {
 func (c *saveExceptionHandlerImpl) Handle(ctx context.Context, input *SaveExceptionInput) error {
 	encoded, err := json.Marshal(&input)
 	if err != nil {
-		return errutil.NewErrInternal(fmt.Sprintf("failed to encode error: %v", err))
+		return errutil.InternalServerError(fmt.Sprintf("failed to encode error: %v", err))
 	}
 
 	c.Publisher.Handle(encoded)

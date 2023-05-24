@@ -79,7 +79,7 @@ func rateLimiter(limit env.ConfigGlobalRateLimit, duration time.Duration) gin.Ha
 		ErrorHandler: func(ctx *gin.Context, info ratelimit.Info) {
 			response.TooManyRequests(
 				ctx,
-				errutil.NewErrTooManyRequests(
+				errutil.TooManyRequests(
 					fmt.Sprintf("must wait until %s", info.ResetTime),
 				),
 			)

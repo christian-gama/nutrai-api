@@ -22,18 +22,18 @@ func (n Name) Validate() error {
 	const maxLen = 150
 
 	if n == "" {
-		return errutil.NewErrRequired(fieldName)
+		return errutil.Required(fieldName)
 	}
 
 	if len(n.String()) < minLen {
-		return errutil.NewErrInvalid(
+		return errutil.Invalid(
 			fieldName,
 			fmt.Sprintf("cannot be less than %d characters", minLen),
 		)
 	}
 
 	if len(n.String()) > maxLen {
-		return errutil.NewErrInvalid(
+		return errutil.Invalid(
 			fieldName,
 			fmt.Sprintf("cannot be greater than %d characters", maxLen),
 		)

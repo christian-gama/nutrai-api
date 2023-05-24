@@ -63,7 +63,7 @@ func (p *publisherImpl) Handle(msg []byte) {
 		p.options.Args,
 	)
 	if err != nil {
-		panic(errutil.NewErrInternal("could not declare an exchange"))
+		panic(errutil.InternalServerError("could not declare an exchange"))
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -80,6 +80,6 @@ func (p *publisherImpl) Handle(msg []byte) {
 		},
 	)
 	if err != nil {
-		panic(errutil.NewErrInternal(fmt.Sprintf("could not publish message: %s", err)))
+		panic(errutil.InternalServerError(fmt.Sprintf("could not publish message: %s", err)))
 	}
 }

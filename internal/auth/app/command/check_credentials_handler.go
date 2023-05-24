@@ -62,7 +62,7 @@ func (c *checkCredentialsHandlerImpl) checkPassword(
 	password value.Password,
 ) error {
 	if err := c.Hasher.Compare(password, user.Password); err != nil {
-		return errutil.NewErrInvalid("password", "does not match")
+		return errutil.Invalid("password", "does not match")
 	}
 	return nil
 }

@@ -17,7 +17,7 @@ func (p Password) Validate() error {
 	const fieldName = "Password"
 
 	if p == "" {
-		return errutil.NewErrRequired(fieldName)
+		return errutil.Required(fieldName)
 	}
 
 	return nil

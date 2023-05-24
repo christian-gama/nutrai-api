@@ -11,9 +11,9 @@ type FieldIterationOptions struct {
 	Value     reflect.Value
 }
 
-// TraverseFields applies a callback function to each field of a given struct.
+// IterateFields applies a callback function to each field of a given struct.
 // The callback receives information about the current field via a FieldIterationOptions instance.
-func TraverseFields(s any, callback func(opts *FieldIterationOptions)) {
+func IterateFields(s any, callback func(opts *FieldIterationOptions)) {
 	v := reflect.ValueOf(s).Elem()
 	for i := 0; i < v.NumField(); i++ {
 		field := v.Field(i)
@@ -32,7 +32,7 @@ func TraverseFields(s any, callback func(opts *FieldIterationOptions)) {
 // HasTagValue checks if a given struct has a field with a given tag and value.
 func HasTagValue(s any, tag string, value string) bool {
 	var hasTag bool
-	TraverseFields(s, func(opts *FieldIterationOptions) {
+	IterateFields(s, func(opts *FieldIterationOptions) {
 		if opts.Tag.Get(tag) == value {
 			hasTag = true
 		}

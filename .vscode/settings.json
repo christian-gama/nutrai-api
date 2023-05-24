@@ -6,9 +6,14 @@
     "DB_HOST": "localhost",
     "DB_PORT": "5434",
     "RABBITMQ_HOST": "localhost",
-    "RABBITMQ_PORT": "5674",
+    "RABBITMQ_PORT": "5674"
   },
   "go.testOnSave": true,
+  "go.lintTool": "golangci-lint",
+  "go.lintFlags": [
+    "--fast"
+  ],
+  "go.lintOnSave": "workspace",
   // Automatically break lines at 100 characters.
   // It's necessary to download the extension "emeraldwalk.runonsave" to make it work.
   // https://marketplace.visualstudio.com/items?itemName=emeraldwalk.RunOnSave
@@ -20,9 +25,4 @@
       }
     ]
   },
-  "go.lintTool": "golangci-lint",
-  "go.lintFlags": [
-    "--fast"
-  ],
-  "go.lintOnSave": "workspace",
 }

@@ -27,12 +27,12 @@ func NewAuth(authHandler query.AuthHandler) Auth {
 		func(ctx *gin.Context) {
 			token, err := jwt.GetTokenFromHeader(ctx)
 			if err != nil {
-				panic(errutil.NewErrUnauthorized(err.Error()))
+				panic(errutil.Unauthorized(err.Error()))
 			}
 
 			u, err := authHandler.Handle(ctx, &query.AuthInput{Access: token})
 			if err != nil {
-				panic(errutil.NewErrUnauthorized(err.Error()))
+				panic(errutil.Unauthorized(err.Error()))
 			}
 
 			store.SetUser(ctx,

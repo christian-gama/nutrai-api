@@ -48,14 +48,14 @@ func (j *saveExceptionHandlerImpl) Handle() {
 func (j *saveExceptionHandlerImpl) ConsumerHandler(body []byte) error {
 	var e exception.Exception
 	if err := json.Unmarshal(body, &e); err != nil {
-		return errutil.NewErrInternal(err.Error())
+		return errutil.InternalServerError(err.Error())
 	}
 
 	_, err := j.Save(context.Background(), repo.SaveExceptionInput{
 		Exception: &e,
 	})
 	if err != nil {
-		return errutil.NewErrInternal(err.Error())
+		return errutil.InternalServerError(err.Error())
 	}
 
 	return nil

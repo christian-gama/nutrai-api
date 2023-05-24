@@ -79,11 +79,11 @@ func (g *generatorImpl) signToken() (string, error) {
 // not nil and its email is valid. If not, it returns an error.
 func (g *generatorImpl) validate(subject *jwt.Subject) error {
 	if subject == nil {
-		return errutil.NewErrInternal(errutil.NewErrRequired("subject").Error())
+		return errutil.InternalServerError(errutil.Required("subject").Error())
 	}
 
 	if err := subject.Email.Validate(); err != nil {
-		return errutil.NewErrInternal(err.Error())
+		return errutil.InternalServerError(err.Error())
 	}
 
 	return nil

@@ -42,12 +42,12 @@ func (q *checkTokenHandlerImpl) Handle(
 ) (*AuthOutput, error) {
 	claims, err := q.Verify(input.Access)
 	if err != nil {
-		return nil, errutil.NewErrUnauthorized(err.Error())
+		return nil, errutil.Unauthorized(err.Error())
 	}
 
 	user, err := q.FindByEmail(ctx, repo.FindByEmailUserInput{Email: claims.Sub.Email})
 	if err != nil {
-		return nil, errutil.NewErrUnauthorized("you are not authorized to access this resource")
+		return nil, errutil.Unauthorized("you are not authorized to access this resource")
 	}
 
 	return &AuthOutput{

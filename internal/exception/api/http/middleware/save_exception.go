@@ -84,7 +84,7 @@ func (m *saveExceptionHandlerImpl) getErrorMessage(r any) string {
 		return m.getErrorFromException(err).Error()
 
 	default:
-		return errutil.NewErrInternal("something went wrong, please try again later").Error()
+		return errutil.InternalServerError("something went wrong, please try again later").Error()
 	}
 }
 
@@ -93,7 +93,7 @@ func (m *saveExceptionHandlerImpl) getErrorMessage(r any) string {
 func (m *saveExceptionHandlerImpl) getErrorFromException(err error) error {
 	var errInternal *errutil.ErrInternal
 	if !errors.As(err, &errInternal) {
-		return errutil.NewErrInternal(err.Error())
+		return errutil.InternalServerError(err.Error())
 	}
 
 	return err

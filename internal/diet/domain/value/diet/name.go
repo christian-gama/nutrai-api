@@ -21,11 +21,11 @@ func (n Name) Validate() error {
 	const maxChars = 100
 
 	if len(n) == 0 {
-		return errutil.NewErrRequired(fieldName)
+		return errutil.Required(fieldName)
 	}
 
 	if len(n) > maxChars {
-		return errutil.NewErrInvalid(
+		return errutil.Invalid(
 			fieldName,
 			fmt.Sprintf("cannot be longer than %d characters", maxChars),
 		)

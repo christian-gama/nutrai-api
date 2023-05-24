@@ -21,15 +21,15 @@ func (c MonthlyCostUSD) Validate() error {
 	const maxCost = 9_999
 
 	if c == 0 {
-		return errutil.NewErrRequired(fieldName)
+		return errutil.Required(fieldName)
 	}
 
 	if c < 0 {
-		return errutil.NewErrInvalid(fieldName, "cannot be negative")
+		return errutil.Invalid(fieldName, "cannot be negative")
 	}
 
 	if c > maxCost {
-		return errutil.NewErrInvalid(fieldName, fmt.Sprintf("cannot be greater than %d", maxCost))
+		return errutil.Invalid(fieldName, fmt.Sprintf("cannot be greater than %d", maxCost))
 	}
 
 	return nil

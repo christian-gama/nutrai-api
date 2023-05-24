@@ -31,7 +31,7 @@ func (g Goal) Validate() error {
 	}
 
 	if len(g) == 0 {
-		return errutil.NewErrRequired(fieldName)
+		return errutil.Required(fieldName)
 	}
 
 	for _, validGoal := range validGoals {
@@ -40,7 +40,7 @@ func (g Goal) Validate() error {
 		}
 	}
 
-	return errutil.NewErrInvalid(fieldName, fmt.Sprintf("must be one of %v", validGoals))
+	return errutil.Invalid(fieldName, fmt.Sprintf("must be one of %v", validGoals))
 }
 
 const (

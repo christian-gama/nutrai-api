@@ -20,15 +20,15 @@ func (w WeightKG) Validate() error {
 	const maxWeight = 999
 
 	if w == 0 {
-		return errutil.NewErrRequired(fieldName)
+		return errutil.Required(fieldName)
 	}
 
 	if w <= minWeight {
-		return errutil.NewErrInvalid(fieldName, "cannot be less than %d", minWeight)
+		return errutil.Invalid(fieldName, "cannot be less than %d", minWeight)
 	}
 
 	if w >= maxWeight {
-		return errutil.NewErrInvalid(fieldName, "cannot be greater than %d", maxWeight)
+		return errutil.Invalid(fieldName, "cannot be greater than %d", maxWeight)
 	}
 
 	return nil

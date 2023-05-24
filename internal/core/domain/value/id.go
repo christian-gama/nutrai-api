@@ -17,7 +17,7 @@ func (i ID) Uint() uint {
 // Validate returns true if the ID is valid.
 func (i ID) Validate() error {
 	if i == 0 {
-		return errutil.NewErrRequired("id")
+		return errutil.Required("id")
 	}
 
 	return nil
