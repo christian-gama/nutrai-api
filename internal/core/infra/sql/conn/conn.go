@@ -47,8 +47,8 @@ func (c *conn) connectionPool(db *gorm.DB) *gorm.DB {
 		panic(err)
 	}
 
-	sqlDB.SetMaxIdleConns(15)
-	sqlDB.SetMaxOpenConns(150)
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
 	return db
