@@ -170,3 +170,18 @@ func RemoveDuplicates[T comparable](s []T) []T {
 
 	return r
 }
+
+// FirstElementOrDefault returns the first element of the slice if it is not empty, otherwise it
+// returns the default value.
+func FirstElementOrDefault[V any](value []V, defaultValue ...V) V {
+	if len(value) > 0 {
+		return value[0]
+	}
+
+	if len(defaultValue) > 0 {
+		return defaultValue[0]
+	}
+
+	zero := reflect.Zero(reflect.TypeOf(value).Elem()).Interface()
+	return zero.(V)
+}

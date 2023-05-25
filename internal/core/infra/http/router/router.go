@@ -21,7 +21,7 @@ func SetupRouter() {
 
 	r := gin.New()
 	r.Use(logging())
-	r.Use(Cors())
+	r.Use(cors())
 	r.Use(content())
 	r.Use(limitBodySize())
 	r.Use(rateLimiter(env.Config.GlobalRateLimit, time.Minute))

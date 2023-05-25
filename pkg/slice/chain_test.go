@@ -235,4 +235,33 @@ func (s *SliceStructSuite) TestChain() {
 
 		s.Equal([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, withoutDuplicates)
 	})
+
+	s.Run("slice.FirstElementOrDefault returns the first element of the slice", func() {
+		firstElementOrDefault := slice.FirstElementOrDefault(ints())
+
+		s.Equal(1, firstElementOrDefault)
+	})
+
+	s.Run("slice.FirstElementOrDefault returns the default value if the slice is empty", func() {
+		firstElementOrDefault := slice.FirstElementOrDefault([]int{})
+
+		s.Equal(0, firstElementOrDefault)
+	})
+
+	s.Run(
+		"slice.FirstElementOrDefault returns the default value passed as argument if the slice is empty",
+		func() {
+			firstElementOrDefault := slice.FirstElementOrDefault([]int{}, 404)
+
+			s.Equal(404, firstElementOrDefault)
+		},
+	)
+
+	s.Run("slice.Clone returns a copy of the slice", func() {
+		chain := slice.Chain(ints())
+
+		clone := chain.Clone()
+
+		s.Equal(chain.Build(), clone.Build())
+	})
 }

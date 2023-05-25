@@ -35,7 +35,7 @@ func WithRoutingKey(routingKey event.Event) func(*options) {
 	}
 }
 
-func WithKind(kind string) func(*options) {
+func WithKind(kind rabbitmq.Exchange) func(*options) {
 	return func(o *options) {
 		o.Kind = kind
 	}

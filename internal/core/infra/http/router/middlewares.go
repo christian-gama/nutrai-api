@@ -12,7 +12,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/unit"
-	"github.com/gin-contrib/cors"
+	_cors "github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -31,9 +31,9 @@ func logging() gin.HandlerFunc {
 	}
 }
 
-// Cors returns a gin middleware that enables CORS.
-func Cors() gin.HandlerFunc {
-	return cors.New(cors.Config{
+// cors returns a gin middleware that enables CORS.
+func cors() gin.HandlerFunc {
+	return _cors.New(_cors.Config{
 		AllowAllOrigins: true,
 		AllowFiles:      true,
 		AllowHeaders:    []string{"Origin", "Content-Type", "Accept", "Authorization"},

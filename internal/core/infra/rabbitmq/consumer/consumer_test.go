@@ -32,6 +32,18 @@ func (s *ConsumerSuite) SetupSuite() {
 		s.log,
 		consumer.WithExchange("test"),
 		consumer.WithRoutingKey(event.New("test", event.Save)),
+		consumer.WithArgs(nil),
+		consumer.WithAutoDelete(false),
+		consumer.WithDurable(false),
+		consumer.WithInternal(false),
+		consumer.WithKind(rabbitmq.ExchangeDirect),
+		consumer.WithNoWait(false),
+		consumer.WithQueueArgs(nil),
+		consumer.WithQueueAutoDelete(false),
+		consumer.WithQueueDurable(false),
+		consumer.WithQueueExclusive(false),
+		consumer.WithQueueName("test"),
+		consumer.WithQueueNoWait(false),
 	)
 }
 

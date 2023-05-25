@@ -33,6 +33,17 @@ func (s *PublisherSuite) SetupTest() {
 		s.rmq,
 		publisher.WithExchange("test"),
 		publisher.WithRoutingKey(event.New("test", event.Save)),
+		publisher.WithExchange("test"),
+		publisher.WithRoutingKey(event.New("test", event.Save)),
+		publisher.WithArgs(nil),
+		publisher.WithAutoDelete(false),
+		publisher.WithDurable(false),
+		publisher.WithInternal(false),
+		publisher.WithKind(rabbitmq.ExchangeDirect),
+		publisher.WithNoWait(false),
+		publisher.WithMandatory(false),
+		publisher.WithImmediate(false),
+		publisher.WithContentType(rabbitmq.ContentTypeJSON),
 	)
 }
 

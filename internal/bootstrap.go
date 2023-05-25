@@ -14,6 +14,7 @@ import (
 // Bootstrap is responsible for booting up the application.
 func Bootstrap(envFile string) {
 	env.NewLoader(envFile).Load()
+	router.SetupRouter()
 
 	// Order matters.
 	module.Initialize(exception.Init)
@@ -21,6 +22,4 @@ func Bootstrap(envFile string) {
 	module.Initialize(core.Init)
 	module.Initialize(patient.Init)
 	module.Initialize(diet.Init)
-
-	router.Register()
 }

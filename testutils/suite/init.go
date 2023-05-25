@@ -8,8 +8,7 @@ import (
 )
 
 func init() {
-	faker.InitializeProviders()
-	faker.Setup()
+	faker.Init()
 
 	authValidation.Register()
 	patientValidation.Register()
