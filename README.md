@@ -17,6 +17,7 @@ This project contains a Go Restful API that helps users manage their diet plans.
       - [Run unit tests](#run-unit-tests)
       - [Run integration tests](#run-integration-tests)
   - [Makefile](#makefile)
+    - [Help command](#help-command)
 
 ## Requirements
 - [Go 1.20](https://golang.org/doc/install)
@@ -85,3 +86,9 @@ make test-integration
 
 ## Makefile
 The Makefile contains all the commands needed to run the project, tests and build the docker image. Please read the [Makefile](Makefile) for more details.
+
+### Help command
+You can use the help command to see all the available targets with a short description. You can read the [Makefile](Makefile) for more details about each target and how to use them.
+```sh
+make help
+```
