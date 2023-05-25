@@ -1,13 +1,9 @@
-PWD = $(shell pwd)
-
-# BUILD_DIR is the directory where the binary file will be generated.
-BUILD_DIR = bin/build
-
-# DOCKER_DIR is the directory where the docker volumes will be created.
-DOCKER_DIR = .docker
-
-# MAKE is a shortcut to run make commands without printing the directory.
-MAKE = make --no-print-directory
+# ==============================================================================================
+# Title: Makefile
+# Author:   christiangama.dev@gmail.com
+# Creation: 2023-05-07
+# Usage:    Run the command 'make help' to see all available commands.
+# ==============================================================================================
 
 # APP_NAME is the name of the application.
 APP_NAME = nutrai-api
@@ -17,15 +13,20 @@ APP_NAME = nutrai-api
 AIRVERSION = v1.43.0
 
 # WORKDIR is used to set the working directory for Dockerfile builds.
-export WORKDIR=/usr/src/app
+WORKDIR = /usr/src/app
 
-# ENV_FILE is used to load the environment variables from the .env file.
--include $(ENV_FILE)
-
+# ==============================================================================================
+# Target: help
+# Brief: Displays a brief description of all the targets in the Makefile.
+# Usage: Run the command 'make help'.
+# ==============================================================================================
+.PHONY: help
+help: .clear-screen
+	@sh -c "./scripts/help.sh"
 
 # ==============================================================================================
 # Target: init
-# Brief: This target is used to initialize the project.
+# Brief: Initializes the project.
 # Usage: Run the command 'make'.
 # ==============================================================================================
 .PHONY: init
@@ -41,7 +42,7 @@ init: .cmd-exists-git .cmd-exists-go .cmd-exists-docker .cmd-exists-sh .clear-sc
 
 # ==============================================================================================
 # Target: env
-# Brief: This target is used to create or update the environment file.
+# Brief: Creates or updates the environment file based on the .env.example file.
 # Usage: Run the command 'make env'.
 # ==============================================================================================
 .PHONY: env
@@ -51,7 +52,7 @@ env: .cmd-exists-sh .clear-screen
 
 # ==============================================================================================
 # Target: run
-# Brief: This target is used to run the project.
+# Brief: Runs the API server.
 # Usage: Run the command 'make run [ENV_FILE="<path>"]'.
 # Flags:
 #  ENV_FILE: The path to the environment file. It defaults to '.env.dev'.
@@ -73,7 +74,7 @@ endif
 
 # ==============================================================================================
 # Target: dev
-# Brief: This target is used to run the project in development mode.
+# Brief: Runs the API server in development mode.
 # Usage: Run the command 'make dev'.
 # ==============================================================================================
 .PHONY: dev
@@ -83,7 +84,7 @@ dev: .cmd-exists-go .clear-screen
 
 # ==============================================================================================
 # Target: prod
-# Brief: This target is used to run the project in production mode.
+# Brief: Runs the API server in production mode.
 # Usage: Run the command 'make prod'.
 # ==============================================================================================
 .PHONY: prod
@@ -93,7 +94,7 @@ prod: .cmd-exists-go .clear-screen
 
 # ==============================================================================================
 # Target: list-routes
-# Brief: This target is used to list all routes.
+# Brief: Lists all routes in the API.
 # Usage: Run the command 'make list-routes'.
 # ==============================================================================================
 .PHONY: list-routes
@@ -107,7 +108,7 @@ endif
 
 # ==============================================================================================
 # Target: list-env
-# Brief: This target is used to list all environment variables.
+# Brief: Lists all environment variables in the environment file.
 # Usage: Run the command 'make list-env ENV_FILE="<path>"'.
 # Flags:
 #  ENV_FILE: The path to the environment file.
@@ -119,7 +120,7 @@ list-env: .cmd-exists-go .clear-screen .check-env-file
 
 # ==============================================================================================
 # Target: build
-# Brief: This target is used to build the project. It will generate a binary file at the BUILD_DIR.
+# Brief: Builds the API server.
 # Usage: Run the command 'make build'.
 # ==============================================================================================
 .PHONY: build
@@ -131,7 +132,7 @@ build: .cmd-exists-go .clear-screen
 
 # ==============================================================================================
 # Target: lint
-# Brief: This target is used to lint the project.
+# Brief: Runs the linter (golangci-lint) in the project.
 # Usage: Run the command 'make lint'.
 # ==============================================================================================
 .PHONY: lint
@@ -141,7 +142,7 @@ lint: .cmd-exists-docker .cmd-exists-sh .clear-screen
 
 # ==============================================================================================
 # Target: clear
-# Brief: This target is used to clear the project from any temporary files.
+# Brief: Clears the auto-generated files and folders, such as the Docker volumes.
 # Usage: Run the command 'make clear'.
 # ==============================================================================================
 .PHONY: clear
@@ -155,7 +156,7 @@ clear: .cmd-exists-sh .clear-screen
 
 # ==============================================================================================
 # Target: tidy
-# Brief: This target is used install dependencies and generate the vendor folder.
+# Brief: Installs the dependencies and syncs the vendor folder.
 # Usage: Run the command 'make tidy'.
 # ==============================================================================================
 .PHONE: tidy
@@ -166,7 +167,7 @@ tidy: .cmd-exists-go .clear-screen
 
 # ==============================================================================================
 # Target: test-unit
-# Brief: This target is used to run unit tests.
+# Brief: Runs unit tests.
 # Usage:
 #   FLAG=<watch|cover> make test-unit # Runs tests normally without any special flags
 #   COUNT=<count> make-test-unit # Runs tests <count> times
@@ -182,7 +183,7 @@ test-unit: .cmd-exists-go .clear-screen
 
 # ==============================================================================================
 # Target: test-integration
-# Brief: This target is used to run integration tests.
+# Brief: Runs integration tests.
 # Usage: Run the command 'make test-unit [FLAGS="<flags>"]'.
 # Usage:
 #   FLAG=<watch|cover> make test-integration # Runs tests normally without any special flags
@@ -199,7 +200,7 @@ test-integration: .cmd-exists-go .clear-screen .prepare-test
 
 # ==============================================================================================
 # Target: test
-# Brief: This target is used to run all tests.
+# Brief: Runs all tests.
 # Usage:
 #   FLAG=<watch|cover> make test # Runs tests normally without any special flags
 #   COUNT=<count> make test # Runs tests <count> times
@@ -215,7 +216,7 @@ test: .cmd-exists-go .clear-screen .prepare-test
 
 # ==============================================================================================
 # Target: test-ci
-# Brief: This target is used to run all tests on CI.
+# Brief: Runs all tests in CI mode.
 # Usage: Run the command 'make test-ci'.
 # ==============================================================================================
 .PHONY: test-ci
@@ -225,7 +226,7 @@ test-ci: .cmd-exists-go .clear-screen .prepare-test
 
 # ==============================================================================================
 # Target: create-migration
-# Brief: This target is used to create a new migration file.
+# Brief: Creates a new migration file with the given name with the current timestamp.
 # Usage: Run the command 'make create-migration NAME="<name>"'.
 # Args:
 # 	NAME: The name of the migration.
@@ -237,7 +238,7 @@ create-migration: .cmd-exists-go .clear-screen
 
 # ==============================================================================================
 # Target: migrate
-# Brief: This target is used to run migrations.
+# Brief: Runs the migrations.
 # Usage: Run the command 'make migrate ENV_FILE="<env_file>" MIGRATION="<migration>" [VERSION="<version>"]'.
 # Args:
 # 	ENV_FILE: The env file to be loaded.
@@ -269,7 +270,7 @@ migrate: .cmd-exists-docker .clear-screen .check-env-file
 
 # ==============================================================================================
 # Target: postgres
-# Brief: This target is used to run the postgres container.
+# Brief: Runs the postgres in a docker container.
 # Usage: Run the command 'make postgres [ENV_FILE="<env_file>"]'.
 # Args:
 # 	ENV_FILE: The env file to be loaded.
@@ -285,7 +286,7 @@ postgres: .cmd-exists-docker .clear-screen .check-env-file
 
 # ==============================================================================================
 # Target: rabbitmq
-# Brief: This target is used to run the rabbitmq container.
+# Brief: Runs the rabbitmq in a docker container.
 # Usage: Run the command 'make rabbitmq [ENV_FILE="<env_file>"]'.
 # Args:
 # 	ENV_FILE: The env file to be loaded.
@@ -301,7 +302,7 @@ rabbitmq: .cmd-exists-docker .clear-screen .check-env-file
 
 # ==============================================================================================
 # Target: mock
-# Brief: This target is used to generate mocks.
+# Brief: Generates mocks for all interfaces in the project, excluding the vendor folder.
 # Usage: Run the command 'make mock'.
 # ==============================================================================================
 .PHONY: mock
@@ -313,7 +314,7 @@ mock: .cmd-exists-go
 
 # ==============================================================================================
 # Target: docker-dev
-# Brief: This target is used to run the API container in development mode.
+# Brief: Runs the API container in development mode.
 # Usage: Run the command 'make docker-dev'.
 # ==============================================================================================
 .PHONY: docker-dev
@@ -324,7 +325,7 @@ docker-dev: .cmd-exists-docker .clear-screen
 
 # ==============================================================================================
 # Target: docker-prod
-# Brief: This target is used to run the API container in production mode.
+# Brief: Runs the API container in production mode.
 # Usage: Run the command 'make docker-prod'.
 # ==============================================================================================
 .PHONY: docker-prod
@@ -335,7 +336,7 @@ docker-prod: .cmd-exists-docker .clear-screen
 
 # ==============================================================================================
 # Target: docker-stop
-# Brief: This target is used to stop the API container.
+# Brief: Stops the all containers in the docker-compose file.
 # Usage: Run the command 'make docker-stop'.
 # ==============================================================================================
 .PHONY: docker-stop
@@ -346,7 +347,7 @@ docker-stop: .cmd-exists-docker .clear-screen
 
 # ==============================================================================================
 # Target: docker-kill
-# Brief: This target is used to kill the API container.
+# Brief: Kills the all containers in the docker-compose file.
 # Usage: Run the command 'make docker-kill'.
 # ==============================================================================================
 .PHONY: docker-kill
@@ -357,7 +358,7 @@ docker-kill: .cmd-exists-docker .clear-screen
 
 # ==============================================================================================
 # Target: docker-list-env
-# Brief: This target is used to list all environment variables in the docker container.
+# Brief: Lists the environment variables in the given file.
 # Usage: Run the command 'make docker-list-env ENV_FILE="<path>"'.
 # Flags:
 # 	ENV_FILE: The path to the environment file.
@@ -380,7 +381,7 @@ docker-list-env: .cmd-exists-docker .clear-screen .check-env-file
 
 # ==============================================================================================
 # Target: .docker
-# Brief: This target is used to run a docker command.
+# Brief: This is a helper target to run docker-compose commands.
 # Usage: It is not meant to be called directly, but by other targets.
 # ==============================================================================================
 .PHONY: .docker
@@ -442,3 +443,10 @@ docker-list-env: .cmd-exists-docker .clear-screen .check-env-file
 	@ENV_FILE=.env.test $(MAKE) postgres
 	@go run ./cmd/migrate/*.go -e .env.test reset
 
+
+# ==============================================================================================
+# DO NOT EDIT BELOW THIS LINE
+# ==============================================================================================
+MAKE = make --no-print-directory
+BUILD_DIR = bin/build
+DOCKER_DIR = .docker
