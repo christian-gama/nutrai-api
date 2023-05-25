@@ -8,8 +8,8 @@ import (
 // RegisterInput is the input of the Register service.
 type RegisterInput struct {
 	Email    userValue.Email    `json:"email" validate:"required,email" faker:"email"`
-	Name     userValue.Name     `json:"name" validate:"required,min=2,max=100" faker:"name"`
-	Password userValue.Password `json:"password" validate:"required,min=8,max=32" faker:"len=8"`
+	Name     userValue.Name     `json:"name" validate:"required,user_name" faker:"name"`
+	Password userValue.Password `json:"password" validate:"required,user_password" faker:"len=8"`
 }
 
 // RegisterOutput is the output of the Register service.

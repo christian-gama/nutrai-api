@@ -1,10 +1,12 @@
 package validation
 
-var validatorSingleton Validator
+import "github.com/christian-gama/nutrai-api/internal/core/domain/validator"
 
-func MakeValidator() Validator {
+var validatorSingleton validator.Validator
+
+func MakeValidator() validator.Validator {
 	if validatorSingleton == nil {
-		validatorSingleton = New()
+		validatorSingleton = newValidator()
 	}
 
 	return validatorSingleton

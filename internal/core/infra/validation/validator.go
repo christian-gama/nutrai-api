@@ -1,15 +1,11 @@
 package validation
 
 import (
+	"github.com/christian-gama/nutrai-api/internal/core/domain/validator"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	v "github.com/go-playground/validator/v10"
 	"github.com/iancoleman/strcase"
 )
-
-type Validator interface {
-	// Validate validates the given struct.
-	Validate(anStruct any) error
-}
 
 // validate is the instance of the Validate.
 var validate = v.New()
@@ -17,13 +13,8 @@ var validate = v.New()
 // validatorImpl implements the Validator interface.
 type validatorImpl struct{}
 
-// New creates a new Validator.
-func New() Validator {
-	validate.RegisterValidation("sort", validateSort)
-	validate.RegisterValidation("filter", validateFilter)
-	validate.RegisterValidation("preload", validatePreload)
-	validate.RegisterAlias("query", "dive,omitempty")
-
+// newValidator creates a newValidator Validator.
+func newValidator() validator.Validator {
 	return &validatorImpl{}
 }
 
@@ -35,9 +26,9 @@ func (va validatorImpl) Validate(anStruct any) error {
 	if err != nil {
 		if verr, ok := err.(v.ValidationErrors); ok {
 			for _, e := range verr {
-				err, ok := ErrorMap[e.ActualTag()]
+				err, ok := errorMsgs[e.ActualTag()]
 				if !ok {
-					err = DefaultError
+					err = defaultError
 				}
 
 				errs = errutil.Append(errs, err(strcase.ToLowerCamel(e.Field()), e.Param()))
@@ -52,11 +43,4 @@ func (va validatorImpl) Validate(anStruct any) error {
 	}
 
 	return nil
-}
-
-// RegisterAlias registers a mapping of a single validation tag that defines a common or
-// complex set of validation(s) to simplify adding validation to structs.
-// It's a wrapper for the validate.RegisterAlias, to avoid import the validator package.
-func RegisterAlias(tag, alias string) {
-	validate.RegisterAlias(tag, alias)
 }

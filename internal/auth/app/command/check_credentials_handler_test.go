@@ -86,16 +86,4 @@ func (s *CheckCredentialsSuite) TestCheckCredentials() {
 
 		s.ErrorAsInvalid(err)
 	})
-
-	s.Run("Should return an error if the password is empty", func() {
-		sut := makeSut()
-
-		user := userFake.User()
-		sut.Mock.UserRepo.On("FindByEmail", sut.Ctx, mock.Anything).Return(user, nil)
-		sut.Input.Password = ""
-
-		err := sut.Sut.Handle(sut.Ctx, sut.Input)
-
-		s.ErrorAsRequired(err)
-	})
 }

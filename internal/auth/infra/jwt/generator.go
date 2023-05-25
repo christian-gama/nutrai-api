@@ -82,8 +82,8 @@ func (g *generatorImpl) validate(subject *jwt.Subject) error {
 		return errutil.InternalServerError(errutil.Required("subject").Error())
 	}
 
-	if err := subject.Email.Validate(); err != nil {
-		return errutil.InternalServerError(err.Error())
+	if subject.Email == "" {
+		return errutil.InternalServerError(errutil.Required("subject.Email").Error())
 	}
 
 	return nil

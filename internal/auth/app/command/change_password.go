@@ -9,5 +9,5 @@ import (
 type ChangePasswordInput struct {
 	User *user.User `ctx:"currentUser" json:"-"`
 
-	Password value.Password `json:"password" faker:"len=8" validate:"required,min=8,max=32"`
+	Password value.Password `json:"password" faker:"len=8" validate:"required,user_password"`
 }

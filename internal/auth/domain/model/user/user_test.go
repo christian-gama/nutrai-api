@@ -1,12 +1,9 @@
 package user_test
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
-	value "github.com/christian-gama/nutrai-api/internal/auth/domain/value/user"
-	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
@@ -50,16 +47,6 @@ func (s *UserTestSuite) TestNewUser() {
 				s.ErrorAsRequired(err)
 				s.Nil(user)
 			})
-
-			s.Run("Should return an error when invalid", func() {
-				sut := makeSut()
-				sut.Data.Email = "invalid"
-
-				user, err := sut.Sut()
-
-				s.ErrorAsInvalid(err)
-				s.Nil(user)
-			})
 		})
 
 		s.Run("Password", func() {
@@ -84,39 +71,6 @@ func (s *UserTestSuite) TestNewUser() {
 				s.ErrorAsRequired(err)
 				s.Nil(user)
 			})
-
-			s.Run("Should return an error when too short", func() {
-				sut := makeSut()
-				sut.Data.Name = "a"
-
-				user, err := sut.Sut()
-
-				s.ErrorAsInvalid(err)
-				s.Nil(user)
-			})
-
-			s.Run("Should return an error when too long", func() {
-				sut := makeSut()
-				sut.Data.Name = value.Name(strings.Repeat("a", 256))
-
-				user, err := sut.Sut()
-
-				s.ErrorAsInvalid(err)
-				s.Nil(user)
-			})
-		})
-
-		s.Run("Should return multiple errors when multiple fields are invalid", func() {
-			sut := makeSut()
-			sut.Data.Email = ""
-			sut.Data.Password = ""
-			sut.Data.Name = ""
-
-			user, err := sut.Sut()
-
-			e := err.(*errutil.Error)
-			s.Equal(3, e.Len(), "should have 3 errors")
-			s.Nil(user)
 		})
 	})
 

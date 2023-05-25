@@ -1,11 +1,9 @@
 package patient_test
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/model/patient"
-	value "github.com/christian-gama/nutrai-api/internal/patient/domain/value/patient"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/patient/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
@@ -52,26 +50,6 @@ func (s *PatientTestSuite) TestNewPatient() {
 				s.ErrorAsRequired(err)
 				s.Nil(patient)
 			})
-
-			s.Run("Should return an error when less than minimum", func() {
-				sut := makeSut()
-				sut.Data.WeightKG = -1
-
-				patient, err := sut.Sut()
-
-				s.ErrorAsInvalid(err)
-				s.Nil(patient)
-			})
-
-			s.Run("Should return an error when greater than maximum", func() {
-				sut := makeSut()
-				sut.Data.WeightKG = 1000
-
-				patient, err := sut.Sut()
-
-				s.ErrorAsInvalid(err)
-				s.Nil(patient)
-			})
 		})
 
 		s.Run("HeightM", func() {
@@ -84,26 +62,6 @@ func (s *PatientTestSuite) TestNewPatient() {
 				s.ErrorAsRequired(err)
 				s.Nil(patient)
 			})
-
-			s.Run("Should return an error when less than minimum", func() {
-				sut := makeSut()
-				sut.Data.HeightM = -1
-
-				patient, err := sut.Sut()
-
-				s.ErrorAsInvalid(err)
-				s.Nil(patient)
-			})
-
-			s.Run("Should return an error when greater than maximum", func() {
-				sut := makeSut()
-				sut.Data.HeightM = 1000
-
-				patient, err := sut.Sut()
-
-				s.ErrorAsInvalid(err)
-				s.Nil(patient)
-			})
 		})
 
 		s.Run("Age", func() {
@@ -114,26 +72,6 @@ func (s *PatientTestSuite) TestNewPatient() {
 				patient, err := sut.Sut()
 
 				s.ErrorAsRequired(err)
-				s.Nil(patient)
-			})
-
-			s.Run("Should return an error when less than minimum", func() {
-				sut := makeSut()
-				sut.Data.Age = -1
-
-				patient, err := sut.Sut()
-
-				s.ErrorAsInvalid(err)
-				s.Nil(patient)
-			})
-
-			s.Run("Should return an error when greater than maximum", func() {
-				sut := makeSut()
-				sut.Data.Age = 125
-
-				patient, err := sut.Sut()
-
-				s.ErrorAsInvalid(err)
 				s.Nil(patient)
 			})
 		})
@@ -149,19 +87,6 @@ func (s *PatientTestSuite) TestNewPatient() {
 
 			e := err.(*errutil.Error)
 			s.Equal(3, e.Len(), "should have 3 errors")
-			s.Nil(patient)
-		})
-	})
-
-	s.Run("Allergies", func() {
-		s.Run("Should return an error when an allergy is invalid", func() {
-			sut := makeSut()
-
-			sut.Data.Allergies[0].Name = value.Allergy(strings.Repeat("a", 101))
-
-			patient, err := sut.Sut()
-
-			s.ErrorAsInvalid(err)
 			s.Nil(patient)
 		})
 	})

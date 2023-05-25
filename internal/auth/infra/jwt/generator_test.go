@@ -63,10 +63,10 @@ func (s *GeneratorSuite) TestGenerate() {
 		s.Empty(token)
 	})
 
-	s.Run("should return an error if the subject's email is invalid", func() {
+	s.Run("should return an error if the subject's email is empty", func() {
 		sut := makeSut()
 
-		sut.Data.Email = userValue.Email("invalid")
+		sut.Data.Email = userValue.Email("")
 
 		token, err := sut.Sut(sut.Data)
 		s.Error(err)

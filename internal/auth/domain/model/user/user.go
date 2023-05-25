@@ -29,26 +29,26 @@ func (User) String() string {
 }
 
 // Validate returns an error if the user is invalid.
-func (u *User) Validate() (*User, error) {
+func (u User) Validate() (*User, error) {
 	var errs *errutil.Error
 
-	if err := u.Email.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if u.Email == "" {
+		errs = errutil.Append(errs, errutil.Required("Email"))
 	}
 
-	if err := u.Password.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if u.Password == "" {
+		errs = errutil.Append(errs, errutil.Required("Password"))
 	}
 
-	if err := u.Name.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if u.Name == "" {
+		errs = errutil.Append(errs, errutil.Required("Name"))
 	}
 
 	if errs.HasErrors() {
 		return nil, errs
 	}
 
-	return u, nil
+	return &u, nil
 }
 
 // SetID sets the user ID.

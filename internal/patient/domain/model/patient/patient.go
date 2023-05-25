@@ -32,19 +32,19 @@ func (Patient) String() string {
 }
 
 // Validate returns an error if the patient is invalid.
-func (p *Patient) Validate() (*Patient, error) {
+func (p Patient) Validate() (*Patient, error) {
 	var errs *errutil.Error
 
-	if err := p.WeightKG.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if p.Age == 0 {
+		errs = errutil.Append(errs, errutil.Required("Age"))
 	}
 
-	if err := p.HeightM.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if p.HeightM == 0 {
+		errs = errutil.Append(errs, errutil.Required("HeightM"))
 	}
 
-	if err := p.Age.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if p.WeightKG == 0 {
+		errs = errutil.Append(errs, errutil.Required("WeightKG"))
 	}
 
 	for _, allergy := range p.Allergies {
@@ -57,7 +57,7 @@ func (p *Patient) Validate() (*Patient, error) {
 		return nil, errs
 	}
 
-	return p, nil
+	return &p, nil
 }
 
 // SetID sets the ID on the builder.

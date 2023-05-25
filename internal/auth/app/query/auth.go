@@ -8,7 +8,7 @@ import (
 
 // AuthInput is the query to check if the JWT token is valid and find the user associated with it.
 type AuthInput struct {
-	Access jwtValue.Token `json:"token" validate:"required" faker:"jwt"`
+	Access jwtValue.Token `json:"token" validate:"required,jwt" faker:"jwt"`
 }
 
 // AuthOutput is the output of the AuthInput query.

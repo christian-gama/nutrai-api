@@ -3,45 +3,11 @@ package validation
 import (
 	"fmt"
 
-	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
-// ErrorMap is a map of errors with custom messages (more user friendly).
-var ErrorMap = map[string]func(field string, param string) error{
-	// Customs
-	"filter": func(field string, param string) error {
-		return errutil.Invalid(
-			field,
-			fmt.Sprintf(
-				"must have the format 'field=name,op=%s,value=' and only one of the fields are allowed: %s",
-				querying.AllowedFilterOperators(),
-				param,
-			),
-		)
-	},
-
-	"sort": func(field string, param string) error {
-		return errutil.Invalid(
-			field,
-			fmt.Sprintf(
-				"must have the format 'field:asc|desc' and only one of the fields are allowed: %s",
-				param,
-			),
-		)
-	},
-
-	"preload": func(field string, param string) error {
-		return errutil.Invalid(
-			field,
-			fmt.Sprintf(
-				"must have one of the fields: %s",
-				param,
-			),
-		)
-	},
-
-	// Default
+// errorMsgs is a map of errors messages that are more user friendly.
+var errorMsgs = map[string]func(field string, param string) error{
 	"eqcsfield": func(field string, param string) error {
 		return errutil.Invalid(field, fmt.Sprintf("must be equal to %s", param))
 	},
@@ -622,6 +588,6 @@ var ErrorMap = map[string]func(field string, param string) error{
 	},
 }
 
-func DefaultError(field string, param string) error {
+func defaultError(field string, param string) error {
 	return errutil.Invalid(field, "unknown error")
 }

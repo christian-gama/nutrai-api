@@ -45,10 +45,6 @@ func (c *checkCredentialsHandlerImpl) Handle(
 	}
 
 	password := input.Password
-	if err := password.Validate(); err != nil {
-		return err
-	}
-
 	if err := c.checkPassword(user, password); err != nil {
 		return err
 	}

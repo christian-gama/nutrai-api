@@ -7,7 +7,7 @@ import (
 
 type LoginInput struct {
 	Email    userValue.Email    `json:"email" validate:"required,email" faker:"email"`
-	Password userValue.Password `json:"password" validate:"required,min=8,max=32" faker:"len=8"`
+	Password userValue.Password `json:"password" validate:"required,user_password" faker:"len=8"`
 }
 
 type LoginOutput struct {
