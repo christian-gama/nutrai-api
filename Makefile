@@ -1,9 +1,19 @@
 PWD = $(shell pwd)
-GENERATED_DIR ?= $(PWD)/.generated
-CACHE_DIR ?= $(PWD)/.cache
-BUILD_DIR ?= $(GENERATED_DIR)/build
+
+# BUILD_DIR is the directory where the binary file will be generated.
+BUILD_DIR = bin/build
+
+# DOCKER_DIR is the directory where the docker volumes will be created.
+DOCKER_DIR = .docker
+
+# MAKE is a shortcut to run make commands without printing the directory.
 MAKE = make --no-print-directory
+
+# APP_NAME is the name of the application.
 APP_NAME = nutrai-api
+
+# AIRVERSION is the version of the air package to be used. 
+# https://github.com/cosmtrek/air
 AIRVERSION = v1.43.0
 
 # WORKDIR is used to set the working directory for Dockerfile builds.
@@ -49,8 +59,8 @@ env: .cmd-exists-sh .clear-screen
 .PHONY: run
 run: .cmd-exists-go .clear-screen .check-env-file
 ifneq ($(RUNNING_IN_DOCKER), true)
-	@ENV_FILE=.env.dev $(MAKE) postgres
-	@ENV_FILE=.env.dev $(MAKE) rabbitmq
+	@$(MAKE) postgres
+	@$(MAKE) rabbitmq
 endif
 
 ifeq ($(ENV_FILE), .env.prod)
@@ -136,11 +146,10 @@ lint: .cmd-exists-docker .cmd-exists-sh .clear-screen
 # ==============================================================================================
 .PHONY: clear
 clear: .cmd-exists-sh .clear-screen
-	@rm -rf $(GENERATED_DIR)
-	@rm -rf $(CACHE_DIR)
+	@rm -rf $(DOCKER_DIR)
+	@rm -rf $(BUILD_DIR)
 	@rm -rf ./coverage.out
 	@rm -rf ./coverage.html
-	@rm -rf ./testutils/mocks
 	@rm -rf ./tmp
 
 
@@ -268,9 +277,9 @@ migrate: .cmd-exists-docker .clear-screen .check-env-file
 .PHONY: postgres
 postgres: .cmd-exists-docker .clear-screen .check-env-file
 	@if [ "$(ENV_FILE)" = ".env.test" ]; then \
-		WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d psql_test; \
+		$(MAKE) .docker COMMAND=up FLAG=-d SERVICE=psql_test; \
 	else \
-		WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d psql; \
+		$(MAKE) .docker COMMAND=up FLAG=-d SERVICE=psql; \
 	fi;
 
 
@@ -284,9 +293,9 @@ postgres: .cmd-exists-docker .clear-screen .check-env-file
 .PHONY: rabbitmq
 rabbitmq: .cmd-exists-docker .clear-screen .check-env-file
 	@if [ "$(ENV_FILE)" = ".env.test" ]; then \
-		WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d rabbitmq_test; \
+		$(MAKE) .docker COMMAND=up FLAG=-d SERVICE=rabbitmq_test; \
 	else \
-		WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file $(ENV_FILE) up -d rabbitmq; \
+		$(MAKE) .docker COMMAND=up FLAG=-d SERVICE=rabbitmq; \
 	fi;
 
 
@@ -303,21 +312,6 @@ mock: .cmd-exists-go
 
 
 # ==============================================================================================
-# Target: docker-run
-# Brief: This target is used to run the API container.
-# Usage: Run the command 'make docker-run ENV_FILE="<env_file>"'.
-# Args:
-# 	ENV_FILE: The env file to be loaded.
-# ==============================================================================================
-.PHONY: docker-run
-docker-run: .cmd-exists-docker .clear-screen .check-env-file
-	@RUNNING_IN_DOCKER=true \
-	WORKDIR=$(WORKDIR) \
-	AIRVERSION=$(AIRVERSION) \
-	docker compose --env-file $(ENV_FILE) up -d api
-
-
-# ==============================================================================================
 # Target: docker-dev
 # Brief: This target is used to run the API container in development mode.
 # Usage: Run the command 'make docker-dev'.
@@ -325,7 +319,7 @@ docker-run: .cmd-exists-docker .clear-screen .check-env-file
 .PHONY: docker-dev
 docker-dev: .cmd-exists-docker .clear-screen
 	@ENV_FILE=.env.dev \
-	$(MAKE) docker-run
+	$(MAKE) .docker COMMAND=up FLAG=-d SERVICE=api
 
 
 # ==============================================================================================
@@ -336,7 +330,29 @@ docker-dev: .cmd-exists-docker .clear-screen
 .PHONY: docker-prod
 docker-prod: .cmd-exists-docker .clear-screen
 	@ENV_FILE=.env.prod \
-	$(MAKE) docker-run
+	$(MAKE) .docker COMMAND=up FLAG=-d SERVICE=api
+
+
+# ==============================================================================================
+# Target: docker-stop
+# Brief: This target is used to stop the API container.
+# Usage: Run the command 'make docker-stop'.
+# ==============================================================================================
+.PHONY: docker-stop
+docker-stop: .cmd-exists-docker .clear-screen
+	@ENV_FILE=.env.dev \
+	$(MAKE) .docker COMMAND=stop
+
+
+# ==============================================================================================
+# Target: docker-kill
+# Brief: This target is used to kill the API container.
+# Usage: Run the command 'make docker-kill'.
+# ==============================================================================================
+.PHONY: docker-kill
+docker-kill: .cmd-exists-docker .clear-screen
+	@ENV_FILE=.env.dev \
+	$(MAKE) .docker COMMAND=kill
 
 
 # ==============================================================================================
@@ -348,14 +364,33 @@ docker-prod: .cmd-exists-docker .clear-screen
 # ==============================================================================================
 .PHONY: docker-list-env
 docker-list-env: .cmd-exists-docker .clear-screen .check-env-file
-	@WORKDIR=$(WORKDIR) APP_NAME=$(APP_NAME) docker compose \
-		--env-file "$(ENV_FILE)" \
-		run \
-		--name $(APP_NAME)-list-env \
-		--rm \
-		-e ENV_FILE=$(ENV_FILE) \
-		api \
-		make list-env
+	@WORKDIR=$(WORKDIR)  \
+	DOCKER_DIR=$(DOCKER_DIR) \
+	BUILD_DIR=$(BUILD_DIR) \
+	AIRVERSION=$(AIRVERSION) \
+	docker compose \
+	--env-file "$(ENV_FILE)" \
+	run \
+	--name $(APP_NAME)-list-env \
+	--rm \
+	-e ENV_FILE=$(ENV_FILE) \
+	api \
+	make list-env
+
+
+# ==============================================================================================
+# Target: .docker
+# Brief: This target is used to run a docker command.
+# Usage: It is not meant to be called directly, but by other targets.
+# ==============================================================================================
+.PHONY: .docker
+.docker: .cmd-exists-docker .clear-screen .check-env-file
+	@RUNNING_IN_DOCKER=true \
+	DOCKER_DIR=$(DOCKER_DIR) \
+	BUILD_DIR=$(BUILD_DIR) \
+	WORKDIR=$(WORKDIR) \
+	AIRVERSION=$(AIRVERSION) \
+	docker compose --env-file $(ENV_FILE) $(COMMAND) $(FLAG) $(SERVICE)
 
 
 # ==============================================================================================
@@ -403,6 +438,7 @@ docker-list-env: .cmd-exists-docker .clear-screen .check-env-file
 # Usage: It is not meant to be called directly, but by other targets.
 # ==============================================================================================
 .prepare-test: .cmd-exists-go .cmd-exists-docker .clear-screen
-	@WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file .env.test up -d psql_test
-	@WORKDIR=$(WORKDIR) AIRVERSION=$(AIRVERSION) docker compose --env-file .env.test up -d rabbitmq_test
+	@ENV_FILE=.env.test $(MAKE) rabbitmq
+	@ENV_FILE=.env.test $(MAKE) postgres
 	@go run ./cmd/migrate/*.go -e .env.test reset
+

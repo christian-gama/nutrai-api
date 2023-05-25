@@ -98,7 +98,8 @@ Temporary Items
 
 # Generated files
 .cache/
-.generated/
+bin/
+.docker/
 tmp/
 nutrai-api
 
@@ -106,3 +107,8 @@ nutrai-api
 .env
 .env.*
 !.env.example
+
+# Jmeter
+*.jmx
+*.jtl
+JMeter.log

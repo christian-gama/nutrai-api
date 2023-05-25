@@ -4,22 +4,22 @@ services:
   # are configured in .env.$APP_ENV and it will run according to the variables
   # you set there.
   psql:
+    command: -p $DB_PORT
     container_name: nutrai-psql
     image: postgres:15.2-alpine
     restart: "no"
-    command: -p $DB_PORT
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U $DB_USER -d $DB_NAME" ]
       interval: 1s
-      timeout: 1s
       retries: 10
+      test: [ "CMD-SHELL", "pg_isready -U $DB_USER -d $DB_NAME" ]
+      timeout: 1s
     environment:
-      - POSTGRES_USER=$DB_USER
-      - POSTGRES_PASSWORD=$DB_PASSWORD
-      - POSTGRES_DB=$DB_NAME
-      - POSTGRES_PORT=$DB_PORT
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_PORT: $DB_PORT
+      POSTGRES_USER: $DB_USER
     volumes:
-      - ./.generated/db_data/$APP_ENV:/var/lib/postgresql/data
+      - ./$DOCKER_DIR/db_data/$APP_ENV:/var/lib/postgresql/data
     ports:
       - "$DB_PORT:$DB_PORT"
 
@@ -31,16 +31,16 @@ services:
     image: rabbitmq:3.11.8-alpine
     restart: always
     healthcheck:
-      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
       interval: 1s
-      timeout: 1s
       retries: 10
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      timeout: 1s
     environment:
-      - RABBITMQ_DEFAULT_USER=$RABBITMQ_USER
-      - RABBITMQ_DEFAULT_PASS=$RABBITMQ_PASSWORD
-      - RABBITMQ_NODE_PORT=$RABBITMQ_PORT
+      RABBITMQ_DEFAULT_PASS: $RABBITMQ_PASSWORD
+      RABBITMQ_DEFAULT_USER: $RABBITMQ_USER
+      RABBITMQ_NODE_PORT: $RABBITMQ_PORT
     volumes:
-      - ./.generated/rabbitmq_data/$APP_ENV:/var/lib/rabbitmq
+      - ./$DOCKER_DIR/rabbitmq_data/$APP_ENV:/var/lib/rabbitmq
     ports:
       - "$RABBITMQ_PORT:$RABBITMQ_PORT"
 
@@ -48,17 +48,18 @@ services:
   # configured in .env.$APP_ENV and it will run according to the variables
   # you set there.
   api:
+    command: sh -c "make run ENV_FILE=.env.$APP_ENV"
     container_name: nutrai-api
     restart: always
-    command: sh -c "make run ENV_FILE=.env.$APP_ENV"
     build:
       context: .
       target: ${APP_ENV}
       dockerfile: Dockerfile
       args:
-        - WORKDIR=$WORKDIR
-        - ARCH=${ARCH:-amd64}
-        - AIRVERSION=$AIRVERSION
+        AIRVERSION: $AIRVERSION
+        WORKDIR: $WORKDIR
+    environment:
+      RUNNING_IN_DOCKER: true
     ports:
       - "$APP_PORT:$APP_PORT"
     env_file:
@@ -70,44 +71,42 @@ services:
       - psql
       - rabbitmq
     volumes:
-      - ./.cache/go:/root/.cache
-      - ./.generated/build:$WORKDIR/.generated/build
-      - ./.generated/coverage:$WORKDIR/.generated/coverage
+      - ./$DOCKER_DIR/build:$WORKDIR/$BUILD_DIR
+      - ./$DOCKER_DIR/cache/go:/root/.cache
+      - ./$DOCKER_DIR/tmp:$WORKDIR/tmp
       - ./cmd:$WORKDIR/cmd
-      - ./pkg:$WORKDIR/pkg
+      - ./config:$WORKDIR/config
       - ./internal:$WORKDIR/internal
+      - ./pkg:$WORKDIR/pkg
+      - ./scripts:$WORKDIR/scripts
       - ./testutils:$WORKDIR/testutils
+      - ./vendor:$WORKDIR/vendor
       - ./go.mod:$WORKDIR/go.mod
       - ./go.sum:$WORKDIR/go.sum
       - ./Makefile:$WORKDIR/Makefile
-      - ./scripts:$WORKDIR/scripts
-      - ./config:$WORKDIR/config
-      - ./vendor:$WORKDIR/vendor
-    environment:
-      - RUNNING_IN_DOCKER=true
 
   # Optimized for running tests. Do not use for development. It will run the 
   # database in a tmpfs, so it will not persist data. Besides that, it will
   # disable fsync, full_page_writes and synchronous_commit, so it will be much
   # faster, but it will not be safe for production.
   psql_test:
+    command: -c fsync=off -c full_page_writes=off -c synchronous_commit=off -p $DB_PORT
     container_name: nutrai-psql-test
     image: postgres:15.2-alpine
     restart: always
-    command: -c fsync=off -c full_page_writes=off -c synchronous_commit=off -p $DB_PORT
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U $DB_USER -d $DB_NAME" ]
       interval: 1s
-      timeout: 1s
       retries: 10
+      test: [ "CMD-SHELL", "pg_isready -U $DB_USER -d $DB_NAME" ]
+      timeout: 1s
     ports:
       - "$DB_PORT:$DB_PORT"
     environment:
-      - POSTGRES_USER=$DB_USER
-      - POSTGRES_PASSWORD=$DB_PASSWORD
-      - POSTGRES_DB=$DB_NAME
-      - POSTGRES_HOST=$DB_HOST
-      - POSTGRES_PORT=$DB_PORT
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_HOST: $DB_HOST
+      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_PORT: $DB_PORT
+      POSTGRES_USER: $DB_USER
     tmpfs:
       - /var/lib/postgresql/data
 
@@ -123,9 +122,9 @@ services:
       timeout: 1s
       retries: 10
     environment:
-      - RABBITMQ_DEFAULT_USER=$RABBITMQ_USER
-      - RABBITMQ_DEFAULT_PASS=$RABBITMQ_PASSWORD
-      - RABBITMQ_NODE_PORT=$RABBITMQ_PORT
+      RABBITMQ_DEFAULT_PASS: $RABBITMQ_PASSWORD
+      RABBITMQ_DEFAULT_USER: $RABBITMQ_USER
+      RABBITMQ_NODE_PORT: $RABBITMQ_PORT
     ports:
       - "$RABBITMQ_PORT:$RABBITMQ_PORT"
     tmpfs:

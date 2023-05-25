@@ -1,10 +1,10 @@
-.generated/
-.cache/
-testutils/mocks/
+.docker/
 .githooks/
 .vscode/
 .github/
+bin/
 tmp/
+.gitignore
 Dockerfile
 docker-compose.yml
 README.md
