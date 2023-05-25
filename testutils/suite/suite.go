@@ -45,9 +45,19 @@ func (s *Suite) ErrorAsRequired(err error, msgAndArgs ...any) bool {
 	return asserts.ErrorAsRequired(s.T(), err, msgAndArgs...)
 }
 
+// ErrorAsRepository checks if the error is an ErrRepository.
+func (s *Suite) ErrorAsRepository(err error, msgAndArgs ...any) bool {
+	return asserts.ErrorAsRepository(s.T(), err, msgAndArgs...)
+}
+
 // ErrorAsInternal checks if the error is an ErrInternal.
 func (s *Suite) ErrorAsInternal(err error, msgAndArgs ...any) bool {
 	return asserts.ErrorAsInternal(s.T(), err, msgAndArgs...)
+}
+
+// ErrorAsUnauthorized checks if the error is an ErrUnauthorized.
+func (s *Suite) ErrorAsUnauthorized(err error, msgAndArgs ...any) bool {
+	return asserts.ErrorAsUnauthorized(s.T(), err, msgAndArgs...)
 }
 
 // HasNotChanged checks if the given objects are equal.

@@ -38,10 +38,16 @@ func Response(ctx *gin.Context, handler func()) {
 					return
 				}
 
+				var errRepository *errutil.ErrRepository
+				if errors.As(err, &errRepository) {
+					BadRequest(ctx, err)
+					return
+				}
+
 				if e, ok := err.(*errutil.Error); ok {
 					BadRequest(ctx, e)
 				} else {
-					InternalServerError(ctx, err)
+					InternalServerError(ctx, fmt.Errorf("%v", err))
 				}
 			} else {
 				InternalServerError(ctx, fmt.Errorf("%v", r))

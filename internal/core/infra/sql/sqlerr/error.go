@@ -3,6 +3,8 @@ package sqlerr
 import (
 	"fmt"
 	"strings"
+
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
 // Error is a helper to convert SQL errors into friendly errors. It returns nil if no error is
@@ -25,15 +27,15 @@ func Error[Model fmt.Stringer](err error, model Model) error {
 
 var errsMap = map[string]func(err error, model fmt.Stringer) error{
 	checkConstraintPattern: func(err error, model fmt.Stringer) error {
-		return checkConstraint(err)
+		return errutil.Repository(checkConstraint(err).Error())
 	},
 
 	columnDoesNotExistPattern: func(err error, model fmt.Stringer) error {
-		return newErrColumnNotFound(getColumnName(err))
+		return errutil.Repository(newErrColumnNotFound(getColumnName(err)).Error())
 	},
 
 	contextDeadlinePattern: func(err error, model fmt.Stringer) error {
-		return newErrTimeout()
+		panic(newErrTimeout())
 	},
 
 	failedToConnectPattern: func(err error, model fmt.Stringer) error {
@@ -41,31 +43,31 @@ var errsMap = map[string]func(err error, model fmt.Stringer) error{
 	},
 
 	foreignKeyConstraintPattern: func(err error, model fmt.Stringer) error {
-		return foreignKeyConstraint(err)
+		return errutil.Repository(foreignKeyConstraint(err).Error())
 	},
 
 	inputSyntaxPattern: func(err error, model fmt.Stringer) error {
-		return newErrMalformedQuery()
+		panic(newErrMalformedQuery())
 	},
 
 	missingWhereConditionsPattern: func(err error, model fmt.Stringer) error {
-		return newErrMalformedQuery()
+		panic(newErrMalformedQuery())
 	},
 
 	noRowsAffectedPattern: func(err error, model fmt.Stringer) error {
-		return newErrNoChanges()
+		return errutil.Repository(newErrNoChanges().Error())
 	},
 
 	notFoundPattern: func(err error, model fmt.Stringer) error {
-		return newErrNotFound(model.String())
+		return errutil.Repository(newErrNotFound(model.String()).Error())
 	},
 
 	notNullConstraintPattern: func(err error, model fmt.Stringer) error {
-		return notNullConstraint(err)
+		return errutil.Repository(notNullConstraint(err).Error())
 	},
 
 	tooLongValuePattern: func(err error, model fmt.Stringer) error {
-		return tooLongConstraint(err)
+		return errutil.Repository(tooLongConstraint(err).Error())
 	},
 
 	tooManyClientsPattern: func(err error, model fmt.Stringer) error {
@@ -73,6 +75,6 @@ var errsMap = map[string]func(err error, model fmt.Stringer) error{
 	},
 
 	uniqueConstraintPattern: func(err error, model fmt.Stringer) error {
-		return uniqueConstraint(err)
+		return errutil.Repository(uniqueConstraint(err).Error())
 	},
 }

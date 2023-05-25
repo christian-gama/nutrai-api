@@ -25,8 +25,20 @@ func ErrorAsRequired(t *testing.T, err error, msgAndArgs ...any) bool {
 	return assert.ErrorAs(t, err, &e, msgAndArgs)
 }
 
+// ErrorAsRepository asserts that the error is as ErrRepository.
+func ErrorAsRepository(t *testing.T, err error, msgAndArgs ...any) bool {
+	var e *errutil.ErrRepository
+	return assert.ErrorAs(t, err, &e, msgAndArgs)
+}
+
 // ErrorAsInternal asserts that the error is as ErrInternal.
 func ErrorAsInternal(t *testing.T, err error, msgAndArgs ...any) bool {
 	var e *errutil.ErrInternal
+	return assert.ErrorAs(t, err, &e, msgAndArgs)
+}
+
+// ErrorAsUnauthorized asserts that the error is as ErrUnauthorized.
+func ErrorAsUnauthorized(t *testing.T, err error, msgAndArgs ...any) bool {
+	var e *errutil.ErrUnauthorized
 	return assert.ErrorAs(t, err, &e, msgAndArgs)
 }

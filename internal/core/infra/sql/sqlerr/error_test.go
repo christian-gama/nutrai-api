@@ -39,8 +39,7 @@ func (s *ErrorSuite) TestError() {
 
 		err = Error(err, TestModel)
 
-		var e *errNotFound
-		s.ErrorAs(err, &e)
+		s.ErrorAsRepository(err)
 	})
 
 	s.Run("returns an ErrUniqueConstraint if the error is a unique constraint violation",
@@ -49,8 +48,7 @@ func (s *ErrorSuite) TestError() {
 
 			err = Error(err, TestModel)
 
-			var e *errUniqueConstraint
-			s.ErrorAs(err, &e)
+			s.ErrorAsRepository(err)
 		},
 	)
 
@@ -63,8 +61,7 @@ func (s *ErrorSuite) TestError() {
 
 			err = Error(err, TestModel)
 
-			var e *errForeignKeyConstraint
-			s.ErrorAs(err, &e)
+			s.ErrorAsRepository(err)
 		},
 	)
 
@@ -75,8 +72,7 @@ func (s *ErrorSuite) TestError() {
 
 			err = Error(err, TestModel)
 
-			var e *errNotNullConstraint
-			s.ErrorAs(err, &e)
+			s.ErrorAsRepository(err)
 		},
 	)
 
@@ -85,18 +81,18 @@ func (s *ErrorSuite) TestError() {
 
 		err = Error(err, TestModel)
 
-		var e *errCheckConstraint
-		s.ErrorAs(err, &e)
+		s.ErrorAsRepository(err)
 	},
 	)
 
 	s.Run("returns an ErrTimeout if the error is a context deadline exceeded", func() {
-		err := errors.New("context deadline exceeded")
+		s.Panics(func() {
+			err := errors.New("context deadline exceeded")
 
-		err = Error(err, TestModel)
+			err = Error(err, TestModel)
 
-		var e *errTimeout
-		s.ErrorAs(err, &e)
+			s.ErrorAsInternal(err)
+		})
 	})
 
 	s.Run("returns an ErrUnavailable if the error is a connection refused", func() {
@@ -105,8 +101,7 @@ func (s *ErrorSuite) TestError() {
 
 			err = Error(err, TestModel)
 
-			var e *errUnavailable
-			s.ErrorAs(err, &e)
+			s.ErrorAsInternal(err)
 		})
 	})
 
@@ -115,8 +110,7 @@ func (s *ErrorSuite) TestError() {
 
 		err = Error(err, TestModel)
 
-		var e *errNoChanges
-		s.ErrorAs(err, &e)
+		s.ErrorAsRepository(err)
 	})
 
 	s.Run("returns an ErrUnavailable if the error is a connection refused", func() {
@@ -125,8 +119,7 @@ func (s *ErrorSuite) TestError() {
 
 			err = Error(err, TestModel)
 
-			var e *errUnavailable
-			s.ErrorAs(err, &e)
+			s.ErrorAsInternal(err)
 		})
 	})
 
@@ -135,8 +128,7 @@ func (s *ErrorSuite) TestError() {
 
 		err = Error(err, TestModel)
 
-		var e *errColumnNotFound
-		s.ErrorAs(err, &e)
+		s.ErrorAsRepository(err)
 	})
 
 	s.Run(
@@ -146,27 +138,28 @@ func (s *ErrorSuite) TestError() {
 
 			err = Error(err, TestModel)
 
-			var e *errColumnNotFound
-			s.ErrorAs(err, &e)
+			s.ErrorAsRepository(err)
 		},
 	)
 
 	s.Run("returns an ErrMalformedQuery if the error is a input syntax", func() {
-		err := errors.New("SQLSTATE 22P02")
+		s.Panics(func() {
+			err := errors.New("SQLSTATE 22P02")
 
-		err = Error(err, TestModel)
+			err = Error(err, TestModel)
 
-		var e *errMalformedQuery
-		s.ErrorAs(err, &e)
+			s.ErrorAsInternal(err)
+		})
 	})
 
 	s.Run("Error returns an ErrMalformedQuery if the error is a missing where conditions", func() {
-		err := errors.New("WHERE conditions required")
+		s.Panics(func() {
+			err := errors.New("WHERE conditions required")
 
-		err = Error(err, TestModel)
+			err = Error(err, TestModel)
 
-		var e *errMalformedQuery
-		s.ErrorAs(err, &e)
+			s.ErrorAsInternal(err)
+		})
 	})
 
 	s.Run("returns an ErrTooLong if the error is a too long value", func() {
@@ -174,8 +167,7 @@ func (s *ErrorSuite) TestError() {
 
 		err = Error(err, TestModel)
 
-		var e *errTooLong
-		s.ErrorAs(err, &e)
+		s.ErrorAsRepository(err)
 	})
 
 	s.Run(
@@ -185,8 +177,7 @@ func (s *ErrorSuite) TestError() {
 
 			err = Error(err, TestModel)
 
-			var e *errCheckConstraint
-			s.ErrorAs(err, &e)
+			s.ErrorAsRepository(err)
 		},
 	)
 

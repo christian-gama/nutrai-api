@@ -7,6 +7,5 @@ import (
 
 // Register registers the routes for this module.
 func Register() {
-	routes.Api().
-		SetMiddleware(middleware.MakeSaveException())
+	routes.SetGlobalMiddleware(middleware.MakeSaveException())
 }

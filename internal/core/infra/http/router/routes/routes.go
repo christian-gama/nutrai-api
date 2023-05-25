@@ -9,6 +9,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func SetGlobalMiddleware(middleware ...middleware.Middleware) {
+	router.Router.Use(func(c *gin.Context) {
+		for _, m := range middleware {
+			m.Handle(c)
+		}
+	})
+}
+
 type routes struct {
 	group *gin.RouterGroup
 }

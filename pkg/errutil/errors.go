@@ -104,3 +104,18 @@ func TooManyRequests(reason string, args ...any) error {
 func (e *ErrTooManyRequests) Error() string {
 	return fmt.Sprintf("too many requests: %s", e.Reason)
 }
+
+// ErrRepository is returned when a repository error occurs.
+type ErrRepository struct {
+	Reason string
+}
+
+// Repository returns a new ErrRepository.
+func Repository(reason string, args ...any) error {
+	return &ErrRepository{Reason: fmt.Sprintf(reason, args...)}
+}
+
+// Error implements the error interface.
+func (e *ErrRepository) Error() string {
+	return fmt.Sprintf("repository error: %s", e.Reason)
+}
