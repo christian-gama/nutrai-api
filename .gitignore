@@ -111,4 +111,4 @@ nutrai-api
 # Jmeter
 *.jmx
 *.jtl
-JMeter.log
+jmeter.log
