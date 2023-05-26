@@ -107,7 +107,7 @@ func tooLongConstraint(err error) error {
 	matches := reg.FindStringSubmatch(err.Error())
 
 	if len(matches) == 0 {
-		return errors.Invalid("", "too long")
+		return errors.Invalid("", "value is too long")
 	}
 
 	value := slice.
@@ -122,8 +122,8 @@ func tooLongConstraint(err error) error {
 			return v
 		}).
 		Build()
-
-	return errors.Invalid(getColumnName(err), fmt.Sprintf("too long (max %d)", value))
+	fmt.Println(value, err.Error())
+	return errors.Invalid("", fmt.Sprintf("value is too long (max %d character)", value[0]))
 }
 
 // uniqueConstraint is an error that occurs when a unique constraint is violated.

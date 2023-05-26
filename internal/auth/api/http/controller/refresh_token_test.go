@@ -64,7 +64,7 @@ func (s *RefreshTokenSuite) TestHandle() {
 			s.Equal(http.StatusOK, ctx.Writer.Status())
 			s.EqualValues(
 				accessToken,
-				body.Data.(map[string]any)["access"],
+				body["access"],
 				"should return access token",
 			)
 		})

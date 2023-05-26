@@ -64,12 +64,12 @@ func (s *LoginSuite) TestHandle() {
 		s.Equal(http.StatusOK, ctx.Writer.Status())
 		s.EqualValues(
 			accessToken,
-			body.Data.(map[string]any)["access"],
+			body["access"],
 			"should return access token",
 		)
 		s.EqualValues(
 			refreshToken,
-			body.Data.(map[string]any)["refresh"],
+			body["refresh"],
 			"should return refresh token",
 		)
 	})

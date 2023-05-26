@@ -9,7 +9,6 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
 	"github.com/christian-gama/nutrai-api/testutils/httputil"
 	"github.com/gin-gonic/gin"
 )
@@ -22,7 +21,7 @@ func MustRequest(handler controller.Controller, opt Option) (ctx *gin.Context) {
 func MustRequestWithBody(
 	handler controller.Controller,
 	opt Option,
-) (ctx *gin.Context, body *response.Body) {
+) (ctx *gin.Context, body map[string]any) {
 	ctx, r, writer := createTestContext()
 
 	handlerPath := handler.Path()
