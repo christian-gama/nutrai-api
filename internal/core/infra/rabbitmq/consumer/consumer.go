@@ -1,12 +1,11 @@
 package consumer
 
 import (
-	"errors"
-
 	"github.com/christian-gama/nutrai-api/internal/core/domain/logger"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/message"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/bench"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/rabbitmq"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
@@ -43,13 +42,8 @@ func NewConsumer(
 		opt(options)
 	}
 
-	if options.ExchangeName == "" {
-		panic(errors.New("exchange cannot be empty"))
-	}
-
-	if options.RoutingKey == "" {
-		panic(errors.New("routing key cannot be empty"))
-	}
+	errutil.MustBeNotEmpty("options.ExchangeName", options.ExchangeName)
+	errutil.MustBeNotEmpty("options.RoutingKey", options.RoutingKey)
 
 	if options.QueueName == "" {
 		options.QueueName = options.RoutingKey

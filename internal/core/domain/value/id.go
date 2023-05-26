@@ -1,8 +1,6 @@
 package value
 
-import (
-	"github.com/christian-gama/nutrai-api/pkg/errutil"
-)
+import "github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 
 // ID is a data type that serves as a unique identifier for a specific domain entity, such as a
 // user.
@@ -17,7 +15,7 @@ func (i ID) Uint() uint {
 // Validate returns true if the ID is valid.
 func (i ID) Validate() error {
 	if i == 0 {
-		return errutil.Required("id")
+		return errors.Required("id")
 	}
 
 	return nil

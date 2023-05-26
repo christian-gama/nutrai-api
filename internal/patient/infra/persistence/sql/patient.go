@@ -2,7 +2,6 @@ package persistence
 
 import (
 	"context"
-	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/convert"
@@ -11,6 +10,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/repo"
 	"github.com/christian-gama/nutrai-api/internal/patient/infra/persistence/sql/schema"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"gorm.io/gorm"
 )
 
@@ -21,9 +21,7 @@ type patientSQLImpl struct {
 
 // NewSQLPatient returns a new Patient.
 func NewSQLPatient(db *gorm.DB) repo.Patient {
-	if db == nil {
-		panic(errors.New("db cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("gorm.DB", db)
 
 	return &patientSQLImpl{
 		manager: manager.NewManager[patient.Patient, schema.Patient](db),

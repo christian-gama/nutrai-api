@@ -2,13 +2,13 @@ package publisher
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/message"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/rabbitmq"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
@@ -37,13 +37,8 @@ func NewPublisher(rmq *rabbitmq.RabbitMQ, opts ...func(*options)) message.Publis
 		opt(options)
 	}
 
-	if options.ExchangeName == "" {
-		panic(errors.New("exchange cannot be empty"))
-	}
-
-	if options.RoutingKey == "" {
-		panic(errors.New("routing key cannot be empty"))
-	}
+	errutil.MustBeNotEmpty("exchange name", options.ExchangeName)
+	errutil.MustBeNotEmpty("routing key", options.RoutingKey)
 
 	return &publisherImpl{rmq, options}
 }
@@ -63,7 +58,7 @@ func (p *publisherImpl) Handle(msg []byte) {
 		p.options.Args,
 	)
 	if err != nil {
-		panic(errutil.InternalServerError("could not declare an exchange"))
+		panic(errors.InternalServerError("could not declare an exchange"))
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -80,6 +75,6 @@ func (p *publisherImpl) Handle(msg []byte) {
 		},
 	)
 	if err != nil {
-		panic(errutil.InternalServerError(fmt.Sprintf("could not publish message: %s", err)))
+		panic(errors.InternalServerError(fmt.Sprintf("could not publish message: %s", err)))
 	}
 }

@@ -3,6 +3,7 @@ package publisher
 import (
 	"github.com/christian-gama/nutrai-api/internal/core/domain/event"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/rabbitmq"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
@@ -21,12 +22,16 @@ type options struct {
 }
 
 func WithExchange(exchange rabbitmq.Exchange) func(*options) {
+	errutil.MustBeNotEmpty("exchange", exchange)
+
 	return func(o *options) {
 		o.ExchangeName = exchange
 	}
 }
 
 func WithRoutingKey(routingKey event.Event) func(*options) {
+	errutil.MustBeNotEmpty("routingKey", routingKey)
+
 	return func(o *options) {
 		o.RoutingKey = routingKey.String()
 	}
@@ -81,6 +86,8 @@ func WithImmediate(immediate bool) func(*options) {
 }
 
 func WithContentType(contentType rabbitmq.ContentType) func(*options) {
+	errutil.MustBeNotEmpty("contentType", contentType)
+
 	return func(o *options) {
 		o.ContentType = contentType
 	}

@@ -1,10 +1,11 @@
 package response
 
 import (
-	"errors"
+	_errors "errors"
 	"fmt"
 
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -43,7 +44,6 @@ func handleSpecificErrors(ctx *gin.Context, err error) bool {
 		{ErrorAssertFunc: isErrInternal, Response: InternalServerError},
 		{ErrorAssertFunc: isErrInvalid, Response: BadRequest},
 		{ErrorAssertFunc: isErrUnauthorized, Response: Unauthorized},
-		{ErrorAssertFunc: isErrRepository, Response: BadRequest},
 	}
 
 	for _, errorHandler := range errorResponses {
@@ -65,26 +65,21 @@ func handleGenericErrors(ctx *gin.Context, err error) {
 }
 
 func isErrNotFound(err error) bool {
-	var errNotFound *errutil.ErrNotFound
-	return errors.As(err, &errNotFound)
+	var errNotFound *errors.ErrNotFound
+	return _errors.As(err, &errNotFound)
 }
 
 func isErrInternal(err error) bool {
-	var errInternal *errutil.ErrInternal
-	return errors.As(err, &errInternal)
+	var errInternal *errors.ErrInternalServerError
+	return _errors.As(err, &errInternal)
 }
 
 func isErrInvalid(err error) bool {
-	var errInvalid *errutil.ErrInvalid
-	return errors.As(err, &errInvalid)
+	var errInvalid *errors.ErrInvalid
+	return _errors.As(err, &errInvalid)
 }
 
 func isErrUnauthorized(err error) bool {
-	var errUnauthorized *errutil.ErrUnauthorized
-	return errors.As(err, &errUnauthorized)
-}
-
-func isErrRepository(err error) bool {
-	var errRepository *errutil.ErrRepository
-	return errors.As(err, &errRepository)
+	var errUnauthorized *errors.ErrUnauthorized
+	return _errors.As(err, &errUnauthorized)
 }

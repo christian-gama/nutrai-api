@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 
@@ -62,13 +61,8 @@ func NewController[Input any](
 	handler Handler[Input],
 	opts Options,
 ) Controller {
-	if handler == nil {
-		panic(errors.New("handler is nil"))
-	}
-
-	if opts.Method == "" {
-		panic(errors.New("method is empty"))
-	}
+	errutil.MustBeNotEmpty("handler", handler)
+	errutil.MustBeNotEmpty("options.Method", opts.Method)
 
 	controller := &controllerImpl[Input]{
 		handler:  handler,

@@ -3,7 +3,7 @@ package value
 import (
 	"fmt"
 
-	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 // RestrictedFood is a data type that signifies a certain food or food group that is to be
@@ -21,11 +21,11 @@ func (r RestrictedFood) Validate() error {
 	const maxChars = 100
 
 	if len(r) == 0 {
-		return errutil.Required(fieldName)
+		return errors.Required(fieldName)
 	}
 
 	if len(r) > maxChars {
-		return errutil.Invalid(
+		return errors.Invalid(
 			fieldName,
 			fmt.Sprintf("cannot be longer than %d characters", maxChars),
 		)

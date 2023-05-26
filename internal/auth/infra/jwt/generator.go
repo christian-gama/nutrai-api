@@ -7,7 +7,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/jwt"
 	value "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/uuid"
-	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	_jwt "github.com/golang-jwt/jwt"
 )
 
@@ -79,11 +79,11 @@ func (g *generatorImpl) signToken() (string, error) {
 // not nil and its email is valid. If not, it returns an error.
 func (g *generatorImpl) validate(subject *jwt.Subject) error {
 	if subject == nil {
-		return errutil.InternalServerError(errutil.Required("subject").Error())
+		return errors.InternalServerError(errors.Required("subject").Error())
 	}
 
 	if subject.Email == "" {
-		return errutil.InternalServerError(errutil.Required("subject.Email").Error())
+		return errors.InternalServerError(errors.Required("subject.Email").Error())
 	}
 
 	return nil

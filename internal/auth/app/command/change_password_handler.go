@@ -2,11 +2,11 @@ package command
 
 import (
 	"context"
-	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/hasher"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/repo"
 	"github.com/christian-gama/nutrai-api/internal/core/app/command"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
 // ChangePasswordHandler represents the ChangePassword command.
@@ -20,13 +20,8 @@ type ChangePasswordHandlerImpl struct {
 
 // NewChangePasswordHandler returns a new Save instance.
 func NewChangePasswordHandler(userRepo repo.User, hasher hasher.Hasher) ChangePasswordHandler {
-	if userRepo == nil {
-		panic(errors.New("repo.User cannot be nil"))
-	}
-
-	if hasher == nil {
-		panic(errors.New("hasher.Hasher cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("repo.User", userRepo)
+	errutil.MustBeNotEmpty("hasher.Hasher", hasher)
 
 	return &ChangePasswordHandlerImpl{userRepo, hasher}
 }

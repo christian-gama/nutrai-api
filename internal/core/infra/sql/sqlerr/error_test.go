@@ -39,21 +39,21 @@ func (s *ErrorSuite) TestError() {
 
 		err = Error(err, TestModel)
 
-		s.ErrorAsRepository(err)
+		s.ErrorAsNotFound(err)
 	})
 
-	s.Run("returns an ErrUniqueConstraint if the error is a unique constraint violation",
+	s.Run("returns an ErrAlreadyExists if the error is a unique constraint violation",
 		func() {
 			err := errors.New("violates unique constraint uidx__table__column")
 
 			err = Error(err, TestModel)
 
-			s.ErrorAsRepository(err)
+			s.ErrorAsAlreadyExists(err)
 		},
 	)
 
 	s.Run(
-		"returns an ErrForeignKeyConstraint if the error is a foreign key constraint violation",
+		"returns an ErrNotFound if the error is a foreign key constraint violation",
 		func() {
 			err := errors.New(
 				`"table" violates foreign key constraint "fk__column__refTable.refColumn"`,
@@ -61,27 +61,27 @@ func (s *ErrorSuite) TestError() {
 
 			err = Error(err, TestModel)
 
-			s.ErrorAsRepository(err)
+			s.ErrorAsNotFound(err)
 		},
 	)
 
 	s.Run(
-		"returns an ErrNotNullConstraint if the error is a not-null constraint violation",
+		"returns an ErrRequired if the error is a not-null constraint violation",
 		func() {
 			err := errors.New(`value in column "column" violates not-null constraint`)
 
 			err = Error(err, TestModel)
 
-			s.ErrorAsRepository(err)
+			s.ErrorAsRequired(err)
 		},
 	)
 
-	s.Run("returns an ErrCheckConstraint if the error is a check constraint violation", func() {
+	s.Run("returns an ErrInvalid if the error is a check constraint violation", func() {
 		err := errors.New("violates check constraint chk__column__message")
 
 		err = Error(err, TestModel)
 
-		s.ErrorAsRepository(err)
+		s.ErrorAsInvalid(err)
 	},
 	)
 
@@ -89,9 +89,7 @@ func (s *ErrorSuite) TestError() {
 		s.Panics(func() {
 			err := errors.New("context deadline exceeded")
 
-			err = Error(err, TestModel)
-
-			s.ErrorAsInternal(err)
+			Error(err, TestModel)
 		})
 	})
 
@@ -101,7 +99,7 @@ func (s *ErrorSuite) TestError() {
 
 			err = Error(err, TestModel)
 
-			s.ErrorAsInternal(err)
+			s.ErrorAsUnavailable(err)
 		})
 	})
 
@@ -110,76 +108,73 @@ func (s *ErrorSuite) TestError() {
 
 		err = Error(err, TestModel)
 
-		s.ErrorAsRepository(err)
+		s.ErrorAsNoChanges(err)
 	})
 
-	s.Run("returns an ErrUnavailable if the error is a connection refused", func() {
-		s.Panics(func() {
-			err := errors.New("failed to connect to")
-
-			err = Error(err, TestModel)
-
-			s.ErrorAsInternal(err)
-		})
-	})
-
-	s.Run("returns an ErrColumnNotFound if the error is a column does not exist", func() {
+	s.Run("returns an ErrInternalServerError if the error is a column does not exist", func() {
 		err := errors.New("column \"id\" of relation \"resource\" does not exist SQLSTATE 42703")
 
 		err = Error(err, TestModel)
 
-		s.ErrorAsRepository(err)
+		s.ErrorAsInternalServerError(err)
 	})
 
 	s.Run(
-		"returns an ErrColumnNotFound with generic field name if the error is can't extract params",
+		"returns an ErrInternalServerError with generic field name if the error is can't extract params",
 		func() {
 			err := errors.New("SQLSTATE 42703")
 
 			err = Error(err, TestModel)
 
-			s.ErrorAsRepository(err)
+			s.ErrorAsInternalServerError(err)
 		},
 	)
 
-	s.Run("returns an ErrMalformedQuery if the error is a input syntax", func() {
+	s.Run("returns an ErrInternalServerError if the error is a input syntax", func() {
 		s.Panics(func() {
 			err := errors.New("SQLSTATE 22P02")
 
-			err = Error(err, TestModel)
-
-			s.ErrorAsInternal(err)
+			Error(err, TestModel)
 		})
 	})
 
-	s.Run("Error returns an ErrMalformedQuery if the error is a missing where conditions", func() {
-		s.Panics(func() {
-			err := errors.New("WHERE conditions required")
+	s.Run(
+		"Error returns an ErrInternalServerError if the error is a missing where conditions",
+		func() {
+			s.Panics(func() {
+				err := errors.New("WHERE conditions required")
 
-			err = Error(err, TestModel)
+				Error(err, TestModel)
+			})
+		},
+	)
 
-			s.ErrorAsInternal(err)
-		})
-	})
-
-	s.Run("returns an ErrTooLong if the error is a too long value", func() {
+	s.Run("returns an ErrInvalid if the error is a too long value", func() {
 		err := errors.New("value too long for type character varying(255) SQLSTATE 22001")
 
 		err = Error(err, TestModel)
 
-		s.ErrorAsRepository(err)
+		s.ErrorAsInvalid(err)
 	})
 
 	s.Run(
-		"returns an ErrTooLong if the error is a too long value and cannot extract param",
+		"returns an ErrInvalid if the error is a too long value and cannot extract param",
 		func() {
 			err := errors.New("SQLSTATE 22001")
 
 			err = Error(err, TestModel)
 
-			s.ErrorAsRepository(err)
+			s.ErrorAsInvalid(err)
 		},
 	)
+
+	s.Run("returns an ErrUnavailable if the error is from a connection failure", func() {
+		s.Panics(func() {
+			err := errors.New("failed to connect to database")
+
+			Error(err, TestModel)
+		})
+	})
 
 	s.Run("returns the original error if it is a unknown error", func() {
 		err := errors.New("any other error")

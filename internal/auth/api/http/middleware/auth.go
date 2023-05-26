@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"errors"
+	_errors "errors"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/app/query"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
@@ -9,6 +9,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/middleware"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,9 +20,7 @@ type Auth = middleware.Middleware
 
 // NewAuth creates a new AuthHandler.
 func NewAuth(authHandler query.AuthHandler) Auth {
-	if authHandler == nil {
-		panic(errors.New("query.AuthHandler is required"))
-	}
+	errutil.MustBeNotEmpty("query.AuthHandler", authHandler)
 
 	return middleware.NewMiddleware(
 		func(ctx *gin.Context) {
@@ -49,10 +48,10 @@ func NewAuth(authHandler query.AuthHandler) Auth {
 }
 
 func handleUnauthorizedError(err error) {
-	var unauthorizedErr *errutil.ErrUnauthorized
-	if errors.As(err, &unauthorizedErr) {
+	var unauthorizedErr *errors.ErrUnauthorized
+	if _errors.As(err, &unauthorizedErr) {
 		panic(unauthorizedErr)
 	}
 
-	panic(errutil.Unauthorized(err.Error()))
+	panic(errors.Unauthorized(err.Error()))
 }

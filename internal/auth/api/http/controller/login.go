@@ -1,12 +1,11 @@
 package controller
 
 import (
-	"errors"
-
 	"github.com/christian-gama/nutrai-api/internal/auth/app/service"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,9 +14,7 @@ type Login = controller.Controller
 
 // NewLogin returns a new controller to handle the login of a user.
 func NewLogin(loginHandler service.LoginHandler) Login {
-	if loginHandler == nil {
-		panic(errors.New("service.LoginHandler cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("service.LoginHandler", loginHandler)
 
 	return controller.NewController(
 		func(ctx *gin.Context, input *service.LoginInput) {

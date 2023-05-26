@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"errors"
+	_errors "errors"
 	"runtime/debug"
 
 	"github.com/christian-gama/nutrai-api/config/env"
@@ -10,6 +10,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
 	"github.com/christian-gama/nutrai-api/internal/exception/app/command"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,9 +26,7 @@ type SaveException = middleware.Middleware
 func NewSaveException(
 	saveExceptionHandler command.SaveExceptionHandler,
 ) SaveException {
-	if saveExceptionHandler == nil {
-		panic(errors.New("command.SaveExceptionHandler cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("command.SaveExceptionHandler", saveExceptionHandler)
 
 	m := &saveExceptionHandlerImpl{
 		saveExceptionHandler: saveExceptionHandler,
@@ -72,7 +71,7 @@ func (m *saveExceptionHandlerImpl) handleException(ctx *gin.Context, r any) {
 
 	ctx.AbortWithStatusJSON(
 		http.StatusInternalServerError,
-		response.Error(errors.New(message)),
+		response.Error(_errors.New(message)),
 	)
 }
 
@@ -84,16 +83,16 @@ func (m *saveExceptionHandlerImpl) getErrorMessage(r any) string {
 		return m.getErrorFromException(err).Error()
 
 	default:
-		return errutil.InternalServerError("something went wrong, please try again later").Error()
+		return errors.InternalServerError("something went wrong, please try again later").Error()
 	}
 }
 
 // getErrorFromException constructs an error message from an exception. It checks if the
-// error is of type errutil.ErrInternal and if not, wraps the error into an errutil.ErrInternal.
+// error is of type errors.ErrInternal and if not, wraps the error into an errors.ErrInternal.
 func (m *saveExceptionHandlerImpl) getErrorFromException(err error) error {
-	var errInternal *errutil.ErrInternal
-	if !errors.As(err, &errInternal) {
-		return errutil.InternalServerError(err.Error())
+	var errInternal *errors.ErrInternalServerError
+	if !_errors.As(err, &errInternal) {
+		return errors.InternalServerError(err.Error())
 	}
 
 	return err

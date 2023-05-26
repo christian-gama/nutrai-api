@@ -2,12 +2,12 @@ package command
 
 import (
 	"context"
-	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/hasher"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/repo"
 	"github.com/christian-gama/nutrai-api/internal/core/app/command"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
 // SaveUserHandler represents the SaveUser command.
@@ -21,13 +21,8 @@ type saveUserHandlerImpl struct {
 
 // NewSaveUserHandler returns a new Save instance.
 func NewSaveUserHandler(userRepo repo.User, hasher hasher.Hasher) SaveUserHandler {
-	if userRepo == nil {
-		panic(errors.New("repo.User cannot be nil"))
-	}
-
-	if hasher == nil {
-		panic(errors.New("hasher.Hasher cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("repo.User", userRepo)
+	errutil.MustBeNotEmpty("hasher.Hasher", hasher)
 
 	return &saveUserHandlerImpl{userRepo, hasher}
 }

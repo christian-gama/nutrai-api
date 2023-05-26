@@ -10,7 +10,7 @@ import (
 func MakeMailer() mailer.Mailer {
 	factory, ok := mailers[env.Mailer.Provider]
 	if !ok {
-		panic(errors.New("mailer provider not found"))
+		panic(errors.New("mailer provider was not found - please check your environment variables"))
 	}
 
 	return factory()

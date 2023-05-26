@@ -3,7 +3,7 @@ package value
 import (
 	"fmt"
 
-	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 // Goal is a data type that encapsulates the objective of a specific diet plan. This can include
@@ -31,7 +31,7 @@ func (g Goal) Validate() error {
 	}
 
 	if len(g) == 0 {
-		return errutil.Required(fieldName)
+		return errors.Required(fieldName)
 	}
 
 	for _, validGoal := range validGoals {
@@ -40,7 +40,7 @@ func (g Goal) Validate() error {
 		}
 	}
 
-	return errutil.Invalid(fieldName, fmt.Sprintf("must be one of %v", validGoals))
+	return errors.Invalid(fieldName, fmt.Sprintf("must be one of %v", validGoals))
 }
 
 const (

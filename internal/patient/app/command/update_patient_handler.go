@@ -2,13 +2,13 @@ package command
 
 import (
 	"context"
-	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/core/app/command"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/repo"
 	value "github.com/christian-gama/nutrai-api/internal/patient/domain/value/patient"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
 )
 
@@ -22,9 +22,7 @@ type updatePatientHandlerImpl struct {
 
 // NewUpdatePatientHandler returns a new Update instance.
 func NewUpdatePatientHandler(patientRepo repo.Patient) UpdatePatientHandler {
-	if patientRepo == nil {
-		panic(errors.New("repo.Patient cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("repo.Patient", patientRepo)
 
 	return &updatePatientHandlerImpl{patientRepo}
 }

@@ -11,7 +11,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/exception/api/http/middleware"
 	"github.com/christian-gama/nutrai-api/internal/exception/app/command"
-	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	commandMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/command"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
@@ -78,7 +78,7 @@ func (s *SaveExceptionSuite) TestHandle() {
 		sut := makeSut()
 
 		sut.Engine.Handle(method.String(), path, func(c *gin.Context) {
-			panic(errutil.InternalServerError("something went wrong, please try again later"))
+			panic(errors.InternalServerError("something went wrong, please try again later"))
 		})
 
 		sut.Mock.SaveExceptionHandler.
@@ -94,7 +94,7 @@ func (s *SaveExceptionSuite) TestHandle() {
 		sut := makeSut()
 
 		sut.Engine.Handle(method.String(), path, func(c *gin.Context) {
-			panic(errutil.Invalid("test", "test"))
+			panic(errors.Invalid("test", "test"))
 		})
 
 		sut.Mock.SaveExceptionHandler.

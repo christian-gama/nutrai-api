@@ -4,6 +4,7 @@ import (
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	value "github.com/christian-gama/nutrai-api/internal/patient/domain/value/patient"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 type Allergy struct {
@@ -27,7 +28,7 @@ func (a Allergy) Validate() (*Allergy, error) {
 	var errs *errutil.Error
 
 	if a.Name == "" {
-		errs = errutil.Append(errs, errutil.Required("Name"))
+		errs = errutil.Append(errs, errors.Required("Name"))
 	}
 
 	if errs.HasErrors() {

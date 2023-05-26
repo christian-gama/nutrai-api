@@ -2,12 +2,12 @@ package command
 
 import (
 	"context"
-	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/core/app/command"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/repo"
 	value "github.com/christian-gama/nutrai-api/internal/patient/domain/value/patient"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
 )
 
@@ -21,9 +21,7 @@ type savePatientHandlerImpl struct {
 
 // NewSavePatientHandler returns a new Save instance.
 func NewSavePatientHandler(patientRepo repo.Patient) SavePatientHandler {
-	if patientRepo == nil {
-		panic(errors.New("repo.Patient cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("repo.Patient", patientRepo)
 
 	return &savePatientHandlerImpl{patientRepo}
 }

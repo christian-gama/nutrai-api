@@ -8,7 +8,7 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
-	"github.com/christian-gama/nutrai-api/pkg/structutil"
+	"github.com/christian-gama/nutrai-api/pkg/reflection"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,15 +19,15 @@ func extract[Input any](ctx *gin.Context, input *Input, extractFn func(any) erro
 		return nil
 	}
 
-	if structutil.IsPointerToInterface(input) {
+	if reflection.IsPointerToInterface(input) {
 		return nil
 	}
 
-	if !structutil.IsPointer(input) {
+	if !reflection.IsPointer(input) {
 		panic(errors.New("input must be a pointer"))
 	}
 
-	if structutil.IsNil(input) {
+	if reflection.IsNil(input) {
 		panic(errors.New("input cannot be nil"))
 	}
 
@@ -70,7 +70,7 @@ func ExtractCurrentUser[Data any](ctx *gin.Context, data *Data) {
 		return
 	}
 
-	structutil.IterateFields(data, func(opts *structutil.FieldIterationOptions) {
+	reflection.IterateStructFields(data, func(opts *reflection.FieldIterationOptions) {
 		if opts.Tag.Get("ctx") == "currentUser" {
 			currentUser, err := store.GetUser(ctx)
 			if err != nil {

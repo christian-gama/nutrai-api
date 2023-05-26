@@ -5,7 +5,7 @@ package response
 // returned when the application is in debug mode (CONFIG_DEBUG=true).
 // Data will be omitted if it's nil.
 type Body struct {
-	Status bool `json:"status"`
-	Data   any  `json:"data,omitempty"`
-	Stack  any  `json:"stack,omitempty"`
+	Data   any     `json:"data,omitempty"`
+	Stack  any     `json:"stack,omitempty"`
+	Errors []error `json:"errors,omitempty"`
 }

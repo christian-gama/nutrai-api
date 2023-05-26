@@ -1,7 +1,6 @@
 package router
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
@@ -9,7 +8,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/core/infra/bench"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
-	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	"github.com/christian-gama/nutrai-api/pkg/unit"
 	_cors "github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -51,7 +50,13 @@ func limitBodySize() gin.HandlerFunc {
 		const maxBodySize = 3 * unit.Megabyte
 
 		if ctx.Request.ContentLength > maxBodySize {
-			response.BadRequest(ctx, errors.New("request body too large"))
+			response.BadRequest(
+				ctx,
+				errors.Invalid(
+					"body",
+					fmt.Sprintf("body size must be less than %d bytes", maxBodySize),
+				),
+			)
 			return
 		}
 
@@ -84,9 +89,7 @@ func rateLimiter(limit int, duration time.Duration) gin.HandlerFunc {
 		ErrorHandler: func(ctx *gin.Context, info ratelimit.Info) {
 			response.TooManyRequests(
 				ctx,
-				errutil.TooManyRequests(
-					fmt.Sprintf("must wait until %s", info.ResetTime),
-				),
+				errors.InternalServerError(""),
 			)
 		},
 

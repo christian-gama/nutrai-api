@@ -24,18 +24,16 @@ func Error(err error) *Body {
 	}
 
 	return &Body{
-		Status: false,
-		Data:   errs.Error(),
+		Errors: errs.Errors,
 	}
 }
 
 // ErrorDebug returns a JSON with the error and the stack trace. The status is always false.
-func ErrorDebug(err error) *Body {
+func ErrorDebug(err *errutil.Error) *Body {
 	stack := string(debug.Stack())
 
 	return &Body{
-		Status: false,
-		Data:   err.Error(),
+		Errors: err.Errors,
 		Stack:  stack,
 	}
 }
@@ -43,7 +41,6 @@ func ErrorDebug(err error) *Body {
 // Data returns a JSON with the data. The status is always true.
 func Data(data any) *Body {
 	return &Body{
-		Status: true,
-		Data:   data,
+		Data: data,
 	}
 }

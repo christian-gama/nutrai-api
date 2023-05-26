@@ -3,6 +3,7 @@ package mail
 import (
 	value "github.com/christian-gama/nutrai-api/internal/notify/domain/value/mail"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 // Mail represents an email message.
@@ -24,29 +25,29 @@ func (m *Mail) Validate() (*Mail, error) {
 	var errs *errutil.Error
 
 	if m.PlainText == "" {
-		errs = errutil.Append(errs, errutil.Required("Body"))
+		errs = errutil.Append(errs, errors.Required("Body"))
 	}
 
 	if len(m.To) == 0 {
-		errs = errutil.Append(errs, errutil.Required("To"))
+		errs = errutil.Append(errs, errors.Required("To"))
 	}
 
 	for _, to := range m.To {
 		if to.Email == "" {
-			errs = errutil.Append(errs, errutil.Required("To.Email"))
+			errs = errutil.Append(errs, errors.Required("To.Email"))
 		}
 
 		if to.Name == "" {
-			errs = errutil.Append(errs, errutil.Required("To.Name"))
+			errs = errutil.Append(errs, errors.Required("To.Name"))
 		}
 	}
 
 	if m.Subject == "" {
-		errs = errutil.Append(errs, errutil.Required("Subject"))
+		errs = errutil.Append(errs, errors.Required("Subject"))
 	}
 
 	if m.HTML == "" {
-		errs = errutil.Append(errs, errutil.Required("Template"))
+		errs = errutil.Append(errs, errors.Required("Template"))
 	}
 
 	if errs.HasErrors() {

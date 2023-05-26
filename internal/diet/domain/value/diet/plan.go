@@ -3,7 +3,7 @@ package value
 import (
 	"fmt"
 
-	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 // Plan is a data type that represents the description of a specific diet plan.
@@ -20,11 +20,11 @@ func (p Plan) Validate() error {
 	const maxChars = 1000
 
 	if len(p) == 0 {
-		return errutil.Required(fieldName)
+		return errors.Required(fieldName)
 	}
 
 	if len(p) > maxChars {
-		return errutil.Invalid(
+		return errors.Invalid(
 			fieldName,
 			fmt.Sprintf("cannot be longer than %d characters", maxChars),
 		)
