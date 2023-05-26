@@ -6,7 +6,9 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/core/app/query"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
+	"github.com/christian-gama/nutrai-api/internal/patient/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/repo"
+	"github.com/christian-gama/nutrai-api/pkg/slice"
 )
 
 // AllPatientsInput represents the input data for the AllPatients use case.
@@ -35,6 +37,7 @@ func (q *allPatientsHandlerImpl) Handle(
 		Filterer:  input.Filter,
 		Paginator: &input.Pagination,
 		Sorter:    input.Sort,
+		Preloader: input.Preload,
 	})
 	if err != nil {
 		return nil, err
@@ -45,13 +48,22 @@ func (q *allPatientsHandlerImpl) Handle(
 		Results: []*FindPatientOutput{},
 	}
 
-	for _, patient := range pagination.Results {
+	for _, p := range pagination.Results {
 		output.Results = append(output.Results, &FindPatientOutput{
-			ID:       patient.ID,
-			Age:      patient.Age,
-			HeightM:  patient.HeightM,
-			WeightKG: patient.WeightKG,
-			BMI:      patient.BMI,
+			ID:       p.ID,
+			Age:      p.Age,
+			HeightM:  p.HeightM,
+			WeightKG: p.WeightKG,
+			BMI:      p.BMI,
+			Allergies: slice.
+				Map(p.Allergies, func(a *patient.Allergy) *FindPatientAllergiesOutput {
+					return &FindPatientAllergiesOutput{
+						ID:        a.ID,
+						Name:      a.Name,
+						PatientID: a.PatientID,
+					}
+				}).
+				Build(),
 		})
 	}
 

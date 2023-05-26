@@ -5,7 +5,9 @@ import (
 	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/convert"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/manager"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/sqlerr"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/repo"
 	"github.com/christian-gama/nutrai-api/internal/patient/infra/persistence/sql/schema"
@@ -71,10 +73,32 @@ func (p *patientSQLImpl) Save(
 
 // Update implements repo.Patient.
 func (p *patientSQLImpl) Update(ctx context.Context, input repo.UpdatePatientInput) error {
-	return p.manager.Update(ctx,
-		manager.UpdateInput[patient.Patient]{
-			Model: input.Patient,
-			ID:    input.ID,
-		},
-	)
+	db := p.manager.DB.WithContext(ctx)
+	schema := convert.FromModel(&schema.Patient{}, &input.Patient)
+
+	if err := db.Transaction(func(tx *gorm.DB) error {
+		if err := db.
+			Unscoped().
+			Model(&schema).
+			Association("Allergies").
+			Unscoped().
+			Replace(input.Patient.Allergies); err != nil {
+			return sqlerr.Error(err, input.Patient)
+		}
+
+		if err := db.
+			Session(&gorm.Session{FullSaveAssociations: true}).
+			Model(&schema).
+			Where("id = ?", input.ID).
+			Updates(&schema).
+			Error; err != nil {
+			return sqlerr.Error(err, input.Patient)
+		}
+
+		return nil
+	}); err != nil {
+		return sqlerr.Error(err, input.Patient)
+	}
+
+	return nil
 }

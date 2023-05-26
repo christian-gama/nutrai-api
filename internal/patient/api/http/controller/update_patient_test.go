@@ -176,9 +176,7 @@ func (s *UpdatePatientSuite) TestHandle() {
 		s.Run("should return error when invalid", func() {
 			sut := makeSut()
 
-			sut.Input.Allergies = []*command.UpdateAllergyInput{
-				{Name: value.Allergy(strings.Repeat("a", 101))},
-			}
+			sut.Input.Allergies = []value.Allergy{value.Allergy(strings.Repeat("a", 101))}
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data:        sut.Input,

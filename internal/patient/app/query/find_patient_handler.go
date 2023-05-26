@@ -5,7 +5,9 @@ import (
 	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/core/app/query"
+	"github.com/christian-gama/nutrai-api/internal/patient/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/repo"
+	"github.com/christian-gama/nutrai-api/pkg/slice"
 )
 
 // FindPatientHandler represents the query handler for the FindPatient use case.
@@ -30,19 +32,31 @@ func (q *findPatientHandlerImpl) Handle(
 	ctx context.Context,
 	input *FindPatientInput,
 ) (*FindPatientOutput, error) {
-	patient, err := q.Patient.Find(
+	p, err := q.Patient.Find(
 		ctx,
-		repo.FindPatientInput{ID: input.ID},
+		repo.FindPatientInput{
+			ID:        input.ID,
+			Preloader: input.Preload,
+		},
 	)
 	if err != nil {
 		return nil, err
 	}
 
 	return &FindPatientOutput{
-		ID:       patient.ID,
-		Age:      patient.Age,
-		HeightM:  patient.HeightM,
-		WeightKG: patient.WeightKG,
-		BMI:      patient.BMI,
+		ID:       p.ID,
+		Age:      p.Age,
+		HeightM:  p.HeightM,
+		WeightKG: p.WeightKG,
+		BMI:      p.BMI,
+		Allergies: slice.
+			Map(p.Allergies, func(a *patient.Allergy) *FindPatientAllergiesOutput {
+				return &FindPatientAllergiesOutput{
+					ID:        a.ID,
+					Name:      a.Name,
+					PatientID: a.PatientID,
+				}
+			}).
+			Build(),
 	}, nil
 }

@@ -91,6 +91,19 @@ func (s *PatientTestSuite) TestNewPatient() {
 		})
 	})
 
+	s.Run("Allergies", func() {
+		s.Run("Should return an error when name is empty", func() {
+			sut := makeSut()
+
+			sut.Data.Allergies = []*patient.Allergy{fake.Allergy().SetName("")}
+
+			patient, err := sut.Sut()
+
+			s.ErrorAsRequired(err)
+			s.Nil(patient)
+		})
+	})
+
 	s.Run("TestNewPatient (Success)", func() {
 		s.Run("Should return a patient when all fields are valid", func() {
 			sut := makeSut()
@@ -103,6 +116,34 @@ func (s *PatientTestSuite) TestNewPatient() {
 			s.Equal(sut.Data.HeightM, patient.HeightM, "should have the same height")
 			s.Equal(sut.Data.Age, patient.Age, "should have the same age")
 			s.Equal(sut.Data.Allergies, patient.Allergies, "should have the same allergies")
+			s.Equal(sut.Data.Allergies[0].PatientID, patient.ID, "should have the same patient id")
+		})
+
+		s.Run("Should append new allergies and remove the old ones", func() {
+			sut := makeSut()
+
+			p, err := sut.Sut()
+			s.Require().NoError(err)
+
+			allergy := []*patient.Allergy{fake.Allergy().SetName("new allergy")}
+			p = p.SetAllergies(allergy)
+
+			s.Equal(1, len(p.Allergies), "should have 1 allergy")
+			s.Equal(p.ID, p.Allergies[0].PatientID, "should have the same patient id")
+			s.Equal(allergy[0].Name, p.Allergies[0].Name, "should have the same allergy name")
+		})
+
+		s.Run("Should append new allergies and keep the old ones", func() {
+			sut := makeSut()
+
+			p, err := sut.Sut()
+			s.Require().NoError(err)
+			originalAllergiesLen := len(p.Allergies)
+
+			allergy := []*patient.Allergy{fake.Allergy().SetName("new allergy")}
+			p = p.SetAllergies(append(p.Allergies, allergy...))
+
+			s.Equal(originalAllergiesLen+1, len(p.Allergies), "should have 1 allergy")
 		})
 	})
 }
