@@ -9,7 +9,9 @@ import (
 
 func Mail() *mail.Mail {
 	data := new(mail.Mail)
-	data.To = []value.Email{value.Email(faker.Email()), value.Email(faker.Email())}
+	data.To = []*value.To{
+		{Name: faker.Name(), Email: faker.Email()},
+	}
 
 	err := faker.FakeData(data)
 	if err != nil {

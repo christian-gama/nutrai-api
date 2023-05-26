@@ -5,6 +5,9 @@ import (
 	"os"
 
 	"github.com/christian-gama/nutrai-api/config/env"
+	"github.com/christian-gama/nutrai-api/internal/notify/domain/model/mail"
+	value "github.com/christian-gama/nutrai-api/internal/notify/domain/value/mail"
+	"github.com/christian-gama/nutrai-api/internal/notify/infra/mailer"
 	"github.com/christian-gama/nutrai-api/pkg/structutil"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -38,6 +41,17 @@ func run(cmd *cobra.Command, args []string) {
 		})
 		fmt.Println()
 	}
+
+	err := mailer.MakeMailer().
+		Send(mail.NewMail().
+			SetPlainText("Hello, World!").
+			SetSubject("Test").
+			SetTo([]*value.To{{Email: "christiangsilva9@gmail.com", Name: "Christian"}}).
+			SetHTML("<h1>Hello, World!</h1>"),
+		)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func checkEnvFile() {
@@ -57,4 +71,7 @@ var envsMap = map[string]any{
 	"DB":       env.DB,
 	"JWT":      env.Jwt,
 	"RABBITMQ": env.RabbitMQ,
+	"MAILER":   env.Mailer,
+	"MAILTRAP": env.Mailtrap,
+	"SENDGRID": env.Sendgrid,
 }

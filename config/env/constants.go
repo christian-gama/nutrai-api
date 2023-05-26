@@ -52,3 +52,8 @@ const (
 	// LogLevelPanic is the panic string representation of the log level.
 	LogLevelPanic ConfigLogLevel = "panic"
 )
+
+const (
+	MailerProviderSendgrid MailerProvider = "sendgrid"
+	MailerProviderMailtrap MailerProvider = "mailtrap"
+)

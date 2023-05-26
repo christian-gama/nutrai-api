@@ -8,38 +8,21 @@ import (
 
 // Application.
 type (
-	AppEnv  string
-	AppPort int
-	AppHost string
+	AppEnv string
 )
 
 // Database.
 type (
-	DBHost     string
-	DBPort     int
-	DBUser     string
-	DBPassword string
-	DBName     string
-	DBSslMode  string
+	DBSslMode string
 )
 
 // Config.
 type (
-	ConfigGlobalRateLimit int
-	ConfigLogLevel        string
-)
-
-// RabbitMQ.
-type (
-	RabbitMQHost     string
-	RabbitMQPort     int
-	RabbitMQUser     string
-	RabbitMQPassword string
+	ConfigLogLevel string
 )
 
 // JWT.
 type (
-	JwtSecret string
 	JwtExpire struct{ time.Duration }
 )
 
@@ -61,3 +44,8 @@ func (d *JwtExpire) UnmarshalText(text []byte) error {
 	}
 	return nil
 }
+
+// Mailer.
+type (
+	MailerProvider string
+)
