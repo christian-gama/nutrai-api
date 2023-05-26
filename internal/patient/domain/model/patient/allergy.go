@@ -3,6 +3,7 @@ package patient
 import (
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	value "github.com/christian-gama/nutrai-api/internal/patient/domain/value/patient"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
 type Allergy struct {
@@ -23,8 +24,16 @@ func (Allergy) String() string {
 
 // Validate validates the Allergy fields.
 func (a Allergy) Validate() (*Allergy, error) {
-	// There are no fields to validate, but this method is required to keep the
-	// consistency with the other models.
+	var errs *errutil.Error
+
+	if a.Name == "" {
+		errs = errutil.Append(errs, errutil.Required("Name"))
+	}
+
+	if errs.HasErrors() {
+		return nil, errs
+	}
+
 	return &a, nil
 }
 

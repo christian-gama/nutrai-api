@@ -7,6 +7,8 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/core/app/command"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/repo"
+	value "github.com/christian-gama/nutrai-api/internal/patient/domain/value/patient"
+	"github.com/christian-gama/nutrai-api/pkg/slice"
 )
 
 // SavePatientHandler represents the SavePatient command.
@@ -28,17 +30,18 @@ func NewSavePatientHandler(patientRepo repo.Patient) SavePatientHandler {
 
 // Handle implements command.Handler.
 func (c *savePatientHandlerImpl) Handle(ctx context.Context, input *SavePatientInput) error {
-	allergies := make([]*patient.Allergy, len(input.Allergies))
-	for i, allergy := range input.Allergies {
-		allergies[i] = patient.NewAllergy().SetName(allergy.Name)
-	}
-
 	patient, err := patient.NewPatient().
 		SetAge(input.Age).
 		SetHeightM(input.HeightM).
 		SetWeightKG(input.WeightKG).
 		SetID(input.User.ID).
-		SetAllergies(allergies).
+		SetAllergies(
+			slice.
+				Map(input.Allergies, func(allergy value.Allergy) *patient.Allergy {
+					return patient.NewAllergy().SetName(allergy)
+				}).
+				Build(),
+		).
 		Validate()
 	if err != nil {
 		return err

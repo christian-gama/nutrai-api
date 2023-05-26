@@ -5,8 +5,11 @@ import (
 	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/core/app/command"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/repo"
+	value "github.com/christian-gama/nutrai-api/internal/patient/domain/value/patient"
+	"github.com/christian-gama/nutrai-api/pkg/slice"
 )
 
 // UpdatePatientHandler represents the UpdatePatient command.
@@ -30,23 +33,25 @@ func NewUpdatePatientHandler(patientRepo repo.Patient) UpdatePatientHandler {
 func (c *updatePatientHandlerImpl) Handle(ctx context.Context, input *UpdatePatientInput) error {
 	savedPatient, err := c.Find(ctx,
 		repo.FindPatientInput{
-			ID: input.ID,
+			ID:        input.ID,
+			Preloader: querying.AddPreload("Allergies"),
 		},
 	)
 	if err != nil {
 		return err
 	}
 
-	allergies := make([]*patient.Allergy, len(input.Allergies))
-	for i, allergy := range input.Allergies {
-		allergies[i] = patient.NewAllergy().SetName(allergy.Name)
-	}
-
 	patient, err := savedPatient.
 		SetAge(input.Age).
 		SetHeightM(input.HeightM).
 		SetWeightKG(input.WeightKG).
-		SetAllergies(allergies).
+		SetAllergies(
+			slice.
+				Map(input.Allergies, func(allergy value.Allergy) *patient.Allergy {
+					return patient.NewAllergy().SetName(allergy)
+				}).
+				Build(),
+		).
 		Validate()
 	if err != nil {
 		return err

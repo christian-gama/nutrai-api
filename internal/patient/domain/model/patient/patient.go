@@ -84,8 +84,25 @@ func (p *Patient) SetAge(age value.Age) *Patient {
 	return p
 }
 
-// SetAllergies sets the allergies on the builder.
+// SetAllergies sets the allergies on the builder. It will also set the patient ID on each allergy
+// and check if the allergy already exists on the patient. If it does not exist, it will create a
+// new allergy - otherwise, it will use the existing allergy. It will also remove any allergies
+// that are not present in the new list.
 func (p *Patient) SetAllergies(allergies []*Allergy) *Patient {
-	p.Allergies = allergies
+	allergiesMap := make(map[value.Allergy]*Allergy, len(p.Allergies))
+	for _, allergy := range p.Allergies {
+		allergiesMap[allergy.Name] = allergy
+	}
+
+	p.Allergies = make([]*Allergy, len(allergies))
+	for i, allergy := range allergies {
+		if allergy, ok := allergiesMap[allergy.Name]; ok {
+			p.Allergies[i] = allergy
+			continue
+		}
+
+		p.Allergies[i] = allergy.SetPatientID(p.ID)
+	}
+
 	return p
 }

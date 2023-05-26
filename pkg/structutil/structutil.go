@@ -9,6 +9,7 @@ type FieldIterationOptions struct {
 	Index     int
 	FieldName string
 	Value     reflect.Value
+	Type      reflect.Type
 }
 
 // IterateFields applies a callback function to each field of a given struct.
@@ -25,6 +26,7 @@ func IterateFields(s any, callback func(opts *FieldIterationOptions)) {
 			Index:     i,
 			FieldName: v.Type().Field(i).Name,
 			Value:     v,
+			Type:      v.Type(),
 		})
 	}
 }

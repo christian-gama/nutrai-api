@@ -6,7 +6,6 @@ import (
 	"time"
 
 	ratelimit "github.com/JGLTechnologies/gin-rate-limit"
-	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/bench"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
@@ -69,7 +68,7 @@ func content() gin.HandlerFunc {
 }
 
 // rateLimiter returns a gin middleware that limits the request rate.
-func rateLimiter(limit env.ConfigGlobalRateLimit, duration time.Duration) gin.HandlerFunc {
+func rateLimiter(limit int, duration time.Duration) gin.HandlerFunc {
 	if limit == 0 {
 		return func(ctx *gin.Context) {
 			ctx.Next()

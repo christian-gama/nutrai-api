@@ -2,11 +2,13 @@ package controller_test
 
 import (
 	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
 	"github.com/christian-gama/nutrai-api/internal/patient/api/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/patient/app/command"
+	value "github.com/christian-gama/nutrai-api/internal/patient/domain/value/patient"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/patient/app/command"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
 	commandMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/command"
@@ -127,6 +129,21 @@ func (s *SavePatientSuite) TestHandle() {
 			sut := makeSut()
 
 			sut.Input.HeightM = 3.01
+
+			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
+				Data:        sut.Input,
+				CurrentUser: sut.Input.User,
+			})
+
+			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
+		})
+	})
+
+	s.Run("Allergies", func() {
+		s.Run("should return error when invalid", func() {
+			sut := makeSut()
+
+			sut.Input.Allergies = []value.Allergy{value.Allergy(strings.Repeat("a", 101))}
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data:        sut.Input,

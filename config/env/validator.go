@@ -65,3 +65,21 @@ func validateConfigLogLevel() validator {
 		return nil
 	}
 }
+
+func validateMailerProvider() validator {
+	return func() error {
+		validProviders := []MailerProvider{
+			MailerProviderMailtrap,
+			MailerProviderSendgrid,
+		}
+
+		if !slice.Contains(validProviders, Mailer.Provider) {
+			return fmt.Errorf(
+				"Invalid env variable: '%s'. Must be one of: %v",
+				Mailer.Provider,
+				validProviders,
+			)
+		}
+		return nil
+	}
+}

@@ -7,6 +7,7 @@ import (
 	value "github.com/christian-gama/nutrai-api/internal/notify/domain/value/mail"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/notify/domain/model"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
+	"github.com/go-faker/faker/v4"
 )
 
 type MailTestSuite struct {
@@ -28,10 +29,9 @@ func (s *MailTestSuite) TestNewMail() {
 
 		sut := func() (*mail.Mail, error) {
 			return mail.NewMail().
-				SetBody(data.Body).
-				SetFrom(data.From).
+				SetPlainText(data.PlainText).
 				SetSubject(data.Subject).
-				SetTemplate(data.Template).
+				SetHTML(data.HTML).
 				SetTo(data.To).
 				Validate()
 		}
@@ -44,20 +44,7 @@ func (s *MailTestSuite) TestNewMail() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
 
-				sut.Data.Body = ""
-
-				mail, err := sut.Sut()
-
-				s.ErrorAsRequired(err)
-				s.Nil(mail)
-			})
-		})
-
-		s.Run("From", func() {
-			s.Run("Should return an error when empty", func() {
-				sut := makeSut()
-
-				sut.Data.From = ""
+				sut.Data.PlainText = ""
 
 				mail, err := sut.Sut()
 
@@ -83,7 +70,7 @@ func (s *MailTestSuite) TestNewMail() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
 
-				sut.Data.Template = ""
+				sut.Data.HTML = ""
 
 				mail, err := sut.Sut()
 
@@ -96,7 +83,7 @@ func (s *MailTestSuite) TestNewMail() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
 
-				sut.Data.To = []value.Email{}
+				sut.Data.To = []*value.To{}
 
 				mail, err := sut.Sut()
 
@@ -107,7 +94,22 @@ func (s *MailTestSuite) TestNewMail() {
 			s.Run("Should return an error when contains an empty email", func() {
 				sut := makeSut()
 
-				sut.Data.To = []value.Email{""}
+				sut.Data.To = []*value.To{
+					{Email: "", Name: "John Doe"},
+				}
+
+				mail, err := sut.Sut()
+
+				s.ErrorAsRequired(err)
+				s.Nil(mail)
+			})
+
+			s.Run("Should return an error when contains an empty name", func() {
+				sut := makeSut()
+
+				sut.Data.To = []*value.To{
+					{Email: faker.Email(), Name: ""},
+				}
 
 				mail, err := sut.Sut()
 
@@ -125,10 +127,9 @@ func (s *MailTestSuite) TestNewMail() {
 
 			s.NoError(err)
 			s.NotNil(mail)
-			s.Equal(sut.Data.Body, mail.Body, "Body should be equal")
-			s.Equal(sut.Data.From, mail.From, "From should be equal")
+			s.Equal(sut.Data.PlainText, mail.PlainText, "Body should be equal")
 			s.Equal(sut.Data.Subject, mail.Subject, "Subject should be equal")
-			s.Equal(sut.Data.Template, mail.Template, "Template should be equal")
+			s.Equal(sut.Data.HTML, mail.HTML, "Template should be equal")
 			s.Equal(sut.Data.To, mail.To, "To should be equal")
 		})
 	})

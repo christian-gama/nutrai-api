@@ -43,12 +43,13 @@ func (e *loader) Load() {
 		validateAppEnv(),
 		validateConfigLogLevel(),
 		validateDBSslMode(),
+		validateMailerProvider(),
 	)
 }
 
 // loadEnvironmentVariables loads the environment variables into the given variables.
 func (e *loader) loadEnvironmentVariables() {
-	variables := []any{DB, App, Config, Jwt, RabbitMQ}
+	variables := []any{DB, App, Config, Jwt, RabbitMQ, Mailer, Mailtrap, Sendgrid}
 
 	for _, variable := range variables {
 		if err := envconfig.Process(e.ctx, variable); err != nil {

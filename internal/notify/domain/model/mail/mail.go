@@ -7,11 +7,11 @@ import (
 
 // Mail represents an email message.
 type Mail struct {
-	To       []value.Email  `json:"to" faker:"-"`
-	From     value.Email    `json:"from" faker:"email"`
-	Subject  value.Subject  `json:"subject" faker:"len=50"`
-	Body     value.Body     `json:"body" faker:"len=100"`
-	Template value.Template `json:"template" faker:"len=100"`
+	To             []*value.To `json:"to" faker:"-"`
+	Subject        string      `json:"subject" faker:"len=50"`
+	PlainText      string      `json:"plainText" faker:"len=100"`
+	HTML           string      `json:"html" faker:"len=100"`
+	AttachmentURLs []string    `json:"attachmentURLs" faker:"-"`
 }
 
 // NewMail creates a new Mail.
@@ -23,7 +23,7 @@ func NewMail() *Mail {
 func (m *Mail) Validate() (*Mail, error) {
 	var errs *errutil.Error
 
-	if m.Body == "" {
+	if m.PlainText == "" {
 		errs = errutil.Append(errs, errutil.Required("Body"))
 	}
 
@@ -32,20 +32,20 @@ func (m *Mail) Validate() (*Mail, error) {
 	}
 
 	for _, to := range m.To {
-		if to == "" {
-			errs = errutil.Append(errs, errutil.Required("To"))
+		if to.Email == "" {
+			errs = errutil.Append(errs, errutil.Required("To.Email"))
 		}
-	}
 
-	if m.From == "" {
-		errs = errutil.Append(errs, errutil.Required("From"))
+		if to.Name == "" {
+			errs = errutil.Append(errs, errutil.Required("To.Name"))
+		}
 	}
 
 	if m.Subject == "" {
 		errs = errutil.Append(errs, errutil.Required("Subject"))
 	}
 
-	if m.Template == "" {
+	if m.HTML == "" {
 		errs = errutil.Append(errs, errutil.Required("Template"))
 	}
 
@@ -57,31 +57,25 @@ func (m *Mail) Validate() (*Mail, error) {
 }
 
 // SetTo sets the To field.
-func (m *Mail) SetTo(to []value.Email) *Mail {
+func (m *Mail) SetTo(to []*value.To) *Mail {
 	m.To = to
 	return m
 }
 
-// SetFrom sets the From field.
-func (m *Mail) SetFrom(from value.Email) *Mail {
-	m.From = from
-	return m
-}
-
 // SetSubject sets the Subject field.
-func (m *Mail) SetSubject(subject value.Subject) *Mail {
+func (m *Mail) SetSubject(subject string) *Mail {
 	m.Subject = subject
 	return m
 }
 
-// SetBody sets the Body field.
-func (m *Mail) SetBody(body value.Body) *Mail {
-	m.Body = body
+// SetPlainText sets the Body field.
+func (m *Mail) SetPlainText(body string) *Mail {
+	m.PlainText = body
 	return m
 }
 
-// SetTemplate sets the Template field.
-func (m *Mail) SetTemplate(template value.Template) *Mail {
-	m.Template = template
+// SetHTML sets the Template field.
+func (m *Mail) SetHTML(template string) *Mail {
+	m.HTML = template
 	return m
 }
