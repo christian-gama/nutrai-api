@@ -12,7 +12,7 @@ import (
 // DeleteMeHandler represents the DeleteMe command.
 type DeleteMeHandler = command.Handler[*DeleteMeInput]
 
-// deleteMeHandlerImpl represents the implementation of the DeleteUser command.
+// deleteMeHandlerImpl represents the implementation of the DeleteMe command.
 type deleteMeHandlerImpl struct {
 	repo.User
 }

@@ -24,3 +24,7 @@ func MakeRefreshToken() RefreshToken {
 func MakeChangePassword() ChangePassword {
 	return NewChangePassword(command.MakeChangePasswordHandler())
 }
+
+func MakeLogout() Logout {
+	return NewLogout(command.MakeLogoutHandler())
+}

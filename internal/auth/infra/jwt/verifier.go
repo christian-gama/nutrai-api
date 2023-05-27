@@ -59,7 +59,7 @@ func (s *verifierImpl) Verify(t jwtValue.Token, checkIsStored bool) (*jwt.Claims
 
 func (s *verifierImpl) isStored(claims jwt.Claims) error {
 	if _, err := s.tokenRepo.Find(context.Background(), repo.FindTokenInput{
-		Jti: claims.Jti,
+		Email: claims.Sub.Email,
 	}); err != nil {
 		return ErrInvalidToken
 	}

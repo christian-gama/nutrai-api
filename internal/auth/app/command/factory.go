@@ -2,32 +2,37 @@ package command
 
 import (
 	"github.com/christian-gama/nutrai-api/internal/auth/infra/hash"
-	persistence "github.com/christian-gama/nutrai-api/internal/auth/infra/persistence/sql"
+	redisPersistence "github.com/christian-gama/nutrai-api/internal/auth/infra/persistence/redis"
+	sqlPersistence "github.com/christian-gama/nutrai-api/internal/auth/infra/persistence/sql"
 )
 
 func MakeChangePasswordHandler() ChangePasswordHandler {
 	return NewChangePasswordHandler(
-		persistence.MakeSQLUser(),
+		sqlPersistence.MakeSQLUser(),
 		hash.MakeHasher(),
 	)
 }
 
 func MakeCheckCredentialsHandler() CheckCredentialsHandler {
 	return NewCheckCredentialsHandler(
-		persistence.MakeSQLUser(),
+		sqlPersistence.MakeSQLUser(),
 		hash.MakeHasher(),
 	)
 }
 
 func MakeDeleteMeHandler() DeleteMeHandler {
 	return NewDeleteMeHandler(
-		persistence.MakeSQLUser(),
+		sqlPersistence.MakeSQLUser(),
 	)
 }
 
 func MakeSaveUserHandler() SaveUserHandler {
 	return NewSaveUserHandler(
-		persistence.MakeSQLUser(),
+		sqlPersistence.MakeSQLUser(),
 		hash.MakeHasher(),
 	)
+}
+
+func MakeLogoutHandler() LogoutHandler {
+	return NewLogoutHandler(redisPersistence.MakeRedisToken())
 }

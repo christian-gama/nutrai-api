@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/token"
-	"github.com/christian-gama/nutrai-api/internal/core/domain/value"
+	value "github.com/christian-gama/nutrai-api/internal/auth/domain/value/user"
 )
 
 // SaveTokenInput is the input for the Save method.
@@ -14,12 +14,12 @@ type SaveTokenInput struct {
 
 // FindTokenInput is the input for the Find method.
 type FindTokenInput struct {
-	Jti value.UUID
+	Email value.Email
 }
 
 // DeleteTokenInput is the input for the Delete method.
 type DeleteTokenInput struct {
-	Jti value.UUID
+	Email value.Email
 }
 
 // Token is the interface that wraps the basic Token methods.

@@ -2,7 +2,6 @@ package jwt
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/christian-gama/nutrai-api/config/env"
@@ -62,16 +61,6 @@ func (g *generatorImpl) Generate(subject *jwt.Subject, persist bool) (value.Toke
 		}); err != nil {
 			return "", err
 		}
-
-		found, err := g.tokenRepo.Find(context.Background(), repo.FindTokenInput{
-			Jti: "invalid",
-		})
-		if err != nil {
-			fmt.Printf("error: %+v\n", err)
-			return "", err
-		}
-
-		fmt.Printf("found: %+v\n", found)
 	}
 
 	signed, err := g.signToken()

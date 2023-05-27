@@ -3,7 +3,7 @@ package command_test
 import (
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/patient/app/command"
+	"github.com/christian-gama/nutrai-api/internal/auth/app/command"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
 
@@ -17,7 +17,10 @@ func TestFactorySuite(t *testing.T) {
 
 func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
-		command.MakeSavePatientHandler()
-		command.MakeUpdatePatientHandler()
+		command.MakeLogoutHandler()
+		command.MakeChangePasswordHandler()
+		command.MakeDeleteMeHandler()
+		command.MakeSaveUserHandler()
+		command.MakeCheckCredentialsHandler()
 	})
 }
