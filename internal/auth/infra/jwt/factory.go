@@ -14,6 +14,10 @@ func MakeRefreshTokenGenerator() jwt.Generator {
 	return NewGenerator(uuid.MakeGenerator(), jwt.RefreshTokenType, env.Jwt.RefreshExpire.Duration)
 }
 
-func MakeVerifier() jwt.Verifier {
-	return NewVerifier()
+func MakeRefreshVerifier() jwt.Verifier {
+	return NewVerifier(jwt.RefreshTokenType)
+}
+
+func MakeAccessVerifier() jwt.Verifier {
+	return NewVerifier(jwt.AccessTokenType)
 }

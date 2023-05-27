@@ -18,7 +18,8 @@ func TestFactorySuite(t *testing.T) {
 func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
 		jwt.MakeAccessTokenGenerator()
-		jwt.MakeVerifier()
+		jwt.MakeAccessVerifier()
 		jwt.MakeRefreshTokenGenerator()
+		jwt.MakeRefreshVerifier()
 	})
 }

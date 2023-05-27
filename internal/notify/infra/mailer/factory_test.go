@@ -22,9 +22,7 @@ func (s *FactorySuite) TestFactory() {
 	})
 
 	s.Panics(func() {
-		original := env.Mailer.Provider
 		env.Mailer.Provider = env.MailerProvider("invalid")
 		mailer.MakeMailer()
-		env.Mailer.Provider = original
 	})
 }

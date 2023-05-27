@@ -27,6 +27,11 @@ func (e *Error) Error() string {
 	return output
 }
 
+func (e Error) Append(err error) *Error {
+	e.Errors = append(e.Errors, err)
+	return &e
+}
+
 // String implements fmt.Stringer interface.
 func (e *Error) String() string {
 	return e.Error()
