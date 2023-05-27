@@ -86,21 +86,19 @@ func (s *ErrorSuite) TestError() {
 	)
 
 	s.Run("returns an ErrTimeout if the error is a context deadline exceeded", func() {
-		s.Panics(func() {
-			err := errors.New("context deadline exceeded")
+		err := errors.New("context deadline exceeded")
 
-			Error(err, TestModel)
-		})
+		err = Error(err, TestModel)
+
+		s.ErrorAsTimeout(err)
 	})
 
 	s.Run("returns an ErrUnavailable if the error is a connection refused", func() {
-		s.Panics(func() {
-			err := errors.New("sorry, too many clients already")
+		err := errors.New("sorry, too many clients already")
 
-			err = Error(err, TestModel)
+		err = Error(err, TestModel)
 
-			s.ErrorAsUnavailable(err)
-		})
+		s.ErrorAsUnavailable(err)
 	})
 
 	s.Run("returns an ErrNoChanges if the error is a no rows affected", func() {
@@ -131,21 +129,21 @@ func (s *ErrorSuite) TestError() {
 	)
 
 	s.Run("returns an ErrInternalServerError if the error is a input syntax", func() {
-		s.Panics(func() {
-			err := errors.New("SQLSTATE 22P02")
+		err := errors.New("SQLSTATE 22P02")
 
-			Error(err, TestModel)
-		})
+		err = Error(err, TestModel)
+
+		s.ErrorAsInternalServerError(err)
 	})
 
 	s.Run(
 		"Error returns an ErrInternalServerError if the error is a missing where conditions",
 		func() {
-			s.Panics(func() {
-				err := errors.New("WHERE conditions required")
+			err := errors.New("WHERE conditions required")
 
-				Error(err, TestModel)
-			})
+			err = Error(err, TestModel)
+
+			s.ErrorAsInternalServerError(err)
 		},
 	)
 
@@ -169,11 +167,11 @@ func (s *ErrorSuite) TestError() {
 	)
 
 	s.Run("returns an ErrUnavailable if the error is from a connection failure", func() {
-		s.Panics(func() {
-			err := errors.New("failed to connect to database")
+		err := errors.New("failed to connect to database")
 
-			Error(err, TestModel)
-		})
+		err = Error(err, TestModel)
+
+		s.ErrorAsUnavailable(err)
 	})
 
 	s.Run("returns the original error if it is a unknown error", func() {
