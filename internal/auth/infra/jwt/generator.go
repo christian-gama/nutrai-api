@@ -32,6 +32,7 @@ func NewGenerator(
 	duration time.Duration,
 	tokenRepo repo.Token,
 ) jwt.Generator {
+	errutil.MustBeNotEmpty("uuid.Generator", uuid)
 	errutil.MustBeNotEmpty("jwt.TokenType", tokenType)
 	errutil.MustBeNotEmpty("jwt.Duration", duration)
 	errutil.MustBeNotEmpty("repo.Token", tokenRepo)
@@ -46,19 +47,14 @@ func NewGenerator(
 }
 
 // Generate implements jwt.Generator.
-func (g *generatorImpl) Generate(subject *jwt.Subject, persist bool) (value.Token, error) {
+func (g *generatorImpl) Generate(subject *jwt.Subject, shouldPersist bool) (value.Token, error) {
 	if err := g.validate(subject); err != nil {
 		return "", err
 	}
 
 	claims := g.setClaims(subject)
-	if persist {
-		if _, err := g.tokenRepo.Save(context.Background(), repo.SaveTokenInput{
-			Token: token.NewToken().
-				SetEmail(subject.Email).
-				SetJti(claims["jti"].(coreValue.UUID)).
-				SetExpiresAt(g.getExpiresAtDuration(claims["exp"].(int64))),
-		}); err != nil {
+	if shouldPersist {
+		if err := g.persist(subject, claims); err != nil {
 			return "", err
 		}
 	}
@@ -71,6 +67,27 @@ func (g *generatorImpl) Generate(subject *jwt.Subject, persist bool) (value.Toke
 	return value.Token(signed), nil
 }
 
+// persist is a helper method that persists the token into the database.
+func (g *generatorImpl) persist(subject *jwt.Subject, claims _jwt.MapClaims) error {
+	t, err := token.NewToken().
+		SetEmail(subject.Email).
+		SetJti(claims["jti"].(coreValue.UUID)).
+		SetExpiresAt(g.getExpiresAtDuration(claims["exp"].(int64))).
+		Validate()
+	if err != nil {
+		return errors.InternalServerError(err.Error())
+	}
+
+	if _, err := g.tokenRepo.Save(context.Background(), repo.SaveTokenInput{
+		Token: t,
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// getExpiresAtDuration is a helper method that returns the duration until the token expires.
 func (g *generatorImpl) getExpiresAtDuration(unix int64) time.Duration {
 	expirationTime := time.Unix(unix, 0)
 	expiresAt := time.Until(expirationTime)
