@@ -45,18 +45,18 @@ func (h *registerHandlerImpl) Handle(
 	}
 
 	subject := &jwt.Subject{Email: input.Email}
-	access, err := h.accessToken.Generate(subject)
+	accessToken, err := h.accessToken.Generate(subject, false)
 	if err != nil {
 		return nil, err
 	}
 
-	refresh, err := h.refreshToken.Generate(subject)
+	refreshToken, err := h.refreshToken.Generate(subject, true)
 	if err != nil {
 		return nil, err
 	}
 
 	return &RegisterOutput{
-		Access:  access,
-		Refresh: refresh,
+		Access:  accessToken,
+		Refresh: refreshToken,
 	}, nil
 }

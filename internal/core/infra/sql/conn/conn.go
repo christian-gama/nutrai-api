@@ -3,6 +3,7 @@ package conn
 import (
 	"time"
 
+	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/logger"
 	"github.com/christian-gama/nutrai-api/pkg/retry"
 	"gorm.io/gorm"
@@ -47,9 +48,9 @@ func (c *conn) connectionPool(db *gorm.DB) *gorm.DB {
 		panic(err)
 	}
 
-	sqlDB.SetMaxIdleConns(10)
-	sqlDB.SetMaxOpenConns(100)
-	sqlDB.SetConnMaxLifetime(time.Hour)
+	sqlDB.SetMaxIdleConns(env.DB.MaxIdleConns)
+	sqlDB.SetMaxOpenConns(env.DB.MaxOpenConns)
+	sqlDB.SetConnMaxLifetime(env.DB.ConnMaxLifetime)
 
 	return db
 }

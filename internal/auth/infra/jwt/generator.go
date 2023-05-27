@@ -1,12 +1,18 @@
 package jwt
 
 import (
+	"context"
+	"fmt"
 	"time"
 
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/jwt"
+	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/token"
+	"github.com/christian-gama/nutrai-api/internal/auth/domain/repo"
 	value "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/uuid"
+	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	_jwt "github.com/golang-jwt/jwt"
 )
@@ -17,6 +23,7 @@ type generatorImpl struct {
 	uuid      uuid.Generator
 	tokenType jwt.TokenType
 	duration  time.Duration
+	tokenRepo repo.Token
 }
 
 // NewGenerator returns a new instance of Generator.
@@ -24,22 +31,48 @@ func NewGenerator(
 	uuid uuid.Generator,
 	tokenType jwt.TokenType,
 	duration time.Duration,
+	tokenRepo repo.Token,
 ) jwt.Generator {
+	errutil.MustBeNotEmpty("jwt.TokenType", tokenType)
+	errutil.MustBeNotEmpty("jwt.Duration", duration)
+	errutil.MustBeNotEmpty("repo.Token", tokenRepo)
+
 	return &generatorImpl{
 		token:     _jwt.New(_jwt.SigningMethodHS256),
 		uuid:      uuid,
 		tokenType: tokenType,
 		duration:  duration,
+		tokenRepo: tokenRepo,
 	}
 }
 
 // Generate implements jwt.Generator.
-func (g *generatorImpl) Generate(subject *jwt.Subject) (value.Token, error) {
+func (g *generatorImpl) Generate(subject *jwt.Subject, persist bool) (value.Token, error) {
 	if err := g.validate(subject); err != nil {
 		return "", err
 	}
 
-	g.setClaims(subject)
+	claims := g.setClaims(subject)
+	if persist {
+		if _, err := g.tokenRepo.Save(context.Background(), repo.SaveTokenInput{
+			Token: token.NewToken().
+				SetEmail(subject.Email).
+				SetJti(claims["jti"].(coreValue.UUID)).
+				SetExpiresAt(g.getExpiresAtDuration(claims["exp"].(int64))),
+		}); err != nil {
+			return "", err
+		}
+
+		found, err := g.tokenRepo.Find(context.Background(), repo.FindTokenInput{
+			Jti: "invalid",
+		})
+		if err != nil {
+			fmt.Printf("error: %+v\n", err)
+			return "", err
+		}
+
+		fmt.Printf("found: %+v\n", found)
+	}
 
 	signed, err := g.signToken()
 	if err != nil {
@@ -49,10 +82,16 @@ func (g *generatorImpl) Generate(subject *jwt.Subject) (value.Token, error) {
 	return value.Token(signed), nil
 }
 
+func (g *generatorImpl) getExpiresAtDuration(unix int64) time.Duration {
+	expirationTime := time.Unix(unix, 0)
+	expiresAt := time.Until(expirationTime)
+	return expiresAt
+}
+
 // setClaims is a helper method that sets the claims of a JWT token based on the provided subject.
 // Claims include various details like audience, expiry time, issuer, subject etc. It validates
 // these claims before setting them into the token.
-func (g *generatorImpl) setClaims(subject *jwt.Subject) {
+func (g *generatorImpl) setClaims(subject *jwt.Subject) _jwt.MapClaims {
 	claims := g.token.Claims.(_jwt.MapClaims)
 	claims["aud"] = env.App.Host
 	claims["exp"] = time.Now().Add(g.duration).Unix()
@@ -62,6 +101,8 @@ func (g *generatorImpl) setClaims(subject *jwt.Subject) {
 	claims["nbf"] = time.Now().Unix()
 	claims["sub"] = map[string]any{"email": subject.Email}
 	claims["type"] = g.tokenType
+
+	return claims
 }
 
 // signToken is a helper method that signs the JWT token with a secret key, which is used for later

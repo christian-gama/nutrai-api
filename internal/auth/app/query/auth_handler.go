@@ -35,7 +35,7 @@ func (q *checkTokenHandlerImpl) Handle(
 	ctx context.Context,
 	input *AuthInput,
 ) (*AuthOutput, error) {
-	claims, err := q.Verify(input.Access)
+	claims, err := q.Verify(input.Access, false)
 	if err != nil {
 		return nil, errors.Unauthorized(err.Error())
 	}

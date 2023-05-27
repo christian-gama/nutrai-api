@@ -34,6 +34,7 @@ func (s *LoginHandlerSuite) TestHandle() {
 		Sut   func(ctx context.Context, input *service.LoginInput) (*service.LoginOutput, error)
 		Mocks *Mocks
 		Input *service.LoginInput
+		Ctx   context.Context
 	}
 
 	makeSut := func() *Sut {
@@ -57,6 +58,7 @@ func (s *LoginHandlerSuite) TestHandle() {
 			Sut:   sut.Handle,
 			Mocks: mocks,
 			Input: input,
+			Ctx:   context.Background(),
 		}
 	}
 
@@ -64,20 +66,20 @@ func (s *LoginHandlerSuite) TestHandle() {
 		sut := makeSut()
 
 		sut.Mocks.CheckCredentialsHandler.
-			On("Handle", context.Background(), mock.Anything).
+			On("Handle", sut.Ctx, mock.Anything).
 			Return(nil)
 
 		accessToken := value.Token("access")
 		sut.Mocks.AccessToken.
-			On("Generate", mock.Anything).
+			On("Generate", mock.Anything, false).
 			Return(accessToken, nil)
 
 		refreshToken := value.Token("refresh")
 		sut.Mocks.RefreshToken.
-			On("Generate", mock.Anything).
+			On("Generate", mock.Anything, true).
 			Return(refreshToken, nil)
 
-		output, err := sut.Sut(context.Background(), sut.Input)
+		output, err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.Nil(err)
 		s.EqualValues(accessToken, output.Access)
@@ -88,10 +90,10 @@ func (s *LoginHandlerSuite) TestHandle() {
 		sut := makeSut()
 
 		sut.Mocks.CheckCredentialsHandler.
-			On("Handle", context.Background(), mock.Anything).
+			On("Handle", sut.Ctx, mock.Anything).
 			Return(assert.AnError)
 
-		output, err := sut.Sut(context.Background(), sut.Input)
+		output, err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.Nil(output)
 		s.ErrorIs(err, assert.AnError)
@@ -101,14 +103,14 @@ func (s *LoginHandlerSuite) TestHandle() {
 		sut := makeSut()
 
 		sut.Mocks.CheckCredentialsHandler.
-			On("Handle", context.Background(), mock.Anything).
+			On("Handle", sut.Ctx, mock.Anything).
 			Return(nil)
 
 		sut.Mocks.AccessToken.
-			On("Generate", mock.Anything).
+			On("Generate", mock.Anything, false).
 			Return(value.Token(""), assert.AnError)
 
-		output, err := sut.Sut(context.Background(), sut.Input)
+		output, err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.Nil(output)
 		s.ErrorIs(err, assert.AnError)
@@ -118,18 +120,18 @@ func (s *LoginHandlerSuite) TestHandle() {
 		sut := makeSut()
 
 		sut.Mocks.CheckCredentialsHandler.
-			On("Handle", context.Background(), mock.Anything).
+			On("Handle", sut.Ctx, mock.Anything).
 			Return(nil)
 
 		sut.Mocks.AccessToken.
-			On("Generate", mock.Anything).
+			On("Generate", mock.Anything, false).
 			Return(value.Token("access"), nil)
 
 		sut.Mocks.RefreshToken.
-			On("Generate", mock.Anything).
+			On("Generate", mock.Anything, true).
 			Return(value.Token(""), assert.AnError)
 
-		output, err := sut.Sut(context.Background(), sut.Input)
+		output, err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.Nil(output)
 		s.ErrorIs(err, assert.AnError)

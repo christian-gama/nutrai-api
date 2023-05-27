@@ -63,4 +63,5 @@ var envsMap = map[string]any{
 	"MAILER":   env.Mailer,
 	"MAILTRAP": env.Mailtrap,
 	"SENDGRID": env.Sendgrid,
+	"REDIS":    env.Redis,
 }

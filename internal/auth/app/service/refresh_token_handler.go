@@ -32,12 +32,12 @@ func (h *refreshTokenHandlerImpl) Handle(
 	ctx context.Context,
 	input *RefreshTokenInput,
 ) (*RefreshTokenOutput, error) {
-	claims, err := h.verifier.Verify(input.Refresh)
+	claims, err := h.verifier.Verify(input.Refresh, true)
 	if err != nil {
 		return nil, err
 	}
 
-	accessToken, err := h.accessTokenGenerator.Generate(&claims.Sub)
+	accessToken, err := h.accessTokenGenerator.Generate(&claims.Sub, false)
 	if err != nil {
 		return nil, err
 	}

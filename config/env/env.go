@@ -1,5 +1,7 @@
 package env
 
+import "time"
+
 // db is the database environment variables.
 type db struct {
 	// Host is the database host (IP address or domain) to connect to.
@@ -24,6 +26,27 @@ type db struct {
 	// "verify-ca" or "verify-full". Please refer to the SQL driver documentation for more
 	// information.
 	SslMode DBSslMode `env:"DB_SSL_MODE,required"`
+
+	// MaxIdleConns is the maximum number of connections in the idle connection pool.
+	MaxIdleConns int `env:"DB_MAX_IDLE_CONNS,required"`
+
+	// MaxOpenConns is the maximum number of open connections to the database.
+	MaxOpenConns int `env:"DB_MAX_OPEN_CONNS,required"`
+
+	// ConnMaxLifetime is the maximum amount of time (in minutes) a connection may be reused.
+	ConnMaxLifetime time.Duration `env:"DB_CONN_MAX_LIFETIME,required"`
+}
+
+// redis is the Redis environment variables.
+type redis struct {
+	// Host is the Redis host (IP address or domain) to connect to.
+	Host string `env:"REDIS_HOST,required"`
+
+	// Port is the Redis port.
+	Port int `env:"REDIS_PORT,required"`
+
+	// Password is the Redis password.
+	Password string `env:"REDIS_PASSWORD,required"`
 }
 
 // jwt is the JWT environment variables.
@@ -113,6 +136,9 @@ type sendgrid struct {
 
 // DB is the database environment variables.c.
 var DB = &db{}
+
+// Redis is the Redis environment variables.
+var Redis = &redis{}
 
 // App is the application environment variables.
 var App = &app{}

@@ -3,7 +3,6 @@ package suite
 import (
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/testutils/envutil"
 	"github.com/christian-gama/nutrai-api/testutils/sqlutil"
 	"github.com/christian-gama/nutrai-api/testutils/suite/asserts"
 	"github.com/stretchr/testify/suite"
@@ -32,10 +31,7 @@ func (s *Suite) Todo(name string, f func()) bool {
 }
 
 func (s *Suite) Run(name string, f func()) bool {
-	reset := envutil.Reset()
-
 	return s.Suite.Run(name, func() {
-		defer reset()
 		f()
 	})
 }
@@ -116,11 +112,8 @@ type SuiteWithSQLConn struct {
 // Run runs a test in a transaction and rolls back the transaction after the test is done.
 // It is a wrapper around suite.Suite.Run.
 func (s *SuiteWithSQLConn) Run(name string, f func(tx *gorm.DB)) bool {
-	reset := envutil.Reset()
-
 	return s.Suite.Run(name, func() {
 		sqlutil.Transaction(s.Fail, func(tx *gorm.DB) {
-			defer reset()
 			f(tx)
 		})
 	})

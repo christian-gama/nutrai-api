@@ -62,6 +62,7 @@ run: .cmd-exists-go .clear-screen .check-env-file
 ifneq ($(RUNNING_IN_DOCKER), true)
 	@$(MAKE) postgres
 	@$(MAKE) rabbitmq
+	@$(MAKE) redis
 endif
 
 ifeq ($(ENV_FILE), .env.prod)
@@ -301,6 +302,22 @@ rabbitmq: .cmd-exists-docker .clear-screen .check-env-file
 
 
 # ==============================================================================================
+# Target: redis
+# Brief: Runs the redis in a docker container.
+# Usage: Run the command 'make redis [ENV_FILE="<env_file>"]'.
+# Args:
+# 	ENV_FILE: The env file to be loaded.
+# ==============================================================================================
+.PHONY: redis
+redis: .cmd-exists-docker .clear-screen .check-env-file
+	@if [ "$(ENV_FILE)" = ".env.test" ]; then \
+		$(MAKE) .docker COMMAND=up FLAG=-d SERVICE=redis_test; \
+	else \
+		$(MAKE) .docker COMMAND=up FLAG=-d SERVICE=redis; \
+	fi;
+
+
+# ==============================================================================================
 # Target: mock
 # Brief: Generates mocks for all interfaces in the project, excluding the vendor folder.
 # Usage: Run the command 'make mock'.
@@ -441,6 +458,7 @@ docker-list-env: .cmd-exists-docker .clear-screen .check-env-file
 .prepare-test: .cmd-exists-go .cmd-exists-docker .clear-screen
 	@ENV_FILE=.env.test $(MAKE) rabbitmq
 	@ENV_FILE=.env.test $(MAKE) postgres
+	@ENV_FILE=.env.test $(MAKE) redis
 	@go run ./cmd/migrate/*.go -e .env.test reset
 
 

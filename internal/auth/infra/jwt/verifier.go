@@ -1,10 +1,12 @@
 package jwt
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/jwt"
+	"github.com/christian-gama/nutrai-api/internal/auth/domain/repo"
 	jwtValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
 	userValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/user"
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
@@ -15,19 +17,22 @@ import (
 // verifierImpl is the implementation of the Verifier interface.
 type verifierImpl struct {
 	tokenType jwt.TokenType
+	tokenRepo repo.Token
 }
 
 // NewVerifier creates a new JWT verifier.
-func NewVerifier(tokenType jwt.TokenType) jwt.Verifier {
+func NewVerifier(tokenType jwt.TokenType, tokenRepo repo.Token) jwt.Verifier {
 	errutil.MustBeNotEmpty("jwt.TokenType", tokenType)
+	errutil.MustBeNotEmpty("repo.Token", tokenRepo)
 
 	return &verifierImpl{
 		tokenType: tokenType,
+		tokenRepo: tokenRepo,
 	}
 }
 
 // Verify implements the jwt.Verifier interface.
-func (s *verifierImpl) Verify(t jwtValue.Token) (*jwt.Claims, error) {
+func (s *verifierImpl) Verify(t jwtValue.Token, checkIsStored bool) (*jwt.Claims, error) {
 	token, err := _jwt.Parse(t.String(), keyFunc)
 	if err != nil {
 		return nil, err
@@ -35,7 +40,7 @@ func (s *verifierImpl) Verify(t jwtValue.Token) (*jwt.Claims, error) {
 
 	mapClaims, ok := token.Claims.(_jwt.MapClaims)
 	if !ok {
-		return nil, fmt.Errorf("invalid claims")
+		return nil, ErrInvalidToken
 	}
 
 	claims := s.getClaims(mapClaims)
@@ -43,7 +48,23 @@ func (s *verifierImpl) Verify(t jwtValue.Token) (*jwt.Claims, error) {
 		return nil, err
 	}
 
+	if checkIsStored {
+		if err := s.isStored(*claims); err != nil {
+			return nil, err
+		}
+	}
+
 	return claims, nil
+}
+
+func (s *verifierImpl) isStored(claims jwt.Claims) error {
+	if _, err := s.tokenRepo.Find(context.Background(), repo.FindTokenInput{
+		Jti: claims.Jti,
+	}); err != nil {
+		return ErrInvalidToken
+	}
+
+	return nil
 }
 
 // getClaims is a helper method that converts the claims from a JWT token into a structured

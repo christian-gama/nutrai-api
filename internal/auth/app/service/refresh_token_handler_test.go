@@ -32,6 +32,7 @@ func (s *RefreshTokenHandlerSuite) TestHandle() {
 		Sut   func(ctx context.Context, input *service.RefreshTokenInput) (*service.RefreshTokenOutput, error)
 		Mocks *Mocks
 		Input *service.RefreshTokenInput
+		Ctx   context.Context
 	}
 
 	makeSut := func() *Sut {
@@ -51,6 +52,7 @@ func (s *RefreshTokenHandlerSuite) TestHandle() {
 			Sut:   sut.Handle,
 			Mocks: mocks,
 			Input: input,
+			Ctx:   context.Background(),
 		}
 	}
 
@@ -58,15 +60,15 @@ func (s *RefreshTokenHandlerSuite) TestHandle() {
 		sut := makeSut()
 
 		sut.Mocks.Verifier.
-			On("Verify", mock.Anything).
+			On("Verify", mock.Anything, true).
 			Return(jwtFake.AccessTokenClaims(), nil)
 
 		accessToken := value.Token("access")
 		sut.Mocks.AccessToken.
-			On("Generate", mock.Anything).
+			On("Generate", mock.Anything, false).
 			Return(accessToken, nil)
 
-		output, err := sut.Sut(context.Background(), sut.Input)
+		output, err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.Nil(err)
 		s.EqualValues(accessToken, output.Access)
@@ -76,10 +78,10 @@ func (s *RefreshTokenHandlerSuite) TestHandle() {
 		sut := makeSut()
 
 		sut.Mocks.Verifier.
-			On("Verify", mock.Anything).
+			On("Verify", mock.Anything, true).
 			Return(nil, assert.AnError)
 
-		output, err := sut.Sut(context.Background(), sut.Input)
+		output, err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.ErrorIs(err, assert.AnError)
 		s.Nil(output)
@@ -89,14 +91,14 @@ func (s *RefreshTokenHandlerSuite) TestHandle() {
 		sut := makeSut()
 
 		sut.Mocks.Verifier.
-			On("Verify", mock.Anything).
+			On("Verify", mock.Anything, true).
 			Return(jwtFake.AccessTokenClaims(), nil)
 
 		sut.Mocks.AccessToken.
-			On("Generate", mock.Anything).
+			On("Generate", mock.Anything, false).
 			Return(value.Token(""), assert.AnError)
 
-		output, err := sut.Sut(context.Background(), sut.Input)
+		output, err := sut.Sut(sut.Ctx, sut.Input)
 
 		s.ErrorIs(err, assert.AnError)
 		s.Nil(output)

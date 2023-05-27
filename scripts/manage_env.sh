@@ -73,6 +73,7 @@ update_environment_specific_variables() {
     case "$env_name" in
         "dev")
             sed -i "s/DB_PORT=.*/DB_PORT=5433/" "$env_file"
+            sed -i "s/REDIS_PORT=.*/REDIS_PORT=6380/" "$env_file"
             sed -i "s/RABBITMQ_PORT=.*/RABBITMQ_PORT=5673/" "$env_file"
             sed -i "s/CONFIG_LOG_LEVEL=.*/CONFIG_LOG_LEVEL=\"debug\"/" "$env_file"
             sed -i "s/JWT_ACCESS_EXPIRE=.*/JWT_ACCESS_EXPIRE=\"24h\"/" "$env_file"
@@ -80,6 +81,7 @@ update_environment_specific_variables() {
             ;;
         "test")
             sed -i "s/DB_PORT=.*/DB_PORT=5434/" "$env_file"
+            sed -i "s/REDIS_PORT=.*/REDIS_PORT=6381/" "$env_file"
             sed -i "s/RABBITMQ_PORT=.*/RABBITMQ_PORT=5674/" "$env_file"
             sed -i "s/CONFIG_LOG_LEVEL=.*/CONFIG_LOG_LEVEL=\"panic\"/" "$env_file"
             sed -i "s/JWT_ACCESS_EXPIRE=.*/JWT_ACCESS_EXPIRE=\"999d\"/" "$env_file"

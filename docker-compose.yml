@@ -18,10 +18,31 @@ services:
       POSTGRES_PASSWORD: $DB_PASSWORD
       POSTGRES_PORT: $DB_PORT
       POSTGRES_USER: $DB_USER
+      POSTGRES_MAX_CONNECTIONS: $DB_MAX_OPEN_CONNS
     volumes:
       - ./$DOCKER_DIR/db_data/$APP_ENV:/var/lib/postgresql/data
     ports:
       - "$DB_PORT:$DB_PORT"
+
+  # Redis service to run both in development and production. The variables
+  # are configured in .env.$APP_ENV and it will run according to the variables
+  redis:
+    command: redis-server --port $REDIS_PORT
+    container_name: nutrai-redis
+    image: redis:7.0.11-alpine
+    restart: always
+    healthcheck:
+      interval: 1s
+      retries: 10
+      test: [ "CMD", "redis-cli", "ping" ]
+      timeout: 1s
+    environment:
+      REDIS_PASSWORD: $REDIS_PASSWORD
+      REDIS_PORT: $REDIS_PORT
+    volumes:
+      - ./$DOCKER_DIR/redis_data/$APP_ENV:/data
+    ports:
+      - "$REDIS_PORT:$REDIS_PORT"
 
   # RabbitMQ service to run both in development and production. The variables
   # are configured in .env.$APP_ENV and it will run according to the variables
@@ -67,9 +88,11 @@ services:
     depends_on:
       - psql
       - rabbitmq
+      - redis
     links:
       - psql
       - rabbitmq
+      - redis
     volumes:
       - ./$DOCKER_DIR/build:$WORKDIR/$BUILD_DIR
       - ./$DOCKER_DIR/cache/go:/root/.cache
@@ -103,10 +126,10 @@ services:
       - "$DB_PORT:$DB_PORT"
     environment:
       POSTGRES_DB: $DB_NAME
-      POSTGRES_HOST: $DB_HOST
       POSTGRES_PASSWORD: $DB_PASSWORD
       POSTGRES_PORT: $DB_PORT
       POSTGRES_USER: $DB_USER
+      POSTGRES_MAX_CONNECTIONS: $DB_MAX_OPEN_CONNS
     tmpfs:
       - /var/lib/postgresql/data
 
@@ -129,3 +152,20 @@ services:
       - "$RABBITMQ_PORT:$RABBITMQ_PORT"
     tmpfs:
       - /var/lib/rabbitmq
+
+  # Optimized for running tests. Do not use for development.
+  redis_test:
+    command: redis-server --port $REDIS_PORT
+    container_name: nutrai-redis-test
+    image: redis:7.0.11-alpine
+    restart: always
+    healthcheck:
+      interval: 1s
+      retries: 10
+      test: [ "CMD", "redis-cli", "ping" ]
+      timeout: 1s
+    environment:
+      REDIS_PASSWORD: $REDIS_PASSWORD
+      REDIS_PORT: $REDIS_PORT
+    ports:
+      - "$REDIS_PORT:$REDIS_PORT"
