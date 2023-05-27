@@ -71,7 +71,7 @@ func (m *saveExceptionHandlerImpl) handleException(ctx *gin.Context, r any) {
 
 	ctx.AbortWithStatusJSON(
 		http.StatusInternalServerError,
-		response.Error(_errors.New(message)),
+		response.Error(errors.InternalServerError(message)),
 	)
 }
 

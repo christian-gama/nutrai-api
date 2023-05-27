@@ -35,11 +35,11 @@ var errsMap = map[string]func(err error, model fmt.Stringer) error{
 	},
 
 	contextDeadlinePattern: func(err error, model fmt.Stringer) error {
-		panic(errors.Timeout())
+		return errors.Timeout()
 	},
 
 	failedToConnectPattern: func(err error, model fmt.Stringer) error {
-		panic(errors.Unavailable("service"))
+		return errors.Unavailable("service")
 	},
 
 	foreignKeyConstraintPattern: func(err error, model fmt.Stringer) error {
@@ -47,11 +47,11 @@ var errsMap = map[string]func(err error, model fmt.Stringer) error{
 	},
 
 	inputSyntaxPattern: func(err error, model fmt.Stringer) error {
-		panic(errors.InternalServerError("invalid syntax"))
+		return errors.InternalServerError("invalid syntax")
 	},
 
 	missingWhereConditionsPattern: func(err error, model fmt.Stringer) error {
-		panic(errors.InternalServerError("missing where conditions"))
+		return errors.InternalServerError("missing where conditions")
 	},
 
 	noRowsAffectedPattern: func(err error, model fmt.Stringer) error {
@@ -71,10 +71,17 @@ var errsMap = map[string]func(err error, model fmt.Stringer) error{
 	},
 
 	tooManyClientsPattern: func(err error, model fmt.Stringer) error {
-		panic(errors.Unavailable("service"))
+		return errors.Unavailable("service")
 	},
 
 	uniqueConstraintPattern: func(err error, model fmt.Stringer) error {
 		return uniqueConstraint(err)
+	},
+
+	relationDoesNotExistPattern: func(err error, model fmt.Stringer) error {
+		return errors.InternalServerError(
+			"relation for %s does not exist - did you run migrations?",
+			model.String(),
+		)
 	},
 }

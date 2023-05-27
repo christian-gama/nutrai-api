@@ -85,7 +85,7 @@ func NotFound(param string) error {
 	return &ErrNotFound{
 		BaseError{
 			Param:   param,
-			Message: fmt.Sprintf("could not find the %s", param),
+			Message: fmt.Sprintf("%s was not found", param),
 			Kind:    "NotFound",
 		},
 	}
