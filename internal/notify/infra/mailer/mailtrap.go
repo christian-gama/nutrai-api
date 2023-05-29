@@ -28,9 +28,9 @@ func (m *mailtrapMailer) Send(mail *mail.Mail) error {
 
 	mailer.SetHeader("Subject", mail.Subject)
 
-	mailer.SetBody("text/html", mail.HTML)
-
-	mailer.AddAlternative("text/plain", mail.PlainText)
+	renderer := loadTemplate(mail.TemplatePath).render(mail.Context)
+	mailer.SetBody("text/html", renderer.toHTML())
+	mailer.AddAlternative("text/plain", renderer.toPlainText())
 
 	for _, attachmentURL := range mail.AttachmentURLs {
 		mailer.Attach(attachmentURL)

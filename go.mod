@@ -15,6 +15,7 @@ require (
 	github.com/iancoleman/strcase v0.2.0
 	github.com/jinzhu/copier v0.3.5
 	github.com/joho/godotenv v1.5.1
+	github.com/k3a/html2text v1.2.1
 	github.com/rabbitmq/amqp091-go v1.8.1
 	github.com/redis/go-redis/v9 v9.0.2
 	github.com/sendgrid/sendgrid-go v3.12.0+incompatible

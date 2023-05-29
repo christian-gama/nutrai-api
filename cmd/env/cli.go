@@ -5,6 +5,9 @@ import (
 	"os"
 
 	"github.com/christian-gama/nutrai-api/config/env"
+	"github.com/christian-gama/nutrai-api/internal/notify/domain/model/mail"
+	value "github.com/christian-gama/nutrai-api/internal/notify/domain/value/mail"
+	"github.com/christian-gama/nutrai-api/internal/notify/infra/mailer"
 	"github.com/christian-gama/nutrai-api/pkg/reflection"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -40,6 +43,17 @@ func run(cmd *cobra.Command, args []string) {
 				color.New(color.FgYellow).Sprintf(fmt.Sprint(opts.Field.Interface())),
 			)
 		})
+	}
+
+	err := mailer.MakeMailer().
+		Send(mail.NewMail().
+			SetSubject("Test").
+			SetTo([]*value.To{{Email: "christiangsilva9@gmail.com", Name: "Christian"}}).
+			SetTemplatePath(mailer.Welcome).
+			SetContext("Olá!", ""),
+		)
+	if err != nil {
+		fmt.Println(err)
 	}
 }
 

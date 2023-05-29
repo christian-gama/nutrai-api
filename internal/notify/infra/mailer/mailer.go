@@ -1,17 +1,48 @@
 package mailer
 
 import (
-	"github.com/christian-gama/nutrai-api/config/env"
-	"github.com/christian-gama/nutrai-api/internal/notify/domain/mailer"
+	"bytes"
+	"text/template"
+
+	value "github.com/christian-gama/nutrai-api/internal/notify/domain/value/mail"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
+	"github.com/k3a/html2text"
 )
 
-var mailers = map[env.MailerProvider]func() mailer.Mailer{}
-
-func register(provider env.MailerProvider, factory func() mailer.Mailer) {
-	mailers[provider] = factory
+type renderer struct {
+	template *template.Template
+	writer   bytes.Buffer
 }
 
-func init() {
-	register(env.MailerProviderMailtrap, newMailtrapMailer)
-	register(env.MailerProviderSendgrid, newSendgridMailer)
+func loadTemplate(templatePath *value.TemplatePath) *renderer {
+	template, err := template.ParseFiles(templatePath.Path())
+	if err != nil {
+		panic(errors.InternalServerError("failed to load '%s' template", templatePath.Path()))
+	}
+
+	return &renderer{
+		template: template,
+	}
+}
+
+func (b *renderer) render(context *value.Context) *renderer {
+	var writer bytes.Buffer = bytes.Buffer{}
+
+	if err := b.template.Execute(&writer, map[string]any{
+		"Body": context.Body,
+	}); err != nil {
+		panic(errors.InternalServerError("failed to render template"))
+	}
+
+	b.writer = writer
+
+	return b
+}
+
+func (b *renderer) toHTML() string {
+	return b.writer.String()
+}
+
+func (b *renderer) toPlainText() string {
+	return html2text.HTML2Text(b.writer.String())
 }

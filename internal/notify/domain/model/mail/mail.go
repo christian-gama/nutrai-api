@@ -8,11 +8,11 @@ import (
 
 // Mail represents an email message.
 type Mail struct {
-	To             []*value.To `json:"to" faker:"-"`
-	Subject        string      `json:"subject" faker:"len=50"`
-	PlainText      string      `json:"plainText" faker:"len=100"`
-	HTML           string      `json:"html" faker:"len=100"`
-	AttachmentURLs []string    `json:"attachmentURLs" faker:"-"`
+	To             []*value.To         `json:"to" faker:"-"`
+	Subject        string              `json:"subject" faker:"len=50"`
+	Context        *value.Context      `json:"context" faker:"-"`
+	TemplatePath   *value.TemplatePath `json:"templatePath" faker:"-"`
+	AttachmentURLs []string            `json:"attachmentURLs" faker:"-"`
 }
 
 // NewMail creates a new Mail.
@@ -24,8 +24,8 @@ func NewMail() *Mail {
 func (m *Mail) Validate() (*Mail, error) {
 	var errs *errutil.Error
 
-	if m.PlainText == "" {
-		errs = errutil.Append(errs, errors.Required("Body"))
+	if m.Context == nil {
+		errs = errutil.Append(errs, errors.Required("Context"))
 	}
 
 	if len(m.To) == 0 {
@@ -46,8 +46,8 @@ func (m *Mail) Validate() (*Mail, error) {
 		errs = errutil.Append(errs, errors.Required("Subject"))
 	}
 
-	if m.HTML == "" {
-		errs = errutil.Append(errs, errors.Required("Template"))
+	if m.TemplatePath == nil {
+		errs = errutil.Append(errs, errors.Required("TemplatePath"))
 	}
 
 	if errs.HasErrors() {
@@ -69,14 +69,14 @@ func (m *Mail) SetSubject(subject string) *Mail {
 	return m
 }
 
-// SetPlainText sets the Body field.
-func (m *Mail) SetPlainText(body string) *Mail {
-	m.PlainText = body
+// SetContext sets the Context field.
+func (m *Mail) SetContext(body, head string) *Mail {
+	m.Context = value.NewContext(body, head)
 	return m
 }
 
-// SetHTML sets the Template field.
-func (m *Mail) SetHTML(template string) *Mail {
-	m.HTML = template
+// SetTemplatePath sets the Template field.
+func (m *Mail) SetTemplatePath(paths *value.TemplatePath) *Mail {
+	m.TemplatePath = paths
 	return m
 }

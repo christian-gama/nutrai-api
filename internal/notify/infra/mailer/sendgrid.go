@@ -20,11 +20,14 @@ func (s *sendgridMailer) Send(mail *mail.Mail) error {
 
 	to := sendgridmail.NewEmail(mail.To[0].Name, mail.To[0].Email)
 
-	plainTextContent := mail.PlainText
-
-	htmlContent := mail.HTML
-
-	message := sendgridmail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
+	renderer := loadTemplate(mail.TemplatePath).render(mail.Context)
+	message := sendgridmail.NewSingleEmail(
+		from,
+		subject,
+		to,
+		renderer.toPlainText(),
+		renderer.toHTML(),
+	)
 
 	client := sendgrid.NewSendClient(env.Sendgrid.ApiKey)
 
