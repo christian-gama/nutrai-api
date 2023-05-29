@@ -18,6 +18,7 @@ This project contains a Go Restful API that helps users manage their diet plans.
       - [Run integration tests](#run-integration-tests)
   - [Makefile](#makefile)
     - [Help command](#help-command)
+  - [Code documentation](#code-documentation)
 
 ## Requirements
 - [Go 1.20](https://golang.org/doc/install)
@@ -92,3 +93,10 @@ You can use the help command to see all the available targets with a short descr
 ```sh
 make help
 ```
+
+## Code documentation
+- [Architecture](docs/architecture.md)
+- [Auth](docs/auth.md)
+- [Exception](docs/exception.md)
+- [Modules](docs/modules.md)
+- [Queries](docs/queries.md)

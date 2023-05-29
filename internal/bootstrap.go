@@ -17,9 +17,9 @@ func Bootstrap(envFile string) {
 	router.SetupRouter()
 
 	// Order matters.
-	module.Initialize(exception.Init)
-	module.Initialize(auth.Init)
-	module.Initialize(core.Init)
-	module.Initialize(patient.Init)
-	module.Initialize(diet.Init)
+	module.Init(exception.Init)
+	module.Init(auth.Init)
+	module.Init(core.Init)
+	module.Init(patient.Init)
+	module.Init(diet.Init)
 }
