@@ -25,7 +25,7 @@ jobs:
         timeout-minutes: 5
         with:
           version: v1.52.2
-      
+
       - name: Cache lint dependencies
         uses: actions/cache@v3
         with:
@@ -57,3 +57,19 @@ jobs:
             ${{ runner.os }}-test
       - name: Test
         run: make test-ci
+
+  automerge:
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: automerge
+        uses: pascalgn/automerge-action@v0.14.3
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MERGE_LABELS: "automerge,!work in progress"
+          MERGE_REMOVE_LABELS: "automerge"
+          MERGE_METHOD: "squash"
+          MERGE_COMMIT_MESSAGE: "pull-request-description"
+          MERGE_FORKS: "false"
+          MERGE_RETRIES: "6"
+          MERGE_RETRY_SLEEP: "10000"
