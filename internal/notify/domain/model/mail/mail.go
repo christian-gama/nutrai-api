@@ -8,11 +8,11 @@ import (
 
 // Mail represents an email message.
 type Mail struct {
-	To             []*value.To         `json:"to" faker:"-"`
-	Subject        string              `json:"subject" faker:"len=50"`
-	Context        *value.Context      `json:"context" faker:"-"`
-	TemplatePath   *value.TemplatePath `json:"templatePath" faker:"-"`
-	AttachmentURLs []string            `json:"attachmentURLs" faker:"-"`
+	To             []*value.To     `json:"to" faker:"-"`
+	Subject        string          `json:"subject" faker:"len=50"`
+	Context        *value.Context  `json:"context"`
+	Template       *value.Template `json:"templatePath"`
+	AttachmentURLs []string        `json:"attachmentURLs" faker:"-"`
 }
 
 // NewMail creates a new Mail.
@@ -46,8 +46,8 @@ func (m *Mail) Validate() (*Mail, error) {
 		errs = errutil.Append(errs, errors.Required("Subject"))
 	}
 
-	if m.TemplatePath == nil {
-		errs = errutil.Append(errs, errors.Required("TemplatePath"))
+	if m.Template == nil {
+		errs = errutil.Append(errs, errors.Required("Template"))
 	}
 
 	if errs.HasErrors() {
@@ -70,13 +70,13 @@ func (m *Mail) SetSubject(subject string) *Mail {
 }
 
 // SetContext sets the Context field.
-func (m *Mail) SetContext(body, head string) *Mail {
-	m.Context = value.NewContext(body, head)
+func (m *Mail) SetContext(context *value.Context) *Mail {
+	m.Context = context
 	return m
 }
 
 // SetTemplatePath sets the Template field.
-func (m *Mail) SetTemplatePath(paths *value.TemplatePath) *Mail {
-	m.TemplatePath = paths
+func (m *Mail) SetTemplatePath(path *value.Template) *Mail {
+	m.Template = path
 	return m
 }

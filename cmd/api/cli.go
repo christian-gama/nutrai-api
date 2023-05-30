@@ -2,15 +2,16 @@ package main
 
 import (
 	"context"
-	"log"
 	"os"
 
 	"github.com/christian-gama/nutrai-api/internal"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/logger"
 	httpserver "github.com/christian-gama/nutrai-api/internal/core/infra/http/server"
 	"github.com/spf13/cobra"
 )
 
 var (
+	log     logger.Logger
 	envFile string
 	cmd     = &cobra.Command{
 		Use: "api",
@@ -31,7 +32,7 @@ func run(cmd *cobra.Command, args []string) {
 
 func checkEnvFile() {
 	if envFile == "" {
-		log.Fatalf("Please specify an environment file with the flag -e")
+		log.Fatal("Please specify an environment file with the flag -e")
 	}
 
 	if _, err := os.Stat(envFile); os.IsNotExist(err) {

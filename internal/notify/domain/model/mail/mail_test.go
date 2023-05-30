@@ -31,7 +31,7 @@ func (s *MailTestSuite) TestNewMail() {
 			return mail.NewMail().
 				SetContext(data.Context).
 				SetSubject(data.Subject).
-				SetTemplatePath(data.TemplatePath).
+				SetTemplatePath(data.Template).
 				SetTo(data.To).
 				Validate()
 		}
@@ -70,7 +70,7 @@ func (s *MailTestSuite) TestNewMail() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
 
-				sut.Data.TemplatePath = nil
+				sut.Data.Template = nil
 
 				mail, err := sut.Sut()
 
@@ -129,7 +129,7 @@ func (s *MailTestSuite) TestNewMail() {
 			s.NotNil(mail)
 			s.Equal(sut.Data.Context, mail.Context, "Context should be equal")
 			s.Equal(sut.Data.Subject, mail.Subject, "Subject should be equal")
-			s.Equal(sut.Data.TemplatePath, mail.TemplatePath, "TemplatePath should be equal")
+			s.Equal(sut.Data.Template, mail.Template, "TemplatePath should be equal")
 			s.Equal(sut.Data.To, mail.To, "To should be equal")
 		})
 	})

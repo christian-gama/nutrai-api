@@ -120,6 +120,42 @@ list-env: .cmd-exists-go .clear-screen .check-env-file
 
 
 # ==============================================================================================
+# Target: mail
+# Brief: Sends a test email.
+# Usage: Run the command 'make mail ENV_FILE="<path>" TO="<email>" SUBJECT="<subject>" BODY="<body>" NAME="<name>"'.
+# Flags:
+# 	ENV_FILE: The path to the environment file.
+#   TO: The email address to send the email to.
+#   SUBJECT: The subject of the email.
+#   BODY: The body of the email.
+#   NAME: The name of the recipient.
+# ==============================================================================================
+.PHONY: mail
+mail: .cmd-exists-go .clear-screen .check-env-file
+	@if [ -z "$(TO)" ]; then \
+		echo "Error: expected TO"; \
+		exit 1; \
+	fi;
+
+	@if [ -z "$(SUBJECT)" ]; then \
+		echo "Error: expected SUBJECT"; \
+		exit 1; \
+	fi;
+
+	@if [ -z "$(BODY)" ]; then \
+		echo "Error: expected BODY"; \
+		exit 1; \
+	fi;
+
+	@if [ -z "$(NAME)" ]; then \
+		echo "Error: expected NAME"; \
+		exit 1; \
+	fi;
+
+	@go run ./cmd/mail/*.go -e $(ENV_FILE) -t "$(TO)" -s "$(SUBJECT)" -b "$(BODY)" -n "$(NAME)"
+
+
+# ==============================================================================================
 # Target: build
 # Brief: Builds the API server.
 # Usage: Run the command 'make build'.

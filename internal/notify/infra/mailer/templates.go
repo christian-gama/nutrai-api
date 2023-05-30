@@ -8,13 +8,13 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/notify/module"
 )
 
-var templateDir = path.Join(
-	os.Getenv("PWD"),
-	"internal",
-	module.Module.Name(),
-	"infra",
-	"mailer",
-	"templates",
-)
+func Template() *value.Template {
+	return value.NewTemplate().
+		SetBaseDir(path.Join(os.Getenv("PWD"), "internal", module.Module.Name(), "infra", "mailer", "templates")).
+		SetExt(".html")
+}
 
-var Welcome *value.TemplatePath = value.NewTemplatePath(templateDir, "welcome.tmpl")
+var (
+	Welcome       = Template().SetPath("welcome")
+	ResetPassword = Template().SetPath("reset_password")
+)

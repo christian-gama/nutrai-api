@@ -34,7 +34,7 @@ func (s *BenchSuite) TestPrintDuration() {
 	s.Run("prints the duration of the function", func() {
 		log := loggerMock.NewLogger(s.T())
 		resource := "test"
-		log.On("Infof", "%s took %dms to complete", resource, mock.AnythingOfType("int64")).
+		log.On("Infof", "%s took %s to complete", resource, mock.AnythingOfType("Duration")).
 			Return().
 			Once()
 
@@ -44,9 +44,9 @@ func (s *BenchSuite) TestPrintDuration() {
 		log.AssertCalled(
 			s.T(),
 			"Infof",
-			"%s took %dms to complete",
+			"%s took %s to complete",
 			resource,
-			mock.AnythingOfType("int64"),
+			mock.AnythingOfType("Duration"),
 		)
 	})
 }
