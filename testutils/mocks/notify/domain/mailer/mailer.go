@@ -3,6 +3,8 @@
 package mocks
 
 import (
+	context "context"
+
 	mail "github.com/christian-gama/nutrai-api/internal/notify/domain/model/mail"
 
 	mock "github.com/stretchr/testify/mock"
@@ -13,13 +15,13 @@ type Mailer struct {
 	mock.Mock
 }
 
-// Send provides a mock function with given fields: _a0
-func (_m *Mailer) Send(_a0 *mail.Mail) error {
-	ret := _m.Called(_a0)
+// Send provides a mock function with given fields: ctx, _a1
+func (_m *Mailer) Send(ctx context.Context, _a1 *mail.Mail) error {
+	ret := _m.Called(ctx, _a1)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*mail.Mail) error); ok {
-		r0 = rf(_a0)
+	if rf, ok := ret.Get(0).(func(context.Context, *mail.Mail) error); ok {
+		r0 = rf(ctx, _a1)
 	} else {
 		r0 = ret.Error(0)
 	}
