@@ -20,7 +20,7 @@ require (
 	github.com/sendgrid/sendgrid-go v3.12.0+incompatible
 	github.com/sethvargo/go-envconfig v0.9.0
 	github.com/spf13/cobra v1.7.0
-	github.com/stretchr/testify v1.8.3
+	github.com/stretchr/testify v1.8.4
 	go.uber.org/zap v1.24.0
 	golang.org/x/crypto v0.9.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
