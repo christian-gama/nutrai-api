@@ -7,9 +7,10 @@ import (
 
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/bench"
+	"github.com/christian-gama/nutrai-api/internal/notify/domain/mailer"
 	"github.com/christian-gama/nutrai-api/internal/notify/domain/model/mail"
 	value "github.com/christian-gama/nutrai-api/internal/notify/domain/value/mail"
-	"github.com/christian-gama/nutrai-api/internal/notify/infra/mailer"
+	m "github.com/christian-gama/nutrai-api/internal/notify/infra/mailer"
 	"github.com/spf13/cobra"
 )
 
@@ -56,7 +57,7 @@ func run(cmd *cobra.Command, args []string) {
 		SetContext(value.NewContext().SetBody(body))
 
 	duration := bench.Duration(func() {
-		err := mailer.MakeMailer().Send(context.Background(), mail)
+		err := m.MakeMailer().Send(context.Background(), mail)
 		if err != nil {
 			log.Fatal(err)
 		}

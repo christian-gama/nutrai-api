@@ -32,7 +32,7 @@ func (s *TemplateTestSuite) TestNewTemplate() {
 		}
 
 		sut := func() *value.Template {
-			return value.NewTemplate().SetBaseDir(data.BaseDir).SetExt(data.Ext).SetPath(data.Path)
+			return value.NewTemplate().SetPath(data.Path)
 		}
 
 		return &Sut{Sut: sut, Data: data}
@@ -44,56 +44,9 @@ func (s *TemplateTestSuite) TestNewTemplate() {
 		mail := sut.Sut()
 
 		s.NotNil(mail)
-		s.Equal(sut.Data.BaseDir, mail.BaseDir)
-		s.Equal(fmt.Sprintf(".%s", sut.Data.Ext), mail.Ext)
 		s.Equal(
 			mail.Path,
-			fmt.Sprintf("%s/%s.%s", sut.Data.BaseDir, sut.Data.Path, sut.Data.Ext),
+			fmt.Sprintf("%s/%s%s", mail.BaseDir(), sut.Data.Path, mail.Ext()),
 		)
-	})
-
-	s.Run("Should unshift a dot when the ext does not have one", func() {
-		sut := makeSut()
-
-		sut.Data.Ext = "html"
-
-		mail := sut.Sut()
-
-		s.NotNil(mail)
-		s.Equal(sut.Data.BaseDir, mail.BaseDir)
-		s.Equal(fmt.Sprintf(".%s", sut.Data.Ext), mail.Ext)
-		s.Equal(
-			mail.Path,
-			fmt.Sprintf("%s/%s.%s", sut.Data.BaseDir, sut.Data.Path, sut.Data.Ext),
-		)
-	})
-
-	s.Run("Should keep the dot when the ext already has one", func() {
-		sut := makeSut()
-
-		sut.Data.Ext = ".html"
-
-		mail := sut.Sut()
-
-		s.NotNil(mail)
-		s.Equal(sut.Data.BaseDir, mail.BaseDir)
-		s.Equal(
-			mail.Path,
-			fmt.Sprintf("%s/%s%s", sut.Data.BaseDir, sut.Data.Path, sut.Data.Ext),
-		)
-	})
-
-	s.Run("Should return an empty template when there is no path", func() {
-		sut := makeSut()
-
-		sut.Data.Path = ""
-		sut.Data.BaseDir = ""
-		sut.Data.Ext = ""
-		sut.Data = sut.Data.SetPath()
-
-		mail := sut.Sut()
-
-		s.NotNil(mail)
-		s.Equal("", mail.Path)
 	})
 }

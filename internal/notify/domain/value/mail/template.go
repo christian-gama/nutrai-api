@@ -1,51 +1,40 @@
 package value
 
 import (
-	"fmt"
+	"os"
 	"path"
 )
 
 type Template struct {
 	Path    string `json:"value" faker:"len=5"`
-	BaseDir string `json:"baseDir" faker:"len=5"`
-	Ext     string `json:"ext" faker:"len=2"`
+	baseDir string
+	ext     string
 }
 
 // NewTemplatePath creates a new TemplatePath.
 func NewTemplate() *Template {
-	return &Template{}
+	return &Template{
+		baseDir: path.Join(os.Getenv("PWD"), "templates"),
+		ext:     ".html",
+	}
 }
 
 // SetPath sets the Path field.
-func (t *Template) SetPath(elem ...string) *Template {
-	if len(elem) == 0 {
-		return t
-	}
-
-	fullPath := []string{t.BaseDir}
-	fullPath = append(fullPath, elem...)
+func (t *Template) SetPath(fileName string) *Template {
+	fullPath := []string{t.baseDir}
+	fullPath = append(fullPath, fileName)
 	t.Path = path.Join(fullPath...)
-	t.Path += t.Ext
+	t.Path += t.ext
 
 	return t
 }
 
-// SetBaseDir sets the BaseDir field.
-func (t *Template) SetBaseDir(baseDir string) *Template {
-	t.BaseDir = baseDir
-	return t
+// BaseDir returns the baseDir field.
+func (t *Template) BaseDir() string {
+	return t.baseDir
 }
 
-// SetExt sets the Ext field.
-func (t *Template) SetExt(ext string) *Template {
-	if ext == "" {
-		return t
-	}
-
-	t.Ext = ext
-	if ext[0] != '.' {
-		t.Ext = fmt.Sprintf(".%s", ext)
-	}
-
-	return t
+// Ext returns the ext field.
+func (t *Template) Ext() string {
+	return t.ext
 }

@@ -7,10 +7,10 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/message"
+	"github.com/christian-gama/nutrai-api/internal/notify/domain/mailer"
 	m "github.com/christian-gama/nutrai-api/internal/notify/domain/mailer"
 	"github.com/christian-gama/nutrai-api/internal/notify/domain/model/mail"
 	value "github.com/christian-gama/nutrai-api/internal/notify/domain/value/mail"
-	"github.com/christian-gama/nutrai-api/internal/notify/infra/mailer"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
