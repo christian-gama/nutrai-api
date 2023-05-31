@@ -9,7 +9,7 @@ import (
 func MakeSaveExceptionHandler() SaveExceptionHandler {
 	return NewSaveExceptionHandler(
 		consumer.MakeConsumer(
-			consumer.WithExchangeName(event.SaveException),
+			consumer.WithExchangeName(event.Exception),
 			consumer.WithRoutingKey(event.SaveException),
 		),
 		persistence.MakeSQLException(),

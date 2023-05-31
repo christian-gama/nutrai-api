@@ -8,7 +8,7 @@ import (
 func MakeSaveExceptionHandler() SaveExceptionHandler {
 	return NewSaveExceptionHandler(
 		publisher.MakePublisher(
-			publisher.WithExchangeName(event.SaveException),
+			publisher.WithExchangeName(event.Exception),
 			publisher.WithRoutingKey(event.SaveException),
 		),
 	)

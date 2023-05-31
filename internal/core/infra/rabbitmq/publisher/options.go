@@ -21,11 +21,11 @@ type options struct {
 	ContentType  rabbitmq.ContentType
 }
 
-func WithExchangeName(exchange event.Event) func(*options) {
+func WithExchangeName(exchange string) func(*options) {
 	errutil.MustBeNotEmpty("exchange", exchange)
 
 	return func(o *options) {
-		o.ExchangeName = exchange.Name()
+		o.ExchangeName = exchange
 	}
 }
 

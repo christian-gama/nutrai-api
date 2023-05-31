@@ -2,6 +2,7 @@ package command_test
 
 import (
 	"context"
+	"encoding/json"
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/app/command"
@@ -11,6 +12,7 @@ import (
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/app/command"
 	hasherMock "github.com/christian-gama/nutrai-api/testutils/mocks/auth/domain/hasher"
 	userRepoMock "github.com/christian-gama/nutrai-api/testutils/mocks/auth/domain/repo"
+	publisherMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/message"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -26,8 +28,9 @@ func TestSaveUserHandlerSuite(t *testing.T) {
 
 func (s *SaveUserHandlerSuite) TestSaveHandler() {
 	type Mock struct {
-		Hasher   *hasherMock.Hasher
-		UserRepo *userRepoMock.User
+		Hasher    *hasherMock.Hasher
+		UserRepo  *userRepoMock.User
+		Publisher *publisherMock.Publisher
 	}
 
 	type Sut struct {
@@ -39,13 +42,14 @@ func (s *SaveUserHandlerSuite) TestSaveHandler() {
 
 	makeSut := func() Sut {
 		mock := &Mock{
-			Hasher:   hasherMock.NewHasher(s.T()),
-			UserRepo: userRepoMock.NewUser(s.T()),
+			Hasher:    hasherMock.NewHasher(s.T()),
+			UserRepo:  userRepoMock.NewUser(s.T()),
+			Publisher: publisherMock.NewPublisher(s.T()),
 		}
 
 		input := fake.SaveUserInput()
 
-		sut := command.NewSaveUserHandler(mock.UserRepo, mock.Hasher)
+		sut := command.NewSaveUserHandler(mock.UserRepo, mock.Hasher, mock.Publisher)
 
 		return Sut{
 			Sut:   sut,
@@ -66,6 +70,8 @@ func (s *SaveUserHandlerSuite) TestSaveHandler() {
 			On("Save", sut.Ctx, mock.Anything).
 			Return(user.NewUser(), nil)
 
+		sut.Mock.Publisher.On("Handle", mock.Anything)
+
 		err := sut.Sut.Handle(sut.Ctx, sut.Input)
 
 		s.Nil(err)
@@ -82,9 +88,31 @@ func (s *SaveUserHandlerSuite) TestSaveHandler() {
 			On("Save", sut.Ctx, mock.Anything).
 			Return(user.NewUser(), nil)
 
+		sut.Mock.Publisher.On("Handle", mock.Anything)
+
 		_ = sut.Sut.Handle(sut.Ctx, sut.Input)
 
 		sut.Mock.Hasher.AssertCalled(s.T(), "Hash", sut.Input.Password)
+	})
+
+	s.Run("Should call publisher.Handle with the user", func() {
+		sut := makeSut()
+
+		sut.Mock.Hasher.
+			On("Hash", sut.Input.Password).
+			Return(value.Password("hashed"), nil)
+
+		user := user.NewUser()
+		sut.Mock.UserRepo.
+			On("Save", sut.Ctx, mock.Anything).
+			Return(user, nil)
+
+		bytes, _ := json.Marshal(user)
+		sut.Mock.Publisher.On("Handle", bytes)
+
+		_ = sut.Sut.Handle(sut.Ctx, sut.Input)
+
+		sut.Mock.Publisher.AssertCalled(s.T(), "Handle", bytes)
 	})
 
 	s.Run("Should return error when hashing password fails", func() {
@@ -134,6 +162,8 @@ func (s *SaveUserHandlerSuite) TestSaveHandler() {
 		sut.Mock.Hasher.
 			On("Hash", mock.Anything).
 			Return(hashedPassword, nil)
+
+		sut.Mock.Publisher.On("Handle", mock.Anything)
 
 		sut.Mock.UserRepo.
 			On("Save", sut.Ctx, mock.Anything).

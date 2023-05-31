@@ -43,7 +43,7 @@ func (c *saveUserHandlerImpl) Handle(ctx context.Context, input *SaveUserInput) 
 		return err
 	}
 
-	patient, err := user.NewUser().
+	u, err := user.NewUser().
 		SetEmail(input.Email).
 		SetName(input.Name).
 		SetPassword(hashedPassword).
@@ -52,14 +52,19 @@ func (c *saveUserHandlerImpl) Handle(ctx context.Context, input *SaveUserInput) 
 		return err
 	}
 
-	if err := c.Publish(ctx, patient); err != nil {
+	u, err = c.Save(ctx, repo.SaveUserInput{User: u})
+	if err != nil {
 		return err
 	}
 
-	return command.Response(c.Save(ctx, repo.SaveUserInput{User: patient}))
+	if err := c.publish(ctx, u); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (c *saveUserHandlerImpl) Publish(ctx context.Context, user *user.User) error {
+func (c *saveUserHandlerImpl) publish(ctx context.Context, user *user.User) error {
 	msg, err := json.Marshal(user)
 	if err != nil {
 		return errors.InternalServerError(err.Error())

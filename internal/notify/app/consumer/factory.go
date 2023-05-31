@@ -9,7 +9,7 @@ import (
 func MakeSendWelcomeHandler() SendWelcomeHandler {
 	return NewSendWelcomeHandler(
 		consumer.MakeConsumer(
-			consumer.WithExchangeName(event.SaveUser),
+			consumer.WithExchangeName(event.User),
 			consumer.WithRoutingKey(event.SaveUser),
 		),
 		mailer.MakeMailer(),

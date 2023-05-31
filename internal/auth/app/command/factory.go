@@ -33,7 +33,7 @@ func MakeSaveUserHandler() SaveUserHandler {
 		sqlPersistence.MakeSQLUser(),
 		hash.MakeHasher(),
 		publisher.MakePublisher(
-			publisher.WithExchangeName(event.SaveUser),
+			publisher.WithExchangeName(event.User),
 			publisher.WithRoutingKey(event.SaveUser),
 		),
 	)

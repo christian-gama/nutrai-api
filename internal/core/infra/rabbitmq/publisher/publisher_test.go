@@ -31,7 +31,7 @@ func (s *PublisherSuite) SetupTest() {
 
 	s.publisher = publisher.NewPublisher(
 		s.rmq,
-		publisher.WithExchangeName(event.New("test", event.Save)),
+		publisher.WithExchangeName("test"),
 		publisher.WithRoutingKey(event.New("test", event.Save)),
 		publisher.WithRoutingKey(event.New("test", event.Save)),
 		publisher.WithArgs(nil),
