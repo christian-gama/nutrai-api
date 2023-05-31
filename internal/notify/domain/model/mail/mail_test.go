@@ -32,7 +32,7 @@ func (s *MailTestSuite) TestNewMail() {
 				SetContext(data.Context).
 				SetSubject(data.Subject).
 				SetTemplatePath(data.Template).
-				SetTo(data.To).
+				SetTo(data.To...).
 				Validate()
 		}
 

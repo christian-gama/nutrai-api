@@ -6,27 +6,31 @@ import (
 )
 
 type Template struct {
-	Path    string `json:"value" faker:"len=5"`
+	path    string
 	baseDir string
 	ext     string
 }
 
 // NewTemplatePath creates a new TemplatePath.
-func NewTemplate() *Template {
+func NewTemplate(fileName string) *Template {
+	baseDir := path.Join(os.Getenv("PWD"), "templates")
+	ext := ".html"
+
+	fullPath := []string{baseDir}
+	fullPath = append(fullPath, fileName)
+	path := path.Join(fullPath...)
+	path += ext
+
 	return &Template{
-		baseDir: path.Join(os.Getenv("PWD"), "templates"),
-		ext:     ".html",
+		baseDir: baseDir,
+		ext:     ext,
+		path:    path,
 	}
 }
 
 // SetPath sets the Path field.
-func (t *Template) SetPath(fileName string) *Template {
-	fullPath := []string{t.baseDir}
-	fullPath = append(fullPath, fileName)
-	t.Path = path.Join(fullPath...)
-	t.Path += t.ext
-
-	return t
+func (t *Template) Path() string {
+	return t.path
 }
 
 // BaseDir returns the baseDir field.

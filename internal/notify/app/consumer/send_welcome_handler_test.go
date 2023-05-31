@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/notify/app/consumer"
+	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/domain/model/user"
 	messageMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/message"
 	mailerMock "github.com/christian-gama/nutrai-api/testutils/mocks/notify/domain/mailer"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
@@ -82,7 +82,8 @@ func (s *SendWelcomeSuite) TestConsumerHandler() {
 	s.Run("should save a new mailer", func() {
 		sut := makeSut()
 
-		body, _ := json.Marshal(&user.User{})
+		body, err := json.Marshal(fake.User())
+		s.Require().NoError(err)
 
 		sut.Mock.Mailer.
 			On("Send", sut.Ctx, mock.Anything).

@@ -49,7 +49,7 @@ func (m *mailtrapMailer) setHeaders(mail *mail.Mail) {
 }
 
 func (m *mailtrapMailer) setBody(mail *mail.Mail) {
-	render := m.render.LoadTemplate(mail.Template).Render(mail.Context)
+	render := m.render.Render(mail)
 
 	m.msg.SetBody("text/html", render.ToHTML())
 	m.msg.AddAlternative("text/plain", render.ToPlainText())

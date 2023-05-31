@@ -5,9 +5,7 @@ import (
 	"testing"
 
 	value "github.com/christian-gama/nutrai-api/internal/notify/domain/value/mail"
-	"github.com/christian-gama/nutrai-api/testutils/fake"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
-	"github.com/go-faker/faker/v4"
 )
 
 type TemplateTestSuite struct {
@@ -20,22 +18,15 @@ func TestTemplateSuite(t *testing.T) {
 
 func (s *TemplateTestSuite) TestNewTemplate() {
 	type Sut struct {
-		Sut  func() *value.Template
-		Data *value.Template
+		Sut func() *value.Template
 	}
 
 	makeSut := func() *Sut {
-		data := new(value.Template)
-		err := faker.FakeData(data)
-		if err != nil {
-			fake.ErrGenerating(err)
-		}
-
 		sut := func() *value.Template {
-			return value.NewTemplate().SetPath(data.Path)
+			return value.NewTemplate("test")
 		}
 
-		return &Sut{Sut: sut, Data: data}
+		return &Sut{Sut: sut}
 	}
 
 	s.Run("Should return a mail when all fields are valid", func() {
@@ -46,7 +37,7 @@ func (s *TemplateTestSuite) TestNewTemplate() {
 		s.NotNil(mail)
 		s.Equal(
 			mail.Path,
-			fmt.Sprintf("%s/%s%s", mail.BaseDir(), sut.Data.Path, mail.Ext()),
+			fmt.Sprintf("%s/%s%s", mail.BaseDir(), "test", mail.Ext()),
 		)
 	})
 }

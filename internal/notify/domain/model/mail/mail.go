@@ -10,7 +10,7 @@ import (
 type Mail struct {
 	To             []*value.To     `json:"to" faker:"-"`
 	Subject        string          `json:"subject" faker:"len=50"`
-	Context        *value.Context  `json:"context"`
+	Context        value.Context   `json:"context"`
 	Template       *value.Template `json:"templatePath"`
 	AttachmentURLs []string        `json:"attachmentURLs" faker:"-"`
 }
@@ -58,7 +58,7 @@ func (m *Mail) Validate() (*Mail, error) {
 }
 
 // SetTo sets the To field.
-func (m *Mail) SetTo(to []*value.To) *Mail {
+func (m *Mail) SetTo(to ...*value.To) *Mail {
 	m.To = to
 	return m
 }
@@ -70,7 +70,7 @@ func (m *Mail) SetSubject(subject string) *Mail {
 }
 
 // SetContext sets the Context field.
-func (m *Mail) SetContext(context *value.Context) *Mail {
+func (m *Mail) SetContext(context value.Context) *Mail {
 	m.Context = context
 	return m
 }
@@ -80,3 +80,8 @@ func (m *Mail) SetTemplatePath(path *value.Template) *Mail {
 	m.Template = path
 	return m
 }
+
+var (
+	WelcomeTemplate       = value.NewTemplate("welcome")
+	ResetPasswordTemplate = value.NewTemplate("reset_password")
+)

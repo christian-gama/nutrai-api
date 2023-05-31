@@ -37,7 +37,7 @@ func (s *sendgridMailer) message(mail *mail.Mail) *sendgridmail.SGMailV3 {
 	from := sendgridmail.NewEmail(env.Mailer.FromName, env.Mailer.From)
 	to := sendgridmail.NewEmail(mail.To[0].Name, mail.To[0].Email)
 
-	render := s.render.LoadTemplate(mail.Template).Render(mail.Context)
+	render := s.render.Render(mail)
 
 	return sendgridmail.NewSingleEmail(
 		from,

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"text/template"
 
+	"github.com/christian-gama/nutrai-api/internal/notify/domain/model/mail"
 	value "github.com/christian-gama/nutrai-api/internal/notify/domain/value/mail"
 	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	"github.com/k3a/html2text"
@@ -24,57 +25,45 @@ func New() *Render {
 
 // LoadTemplate reads and parses a template from given path. Panics if the template cannot be
 // loaded.
-func (r *Render) LoadTemplate(templatePath *value.Template) *Render {
+func (r *Render) loadTemplate(templatePath *value.Template) {
 	if templatePath == nil {
-		return &Render{}
+		return
 	}
 
-	template, err := template.ParseFiles(templatePath.Path)
+	template, err := template.ParseFiles(templatePath.Path())
 	if err != nil {
-		panic(errors.InternalServerError("failed to load '%s' template", templatePath.Path))
+		panic(errors.InternalServerError("failed to load '%s' template", templatePath.Path()))
 	}
 
-	return &Render{
-		template: template,
-	}
+	r.template = template
 }
 
 // Render renders the template if it exists, otherwise it writes the body.
-func (r *Render) Render(context *value.Context) *Render {
+func (r *Render) Render(mail *mail.Mail) *rendered {
+	r.loadTemplate(mail.Template)
 	r.buffer.Reset()
-
-	if r.template != nil {
-		return r.renderWithTemplate(context)
-	}
-
-	return r.writeToBuffer(context)
-}
-
-// ToHTML returns the HTML string.
-func (r *Render) ToHTML() string {
-	return r.buffer.String()
-}
-
-// ToPlainText returns the plain text string.
-func (r *Render) ToPlainText() string {
-	return html2text.HTML2Text(r.buffer.String())
-}
-
-// writeToBuffer writes the body.
-func (r *Render) writeToBuffer(context *value.Context) *Render {
-	_, err := r.buffer.Write([]byte(context.Body))
-	if err != nil {
-		panic(errors.InternalServerError("failed to write body"))
-	}
-
-	return r
+	return r.renderWithTemplate(mail.Context)
 }
 
 // renderWithTemplate renders the template.
-func (r *Render) renderWithTemplate(context *value.Context) *Render {
+func (r *Render) renderWithTemplate(context value.Context) *rendered {
 	if err := r.template.Execute(&r.buffer, context); err != nil {
 		panic(errors.InternalServerError("failed to render template"))
 	}
 
-	return r
+	return &rendered{buffer: r.buffer}
+}
+
+type rendered struct {
+	buffer bytes.Buffer
+}
+
+// ToHTML returns the HTML string.
+func (r *rendered) ToHTML() string {
+	return r.buffer.String()
+}
+
+// ToPlainText returns the plain text string.
+func (r *rendered) ToPlainText() string {
+	return html2text.HTML2Text(r.buffer.String())
 }

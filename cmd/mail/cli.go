@@ -7,10 +7,9 @@ import (
 
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/bench"
-	"github.com/christian-gama/nutrai-api/internal/notify/domain/mailer"
 	"github.com/christian-gama/nutrai-api/internal/notify/domain/model/mail"
 	value "github.com/christian-gama/nutrai-api/internal/notify/domain/value/mail"
-	m "github.com/christian-gama/nutrai-api/internal/notify/infra/mailer"
+	"github.com/christian-gama/nutrai-api/internal/notify/infra/mailer"
 	"github.com/spf13/cobra"
 )
 
@@ -50,14 +49,18 @@ func run(cmd *cobra.Command, args []string) {
 	checkEnvFile()
 	env.NewLoader(envFile).Load()
 
-	mail := mail.NewMail().
+	mail, err := mail.NewMail().
 		SetSubject(subject).
-		SetTo([]*value.To{{Email: to, Name: name}}).
-		SetTemplatePath(mailer.Welcome).
-		SetContext(value.NewContext().SetBody(body))
+		SetTo(&value.To{Email: to, Name: name}).
+		SetTemplatePath(mail.WelcomeTemplate).
+		SetContext(value.Context{"Name": name}).
+		Validate()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	duration := bench.Duration(func() {
-		err := m.MakeMailer().Send(context.Background(), mail)
+		err := mailer.MakeMailer().Send(context.Background(), mail)
 		if err != nil {
 			log.Fatal(err)
 		}
