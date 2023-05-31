@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/christian-gama/nutrai-api/config/env"
@@ -20,11 +21,10 @@ var (
 
 func init() {
 	os.Stdout.Write([]byte("\033[H\033[2J"))
-	cmd.PersistentFlags().StringVarP(&envFile, "env-file", "e", "", "environment file")
-}
 
-type AnStruct struct {
-	A string
+	cmd.PersistentFlags().
+		StringVarP(&envFile, "env-file", "e", "", "Path to environment config file")
+	cmd.MarkPersistentFlagRequired("env-file")
 }
 
 func run(cmd *cobra.Command, args []string) {
@@ -45,13 +45,11 @@ func run(cmd *cobra.Command, args []string) {
 
 func checkEnvFile() {
 	if envFile == "" {
-		fmt.Println("Please specify an environment file with the flag -e")
-		os.Exit(1)
+		log.Fatal("Please specify an environment file with the flag -e")
 	}
 
 	if _, err := os.Stat(envFile); os.IsNotExist(err) {
-		fmt.Printf("The file %s does not exist\n", envFile)
-		os.Exit(1)
+		log.Fatalf("The file %s does not exist", envFile)
 	}
 }
 

@@ -5,7 +5,7 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/hasher"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/repo"
-	"github.com/christian-gama/nutrai-api/internal/core/app/command"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/command"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 

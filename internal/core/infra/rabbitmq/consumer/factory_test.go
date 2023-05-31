@@ -19,7 +19,7 @@ func TestFactorySuite(t *testing.T) {
 func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
 		consumer.MakeConsumer(
-			consumer.WithExchange("test"),
+			consumer.WithExchangeName("test"),
 			consumer.WithRoutingKey(event.New("test", event.Save)),
 		)
 	})

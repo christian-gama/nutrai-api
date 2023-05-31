@@ -9,3 +9,10 @@ const (
 	Delete Action = "delete"
 	Error  Action = "error"
 )
+
+// Name is the base name of an event.
+type Name string
+
+func (n Name) String() string {
+	return string(n)
+}

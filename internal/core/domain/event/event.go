@@ -6,17 +6,17 @@ import "fmt"
 type Event interface {
 	String() string
 	Action() Action
-	Name() string
+	Name() Name
 }
 
 // eventImpl is the type of the event.
 type eventImpl struct {
-	name   string
+	name   Name
 	action Action
 }
 
 // New returns a new event.
-func New(name string, action Action) Event {
+func New(name Name, action Action) Event {
 	return &eventImpl{
 		name:   name,
 		action: action,
@@ -34,6 +34,6 @@ func (e *eventImpl) Action() Action {
 }
 
 // Name returns the name of the event.
-func (e *eventImpl) Name() string {
+func (e *eventImpl) Name() Name {
 	return e.name
 }

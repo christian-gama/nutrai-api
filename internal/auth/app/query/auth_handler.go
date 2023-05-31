@@ -5,7 +5,7 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/jwt"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/repo"
-	"github.com/christian-gama/nutrai-api/internal/core/app/query"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/query"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )

@@ -24,11 +24,11 @@ type options struct {
 	QueueArgs       amqp.Table
 }
 
-func WithExchange(exchange rabbitmq.Exchange) func(*options) {
+func WithExchangeName(exchange event.Name) func(*options) {
 	errutil.MustBeNotEmpty("exchange", exchange)
 
 	return func(o *options) {
-		o.ExchangeName = exchange
+		o.ExchangeName = exchange.String()
 	}
 }
 

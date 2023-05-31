@@ -3,7 +3,7 @@ package command
 import (
 	"context"
 
-	"github.com/christian-gama/nutrai-api/internal/core/app/command"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/command"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/repo"
 	value "github.com/christian-gama/nutrai-api/internal/patient/domain/value/patient"

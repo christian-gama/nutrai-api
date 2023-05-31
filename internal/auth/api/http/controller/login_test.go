@@ -11,7 +11,7 @@ import (
 	userValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/user"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/app/service"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
-	serviceMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/service"
+	svcMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/service"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -27,7 +27,7 @@ func TestLoginSuite(t *testing.T) {
 
 func (s *LoginSuite) TestHandle() {
 	type Mock struct {
-		LoginHandler *serviceMock.Handler[*service.LoginInput, *service.LoginOutput]
+		LoginHandler *svcMock.Handler[*service.LoginInput, *service.LoginOutput]
 	}
 
 	type Sut struct {
@@ -39,7 +39,7 @@ func (s *LoginSuite) TestHandle() {
 	makeSut := func() *Sut {
 		input := fake.LoginInput()
 		mocks := &Mock{
-			LoginHandler: serviceMock.NewHandler[*service.LoginInput, *service.LoginOutput](s.T()),
+			LoginHandler: svcMock.NewHandler[*service.LoginInput, *service.LoginOutput](s.T()),
 		}
 		sut := controller.NewLogin(mocks.LoginHandler)
 		return &Sut{Sut: sut, Mock: mocks, Input: input}

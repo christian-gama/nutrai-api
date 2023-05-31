@@ -9,7 +9,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/patient/app/query"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/patient/app/query"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
-	mocks "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/query"
+	qryMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/query"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -25,7 +25,7 @@ func TestAllPatientsSuite(t *testing.T) {
 
 func (s *AllPatientsSuite) TestHandle() {
 	type Mock struct {
-		AllPatientsHandler *mocks.Handler[*query.AllPatientsInput, *queryer.PaginationOutput[*query.AllPatientsOutput]]
+		AllPatientsHandler *qryMock.Handler[*query.AllPatientsInput, *queryer.PaginationOutput[*query.AllPatientsOutput]]
 	}
 
 	type Sut struct {
@@ -37,7 +37,7 @@ func (s *AllPatientsSuite) TestHandle() {
 	makeSut := func() *Sut {
 		input := fake.AllPatientsInput()
 		mocks := &Mock{
-			AllPatientsHandler: mocks.NewHandler[*query.AllPatientsInput, *queryer.PaginationOutput[*query.AllPatientsOutput]](
+			AllPatientsHandler: qryMock.NewHandler[*query.AllPatientsInput, *queryer.PaginationOutput[*query.AllPatientsOutput]](
 				s.T(),
 			),
 		}

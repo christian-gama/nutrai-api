@@ -9,7 +9,7 @@ import (
 	value "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/app/service"
 	jwtMocks "github.com/christian-gama/nutrai-api/testutils/mocks/auth/domain/jwt"
-	cmdMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/command"
+	cmdMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/command"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

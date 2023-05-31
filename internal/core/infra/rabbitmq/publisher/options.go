@@ -21,7 +21,7 @@ type options struct {
 	ContentType  rabbitmq.ContentType
 }
 
-func WithExchange(exchange rabbitmq.Exchange) func(*options) {
+func WithExchangeName(exchange string) func(*options) {
 	errutil.MustBeNotEmpty("exchange", exchange)
 
 	return func(o *options) {

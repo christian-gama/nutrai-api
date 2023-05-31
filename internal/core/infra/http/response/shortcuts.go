@@ -1,7 +1,6 @@
 package response
 
 import (
-	"fmt"
 	"runtime/debug"
 
 	"github.com/christian-gama/nutrai-api/config/env"
@@ -19,8 +18,6 @@ func Error(err error) map[string]any {
 	} else {
 		errs = errutil.Append(errs, err)
 	}
-
-	fmt.Println(env.IsProduction, env.Config.Debug, "CAME HERE")
 
 	if env.IsProduction && env.Config.Debug {
 		return ErrorDebug(errs)
