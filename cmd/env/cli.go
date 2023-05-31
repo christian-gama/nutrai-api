@@ -20,8 +20,6 @@ var (
 )
 
 func init() {
-	os.Stdout.Write([]byte("\033[H\033[2J"))
-
 	cmd.PersistentFlags().
 		StringVarP(&envFile, "env-file", "e", "", "Path to environment config file")
 	cmd.MarkPersistentFlagRequired("env-file")

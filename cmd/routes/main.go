@@ -7,11 +7,12 @@ import (
 	"github.com/christian-gama/nutrai-api/internal"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router"
+	"github.com/christian-gama/nutrai-api/pkg/screen"
 	"github.com/fatih/color"
 )
 
 func init() {
-	fmt.Print("\033[H\033[2J")
+	screen.Clear()
 
 	os.Setenv("CONFIG_DEBUG", "false")
 	os.Setenv("CONFIG_LOG_LEVEL", "panic")
@@ -19,7 +20,6 @@ func init() {
 
 func main() {
 	internal.Bootstrap(".env.dev")
-
 	printRoutes()
 }
 

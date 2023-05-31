@@ -1,11 +1,9 @@
 package main
 
-import (
-	"fmt"
-)
+import "github.com/christian-gama/nutrai-api/pkg/screen"
 
 func init() {
-	fmt.Print("\033[H\033[2J")
+	screen.Clear()
 }
 
 func main() {

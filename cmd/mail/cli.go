@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"log"
-	"os"
 
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/bench"
@@ -26,8 +25,6 @@ var (
 )
 
 func init() {
-	os.Stdout.Write([]byte("\033[H\033[2J"))
-
 	cmd.PersistentFlags().
 		StringVarP(&envFile, "env-file", "e", "", "Path to environment config file")
 	cmd.MarkPersistentFlagRequired("env-file")
@@ -46,7 +43,6 @@ func init() {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	checkEnvFile()
 	env.NewLoader(envFile).Load()
 
 	mail, err := mail.NewMail().
@@ -67,10 +63,4 @@ func run(cmd *cobra.Command, args []string) {
 	})
 
 	log.Printf("[%s] - Sent email to '%s' in %s", env.Mailer.Provider, to, duration)
-}
-
-func checkEnvFile() {
-	if _, err := os.Stat(envFile); os.IsNotExist(err) {
-		log.Fatalf("The file %s does not exist", envFile)
-	}
 }
