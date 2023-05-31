@@ -1,13 +1,13 @@
 package http
 
 import (
-	"errors"
 	"fmt"
 	"reflect"
 	"strings"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	"github.com/christian-gama/nutrai-api/pkg/reflection"
 	"github.com/gin-gonic/gin"
 )
@@ -15,20 +15,8 @@ import (
 // extract is a generic function to extract data from a context into an input structure. The actual
 // extraction is performed by the provided extractFn function.
 func extract[Input any](ctx *gin.Context, input *Input, extractFn func(any) error) error {
-	if ctx.IsAborted() {
-		return nil
-	}
-
-	if reflection.IsPointerToInterface(input) {
-		return nil
-	}
-
-	if !reflection.IsPointer(input) {
-		panic(errors.New("input must be a pointer"))
-	}
-
-	if reflection.IsNil(input) {
-		panic(errors.New("input cannot be nil"))
+	if err := validateInput(ctx, input); err != nil {
+		panic(err)
 	}
 
 	err := extractFn(input)
@@ -65,12 +53,16 @@ func ExtractParams[Params any](ctx *gin.Context, params *Params) {
 
 // ExtractCurrentUser extracts the current user from the request. It expects the input to have a
 // field with the tag `ctx:"currentUser"`.
-func ExtractCurrentUser[Data any](ctx *gin.Context, data *Data) {
-	if ctx.IsAborted() {
+func ExtractCurrentUser[Input any](ctx *gin.Context, input *Input) {
+	if err := validateInput(ctx, input); err != nil {
+		panic(err)
+	}
+
+	if reflection.IsPointerToInterface(input) {
 		return
 	}
 
-	reflection.IterateStructFields(data, func(opts *reflection.FieldIterationOptions) {
+	reflection.IterateStructFields(input, func(opts *reflection.FieldIterationOptions) {
 		if opts.Tag.Get("ctx") == "currentUser" {
 			currentUser, err := store.GetUser(ctx)
 			if err != nil {
@@ -81,4 +73,24 @@ func ExtractCurrentUser[Data any](ctx *gin.Context, data *Data) {
 			opts.Field.Set(reflect.ValueOf(currentUser))
 		}
 	})
+}
+
+func validateInput[T any](ctx *gin.Context, input T) error {
+	if ctx.IsAborted() {
+		return nil
+	}
+
+	if reflection.IsPointerToInterface(input) {
+		return nil
+	}
+
+	if !reflection.IsPointer(input) {
+		return errors.InternalServerError("input must be a pointer")
+	}
+
+	if reflection.IsNil(input) {
+		return errors.InternalServerError("input cannot be nil")
+	}
+
+	return nil
 }

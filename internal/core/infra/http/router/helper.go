@@ -1,18 +1,24 @@
 package router
 
 import (
+	"time"
+
 	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
 	"github.com/fatih/color"
 )
 
 // logLevel returns a log function based on the status code.
-func logLevel(status int) func(string, ...interface{}) {
+func logLevel(status int, duration time.Duration) func(string, ...any) {
 	switch {
 	case status >= 500:
 		return log.New(&log.Config{}).Errorf
 
 	default:
-		return log.New(&log.Config{}).Infof
+		log := log.New(&log.Config{})
+		if duration > 300*time.Millisecond {
+			return log.Warnf
+		}
+		return log.Infof
 	}
 }
 

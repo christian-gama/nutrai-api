@@ -11,7 +11,7 @@ import (
 	userValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/user"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/app/service"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
-	serviceMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/service"
+	svcMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/service"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -27,7 +27,7 @@ func TestRegisterSuite(t *testing.T) {
 
 func (s *RegisterSuite) TestHandle() {
 	type Mock struct {
-		RegisterHandler *serviceMock.Handler[*service.RegisterInput, *service.RegisterOutput]
+		RegisterHandler *svcMock.Handler[*service.RegisterInput, *service.RegisterOutput]
 	}
 
 	type Sut struct {
@@ -39,7 +39,7 @@ func (s *RegisterSuite) TestHandle() {
 	makeSut := func() *Sut {
 		input := fake.RegisterInput()
 		mock := &Mock{
-			RegisterHandler: serviceMock.NewHandler[*service.RegisterInput, *service.RegisterOutput](
+			RegisterHandler: svcMock.NewHandler[*service.RegisterInput, *service.RegisterOutput](
 				s.T(),
 			),
 		}

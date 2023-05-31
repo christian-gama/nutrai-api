@@ -30,7 +30,7 @@ func (s *ConsumerSuite) SetupSuite() {
 	s.consumer = consumer.NewConsumer(
 		s.rmq,
 		s.log,
-		consumer.WithExchange("test"),
+		consumer.WithExchangeName(event.New("test", event.Save)),
 		consumer.WithRoutingKey(event.New("test", event.Save)),
 		consumer.WithArgs(nil),
 		consumer.WithAutoDelete(false),

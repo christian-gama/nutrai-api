@@ -5,7 +5,7 @@ import (
 
 	userCmd "github.com/christian-gama/nutrai-api/internal/auth/app/command"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/jwt"
-	"github.com/christian-gama/nutrai-api/internal/core/app/service"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/service"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 

@@ -9,7 +9,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/app/command"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
-	commandMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/command"
+	cmdMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/command"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -25,7 +25,7 @@ func TestDeleteMeSuite(t *testing.T) {
 
 func (s *DeleteMeSuite) TestHandle() {
 	type Mock struct {
-		DeleteMeHandler *commandMock.Handler[*command.DeleteMeInput]
+		DeleteMeHandler *cmdMock.Handler[*command.DeleteMeInput]
 	}
 
 	type Sut struct {
@@ -36,7 +36,7 @@ func (s *DeleteMeSuite) TestHandle() {
 
 	makeSut := func() *Sut {
 		input := fake.DeleteMeInput()
-		mock := &Mock{DeleteMeHandler: commandMock.NewHandler[*command.DeleteMeInput](s.T())}
+		mock := &Mock{DeleteMeHandler: cmdMock.NewHandler[*command.DeleteMeInput](s.T())}
 		sut := controller.NewDeleteMe(mock.DeleteMeHandler)
 		return &Sut{Sut: sut, Mock: mock, Input: input}
 	}

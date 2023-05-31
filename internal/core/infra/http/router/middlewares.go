@@ -19,11 +19,11 @@ func logging() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		duration := bench.Duration(ctx.Next)
 
-		logLevel(ctx.Writer.Status())(
-			"%-6s | %-5s | %4dms | %s",
+		logLevel(ctx.Writer.Status(), duration)(
+			"%-6s | %-5s | %4s | %s",
 			ctx.Request.Method,
 			statusColor(ctx.Writer.Status()),
-			duration.Milliseconds(),
+			duration,
 			ctx.Request.URL.Path,
 		)
 	}

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/repo"
-	"github.com/christian-gama/nutrai-api/internal/core/app/query"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/query"
 )
 
 // FindByEmailInput is the query to find a user by email.

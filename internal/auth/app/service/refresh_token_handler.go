@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/jwt"
-	"github.com/christian-gama/nutrai-api/internal/core/app/service"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/service"
 )
 
 // RefreshTokenHandler is the interface that wraps the Handle method.

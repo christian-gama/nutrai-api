@@ -12,7 +12,7 @@ import (
 	value "github.com/christian-gama/nutrai-api/internal/patient/domain/value/patient"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/patient/app/command"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
-	commandMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/command"
+	cmdMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/command"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -28,7 +28,7 @@ func TestUpdatePatientSuite(t *testing.T) {
 
 func (s *UpdatePatientSuite) TestHandle() {
 	type Mock struct {
-		UpdatePatientHandler *commandMock.Handler[*command.UpdatePatientInput]
+		UpdatePatientHandler *cmdMock.Handler[*command.UpdatePatientInput]
 	}
 
 	type Sut struct {
@@ -41,7 +41,7 @@ func (s *UpdatePatientSuite) TestHandle() {
 		input := fake.UpdatePatientInput()
 
 		mock := &Mock{
-			UpdatePatientHandler: commandMock.NewHandler[*command.UpdatePatientInput](s.T()),
+			UpdatePatientHandler: cmdMock.NewHandler[*command.UpdatePatientInput](s.T()),
 		}
 
 		sut := controller.NewUpdatePatient(mock.UpdatePatientHandler)

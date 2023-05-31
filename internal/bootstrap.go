@@ -8,6 +8,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router"
 	"github.com/christian-gama/nutrai-api/internal/diet"
 	"github.com/christian-gama/nutrai-api/internal/exception"
+	"github.com/christian-gama/nutrai-api/internal/notify"
 	"github.com/christian-gama/nutrai-api/internal/patient"
 )
 
@@ -22,4 +23,5 @@ func Bootstrap(envFile string) {
 	module.Init(core.Init)
 	module.Init(patient.Init)
 	module.Init(diet.Init)
+	module.Init(notify.Init)
 }

@@ -3,8 +3,7 @@ package consumer_test
 import (
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/core/domain/event"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/rabbitmq/consumer"
+	"github.com/christian-gama/nutrai-api/internal/exception/app/consumer"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
 
@@ -18,9 +17,6 @@ func TestFactorySuite(t *testing.T) {
 
 func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
-		consumer.MakeConsumer(
-			consumer.WithExchangeName(event.New("test", event.Save)),
-			consumer.WithRoutingKey(event.New("test", event.Save)),
-		)
+		consumer.MakeSaveExceptionHandler()
 	})
 }
