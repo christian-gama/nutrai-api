@@ -10,7 +10,7 @@ import (
 type Mail struct {
 	To             []*value.To     `json:"to" faker:"-"`
 	Subject        string          `json:"subject" faker:"len=50"`
-	Context        value.Context   `json:"context"`
+	Context        value.Context   `json:"context" faker:"-"`
 	Template       *value.Template `json:"templatePath"`
 	AttachmentURLs []string        `json:"attachmentURLs" faker:"-"`
 }

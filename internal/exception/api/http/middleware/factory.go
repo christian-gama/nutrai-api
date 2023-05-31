@@ -5,5 +5,5 @@ import (
 )
 
 func MakeSaveException() SaveException {
-	return NewSaveException(command.MakeSaveExceptionHandler())
+	return NewSaveException(command.MakeCatchExceptionHandler())
 }

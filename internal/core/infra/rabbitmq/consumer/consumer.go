@@ -1,6 +1,9 @@
 package consumer
 
 import (
+	"encoding/json"
+	"time"
+
 	"github.com/christian-gama/nutrai-api/internal/core/domain/logger"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/message"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/bench"
@@ -10,18 +13,18 @@ import (
 )
 
 // consumerImpl is a RabbitMQ consumer implementation.
-type consumerImpl struct {
+type consumerImpl[Data any] struct {
 	rmq     *rabbitmq.RabbitMQ
 	log     logger.Logger
 	options *options
 }
 
 // NewConsumer creates a new RabbitMQ consumer.
-func NewConsumer(
+func NewConsumer[Data any](
 	rmq *rabbitmq.RabbitMQ,
 	log logger.Logger,
 	opts ...func(*options),
-) message.Consumer {
+) message.Consumer[Data] {
 	options := &options{
 		ExchangeName:    "",
 		RoutingKey:      "",
@@ -49,11 +52,11 @@ func NewConsumer(
 		options.QueueName = options.RoutingKey
 	}
 
-	return &consumerImpl{rmq, log, options}
+	return &consumerImpl[Data]{rmq, log, options}
 }
 
 // Handle handles a message.
-func (c *consumerImpl) Handle(handler message.MessageHandler) {
+func (c *consumerImpl[Data]) Handle(handler func(data Data) error) {
 	ch, err := c.rmq.Connection().Channel()
 	if err != nil {
 		return
@@ -124,17 +127,29 @@ func (c *consumerImpl) Handle(handler message.MessageHandler) {
 	<-forever
 }
 
-func (c *consumerImpl) handle(msg amqp.Delivery, handler message.MessageHandler) {
+func (c *consumerImpl[Data]) handle(msg amqp.Delivery, handler func(data Data) error) {
 	defer func() {
 		if r := recover(); r != nil {
-			c.log.Warnf("Consumer | %s | Recovered from panic: %s", c.options.QueueName, r)
+			c.log.Warnf("Consumer | %12s | Recovered from panic: %s", c.options.QueueName, r)
 			msg.Nack(false, false)
 		}
 	}()
 
 	var err error
 	duration := bench.Duration(func() {
-		err = handler(msg.Body)
+		var data Data
+		err = json.Unmarshal(msg.Body, &data)
+		if err != nil {
+			c.log.Warnf(
+				"Consumer | %s | Could not unmarshal message: %s",
+				c.options.QueueName,
+				err.Error(),
+			)
+			msg.Nack(false, false)
+			return
+		}
+
+		err = handler(data)
 	})
 
 	if err != nil {
@@ -144,7 +159,7 @@ func (c *consumerImpl) handle(msg amqp.Delivery, handler message.MessageHandler)
 			err.Error(),
 		)
 	} else {
-		c.log.Infof("Consumer | %s | Message processed successfully in %dms", c.options.QueueName, duration.Milliseconds())
+		c.log.Infof("Consumer | %12s | Message processed successfully in %s", c.options.QueueName, duration.Truncate(time.Millisecond))
 	}
 
 	msg.Ack(false)

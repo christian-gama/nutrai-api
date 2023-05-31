@@ -2,7 +2,6 @@ package consumer
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/message"
 	"github.com/christian-gama/nutrai-api/internal/exception/domain/model/exception"
@@ -14,18 +13,18 @@ import (
 // SaveException is the handler for the SaveException command.
 type SaveExceptionHandler interface {
 	Handle()
-	ConsumerHandler(body []byte) error
+	ConsumerHandler(e exception.Exception) error
 }
 
 // saveExceptionHandlerImpl is the implementation of the SaveExceptionHandler.
 type saveExceptionHandlerImpl struct {
-	message.Consumer
+	message.Consumer[exception.Exception]
 	repo.Exception
 }
 
 // NewSaveException creates a new SaveException.
 func NewSaveExceptionHandler(
-	consumer message.Consumer,
+	consumer message.Consumer[exception.Exception],
 	exceptionRepo repo.Exception,
 ) SaveExceptionHandler {
 	errutil.MustBeNotEmpty("message.Consumer", consumer)
@@ -40,12 +39,7 @@ func (j *saveExceptionHandlerImpl) Handle() {
 }
 
 // ConsumerHandler handles the event.
-func (j *saveExceptionHandlerImpl) ConsumerHandler(body []byte) error {
-	var e exception.Exception
-	if err := json.Unmarshal(body, &e); err != nil {
-		return errors.InternalServerError(err.Error())
-	}
-
+func (j *saveExceptionHandlerImpl) ConsumerHandler(e exception.Exception) error {
 	_, err := j.Save(context.Background(), repo.SaveExceptionInput{
 		Exception: &e,
 	})

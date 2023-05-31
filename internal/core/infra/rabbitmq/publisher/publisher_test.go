@@ -15,7 +15,7 @@ import (
 type PublisherSuite struct {
 	suite.Suite
 	rmq       *rabbitmq.RabbitMQ
-	publisher message.Publisher
+	publisher message.Publisher[Data]
 	log       *mocks.Logger
 }
 
@@ -29,11 +29,10 @@ func (s *PublisherSuite) SetupTest() {
 
 	s.rmq = rabbitmq.NewConn(s.log, "test").Open()
 
-	s.publisher = publisher.NewPublisher(
+	s.publisher = publisher.NewPublisher[Data](
 		s.rmq,
 		publisher.WithExchangeName("test"),
-		publisher.WithRoutingKey(event.New("test", event.Save)),
-		publisher.WithRoutingKey(event.New("test", event.Save)),
+		publisher.WithRoutingKey(Event),
 		publisher.WithArgs(nil),
 		publisher.WithAutoDelete(false),
 		publisher.WithDurable(false),
@@ -51,9 +50,13 @@ func (s *PublisherSuite) TestNewPublisher() {
 }
 
 func (s *PublisherSuite) TestPublish() {
-	msg := []byte("test-message")
-
 	s.NotPanics(func() {
-		s.publisher.Handle(msg)
+		s.publisher.Handle(Data{Name: "test"})
 	})
 }
+
+type Data struct {
+	Name string `json:"name"`
+}
+
+var Event = event.New[Data]("test", event.Save)

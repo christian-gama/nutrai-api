@@ -2,7 +2,6 @@ package consumer_test
 
 import (
 	"context"
-	"encoding/json"
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/exception/app/consumer"
@@ -24,7 +23,7 @@ func TestSaveExceptionSuite(t *testing.T) {
 
 func (s *SaveExceptionSuite) TestHandle() {
 	type Mock struct {
-		Consumer      *messageMock.Consumer
+		Consumer      *messageMock.Consumer[exception.Exception]
 		ExceptionRepo *repoMock.Exception
 	}
 
@@ -35,7 +34,7 @@ func (s *SaveExceptionSuite) TestHandle() {
 
 	makeSut := func() *Sut {
 		mock := &Mock{
-			Consumer:      messageMock.NewConsumer(s.T()),
+			Consumer:      messageMock.NewConsumer[exception.Exception](s.T()),
 			ExceptionRepo: repoMock.NewException(s.T()),
 		}
 
@@ -59,7 +58,7 @@ func (s *SaveExceptionSuite) TestHandle() {
 
 func (s *SaveExceptionSuite) TestConsumerHandler() {
 	type Mock struct {
-		Consumer      *messageMock.Consumer
+		Consumer      *messageMock.Consumer[exception.Exception]
 		ExceptionRepo *repoMock.Exception
 	}
 
@@ -71,7 +70,7 @@ func (s *SaveExceptionSuite) TestConsumerHandler() {
 
 	makeSut := func() *Sut {
 		mock := &Mock{
-			Consumer:      messageMock.NewConsumer(s.T()),
+			Consumer:      messageMock.NewConsumer[exception.Exception](s.T()),
 			ExceptionRepo: repoMock.NewException(s.T()),
 		}
 
@@ -83,24 +82,12 @@ func (s *SaveExceptionSuite) TestConsumerHandler() {
 	s.Run("should save a new exception", func() {
 		sut := makeSut()
 
-		body, _ := json.Marshal(&exception.Exception{})
-
 		sut.Mock.ExceptionRepo.
 			On("Save", sut.Ctx, mock.Anything).
 			Return(fake.Exception(), nil)
 
-		sut.Sut.ConsumerHandler(body)
+		sut.Sut.ConsumerHandler(*fake.Exception())
 
 		sut.Mock.ExceptionRepo.AssertExpectations(s.T())
-	})
-
-	s.Run("should return an error when body is invalid", func() {
-		sut := makeSut()
-
-		body := []byte("invalid body")
-
-		err := sut.Sut.ConsumerHandler(body)
-
-		s.NotNil(err)
 	})
 }

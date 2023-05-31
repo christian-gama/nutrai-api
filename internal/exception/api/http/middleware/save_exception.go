@@ -24,7 +24,7 @@ type SaveException = middleware.Middleware
 // provided. It is used to create an instance of middleware that handles and logs exceptions during
 // request handling.
 func NewSaveException(
-	saveExceptionHandler command.SaveExceptionHandler,
+	saveExceptionHandler command.CatchExceptionHandler,
 ) SaveException {
 	errutil.MustBeNotEmpty("command.SaveExceptionHandler", saveExceptionHandler)
 
@@ -38,7 +38,7 @@ func NewSaveException(
 // saveExceptionHandlerImpl is an implementation of the SaveExceptionHandler middleware.
 // It delegates the exception handling to a provided saveExceptionHandler.
 type saveExceptionHandlerImpl struct {
-	saveExceptionHandler command.SaveExceptionHandler
+	saveExceptionHandler command.CatchExceptionHandler
 }
 
 // Handle is a middleware function that recovers from panics that occur during request handling,
@@ -59,7 +59,7 @@ func (m *saveExceptionHandlerImpl) handleException(ctx *gin.Context, r any) {
 	message := m.getErrorMessage(r)
 
 	m.saveExceptionHandler.Handle(ctx.Request.Context(),
-		&command.SaveExceptionInput{
+		&command.CatchExceptionInput{
 			Message: message,
 			Stack:   string(debug.Stack()),
 		},

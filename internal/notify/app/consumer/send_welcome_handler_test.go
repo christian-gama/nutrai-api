@@ -2,9 +2,9 @@ package consumer_test
 
 import (
 	"context"
-	"encoding/json"
 	"testing"
 
+	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/notify/app/consumer"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/domain/model/user"
 	messageMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/message"
@@ -23,7 +23,7 @@ func TestSendWelcomeSuite(t *testing.T) {
 
 func (s *SendWelcomeSuite) TestHandle() {
 	type Mock struct {
-		Consumer *messageMock.Consumer
+		Consumer *messageMock.Consumer[user.User]
 		Mailer   *mailerMock.Mailer
 	}
 
@@ -34,7 +34,7 @@ func (s *SendWelcomeSuite) TestHandle() {
 
 	makeSut := func() *Sut {
 		mock := &Mock{
-			Consumer: messageMock.NewConsumer(s.T()),
+			Consumer: messageMock.NewConsumer[user.User](s.T()),
 			Mailer:   mailerMock.NewMailer(s.T()),
 		}
 
@@ -58,7 +58,7 @@ func (s *SendWelcomeSuite) TestHandle() {
 
 func (s *SendWelcomeSuite) TestConsumerHandler() {
 	type Mock struct {
-		Consumer *messageMock.Consumer
+		Consumer *messageMock.Consumer[user.User]
 		Mailer   *mailerMock.Mailer
 	}
 
@@ -70,7 +70,7 @@ func (s *SendWelcomeSuite) TestConsumerHandler() {
 
 	makeSut := func() *Sut {
 		mock := &Mock{
-			Consumer: messageMock.NewConsumer(s.T()),
+			Consumer: messageMock.NewConsumer[user.User](s.T()),
 			Mailer:   mailerMock.NewMailer(s.T()),
 		}
 
@@ -82,25 +82,12 @@ func (s *SendWelcomeSuite) TestConsumerHandler() {
 	s.Run("should save a new mailer", func() {
 		sut := makeSut()
 
-		body, err := json.Marshal(fake.User())
-		s.Require().NoError(err)
-
 		sut.Mock.Mailer.
 			On("Send", sut.Ctx, mock.Anything).
 			Return(nil)
 
-		sut.Sut.ConsumerHandler(body)
+		sut.Sut.ConsumerHandler(*fake.User())
 
 		sut.Mock.Mailer.AssertExpectations(s.T())
-	})
-
-	s.Run("should return an error when body is invalid", func() {
-		sut := makeSut()
-
-		body := []byte("invalid body")
-
-		err := sut.Sut.ConsumerHandler(body)
-
-		s.NotNil(err)
 	})
 }

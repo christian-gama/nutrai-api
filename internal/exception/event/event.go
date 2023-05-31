@@ -1,7 +1,10 @@
 package event
 
-import "github.com/christian-gama/nutrai-api/internal/core/domain/event"
+import (
+	"github.com/christian-gama/nutrai-api/internal/core/domain/event"
+	"github.com/christian-gama/nutrai-api/internal/exception/domain/model/exception"
+)
 
 const Exception = "exception"
 
-var SaveException = event.New(Exception, event.Save)
+var CatchException = event.New[exception.Exception](Exception, event.Error)

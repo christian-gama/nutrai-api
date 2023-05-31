@@ -12,6 +12,9 @@ func Mail() *mail.Mail {
 	data.To = []*value.To{
 		{Name: faker.Name(), Email: faker.Email()},
 	}
+	data.Context = value.Context{
+		"Name": faker.Name(),
+	}
 
 	err := faker.FakeData(data)
 	if err != nil {

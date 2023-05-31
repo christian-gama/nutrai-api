@@ -6,8 +6,8 @@ import (
 	"github.com/go-faker/faker/v4"
 )
 
-func SaveExceptionInput() *command.SaveExceptionInput {
-	data := new(command.SaveExceptionInput)
+func CatchExceptionInput() *command.CatchExceptionInput {
+	data := new(command.CatchExceptionInput)
 
 	err := faker.FakeData(data)
 	if err != nil {

@@ -36,7 +36,7 @@ func (s *TemplateTestSuite) TestNewTemplate() {
 
 		s.NotNil(mail)
 		s.Equal(
-			mail.Path,
+			mail.Path(),
 			fmt.Sprintf("%s/%s%s", mail.BaseDir(), "test", mail.Ext()),
 		)
 	})

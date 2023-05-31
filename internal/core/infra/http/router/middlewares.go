@@ -20,10 +20,10 @@ func logging() gin.HandlerFunc {
 		duration := bench.Duration(ctx.Next)
 
 		logLevel(ctx.Writer.Status(), duration)(
-			"%-6s | %-5s | %4s | %s",
+			"%-6s | %-5s | %6s | %s",
 			ctx.Request.Method,
 			statusColor(ctx.Writer.Status()),
-			duration,
+			duration.Truncate(time.Millisecond),
 			ctx.Request.URL.Path,
 		)
 	}

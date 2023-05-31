@@ -1,6 +1,7 @@
 package command
 
 import (
+	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/auth/event"
 	"github.com/christian-gama/nutrai-api/internal/auth/infra/hash"
 	redisPersistence "github.com/christian-gama/nutrai-api/internal/auth/infra/persistence/redis"
@@ -32,7 +33,7 @@ func MakeSaveUserHandler() SaveUserHandler {
 	return NewSaveUserHandler(
 		sqlPersistence.MakeSQLUser(),
 		hash.MakeHasher(),
-		publisher.MakePublisher(
+		publisher.MakePublisher[user.User](
 			publisher.WithExchangeName(event.User),
 			publisher.WithRoutingKey(event.SaveUser),
 		),

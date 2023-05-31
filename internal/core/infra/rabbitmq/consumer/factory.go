@@ -17,12 +17,12 @@ var (
 	consumerConnection *rabbitmq.RabbitMQ
 )
 
-func MakeConsumer(opts ...func(*options)) message.Consumer {
+func MakeConsumer[Data any](opts ...func(*options)) message.Consumer[Data] {
 	log := log.MakeWithCaller()
 
 	if consumerConnection == nil {
 		consumerConnection = rabbitmq.NewConn(log, "consumer").Open()
 	}
 
-	return NewConsumer(consumerConnection, log, opts...)
+	return NewConsumer[Data](consumerConnection, log, opts...)
 }

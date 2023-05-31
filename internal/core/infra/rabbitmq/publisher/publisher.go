@@ -2,6 +2,7 @@ package publisher
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -13,13 +14,16 @@ import (
 )
 
 // publisherImpl is the implementation of a message publisher.
-type publisherImpl struct {
+type publisherImpl[Data any] struct {
 	*rabbitmq.RabbitMQ
 	options *options
 }
 
 // NewPublisher creates a new message publisher.
-func NewPublisher(rmq *rabbitmq.RabbitMQ, opts ...func(*options)) message.Publisher {
+func NewPublisher[Data any](
+	rmq *rabbitmq.RabbitMQ,
+	opts ...func(*options),
+) message.Publisher[Data] {
 	options := &options{
 		ExchangeName: "",
 		RoutingKey:   "",
@@ -40,11 +44,11 @@ func NewPublisher(rmq *rabbitmq.RabbitMQ, opts ...func(*options)) message.Publis
 	errutil.MustBeNotEmpty("exchange name", options.ExchangeName)
 	errutil.MustBeNotEmpty("routing key", options.RoutingKey)
 
-	return &publisherImpl{rmq, options}
+	return &publisherImpl[Data]{rmq, options}
 }
 
 // Handle publishes a message to the broker.
-func (p *publisherImpl) Handle(msg []byte) {
+func (p *publisherImpl[Data]) Handle(data Data) {
 	ch := p.ChannelPool()
 	defer p.ReleaseChannelPool(ch)
 
@@ -63,6 +67,11 @@ func (p *publisherImpl) Handle(msg []byte) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
+
+	msg, err := json.Marshal(&data)
+	if err != nil {
+		panic(errors.InternalServerError(fmt.Sprintf("could not marshal message: %s", err)))
+	}
 
 	err = ch.PublishWithContext(ctx,
 		p.options.ExchangeName,

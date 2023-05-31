@@ -17,10 +17,10 @@ var (
 	publisherConnection *rabbitmq.RabbitMQ
 )
 
-func MakePublisher(opts ...func(*options)) message.Publisher {
+func MakePublisher[Data any](opts ...func(*options)) message.Publisher[Data] {
 	if publisherConnection == nil {
 		publisherConnection = rabbitmq.NewConn(log.MakeWithCaller(), "publisher").Open()
 	}
 
-	return NewPublisher(publisherConnection, opts...)
+	return NewPublisher[Data](publisherConnection, opts...)
 }

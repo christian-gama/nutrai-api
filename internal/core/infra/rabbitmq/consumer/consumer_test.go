@@ -15,7 +15,7 @@ import (
 type ConsumerSuite struct {
 	suite.Suite
 	rmq      *rabbitmq.RabbitMQ
-	consumer message.Consumer
+	consumer message.Consumer[any]
 	log      *loggerMock.Logger
 }
 
@@ -27,11 +27,11 @@ func (s *ConsumerSuite) SetupSuite() {
 	s.log = loggerMock.NewLogger(s.T())
 	s.log.On("Loading", mock.Anything, mock.Anything)
 	s.rmq = rabbitmq.NewConn(s.log, "test").Open()
-	s.consumer = consumer.NewConsumer(
+	s.consumer = consumer.NewConsumer[any](
 		s.rmq,
 		s.log,
 		consumer.WithExchangeName("test"),
-		consumer.WithRoutingKey(event.New("test", event.Save)),
+		consumer.WithRoutingKey(event.New[any]("test", event.Save)),
 		consumer.WithArgs(nil),
 		consumer.WithAutoDelete(false),
 		consumer.WithDurable(false),

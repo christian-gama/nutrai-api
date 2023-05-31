@@ -122,7 +122,7 @@ func tooLongConstraint(err error) error {
 			return v
 		}).
 		Build()
-	fmt.Println(value, err.Error())
+
 	return errors.Invalid("", fmt.Sprintf("value is too long (max %d character)", value[0]))
 }
 

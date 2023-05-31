@@ -31,7 +31,7 @@ func (s *SaveExceptionSuite) TestHandle() {
 	)
 
 	type Mock struct {
-		SaveExceptionHandler *cmdMock.Handler[*command.SaveExceptionInput]
+		SaveExceptionHandler *cmdMock.Handler[*command.CatchExceptionInput]
 	}
 
 	type Sut struct {
@@ -44,7 +44,7 @@ func (s *SaveExceptionSuite) TestHandle() {
 
 	makeSut := func() *Sut {
 		mock := &Mock{
-			SaveExceptionHandler: cmdMock.NewHandler[*command.SaveExceptionInput](s.T()),
+			SaveExceptionHandler: cmdMock.NewHandler[*command.CatchExceptionInput](s.T()),
 		}
 
 		sut := middleware.NewSaveException(mock.SaveExceptionHandler)

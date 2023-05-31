@@ -2,7 +2,6 @@ package command_test
 
 import (
 	"context"
-	"encoding/json"
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/app/command"
@@ -30,7 +29,7 @@ func (s *SaveUserHandlerSuite) TestSaveHandler() {
 	type Mock struct {
 		Hasher    *hasherMock.Hasher
 		UserRepo  *userRepoMock.User
-		Publisher *publisherMock.Publisher
+		Publisher *publisherMock.Publisher[user.User]
 	}
 
 	type Sut struct {
@@ -44,7 +43,7 @@ func (s *SaveUserHandlerSuite) TestSaveHandler() {
 		mock := &Mock{
 			Hasher:    hasherMock.NewHasher(s.T()),
 			UserRepo:  userRepoMock.NewUser(s.T()),
-			Publisher: publisherMock.NewPublisher(s.T()),
+			Publisher: publisherMock.NewPublisher[user.User](s.T()),
 		}
 
 		input := fake.SaveUserInput()
@@ -102,17 +101,18 @@ func (s *SaveUserHandlerSuite) TestSaveHandler() {
 			On("Hash", sut.Input.Password).
 			Return(value.Password("hashed"), nil)
 
-		user := user.NewUser()
+		u := user.NewUser()
 		sut.Mock.UserRepo.
 			On("Save", sut.Ctx, mock.Anything).
-			Return(user, nil)
+			Return(u, nil)
 
-		bytes, _ := json.Marshal(user)
-		sut.Mock.Publisher.On("Handle", bytes)
+		sut.Mock.Publisher.On("Handle", mock.Anything)
 
 		_ = sut.Sut.Handle(sut.Ctx, sut.Input)
 
-		sut.Mock.Publisher.AssertCalled(s.T(), "Handle", bytes)
+		sut.Mock.Publisher.AssertCalled(s.T(), "Handle", mock.MatchedBy(func(user user.User) bool {
+			return *u == user
+		}))
 	})
 
 	s.Run("Should return error when hashing password fails", func() {
