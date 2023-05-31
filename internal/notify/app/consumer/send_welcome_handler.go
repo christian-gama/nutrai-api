@@ -3,7 +3,7 @@ package consumer
 import (
 	"context"
 
-	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
+	"github.com/christian-gama/nutrai-api/internal/auth/app/command"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/message"
 	"github.com/christian-gama/nutrai-api/internal/notify/domain/mailer"
 	"github.com/christian-gama/nutrai-api/internal/notify/domain/model/mail"
@@ -15,18 +15,18 @@ import (
 // SaveException is the handler for the event.
 type SendWelcomeHandler interface {
 	Handle()
-	ConsumerHandler(u user.User) error
+	ConsumerHandler(input command.SaveUserInput) error
 }
 
 // sendWelcomeHandlerImpl is the implementation of the SendWelcomeHandler interface.
 type sendWelcomeHandlerImpl struct {
-	message.Consumer[user.User]
+	message.Consumer[command.SaveUserInput]
 	mailer.Mailer
 }
 
 // NewSaveException creates a new SendWelcomeHandler.
 func NewSendWelcomeHandler(
-	consumer message.Consumer[user.User],
+	consumer message.Consumer[command.SaveUserInput],
 	mailer mailer.Mailer,
 ) SendWelcomeHandler {
 	errutil.MustBeNotEmpty("message.Consumer", consumer)
@@ -41,11 +41,11 @@ func (j *sendWelcomeHandlerImpl) Handle() {
 }
 
 // ConsumerHandler handles the event.
-func (j *sendWelcomeHandlerImpl) ConsumerHandler(u user.User) error {
+func (j *sendWelcomeHandlerImpl) ConsumerHandler(input command.SaveUserInput) error {
 	mail, err := mail.NewMail().
-		SetContext(value.Context{"Name": u.Name}).
+		SetContext(value.Context{"Name": input.Name.String()}).
 		SetSubject("Welcome to Nutrai!").
-		SetTo(&value.To{Email: u.Email.String(), Name: u.Name.String()}).
+		SetTo(&value.To{Email: input.Email.String(), Name: input.Name.String()}).
 		SetTemplatePath(mail.WelcomeTemplate).
 		Validate()
 	if err != nil {

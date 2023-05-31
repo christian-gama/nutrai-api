@@ -20,7 +20,7 @@ func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
 		publisher.MakePublisher[any](
 			publisher.WithExchangeName("test"),
-			publisher.WithRoutingKey(event.New[any]("test", event.Save)),
+			publisher.WithRoutingKey(event.New("test", event.Save)),
 		)
 	})
 }

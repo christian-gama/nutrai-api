@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/message"
+	"github.com/christian-gama/nutrai-api/internal/exception/app/command"
 	"github.com/christian-gama/nutrai-api/internal/exception/domain/model/exception"
 	"github.com/christian-gama/nutrai-api/internal/exception/domain/repo"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
@@ -13,18 +14,18 @@ import (
 // SaveException is the handler for the SaveException command.
 type SaveExceptionHandler interface {
 	Handle()
-	ConsumerHandler(e exception.Exception) error
+	ConsumerHandler(input command.CatchExceptionInput) error
 }
 
 // saveExceptionHandlerImpl is the implementation of the SaveExceptionHandler.
 type saveExceptionHandlerImpl struct {
-	message.Consumer[exception.Exception]
+	message.Consumer[command.CatchExceptionInput]
 	repo.Exception
 }
 
 // NewSaveException creates a new SaveException.
 func NewSaveExceptionHandler(
-	consumer message.Consumer[exception.Exception],
+	consumer message.Consumer[command.CatchExceptionInput],
 	exceptionRepo repo.Exception,
 ) SaveExceptionHandler {
 	errutil.MustBeNotEmpty("message.Consumer", consumer)
@@ -39,9 +40,9 @@ func (j *saveExceptionHandlerImpl) Handle() {
 }
 
 // ConsumerHandler handles the event.
-func (j *saveExceptionHandlerImpl) ConsumerHandler(e exception.Exception) error {
+func (j *saveExceptionHandlerImpl) ConsumerHandler(input command.CatchExceptionInput) error {
 	_, err := j.Save(context.Background(), repo.SaveExceptionInput{
-		Exception: &e,
+		Exception: exception.New().SetMessage(input.Message).SetStack(input.Stack),
 	})
 	if err != nil {
 		return errors.InternalServerError(err.Error())

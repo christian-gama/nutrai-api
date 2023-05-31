@@ -4,8 +4,9 @@ import (
 	"context"
 	"testing"
 
+	"github.com/christian-gama/nutrai-api/internal/exception/app/command"
 	"github.com/christian-gama/nutrai-api/internal/exception/app/consumer"
-	"github.com/christian-gama/nutrai-api/internal/exception/domain/model/exception"
+	"github.com/christian-gama/nutrai-api/internal/exception/domain/repo"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/exception/domain/model/exception"
 	messageMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/message"
 	repoMock "github.com/christian-gama/nutrai-api/testutils/mocks/exception/domain/repo"
@@ -23,7 +24,7 @@ func TestSaveExceptionSuite(t *testing.T) {
 
 func (s *SaveExceptionSuite) TestHandle() {
 	type Mock struct {
-		Consumer      *messageMock.Consumer[exception.Exception]
+		Consumer      *messageMock.Consumer[command.CatchExceptionInput]
 		ExceptionRepo *repoMock.Exception
 	}
 
@@ -34,7 +35,7 @@ func (s *SaveExceptionSuite) TestHandle() {
 
 	makeSut := func() *Sut {
 		mock := &Mock{
-			Consumer:      messageMock.NewConsumer[exception.Exception](s.T()),
+			Consumer:      messageMock.NewConsumer[command.CatchExceptionInput](s.T()),
 			ExceptionRepo: repoMock.NewException(s.T()),
 		}
 
@@ -58,25 +59,34 @@ func (s *SaveExceptionSuite) TestHandle() {
 
 func (s *SaveExceptionSuite) TestConsumerHandler() {
 	type Mock struct {
-		Consumer      *messageMock.Consumer[exception.Exception]
+		Consumer      *messageMock.Consumer[command.CatchExceptionInput]
 		ExceptionRepo *repoMock.Exception
 	}
 
 	type Sut struct {
-		Sut  consumer.SaveExceptionHandler
-		Mock *Mock
-		Ctx  context.Context
+		Sut   consumer.SaveExceptionHandler
+		Mock  *Mock
+		Input command.CatchExceptionInput
+		Ctx   context.Context
 	}
 
 	makeSut := func() *Sut {
 		mock := &Mock{
-			Consumer:      messageMock.NewConsumer[exception.Exception](s.T()),
+			Consumer:      messageMock.NewConsumer[command.CatchExceptionInput](s.T()),
 			ExceptionRepo: repoMock.NewException(s.T()),
 		}
 
 		sut := consumer.NewSaveExceptionHandler(mock.Consumer, mock.ExceptionRepo)
 
-		return &Sut{Sut: sut, Mock: mock, Ctx: context.Background()}
+		return &Sut{
+			Sut:  sut,
+			Mock: mock,
+			Ctx:  context.Background(),
+			Input: command.CatchExceptionInput{
+				Message: "test",
+				Stack:   "test",
+			},
+		}
 	}
 
 	s.Run("should save a new exception", func() {
@@ -86,8 +96,16 @@ func (s *SaveExceptionSuite) TestConsumerHandler() {
 			On("Save", sut.Ctx, mock.Anything).
 			Return(fake.Exception(), nil)
 
-		sut.Sut.ConsumerHandler(*fake.Exception())
+		sut.Sut.ConsumerHandler(sut.Input)
 
-		sut.Mock.ExceptionRepo.AssertExpectations(s.T())
+		sut.Mock.ExceptionRepo.AssertCalled(
+			s.T(),
+			"Save",
+			sut.Ctx,
+			mock.MatchedBy(func(input repo.SaveExceptionInput) bool {
+				return input.Exception.Message == sut.Input.Message &&
+					input.Exception.Stack == sut.Input.Stack
+			}),
+		)
 	})
 }

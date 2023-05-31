@@ -29,7 +29,7 @@ func WithExchangeName(exchange string) func(*options) {
 	}
 }
 
-func WithRoutingKey[Data any](routingKey event.Event[Data]) func(*options) {
+func WithRoutingKey(routingKey event.Event) func(*options) {
 	errutil.MustBeNotEmpty("routingKey", routingKey)
 
 	return func(o *options) {

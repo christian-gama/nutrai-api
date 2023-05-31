@@ -4,9 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
+	"github.com/christian-gama/nutrai-api/internal/auth/app/command"
 	"github.com/christian-gama/nutrai-api/internal/notify/app/consumer"
-	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/domain/model/user"
+	"github.com/christian-gama/nutrai-api/internal/notify/domain/model/mail"
+	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/app/command"
 	messageMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/message"
 	mailerMock "github.com/christian-gama/nutrai-api/testutils/mocks/notify/domain/mailer"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
@@ -23,7 +24,7 @@ func TestSendWelcomeSuite(t *testing.T) {
 
 func (s *SendWelcomeSuite) TestHandle() {
 	type Mock struct {
-		Consumer *messageMock.Consumer[user.User]
+		Consumer *messageMock.Consumer[command.SaveUserInput]
 		Mailer   *mailerMock.Mailer
 	}
 
@@ -34,7 +35,7 @@ func (s *SendWelcomeSuite) TestHandle() {
 
 	makeSut := func() *Sut {
 		mock := &Mock{
-			Consumer: messageMock.NewConsumer[user.User](s.T()),
+			Consumer: messageMock.NewConsumer[command.SaveUserInput](s.T()),
 			Mailer:   mailerMock.NewMailer(s.T()),
 		}
 
@@ -58,25 +59,31 @@ func (s *SendWelcomeSuite) TestHandle() {
 
 func (s *SendWelcomeSuite) TestConsumerHandler() {
 	type Mock struct {
-		Consumer *messageMock.Consumer[user.User]
+		Consumer *messageMock.Consumer[command.SaveUserInput]
 		Mailer   *mailerMock.Mailer
 	}
 
 	type Sut struct {
-		Sut  consumer.SendWelcomeHandler
-		Mock *Mock
-		Ctx  context.Context
+		Sut   consumer.SendWelcomeHandler
+		Mock  *Mock
+		Input *command.SaveUserInput
+		Ctx   context.Context
 	}
 
 	makeSut := func() *Sut {
 		mock := &Mock{
-			Consumer: messageMock.NewConsumer[user.User](s.T()),
+			Consumer: messageMock.NewConsumer[command.SaveUserInput](s.T()),
 			Mailer:   mailerMock.NewMailer(s.T()),
 		}
 
 		sut := consumer.NewSendWelcomeHandler(mock.Consumer, mock.Mailer)
 
-		return &Sut{Sut: sut, Mock: mock, Ctx: context.Background()}
+		return &Sut{
+			Sut:   sut,
+			Mock:  mock,
+			Ctx:   context.Background(),
+			Input: fake.SaveUserInput(),
+		}
 	}
 
 	s.Run("should save a new mailer", func() {
@@ -86,8 +93,15 @@ func (s *SendWelcomeSuite) TestConsumerHandler() {
 			On("Send", sut.Ctx, mock.Anything).
 			Return(nil)
 
-		sut.Sut.ConsumerHandler(*fake.User())
+		sut.Sut.ConsumerHandler(*sut.Input)
 
-		sut.Mock.Mailer.AssertExpectations(s.T())
+		sut.Mock.Mailer.AssertCalled(
+			s.T(),
+			"Send",
+			sut.Ctx,
+			mock.MatchedBy(func(input *mail.Mail) bool {
+				return input.To[0].Email == sut.Input.Email.String()
+			}),
+		)
 	})
 }

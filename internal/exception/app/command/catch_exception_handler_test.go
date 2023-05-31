@@ -5,11 +5,9 @@ import (
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/exception/app/command"
-	"github.com/christian-gama/nutrai-api/internal/exception/domain/model/exception"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/exception/app/command"
 	messageMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/message"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
-	"github.com/stretchr/testify/mock"
 )
 
 type CatchExceptionHandlerSuite struct {
@@ -22,7 +20,7 @@ func TestCatchExceptionHandlerSuite(t *testing.T) {
 
 func (s *CatchExceptionHandlerSuite) TestHandle() {
 	type Mock struct {
-		Publisher *messageMock.Publisher[exception.Exception]
+		Publisher *messageMock.Publisher[command.CatchExceptionInput]
 	}
 
 	type Sut struct {
@@ -34,7 +32,7 @@ func (s *CatchExceptionHandlerSuite) TestHandle() {
 
 	makeSut := func() *Sut {
 		mock := &Mock{
-			Publisher: messageMock.NewPublisher[exception.Exception](s.T()),
+			Publisher: messageMock.NewPublisher[command.CatchExceptionInput](s.T()),
 		}
 
 		input := fake.CatchExceptionInput()
@@ -48,18 +46,11 @@ func (s *CatchExceptionHandlerSuite) TestHandle() {
 		sut := makeSut()
 
 		sut.Mock.Publisher.
-			On("Handle", mock.Anything).
+			On("Handle", *sut.Input).
 			Return(nil)
 
 		err := sut.Sut.Handle(sut.Ctx, sut.Input)
 
 		s.Nil(err)
-		sut.Mock.Publisher.AssertCalled(
-			s.T(),
-			"Handle",
-			mock.MatchedBy(func(e exception.Exception) bool {
-				return e.Stack == sut.Input.Stack && e.Message == sut.Input.Message
-			}),
-		)
 	})
 }

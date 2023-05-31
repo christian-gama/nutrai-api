@@ -59,4 +59,4 @@ type Data struct {
 	Name string `json:"name"`
 }
 
-var Event = event.New[Data]("test", event.Save)
+var Event = event.New("test", event.Save)
