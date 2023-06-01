@@ -26,11 +26,7 @@ func (s *AllergyTestSuite) TestNewAllergy() {
 		data := fake.Allergy()
 
 		sut := func() (*patient.Allergy, error) {
-			return patient.NewAllergy().
-				SetID(data.ID).
-				SetName(data.Name).
-				SetPatientID(data.PatientID).
-				Validate()
+			return data.Validate()
 		}
 
 		return &Sut{Sut: sut, Data: data}

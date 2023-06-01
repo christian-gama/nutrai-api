@@ -89,7 +89,7 @@ func (p *Patient) SetAge(age value.Age) *Patient {
 // and check if the allergy already exists on the patient. If it does not exist, it will create a
 // new allergy - otherwise, it will use the existing allergy. It will also remove any allergies
 // that are not present in the new list.
-func (p *Patient) SetAllergies(allergies []*Allergy) *Patient {
+func (p *Patient) SetAllergies(allergies ...*Allergy) *Patient {
 	allergiesMap := make(map[value.Allergy]*Allergy, len(p.Allergies))
 	for _, allergy := range p.Allergies {
 		allergiesMap[allergy.Name] = allergy

@@ -26,12 +26,7 @@ func (s *PlanSuite) TestNewPlan() {
 		data := fake.Plan()
 
 		sut := func() (*plan.Plan, error) {
-			return plan.NewPlan().
-				SetID(data.ID).
-				SetDietID(data.DietID).
-				SetDiet(data.Diet).
-				SetText(data.Text).
-				Validate()
+			return data.Validate()
 		}
 
 		return &Sut{Sut: sut, Data: data}

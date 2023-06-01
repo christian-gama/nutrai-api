@@ -48,7 +48,7 @@ func (c *updatePatientHandlerImpl) Handle(ctx context.Context, input *UpdatePati
 				Map(input.Allergies, func(allergy value.Allergy) *patient.Allergy {
 					return patient.NewAllergy().SetName(allergy)
 				}).
-				Build(),
+				Build()...,
 		).
 		Validate()
 	if err != nil {

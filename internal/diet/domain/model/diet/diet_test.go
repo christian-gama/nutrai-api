@@ -28,16 +28,7 @@ func (s *DietTestSuite) TestNewDiet() {
 		data := fake.Diet()
 
 		sut := func() (*diet.Diet, error) {
-			return diet.NewDiet().
-				SetID(data.ID).
-				SetName(data.Name).
-				SetDescription(data.Description).
-				SetDurationInWeeks(data.DurationInWeeks).
-				SetGoal(data.Goal).
-				SetMealPlan(data.MealPlan).
-				SetMonthlyCostUSD(data.MonthlyCostUSD).
-				SetPatientID(data.PatientID).
-				Validate()
+			return data.Validate()
 		}
 
 		return &Sut{Sut: sut, Data: data}

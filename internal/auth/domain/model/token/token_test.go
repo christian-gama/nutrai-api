@@ -26,11 +26,7 @@ func (s *TokenTestSuite) TestNewToken() {
 		data := fake.Token()
 
 		sut := func() (*token.Token, error) {
-			return token.NewToken().
-				SetEmail(data.Email).
-				SetExpiresAt(data.ExpiresAt).
-				SetJti(data.Jti).
-				Validate()
+			return data.Validate()
 		}
 
 		return &Sut{Sut: sut, Data: data}
