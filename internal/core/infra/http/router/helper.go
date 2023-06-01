@@ -14,7 +14,7 @@ func logLevel(status int, duration time.Duration) func(string, ...any) {
 		return log.Errorf
 
 	default:
-		if duration > 300*time.Millisecond {
+		if duration > 500*time.Millisecond {
 			return log.Warnf
 		}
 		return log.Infof

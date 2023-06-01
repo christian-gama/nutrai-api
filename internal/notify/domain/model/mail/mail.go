@@ -54,6 +54,16 @@ func (m *Mail) Validate() (*Mail, error) {
 		errs = errutil.Append(errs, errors.Required("Template"))
 	}
 
+	for _, att := range m.Attachments {
+		if att.Filename == "" {
+			errs = errutil.Append(errs, errors.Required("Attachments.Filename"))
+		}
+
+		if att.Disposition == "" {
+			errs = errutil.Append(errs, errors.Required("Attachments.Disposition"))
+		}
+	}
+
 	if errs.HasErrors() {
 		return nil, errs
 	}

@@ -89,6 +89,9 @@ type config struct {
 	// requests per minute.
 	GlobalRateLimit int `env:"CONFIG_GLOBAL_RATE_LIMIT,required"`
 
+	// EnableRateLimit is the flag that indicates if the rate limit is enabled or not.
+	EnableRateLimit bool `env:"CONFIG_ENABLE_RATE_LIMIT,required"`
+
 	// Debug is the debug mode. It will enable some debug features like the stack
 	// trace in the response body.
 	Debug bool `env:"CONFIG_DEBUG,required"`
@@ -129,6 +132,10 @@ type mailer struct {
 
 	// FromName is the mailtrap from name.
 	FromName string `env:"MAILER_FROM_NAME,required"`
+
+	// MAILER_DELAY_BETWEEN_EMAILS is the delay that will be used to send each email. It's used to
+	// throttle the email sending process, to avoid being blocked by the email provider.
+	DelayBetweenEmails time.Duration `env:"MAILER_DELAY_BETWEEN_EMAILS,required"`
 }
 
 type mailtrap struct {

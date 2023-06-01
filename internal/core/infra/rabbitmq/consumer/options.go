@@ -1,6 +1,8 @@
 package consumer
 
 import (
+	"time"
+
 	"github.com/christian-gama/nutrai-api/internal/core/domain/event"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/rabbitmq"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
@@ -8,20 +10,21 @@ import (
 )
 
 type options struct {
-	ExchangeName    string
-	RoutingKey      string
-	Kind            rabbitmq.Exchange
-	Durable         bool
-	AutoDelete      bool
-	Internal        bool
-	NoWait          bool
-	Args            amqp.Table
-	QueueName       string
-	QueueDurable    bool
-	QueueAutoDelete bool
-	QueueExclusive  bool
-	QueueNoWait     bool
-	QueueArgs       amqp.Table
+	ExchangeName         string
+	RoutingKey           string
+	Kind                 rabbitmq.Exchange
+	Durable              bool
+	AutoDelete           bool
+	Internal             bool
+	NoWait               bool
+	Args                 amqp.Table
+	QueueName            string
+	QueueDurable         bool
+	QueueAutoDelete      bool
+	QueueExclusive       bool
+	QueueNoWait          bool
+	QueueArgs            amqp.Table
+	DelayBetweenMessages time.Duration
 }
 
 func WithExchangeName(exchange event.Name) func(*options) {
@@ -37,6 +40,12 @@ func WithRoutingKey(routingKey event.Event) func(*options) {
 
 	return func(o *options) {
 		o.RoutingKey = routingKey.String()
+	}
+}
+
+func WithDelayBetweenMessages(delayBetweenMessages time.Duration) func(*options) {
+	return func(o *options) {
+		o.DelayBetweenMessages = delayBetweenMessages
 	}
 }
 

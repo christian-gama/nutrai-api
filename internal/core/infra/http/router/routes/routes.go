@@ -1,6 +1,9 @@
 package routes
 
 import (
+	"time"
+
+	"github.com/christian-gama/nutrai-api/config/env"
 	authMiddleware "github.com/christian-gama/nutrai-api/internal/auth/api/http/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/middleware"
@@ -59,6 +62,7 @@ func (r *routes) initializeHandlers(
 	handlers[len(handlers)-1] = controller.Handle
 
 	handlers = r.addAuthIfNeeded(controller, handlers)
+	handlers = r.addRateLimitIfNeeded(controller, handlers)
 
 	return handlers
 }
@@ -81,6 +85,21 @@ func (r *routes) addAuthIfNeeded(
 ) []gin.HandlerFunc {
 	if !controller.IsPublic() {
 		handlers = slice.Unshift(handlers, authMiddleware.MakeAuth().Handle).Build()
+	}
+
+	return handlers
+}
+
+// addRateLimitIfNeeded is a helper function that adds a rate limit middleware if the controller
+// has a rate limit.
+func (r *routes) addRateLimitIfNeeded(
+	controller controller.Controller,
+	handlers []gin.HandlerFunc,
+) []gin.HandlerFunc {
+	if controller.RPM() > 0 && env.Config.EnableRateLimit {
+		handlers = slice.
+			Unshift(handlers, router.RateLimiter(controller.RPM(), time.Minute)).
+			Build()
 	}
 
 	return handlers

@@ -67,9 +67,9 @@ func limitBodySize() gin.HandlerFunc {
 	}
 }
 
-// rateLimiter returns a gin middleware that limits the request rate.
-func rateLimiter(limit int, duration time.Duration) gin.HandlerFunc {
-	if limit == 0 {
+// RateLimiter returns a gin middleware that limits the request rate.
+func RateLimiter(limit int, duration time.Duration) gin.HandlerFunc {
+	if limit == 0 || !env.Config.EnableRateLimit {
 		return func(ctx *gin.Context) {
 			ctx.Next()
 		}
@@ -84,7 +84,7 @@ func rateLimiter(limit int, duration time.Duration) gin.HandlerFunc {
 		ErrorHandler: func(ctx *gin.Context, info ratelimit.Info) {
 			response.TooManyRequests(
 				ctx,
-				errors.InternalServerError(""),
+				errors.TooManyRequests(),
 			)
 		},
 

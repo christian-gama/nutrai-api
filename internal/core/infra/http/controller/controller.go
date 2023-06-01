@@ -34,15 +34,34 @@ type Controller interface {
 
 	// IsPublic is a flag that indicates if the handler is public or not.
 	IsPublic() bool
+
+	// RPM is the rate limit per minute for the handler. It's used to limit the number of requests
+	// per minute for the given endpoint. The default value is 0, which means that the endpoint
+	// will not be rate limited, unless the global rate limit is set. The priority is the
+	// controller's rate limit, then the global rate limit.
+	RPM() int
 }
 
 // ControllerOptions is the options for the controller constructor. It's used
 // to setup the controller before using it.
 type Options struct {
+	// IsPublic is a flag that indicates if the handler is public or not.
 	IsPublic bool
-	Params   Params
-	Path     Path
-	Method   http.Method
+
+	// Params is the list of params that the handler will listen to.
+	Params Params
+
+	// Path is the path that the handler will listen to.
+	Path Path
+
+	// Method is the HTTP method that the handler will listen to.
+	Method http.Method
+
+	// RPM is the rate limit per minute for the handler. It's used to limit the number of requests
+	// per minute for the given endpoint. The default value is 0, which means that the endpoint
+	// will not be rate limited, unless the global rate limit is set. The priority is the
+	// controller's rate limit, then the global rate limit.
+	RPM int
 }
 
 // controllerImpl is the implementation of the Controller interface.
@@ -51,6 +70,7 @@ type controllerImpl[Input any] struct {
 	method   http.Method
 	path     Path
 	isPublic bool
+	rpm      int
 	params   Params
 
 	input Input
@@ -70,6 +90,7 @@ func NewController[Input any](
 		path:     opts.Path,
 		isPublic: opts.IsPublic,
 		params:   opts.Params,
+		rpm:      opts.RPM,
 	}
 
 	controller.validate()
@@ -103,6 +124,11 @@ func (c controllerImpl[Input]) Handle(ctx *gin.Context) {
 // Handler implements Controller.
 func (c *controllerImpl[P]) Method() http.Method {
 	return c.method
+}
+
+// RPM implements Controller.
+func (c *controllerImpl[P]) RPM() int {
+	return c.rpm
 }
 
 // Path implements Controller.

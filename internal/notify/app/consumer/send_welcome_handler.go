@@ -51,7 +51,7 @@ func (j *sendWelcomeHandlerImpl) ConsumerHandler(input command.SaveUserInput) er
 			SetFilename(mail.BuildAssetURL("welcome.png")).
 			SetDisposition("inline"),
 		).
-		SetTemplate("welcome").
+		SetTemplate("welcome.html").
 		Validate()
 	if err != nil {
 		return errors.InternalServerError(err.Error())

@@ -102,12 +102,14 @@ func (a *Attachment) ContentType() string {
 
 func (a *Attachment) contentTypeFromFilename() string {
 	mapContentType := map[string]string{
-		".png": ContentTypePNG,
-		".jpg": ContentTypeJPG,
-		".pdf": ContentTypePDF,
-		".zip": ContentTypeZIP,
-		".csv": ContentTypeCSV,
-		".txt": ContentTypeTXT,
+		".png":  ContentTypePNG,
+		".jpg":  ContentTypeJPG,
+		".gif":  ContentTypeGIF,
+		".jpeg": ContentTypeJPEG,
+		".pdf":  ContentTypePDF,
+		".zip":  ContentTypeZIP,
+		".csv":  ContentTypeCSV,
+		".txt":  ContentTypeTXT,
 	}
 
 	ext := path.Ext(a.Filename)
@@ -120,10 +122,12 @@ func (a *Attachment) contentTypeFromFilename() string {
 }
 
 const (
-	ContentTypePNG = "image/png"
-	ContentTypeJPG = "image/jpg"
-	ContentTypePDF = "application/pdf"
-	ContentTypeZIP = "application/zip"
-	ContentTypeCSV = "text/csv"
-	ContentTypeTXT = "text/plain"
+	ContentTypePNG  = "image/png"
+	ContentTypeJPG  = "image/jpg"
+	ContentTypeGIF  = "image/gif"
+	ContentTypeJPEG = "image/jpeg"
+	ContentTypePDF  = "application/pdf"
+	ContentTypeZIP  = "application/zip"
+	ContentTypeCSV  = "text/csv"
+	ContentTypeTXT  = "text/plain"
 )

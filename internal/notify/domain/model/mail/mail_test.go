@@ -114,6 +114,33 @@ func (s *MailTestSuite) TestNewMail() {
 		})
 	})
 
+	s.Run("Attachments", func() {
+		s.Run("Should return an error when contains an empty filename", func() {
+			sut := makeSut()
+
+			sut.Data.SetAttachments(value.NewAttachment())
+
+			mail, err := sut.Sut()
+
+			s.ErrorAsRequired(err)
+			s.Nil(mail)
+		})
+
+		s.Run("Should return an error when contains an empty disposition", func() {
+			sut := makeSut()
+
+			sut.Data.SetAttachments(value.NewAttachment().
+				SetFilename(faker.URL()).
+				SetDisposition(""),
+			)
+
+			mail, err := sut.Sut()
+
+			s.ErrorAsRequired(err)
+			s.Nil(mail)
+		})
+	})
+
 	s.Run("TestNewMail (Success)", func() {
 		s.Run("Should return a mail when all fields are valid", func() {
 			sut := makeSut()

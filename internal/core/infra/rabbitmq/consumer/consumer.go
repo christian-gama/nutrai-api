@@ -24,20 +24,21 @@ func NewConsumer[Data any](
 	opts ...func(*options),
 ) message.Consumer[Data] {
 	options := &options{
-		ExchangeName:    "",
-		RoutingKey:      "",
-		Kind:            rabbitmq.ExchangeDirect,
-		Durable:         false,
-		AutoDelete:      false,
-		Internal:        false,
-		NoWait:          false,
-		Args:            nil,
-		QueueName:       "",
-		QueueDurable:    false,
-		QueueAutoDelete: false,
-		QueueExclusive:  false,
-		QueueNoWait:     false,
-		QueueArgs:       nil,
+		ExchangeName:         "",
+		RoutingKey:           "",
+		Kind:                 rabbitmq.ExchangeDirect,
+		Durable:              false,
+		AutoDelete:           false,
+		Internal:             false,
+		NoWait:               false,
+		Args:                 nil,
+		QueueName:            "",
+		QueueDurable:         false,
+		QueueAutoDelete:      false,
+		QueueExclusive:       false,
+		QueueNoWait:          false,
+		QueueArgs:            nil,
+		DelayBetweenMessages: 0,
 	}
 	for _, opt := range opts {
 		opt(options)
@@ -118,6 +119,10 @@ func (c *consumerImpl[Data]) Handle(handler func(data Data) error) {
 
 	go func() {
 		for msg := range msgs {
+			if c.options.DelayBetweenMessages > 0 {
+				time.Sleep(c.options.DelayBetweenMessages)
+			}
+
 			c.handle(msg, handler)
 		}
 	}()
