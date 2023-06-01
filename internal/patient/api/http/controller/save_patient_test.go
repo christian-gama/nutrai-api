@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
+	"github.com/christian-gama/nutrai-api/internal/auth/infra/ctxstore"
 	"github.com/christian-gama/nutrai-api/internal/patient/api/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/patient/app/command"
 	value "github.com/christian-gama/nutrai-api/internal/patient/domain/value/patient"
@@ -157,7 +157,7 @@ func (s *SavePatientSuite) TestHandle() {
 	s.Run("should panic when user is not in context", func() {
 		sut := makeSut()
 
-		s.PanicsWithValue(store.ErrUserNotFound, func() {
+		s.PanicsWithValue(ctxstore.ErrUserNotFound, func() {
 			gintest.MustRequest(sut.Sut, gintest.Option{
 				Data:        sut.Input,
 				CurrentUser: nil,

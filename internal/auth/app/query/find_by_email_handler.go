@@ -5,6 +5,7 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/repo"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/query"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
 // FindByEmailInput is the query to find a user by email.
@@ -17,6 +18,8 @@ type findByEmailHandlerImpl struct {
 
 // NewFindByEmailHandler creates a new instance of the FindByEmailHandler interface.
 func NewFindByEmailHandler(userRepo repo.User) FindByEmailHandler {
+	errutil.MustBeNotEmpty("repo.User", userRepo)
+
 	return &findByEmailHandlerImpl{
 		User: userRepo,
 	}

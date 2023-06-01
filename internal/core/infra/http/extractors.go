@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
+	"github.com/christian-gama/nutrai-api/internal/auth/infra/ctxstore"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
 	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	"github.com/christian-gama/nutrai-api/pkg/reflection"
@@ -64,7 +64,7 @@ func ExtractCurrentUser[Input any](ctx *gin.Context, input *Input) {
 
 	reflection.IterateStructFields(input, func(opts *reflection.FieldIterationOptions) {
 		if opts.Tag.Get("ctx") == "currentUser" {
-			currentUser, err := store.GetUser(ctx)
+			currentUser, err := ctxstore.GetUser(ctx)
 			if err != nil {
 				opts.Field.Set(reflect.Zero(opts.Field.Type()))
 				response.InternalServerError(ctx, err)

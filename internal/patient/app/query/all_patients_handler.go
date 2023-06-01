@@ -2,12 +2,12 @@ package query
 
 import (
 	"context"
-	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/query"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/repo"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
 )
 
@@ -21,9 +21,7 @@ type allPatientsHandlerImpl struct {
 
 // NewAllPatientsHandler instantiates the AllPatients use case handler.
 func NewAllPatientsHandler(patientRepo repo.Patient) AllPatientsHandler {
-	if patientRepo == nil {
-		panic(errors.New("repo.Patient cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("repo.Patient", patientRepo)
 
 	return &allPatientsHandlerImpl{patientRepo}
 }

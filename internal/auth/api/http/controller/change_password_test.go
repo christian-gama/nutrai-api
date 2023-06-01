@@ -8,7 +8,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/auth/api/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/auth/app/command"
 	value "github.com/christian-gama/nutrai-api/internal/auth/domain/value/user"
-	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
+	"github.com/christian-gama/nutrai-api/internal/auth/infra/ctxstore"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/app/command"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
 	cmdMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/command"
@@ -67,7 +67,7 @@ func (s *ChangePasswordSuite) TestHandle() {
 
 			sut.Input.User = nil
 
-			s.PanicsWithValue(store.ErrUserNotFound, func() {
+			s.PanicsWithValue(ctxstore.ErrUserNotFound, func() {
 				gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 					Data:        sut.Input,
 					CurrentUser: sut.Input.User,

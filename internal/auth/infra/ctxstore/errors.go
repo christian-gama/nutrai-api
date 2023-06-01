@@ -1,4 +1,4 @@
-package store
+package ctxstore
 
 import "github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 

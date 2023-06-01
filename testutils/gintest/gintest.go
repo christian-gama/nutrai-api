@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
-	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
+	"github.com/christian-gama/nutrai-api/internal/auth/infra/ctxstore"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
 	"github.com/christian-gama/nutrai-api/testutils/httputil"
 	"github.com/gin-gonic/gin"
@@ -34,7 +34,7 @@ func MustRequestWithBody(
 
 	r.Handle(handler.Method().String(), handlerPath.String(), func(ctx *gin.Context) {
 		if opt.CurrentUser != nil {
-			store.SetUser(ctx, opt.CurrentUser)
+			ctxstore.SetUser(ctx, opt.CurrentUser)
 		}
 
 		handler.Handle(ctx)
