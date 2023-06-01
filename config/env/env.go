@@ -150,6 +150,17 @@ type sendgrid struct {
 	ApiKey string `env:"SENDGRID_API_KEY,required"`
 }
 
+type gpt struct {
+	Model                string  `env:"GPT_MODEL,required"`
+	Temperature          float32 `env:"GPT_TEMPERATURE,required"`
+	TopP                 float32 `env:"GPT_TOP_P,required"`
+	N                    int     `env:"GPT_N,required"`
+	PresencePenalty      float32 `env:"GPT_PRESENCE_PENALTY,required"`
+	FrequencyPenalty     float32 `env:"GPT_FREQUENCY_PENALTY,required"`
+	InitialSystemMessage string  `env:"GPT_INITIAL_SYSTEM_MESSAGE,required"`
+	ApiKey               string  `env:"GPT_API_KEY,required"`
+}
+
 // DB is the database environment variables.c.
 var DB = &db{}
 
@@ -176,6 +187,9 @@ var Mailtrap = &mailtrap{}
 
 // Sendgrid is the sendgrid environment variables.
 var Sendgrid = &sendgrid{}
+
+// Gpt is the gpt environment variables.
+var Gpt = &gpt{}
 
 var (
 	// IsProduction is true if the application is running in production mode.

@@ -18,20 +18,12 @@ func (d DurationInWeeks) Int16() int16 {
 // Validate returns an error if the duration is invalid.
 func (d DurationInWeeks) Validate() error {
 	const fieldName = "DurationInWeeks"
-	const maxWeeks = 520
 	const minWeeks = 1
 
 	if d < minWeeks {
 		return errors.Invalid(
 			fieldName,
 			fmt.Sprintf("cannot be less than %d week", minWeeks),
-		)
-	}
-
-	if d > 520 {
-		return errors.Invalid(
-			fieldName,
-			fmt.Sprintf("cannot be greater than %d weeks", maxWeeks),
 		)
 	}
 

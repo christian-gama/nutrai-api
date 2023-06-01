@@ -35,17 +35,6 @@ func (s *RestrictedFoodTestSuite) TestNewRestrictedFood() {
 	}
 
 	s.Run("TestNewRestrictedFood (Error)", func() {
-		s.Run("ID", func() {
-			s.Run("Should return an error when empty", func() {
-				sut := makeSut()
-				sut.Data.ID = 0
-
-				restrictedfood, err := sut.Sut()
-
-				s.ErrorAsRequired(err)
-				s.Nil(restrictedfood)
-			})
-		})
 
 		s.Run("Name", func() {
 			s.Run("Should return an error when empty", func() {

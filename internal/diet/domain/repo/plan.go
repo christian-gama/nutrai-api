@@ -56,3 +56,53 @@ type Plan interface {
 	// Update updates the given plan.
 	Update(ctx context.Context, input UpdatePlanInput) error
 }
+
+// ChatCompletionMessage represents a message to be sent to the OpenAI API.
+type ChatCompletionMessage struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+// ChatCompletionConfigInput represents the configuration for the OpenAI API.
+type ChatCompletionConfigInput struct {
+	Model            string                  `json:"model"`
+	Messages         []ChatCompletionMessage `json:"messages"`
+	MaxTokens        int                     `json:"max_tokens,omitempty"`
+	Temperature      float32                 `json:"temperature,omitempty"`
+	TopP             float32                 `json:"top_p,omitempty"`
+	N                int                     `json:"n,omitempty"`
+	Stream           bool                    `json:"stream,omitempty"`
+	Stop             []string                `json:"stop,omitempty"`
+	PresencePenalty  float32                 `json:"presence_penalty,omitempty"`
+	FrequencyPenalty float32                 `json:"frequency_penalty,omitempty"`
+	LogitBias        map[string]int          `json:"logit_bias,omitempty"`
+	User             string                  `json:"user,omitempty"`
+}
+
+// ChatCompletionOutput represents the output from the OpenAI API.
+type ChatCompletionOutput struct {
+	ID      string                 `json:"id"`
+	Object  string                 `json:"object"`
+	Created int64                  `json:"created"`
+	Model   string                 `json:"model"`
+	Choices []ChatCompletionChoice `json:"choices"`
+	Usage   Usage                  `json:"usage"`
+}
+
+// ChatCompletionChoice represents a choice from the OpenAI API.
+type ChatCompletionChoice struct {
+	Index        int                   `json:"index"`
+	Message      ChatCompletionMessage `json:"message"`
+	FinishReason string                `json:"finish_reason"`
+}
+
+// Usage Represents the total token usage per request to OpenAI.
+type Usage struct {
+	PromptTokens     int `json:"prompt_tokens"`
+	CompletionTokens int `json:"completion_tokens"`
+	TotalTokens      int `json:"total_tokens"`
+}
+
+type GptClient interface {
+	CreateChatCompletion(ctx context.Context, input ChatCompletionConfigInput) (*ChatCompletionOutput, error)
+}

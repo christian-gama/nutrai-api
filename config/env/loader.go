@@ -49,7 +49,7 @@ func (e *loader) Load() {
 
 // loadEnvironmentVariables loads the environment variables into the given variables.
 func (e *loader) loadEnvironmentVariables() {
-	variables := []any{DB, App, Config, Jwt, RabbitMQ, Mailer, Mailtrap, Sendgrid, Redis}
+	variables := []any{DB, App, Config, Jwt, RabbitMQ, Mailer, Mailtrap, Sendgrid, Redis, Gpt}
 
 	for _, variable := range variables {
 		if err := envconfig.Process(e.ctx, variable); err != nil {

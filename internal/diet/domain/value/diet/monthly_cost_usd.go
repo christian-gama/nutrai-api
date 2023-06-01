@@ -1,8 +1,6 @@
 package value
 
 import (
-	"fmt"
-
 	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
@@ -18,7 +16,6 @@ func (c MonthlyCostUSD) Float32() float32 {
 // Validate returns an error if the monthly cost is invalid.
 func (c MonthlyCostUSD) Validate() error {
 	const fieldName = "MonthlyCostUSD"
-	const maxCost = 9_999
 
 	if c == 0 {
 		return errors.Required(fieldName)
@@ -26,10 +23,6 @@ func (c MonthlyCostUSD) Validate() error {
 
 	if c < 0 {
 		return errors.Invalid(fieldName, "cannot be negative")
-	}
-
-	if c > maxCost {
-		return errors.Invalid(fieldName, fmt.Sprintf("cannot be greater than %d", maxCost))
 	}
 
 	return nil
