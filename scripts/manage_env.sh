@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # ==============================================================================================
 # Title:    manage_env.sh
 # Brief:    Create .env.dev, .env.test, and .env.prod files if they don't exist. If they exist,
@@ -21,6 +22,7 @@ manage_env_file() {
         move_temp_file "$temp_file" "$env_file"
     else
         cp "$example_file" "$env_file"
+        sed -i '/^#/d' "$env_file"
     fi
 
     update_environment_specific_variables "$env_name" "$env_file"
@@ -53,15 +55,11 @@ remove_unused_keys() {
 
     while IFS= read -r line
     do
-        if is_comment_line "$line"; then
-            continue
-        fi
-
         key=$(extract_key "$line")
         if ! grep -q "^$key=" "$example_file"; then
             sed -i "/^$key=/d" "$temp_file"
         fi
-    done < "$env_file"
+    done < "$temp_file"
 }
 
 update_environment_specific_variables() {
@@ -72,26 +70,26 @@ update_environment_specific_variables() {
 
     case "$env_name" in
         "dev")
-            sed -i "s/DB_PORT=.*/DB_PORT=5433/" "$env_file"
-            sed -i "s/REDIS_PORT=.*/REDIS_PORT=6380/" "$env_file"
-            sed -i "s/RABBITMQ_PORT=.*/RABBITMQ_PORT=5673/" "$env_file"
-            sed -i "s/CONFIG_LOG_LEVEL=.*/CONFIG_LOG_LEVEL=\"debug\"/" "$env_file"
-            sed -i "s/JWT_ACCESS_EXPIRE=.*/JWT_ACCESS_EXPIRE=\"24h\"/" "$env_file"
-            sed -i "s/JWT_REFRESH_EXPIRE=.*/JWT_REFRESH_EXPIRE=\"90d\"/" "$env_file"
+            sed -i 's/DB_PORT=.*/DB_PORT=5433/' "$env_file"
+            sed -i 's/REDIS_PORT=.*/REDIS_PORT=6381/' "$env_file"
+            sed -i 's/RABBITMQ_PORT=.*/RABBITMQ_PORT=5673/' "$env_file"
+            sed -i 's/CONFIG_LOG_LEVEL=.*/CONFIG_LOG_LEVEL="debug"/' "$env_file"
+            sed -i 's/JWT_ACCESS_EXPIRE=.*/JWT_ACCESS_EXPIRE="24h"/' "$env_file"
+            sed -i 's/JWT_REFRESH_EXPIRE=.*/JWT_REFRESH_EXPIRE="90d"/' "$env_file"
             ;;
         "test")
-            sed -i "s/DB_PORT=.*/DB_PORT=5434/" "$env_file"
-            sed -i "s/REDIS_PORT=.*/REDIS_PORT=6381/" "$env_file"
-            sed -i "s/RABBITMQ_PORT=.*/RABBITMQ_PORT=5674/" "$env_file"
-            sed -i "s/CONFIG_LOG_LEVEL=.*/CONFIG_LOG_LEVEL=\"panic\"/" "$env_file"
-            sed -i "s/JWT_ACCESS_EXPIRE=.*/JWT_ACCESS_EXPIRE=\"999d\"/" "$env_file"
-            sed -i "s/JWT_REFRESH_EXPIRE=.*/JWT_REFRESH_EXPIRE=\"999d\"/" "$env_file"
+            sed -i 's/DB_PORT=.*/DB_PORT=5434/' "$env_file"
+            sed -i 's/REDIS_PORT=.*/REDIS_PORT=6381/' "$env_file"
+            sed -i 's/RABBITMQ_PORT=.*/RABBITMQ_PORT=5674/' "$env_file"
+            sed -i 's/CONFIG_LOG_LEVEL=.*/CONFIG_LOG_LEVEL="panic"/' "$env_file"
+            sed -i 's/JWT_ACCESS_EXPIRE=.*/JWT_ACCESS_EXPIRE="999d"/' "$env_file"
+            sed -i 's/JWT_REFRESH_EXPIRE=.*/JWT_REFRESH_EXPIRE="999d"/' "$env_file"
             ;;
         "prod")
-            sed -i "s/CONFIG_GLOBAL_RATE_LIMIT=.*/CONFIG_GLOBAL_RATE_LIMIT=180/" "$env_file"
-            sed -i "s/CONFIG_LOG_LEVEL=.*/CONFIG_LOG_LEVEL=\"info\"/" "$env_file"
-            sed -i "s/JWT_ACCESS_EXPIRE=.*/JWT_ACCESS_EXPIRE=\"10m\"/" "$env_file"
-            sed -i "s/JWT_REFRESH_EXPIRE=.*/JWT_REFRESH_EXPIRE=\"30d\"/" "$env_file"
+            sed -i 's/CONFIG_GLOBAL_RATE_LIMIT=.*/CONFIG_GLOBAL_RATE_LIMIT=180/' "$env_file"
+            sed -i 's/CONFIG_LOG_LEVEL=.*/CONFIG_LOG_LEVEL="info"/' "$env_file"
+            sed -i 's/JWT_ACCESS_EXPIRE=.*/JWT_ACCESS_EXPIRE="10m"/' "$env_file"
+            sed -i 's/JWT_REFRESH_EXPIRE=.*/JWT_REFRESH_EXPIRE="30d"/' "$env_file"
             ;;
     esac
 }
@@ -105,8 +103,12 @@ move_temp_file() {
 
 is_comment_line() {
     line="$1"
-    [[ "$line" =~ ^#.*$ ]]
+    case "$line" in
+        \#*) return 0 ;;
+        *) return 1 ;;
+    esac
 }
+
 
 extract_key() {
     line="$1"
