@@ -5,7 +5,8 @@ import (
 
 	userCmd "github.com/christian-gama/nutrai-api/internal/auth/app/command"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/jwt"
-	"github.com/christian-gama/nutrai-api/internal/core/app/service"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/service"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
 // RegisterHandler handles the register request and returns the access and refresh tokens.
@@ -24,6 +25,10 @@ func NewRegisterHandler(
 	refreshToken jwt.Generator,
 	saveUserHandler userCmd.SaveUserHandler,
 ) RegisterHandler {
+	errutil.MustBeNotEmpty("jwt.Generator (accessToken)", accessToken)
+	errutil.MustBeNotEmpty("jwt.Generator (refreshToken)", refreshToken)
+	errutil.MustBeNotEmpty("userCmd.SaveUserHandler", saveUserHandler)
+
 	return &registerHandlerImpl{
 		accessToken:     accessToken,
 		refreshToken:    refreshToken,
@@ -45,18 +50,18 @@ func (h *registerHandlerImpl) Handle(
 	}
 
 	subject := &jwt.Subject{Email: input.Email}
-	access, err := h.accessToken.Generate(subject)
+	accessToken, err := h.accessToken.Generate(subject, false)
 	if err != nil {
 		return nil, err
 	}
 
-	refresh, err := h.refreshToken.Generate(subject)
+	refreshToken, err := h.refreshToken.Generate(subject, true)
 	if err != nil {
 		return nil, err
 	}
 
 	return &RegisterOutput{
-		Access:  access,
-		Refresh: refresh,
+		Access:  accessToken,
+		Refresh: refreshToken,
 	}, nil
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// SetGlobalMiddleware sets the global middleware to the router.
 func SetGlobalMiddleware(middleware ...middleware.Middleware) {
 	router.Router.Use(func(c *gin.Context) {
 		for _, m := range middleware {

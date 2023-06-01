@@ -13,15 +13,15 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type DeleteUserSuite struct {
+type DeleteMeSuite struct {
 	suite.Suite
 }
 
-func TestDeleteUserSuite(t *testing.T) {
-	suite.RunUnitTest(t, new(DeleteUserSuite))
+func TestDeleteMeSuite(t *testing.T) {
+	suite.RunUnitTest(t, new(DeleteMeSuite))
 }
 
-func (s *DeleteUserSuite) TestDeleteUser() {
+func (s *DeleteMeSuite) TestDeleteMe() {
 	type Mock struct {
 		UserRepo *userMock.User
 	}

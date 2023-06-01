@@ -1,12 +1,11 @@
 package controller
 
 import (
-	"errors"
-
 	"github.com/christian-gama/nutrai-api/internal/auth/app/service"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,9 +14,7 @@ type Register = controller.Controller
 
 // NewRegister returns a new controller to handle the register of a user.
 func NewRegister(registerHandler service.RegisterHandler) Register {
-	if registerHandler == nil {
-		panic(errors.New("service.RegisterHandler cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("service.RegisterHandler", registerHandler)
 
 	return controller.NewController(
 		func(ctx *gin.Context, input *service.RegisterInput) {

@@ -10,7 +10,8 @@ func Register() {
 	routes.Api("/v1/auth").
 		SetController(controller.MakeLogin()).
 		SetController(controller.MakeRegister()).
-		SetController(controller.MakeRefreshToken())
+		SetController(controller.MakeRefreshToken()).
+		SetController(controller.MakeLogout())
 
 	routes.Api("/v1/users").
 		SetController(controller.MakeDeleteUser()).

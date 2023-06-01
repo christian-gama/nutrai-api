@@ -3,7 +3,7 @@ package value
 import (
 	"fmt"
 
-	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 // MealPlan is a data type that signifies the specific dietary scheme of a diet plan. This can
@@ -31,7 +31,7 @@ func (m MealPlan) Validate() error {
 	}
 
 	if len(m) == 0 {
-		return errutil.Required(fieldName)
+		return errors.Required(fieldName)
 	}
 
 	for _, validMealPlan := range validMealPlans {
@@ -40,7 +40,7 @@ func (m MealPlan) Validate() error {
 		}
 	}
 
-	return errutil.Invalid(fieldName, fmt.Sprintf("must be one of %v", validMealPlans))
+	return errors.Invalid(fieldName, fmt.Sprintf("must be one of %v", validMealPlans))
 }
 
 const (

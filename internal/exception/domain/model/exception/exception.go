@@ -16,7 +16,9 @@ type Exception struct {
 
 // New creates a new Exception.
 func New() *Exception {
-	return &Exception{}
+	return &Exception{
+		CreatedAt: time.Now(),
+	}
 }
 
 // String implements the fmt.Stringer interface.
@@ -27,12 +29,6 @@ func (Exception) String() string {
 // Validate validates the Exception fields. It implements the validator interface.
 func (e *Exception) Validate() (*Exception, error) {
 	return e, nil
-}
-
-// SetCreatedAt sets the createdAt field.
-func (e *Exception) SetCreatedAt(createdAt time.Time) *Exception {
-	e.CreatedAt = createdAt
-	return e
 }
 
 // SetID sets the id field.

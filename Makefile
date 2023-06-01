@@ -27,7 +27,7 @@ help: .clear-screen
 # ==============================================================================================
 # Target: init
 # Brief: Initializes the project.
-# Usage: Run the command 'make'.
+# Usage: Run the command 'make init'.
 # ==============================================================================================
 .PHONY: init
 init: .cmd-exists-git .cmd-exists-go .cmd-exists-docker .cmd-exists-sh .clear-screen
@@ -62,6 +62,7 @@ run: .cmd-exists-go .clear-screen .check-env-file
 ifneq ($(RUNNING_IN_DOCKER), true)
 	@$(MAKE) postgres
 	@$(MAKE) rabbitmq
+	@$(MAKE) redis
 endif
 
 ifeq ($(ENV_FILE), .env.prod)
@@ -102,6 +103,7 @@ list-routes: .cmd-exists-go .clear-screen
 ifneq ($(RUNNING_IN_DOCKER), true)
 	@ENV_FILE=.env.dev $(MAKE) postgres
 	@ENV_FILE=.env.dev $(MAKE) rabbitmq
+	@ENV_FILE=.env.dev $(MAKE) redis
 endif
 	@go run ./cmd/routes/main.go
 
@@ -116,6 +118,36 @@ endif
 .PHONY: list-env
 list-env: .cmd-exists-go .clear-screen .check-env-file
 	@go run ./cmd/env/*.go -e $(ENV_FILE)
+
+
+# ==============================================================================================
+# Target: mail
+# Brief: Sends a test email.
+# Usage: Run the command 'make mail ENV_FILE="<path>" TO="<email>" SUBJECT="<subject>" BODY="<body>" NAME="<name>"'.
+# Flags:
+# 	ENV_FILE: The path to the environment file.
+#   TO: The email address to send the email to.
+#   SUBJECT: The subject of the email.
+#   NAME: The name of the recipient.
+# ==============================================================================================
+.PHONY: mail
+mail: .cmd-exists-go .clear-screen .check-env-file
+	@if [ -z "$(TO)" ]; then \
+		echo "Error: expected TO"; \
+		exit 1; \
+	fi;
+
+	@if [ -z "$(SUBJECT)" ]; then \
+		echo "Error: expected SUBJECT"; \
+		exit 1; \
+	fi;
+
+	@if [ -z "$(NAME)" ]; then \
+		echo "Error: expected NAME"; \
+		exit 1; \
+	fi;
+
+	@go run ./cmd/mail/*.go -e $(ENV_FILE) -t "$(TO)" -s "$(SUBJECT)" -n "$(NAME)"
 
 
 # ==============================================================================================
@@ -301,6 +333,22 @@ rabbitmq: .cmd-exists-docker .clear-screen .check-env-file
 
 
 # ==============================================================================================
+# Target: redis
+# Brief: Runs the redis in a docker container.
+# Usage: Run the command 'make redis [ENV_FILE="<env_file>"]'.
+# Args:
+# 	ENV_FILE: The env file to be loaded.
+# ==============================================================================================
+.PHONY: redis
+redis: .cmd-exists-docker .clear-screen .check-env-file
+	@if [ "$(ENV_FILE)" = ".env.test" ]; then \
+		$(MAKE) .docker COMMAND=up FLAG=-d SERVICE=redis_test; \
+	else \
+		$(MAKE) .docker COMMAND=up FLAG=-d SERVICE=redis; \
+	fi;
+
+
+# ==============================================================================================
 # Target: mock
 # Brief: Generates mocks for all interfaces in the project, excluding the vendor folder.
 # Usage: Run the command 'make mock'.
@@ -441,6 +489,7 @@ docker-list-env: .cmd-exists-docker .clear-screen .check-env-file
 .prepare-test: .cmd-exists-go .cmd-exists-docker .clear-screen
 	@ENV_FILE=.env.test $(MAKE) rabbitmq
 	@ENV_FILE=.env.test $(MAKE) postgres
+	@ENV_FILE=.env.test $(MAKE) redis
 	@go run ./cmd/migrate/*.go -e .env.test reset
 
 

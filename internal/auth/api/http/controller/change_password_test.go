@@ -8,10 +8,10 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/auth/api/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/auth/app/command"
 	value "github.com/christian-gama/nutrai-api/internal/auth/domain/value/user"
-	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
+	"github.com/christian-gama/nutrai-api/internal/auth/infra/ctxstore"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/app/command"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
-	commandMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/command"
+	cmdMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/command"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -27,7 +27,7 @@ func TestChangePasswordSuite(t *testing.T) {
 
 func (s *ChangePasswordSuite) TestHandle() {
 	type Mock struct {
-		ChangePasswordHandler *commandMock.Handler[*command.ChangePasswordInput]
+		ChangePasswordHandler *cmdMock.Handler[*command.ChangePasswordInput]
 	}
 
 	type Sut struct {
@@ -39,7 +39,7 @@ func (s *ChangePasswordSuite) TestHandle() {
 	makeSut := func() *Sut {
 		input := fake.ChangePasswordInput()
 		mock := &Mock{
-			ChangePasswordHandler: commandMock.NewHandler[*command.ChangePasswordInput](s.T()),
+			ChangePasswordHandler: cmdMock.NewHandler[*command.ChangePasswordInput](s.T()),
 		}
 		sut := controller.NewChangePassword(mock.ChangePasswordHandler)
 		return &Sut{Sut: sut, Mock: mock, Input: input}
@@ -67,7 +67,7 @@ func (s *ChangePasswordSuite) TestHandle() {
 
 			sut.Input.User = nil
 
-			s.PanicsWithValue(store.ErrUserNotFound, func() {
+			s.PanicsWithValue(ctxstore.ErrUserNotFound, func() {
 				gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 					Data:        sut.Input,
 					CurrentUser: sut.Input.User,

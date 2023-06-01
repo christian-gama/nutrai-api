@@ -4,7 +4,8 @@ import (
 	"context"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/jwt"
-	"github.com/christian-gama/nutrai-api/internal/core/app/service"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/service"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
 // RefreshTokenHandler is the interface that wraps the Handle method.
@@ -21,6 +22,8 @@ func NewRefreshTokenHandler(
 	accessTokenGenerator jwt.Generator,
 	verifier jwt.Verifier,
 ) RefreshTokenHandler {
+	errutil.MustBeNotEmpty("jwt.Generator (accessToken)", accessTokenGenerator)
+
 	return &refreshTokenHandlerImpl{
 		accessTokenGenerator: accessTokenGenerator,
 		verifier:             verifier,
@@ -32,12 +35,12 @@ func (h *refreshTokenHandlerImpl) Handle(
 	ctx context.Context,
 	input *RefreshTokenInput,
 ) (*RefreshTokenOutput, error) {
-	claims, err := h.verifier.Verify(input.Refresh)
+	claims, err := h.verifier.Verify(input.Refresh, true)
 	if err != nil {
 		return nil, err
 	}
 
-	accessToken, err := h.accessTokenGenerator.Generate(&claims.Sub)
+	accessToken, err := h.accessTokenGenerator.Generate(&claims.Sub, false)
 	if err != nil {
 		return nil, err
 	}

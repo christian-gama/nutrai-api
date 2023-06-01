@@ -4,6 +4,7 @@ import (
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	value "github.com/christian-gama/nutrai-api/internal/patient/domain/value/patient"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 // Patient represents a Patient model, encapsulating all pertinent information about a patient.
@@ -36,15 +37,15 @@ func (p Patient) Validate() (*Patient, error) {
 	var errs *errutil.Error
 
 	if p.Age == 0 {
-		errs = errutil.Append(errs, errutil.Required("Age"))
+		errs = errutil.Append(errs, errors.Required("Age"))
 	}
 
 	if p.HeightM == 0 {
-		errs = errutil.Append(errs, errutil.Required("HeightM"))
+		errs = errutil.Append(errs, errors.Required("HeightM"))
 	}
 
 	if p.WeightKG == 0 {
-		errs = errutil.Append(errs, errutil.Required("WeightKG"))
+		errs = errutil.Append(errs, errors.Required("WeightKG"))
 	}
 
 	for _, allergy := range p.Allergies {
@@ -88,7 +89,7 @@ func (p *Patient) SetAge(age value.Age) *Patient {
 // and check if the allergy already exists on the patient. If it does not exist, it will create a
 // new allergy - otherwise, it will use the existing allergy. It will also remove any allergies
 // that are not present in the new list.
-func (p *Patient) SetAllergies(allergies []*Allergy) *Patient {
+func (p *Patient) SetAllergies(allergies ...*Allergy) *Patient {
 	allergiesMap := make(map[value.Allergy]*Allergy, len(p.Allergies))
 	for _, allergy := range p.Allergies {
 		allergiesMap[allergy.Name] = allergy

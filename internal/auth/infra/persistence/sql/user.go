@@ -2,7 +2,6 @@ package persistence
 
 import (
 	"context"
-	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/repo"
@@ -11,6 +10,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/core/infra/convert"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/manager"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/sqlerr"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"gorm.io/gorm"
 )
 
@@ -21,9 +21,7 @@ type userSQLImpl struct {
 
 // NewSQLUser returns a new User.
 func NewSQLUser(db *gorm.DB) repo.User {
-	if db == nil {
-		panic(errors.New("db cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("gorm.DB", db)
 
 	return &userSQLImpl{
 		manager: manager.NewManager[user.User, schema.User](db),

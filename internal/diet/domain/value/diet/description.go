@@ -3,7 +3,7 @@ package value
 import (
 	"fmt"
 
-	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 // Description is a data type that represents a detailed explanation or outline of
@@ -21,11 +21,11 @@ func (n Description) Validate() error {
 	const maxChars = 500
 
 	if len(n) == 0 {
-		return errutil.Required(fieldName)
+		return errors.Required(fieldName)
 	}
 
 	if len(n) > maxChars {
-		return errutil.Invalid(
+		return errors.Invalid(
 			fieldName,
 			fmt.Sprintf("cannot be longer than %d characters", maxChars),
 		)

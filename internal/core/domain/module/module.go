@@ -24,13 +24,11 @@ func (m Module) String() string {
 	return m.name
 }
 
-// Initialize performs the initialization of a module, logging the process and calling the given
+// Init performs the initialization of a module, logging the process and calling the given
 // function.
-func Initialize(callback func() (*Module, func())) {
-	l := log.MakeWithCaller(1)
-
+func Init(callback func() (*Module, func())) {
 	module, init := callback()
-	l.Loading(
+	log.Loading(
 		"Initializing %s %s",
 		log.LoadingDetailColor(module.String()),
 		log.LoadingColor("module"),

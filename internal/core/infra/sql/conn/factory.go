@@ -2,7 +2,6 @@ package conn
 
 import (
 	"github.com/christian-gama/nutrai-api/config/env"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -19,8 +18,8 @@ func MakePostgres() *gorm.DB {
 	if env.Config.Debug {
 		gormLogger = logger.Default
 	}
-	conn := NewConn(postgres.Open, &gorm.Config{Logger: gormLogger}, log.MakeWithCaller())
-	postgresConnection = conn.Open()
+
+	postgresConnection = NewConn(postgres.Open, &gorm.Config{Logger: gormLogger})
 
 	return postgresConnection
 }

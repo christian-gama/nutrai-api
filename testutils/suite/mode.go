@@ -35,8 +35,6 @@ func RunIntegrationTest(t *testing.T, s testify.TestingSuite) {
 	t.Parallel()
 	if mode() == integrationTests || mode() == allTests {
 		testify.Run(t, s)
-	} else {
-		t.SkipNow()
 	}
 }
 
@@ -45,7 +43,5 @@ func RunUnitTest(t *testing.T, s testify.TestingSuite) {
 	t.Parallel()
 	if mode() == unitTests || mode() == allTests {
 		testify.Run(t, s)
-	} else {
-		t.SkipNow()
 	}
 }

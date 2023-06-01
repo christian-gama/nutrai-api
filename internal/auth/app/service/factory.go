@@ -24,6 +24,6 @@ func MakeRegisterHandler() RegisterHandler {
 func MakeRefreshTokenHandler() RefreshTokenHandler {
 	return NewRefreshTokenHandler(
 		jwt.MakeAccessTokenGenerator(),
-		jwt.MakeVerifier(),
+		jwt.MakeRefreshVerifier(),
 	)
 }

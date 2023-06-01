@@ -1,20 +1,24 @@
 package main
 
 import (
-	glog "log"
-	"os"
 	"strconv"
 
 	"github.com/christian-gama/nutrai-api/config/env"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/migrate"
 	"github.com/spf13/cobra"
 )
 
-var envFile string
+var (
+	envFile string
+	m       *migrate.Migrate
+)
 
 func init() {
-	os.Stdout.Write([]byte("\033[H\033[2J"))
-	cmd.PersistentFlags().StringVarP(&envFile, "env-file", "e", "", "environment file")
+	cmd.PersistentFlags().
+		StringVarP(&envFile, "env-file", "e", "", "Path to environment config file")
+	cmd.MarkPersistentFlagRequired("env-file")
+
 	cmd.AddCommand(upCmd)
 	cmd.AddCommand(dropCmd)
 	cmd.AddCommand(forceCmd)
@@ -35,8 +39,8 @@ var upCmd = &cobra.Command{
 	Short: "Run migrations up",
 	Long:  "Run all available migrations to bring the database schema to the latest version",
 	Run: func(cmd *cobra.Command, args []string) {
-		setupEnvFile()
-		migrate.MakeMigrate().Up()
+		initialize()
+		m.Up()
 	},
 }
 
@@ -45,8 +49,8 @@ var dropCmd = &cobra.Command{
 	Short: "Drop all tables",
 	Long:  "Drop all tables in the database, use with caution",
 	Run: func(cmd *cobra.Command, args []string) {
-		setupEnvFile()
-		migrate.MakeMigrate().Drop()
+		initialize()
+		m.Drop()
 	},
 }
 
@@ -57,7 +61,7 @@ var forceCmd = &cobra.Command{
 	Args:       cobra.ExactArgs(1),
 	ArgAliases: []string{"version"},
 	Run: func(cmd *cobra.Command, args []string) {
-		setupEnvFile()
+		initialize()
 
 		versionStr := args[0]
 		version, err := strconv.Atoi(versionStr)
@@ -65,7 +69,7 @@ var forceCmd = &cobra.Command{
 			panic(err)
 		}
 
-		migrate.MakeMigrate().Force(version)
+		m.Force(version)
 	},
 }
 
@@ -74,8 +78,8 @@ var downCmd = &cobra.Command{
 	Short: "Run migrations down",
 	Long:  "Run all available migrations to bring the database schema to the previous version",
 	Run: func(cmd *cobra.Command, args []string) {
-		setupEnvFile()
-		migrate.MakeMigrate().Down()
+		initialize()
+		m.Down()
 	},
 }
 
@@ -84,8 +88,8 @@ var versionCmd = &cobra.Command{
 	Short: "Show the current migration version",
 	Long:  "Version returns the currently active migration version. Return an error if no version is set.",
 	Run: func(cmd *cobra.Command, args []string) {
-		setupEnvFile()
-		migrate.MakeMigrate().Version()
+		initialize()
+		m.Version()
 	},
 }
 
@@ -95,7 +99,7 @@ var stepsCmd = &cobra.Command{
 	Long:  "Looks at the currently active migration version. Migrates up if n > 0, and down if n < 0.",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		setupEnvFile()
+		initialize()
 
 		stepsStr := args[0]
 		steps, err := strconv.Atoi(stepsStr)
@@ -103,7 +107,7 @@ var stepsCmd = &cobra.Command{
 			panic(err)
 		}
 
-		migrate.MakeMigrate().Steps(steps)
+		m.Steps(steps)
 	},
 }
 
@@ -112,19 +116,14 @@ var resetCmd = &cobra.Command{
 	Short: "Reset the database",
 	Long:  "Reset the database by downing all migrations and then running them all again",
 	Run: func(cmd *cobra.Command, args []string) {
-		setupEnvFile()
-		migrate.MakeMigrate().Reset()
+		initialize()
+		m.Reset()
 	},
 }
 
-func setupEnvFile() {
-	if envFile == "" {
-		glog.Fatalf("Please specify an environment file")
-	}
-
-	if _, err := os.Stat(envFile); os.IsNotExist(err) {
-		glog.Fatalf("The file %s does not exist", envFile)
-	}
-
+func initialize() {
 	env.NewLoader(envFile).Load()
+	env.Config.LogLevel = env.LogLevelInfo
+	log.SugaredLogger = log.New()
+	m = migrate.MakeMigrate()
 }

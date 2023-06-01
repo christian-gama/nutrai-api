@@ -2,13 +2,11 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/christian-gama/nutrai-api/config/env"
-	"github.com/christian-gama/nutrai-api/internal/notify/domain/model/mail"
-	value "github.com/christian-gama/nutrai-api/internal/notify/domain/value/mail"
-	"github.com/christian-gama/nutrai-api/internal/notify/infra/mailer"
-	"github.com/christian-gama/nutrai-api/pkg/structutil"
+	"github.com/christian-gama/nutrai-api/pkg/reflection"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
@@ -22,8 +20,9 @@ var (
 )
 
 func init() {
-	os.Stdout.Write([]byte("\033[H\033[2J"))
-	cmd.PersistentFlags().StringVarP(&envFile, "env-file", "e", "", "environment file")
+	cmd.PersistentFlags().
+		StringVarP(&envFile, "env-file", "e", "", "Path to environment config file")
+	cmd.MarkPersistentFlagRequired("env-file")
 }
 
 func run(cmd *cobra.Command, args []string) {
@@ -31,38 +30,24 @@ func run(cmd *cobra.Command, args []string) {
 	env.NewLoader(envFile).Load()
 
 	for envName, envStruct := range envsMap {
-		fmt.Println(color.New(color.FgHiMagenta).Sprintf("ENVIRONMENT: %s", envName))
-		structutil.IterateFields(envStruct, func(opts *structutil.FieldIterationOptions) {
+		fmt.Println(color.New(color.FgHiMagenta).Sprintf("\nENVIRONMENT: %s", envName))
+		reflection.IterateStructFields(envStruct, func(opts *reflection.FieldIterationOptions) {
 			fmt.Printf(
 				"%v: %v\n",
 				color.New(color.FgGreen).Sprintf(opts.FieldName),
 				color.New(color.FgYellow).Sprintf(fmt.Sprint(opts.Field.Interface())),
 			)
 		})
-		fmt.Println()
-	}
-
-	err := mailer.MakeMailer().
-		Send(mail.NewMail().
-			SetPlainText("Hello, World!").
-			SetSubject("Test").
-			SetTo([]*value.To{{Email: "christiangsilva9@gmail.com", Name: "Christian"}}).
-			SetHTML("<h1>Hello, World!</h1>"),
-		)
-	if err != nil {
-		fmt.Println(err)
 	}
 }
 
 func checkEnvFile() {
 	if envFile == "" {
-		fmt.Println("Please specify an environment file with the flag -e")
-		os.Exit(1)
+		log.Fatal("Please specify an environment file with the flag -e")
 	}
 
 	if _, err := os.Stat(envFile); os.IsNotExist(err) {
-		fmt.Printf("The file %s does not exist\n", envFile)
-		os.Exit(1)
+		log.Fatalf("The file %s does not exist", envFile)
 	}
 }
 
@@ -74,4 +59,5 @@ var envsMap = map[string]any{
 	"MAILER":   env.Mailer,
 	"MAILTRAP": env.Mailtrap,
 	"SENDGRID": env.Sendgrid,
+	"REDIS":    env.Redis,
 }

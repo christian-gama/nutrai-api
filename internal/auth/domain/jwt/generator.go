@@ -17,5 +17,5 @@ type Generator interface {
 	// Generate is a method that generates a new JWT token with claims based on the provided
 	// subject. The method should validate the subject, sets the claims, and signs the token before
 	// returning it.
-	Generate(data *Subject) (jwtValue.Token, error)
+	Generate(data *Subject, persist bool) (jwtValue.Token, error)
 }

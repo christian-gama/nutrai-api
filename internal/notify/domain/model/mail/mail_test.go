@@ -28,23 +28,18 @@ func (s *MailTestSuite) TestNewMail() {
 		data := fake.Mail()
 
 		sut := func() (*mail.Mail, error) {
-			return mail.NewMail().
-				SetPlainText(data.PlainText).
-				SetSubject(data.Subject).
-				SetHTML(data.HTML).
-				SetTo(data.To).
-				Validate()
+			return data.Validate()
 		}
 
 		return &Sut{Sut: sut, Data: data}
 	}
 
 	s.Run("TestNewMail (Error)", func() {
-		s.Run("Body", func() {
+		s.Run("Context", func() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
 
-				sut.Data.PlainText = ""
+				sut.Data.Context = nil
 
 				mail, err := sut.Sut()
 
@@ -70,7 +65,7 @@ func (s *MailTestSuite) TestNewMail() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
 
-				sut.Data.HTML = ""
+				sut.Data.Template = nil
 
 				mail, err := sut.Sut()
 
@@ -127,9 +122,9 @@ func (s *MailTestSuite) TestNewMail() {
 
 			s.NoError(err)
 			s.NotNil(mail)
-			s.Equal(sut.Data.PlainText, mail.PlainText, "Body should be equal")
+			s.Equal(sut.Data.Context, mail.Context, "Context should be equal")
 			s.Equal(sut.Data.Subject, mail.Subject, "Subject should be equal")
-			s.Equal(sut.Data.HTML, mail.HTML, "Template should be equal")
+			s.Equal(sut.Data.Template, mail.Template, "TemplatePath should be equal")
 			s.Equal(sut.Data.To, mail.To, "To should be equal")
 		})
 	})

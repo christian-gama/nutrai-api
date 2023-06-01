@@ -2,26 +2,24 @@ package command
 
 import (
 	"context"
-	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/repo"
-	"github.com/christian-gama/nutrai-api/internal/core/app/command"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/command"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/value"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
 // DeleteMeHandler represents the DeleteMe command.
 type DeleteMeHandler = command.Handler[*DeleteMeInput]
 
-// deleteMeHandlerImpl represents the implementation of the DeleteUser command.
+// deleteMeHandlerImpl represents the implementation of the DeleteMe command.
 type deleteMeHandlerImpl struct {
 	repo.User
 }
 
 // NewDeleteMeHandler returns a new Delete instance.
 func NewDeleteMeHandler(userRepo repo.User) DeleteMeHandler {
-	if userRepo == nil {
-		panic(errors.New("repo.User cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("repo.User", userRepo)
 
 	return &deleteMeHandlerImpl{userRepo}
 }

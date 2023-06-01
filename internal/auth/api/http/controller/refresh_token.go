@@ -1,12 +1,11 @@
 package controller
 
 import (
-	"errors"
-
 	"github.com/christian-gama/nutrai-api/internal/auth/app/service"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,9 +14,7 @@ type RefreshToken = controller.Controller
 
 // NewRefreshToken returns a new controller to handle the refreshToken of a user.
 func NewRefreshToken(refreshTokenHandler service.RefreshTokenHandler) RefreshToken {
-	if refreshTokenHandler == nil {
-		panic(errors.New("service.RefreshTokenHandler cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("service.RefreshTokenHandler", refreshTokenHandler)
 
 	return controller.NewController(
 		func(ctx *gin.Context, input *service.RefreshTokenInput) {

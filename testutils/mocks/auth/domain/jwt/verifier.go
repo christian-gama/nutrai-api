@@ -14,25 +14,25 @@ type Verifier struct {
 	mock.Mock
 }
 
-// Verify provides a mock function with given fields: token
-func (_m *Verifier) Verify(token value.Token) (*jwt.Claims, error) {
-	ret := _m.Called(token)
+// Verify provides a mock function with given fields: token, checkIsStored
+func (_m *Verifier) Verify(token value.Token, checkIsStored bool) (*jwt.Claims, error) {
+	ret := _m.Called(token, checkIsStored)
 
 	var r0 *jwt.Claims
 	var r1 error
-	if rf, ok := ret.Get(0).(func(value.Token) (*jwt.Claims, error)); ok {
-		return rf(token)
+	if rf, ok := ret.Get(0).(func(value.Token, bool) (*jwt.Claims, error)); ok {
+		return rf(token, checkIsStored)
 	}
-	if rf, ok := ret.Get(0).(func(value.Token) *jwt.Claims); ok {
-		r0 = rf(token)
+	if rf, ok := ret.Get(0).(func(value.Token, bool) *jwt.Claims); ok {
+		r0 = rf(token, checkIsStored)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*jwt.Claims)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(value.Token) error); ok {
-		r1 = rf(token)
+	if rf, ok := ret.Get(1).(func(value.Token, bool) error); ok {
+		r1 = rf(token, checkIsStored)
 	} else {
 		r1 = ret.Error(1)
 	}

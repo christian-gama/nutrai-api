@@ -2,14 +2,14 @@ package command
 
 import (
 	"context"
-	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/hasher"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/repo"
 	value "github.com/christian-gama/nutrai-api/internal/auth/domain/value/user"
-	"github.com/christian-gama/nutrai-api/internal/core/app/command"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/command"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 // CheckCredentialsHandler is the handler for CheckCredentials.
@@ -23,13 +23,8 @@ type checkCredentialsHandlerImpl struct {
 
 // NewCheckCredentialsHandler returns a new CheckCredentialsHandler.
 func NewCheckCredentialsHandler(userRepo repo.User, hasher hasher.Hasher) CheckCredentialsHandler {
-	if userRepo == nil {
-		panic(errors.New("repo.User cannot be nil"))
-	}
-
-	if hasher == nil {
-		panic(errors.New("hasher.Hasher cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("repo.User", userRepo)
+	errutil.MustBeNotEmpty("hasher.Hasher", hasher)
 
 	return &checkCredentialsHandlerImpl{userRepo, hasher}
 }
@@ -58,7 +53,7 @@ func (c *checkCredentialsHandlerImpl) checkPassword(
 	password value.Password,
 ) error {
 	if err := c.Hasher.Compare(password, user.Password); err != nil {
-		return errutil.Invalid("password", "does not match")
+		return errors.Invalid("password", "does not match")
 	}
 	return nil
 }

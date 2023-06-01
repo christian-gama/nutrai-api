@@ -5,6 +5,7 @@ import (
 
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/notify/infra/mailer"
+	"github.com/christian-gama/nutrai-api/testutils/envutil"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
 
@@ -17,14 +18,18 @@ func TestFactorySuite(t *testing.T) {
 }
 
 func (s *FactorySuite) TestFactory() {
-	s.NotPanics(func() {
-		mailer.MakeMailer()
+	s.Run("should not panic if success", func() {
+		s.NotPanics(func() {
+			mailer.MakeMailer()
+		})
 	})
 
-	s.Panics(func() {
-		original := env.Mailer.Provider
-		env.Mailer.Provider = env.MailerProvider("invalid")
-		mailer.MakeMailer()
-		env.Mailer.Provider = original
+	s.Run("should panic if mailer provider is invalid", func() {
+		s.Panics(func() {
+			reset := envutil.Reset()
+			defer reset()
+			env.Mailer.Provider = env.MailerProvider("invalid")
+			mailer.MakeMailer()
+		})
 	})
 }

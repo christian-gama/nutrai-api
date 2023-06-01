@@ -5,6 +5,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
 	value "github.com/christian-gama/nutrai-api/internal/diet/domain/value/diet"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 // Plan represents a detailed blueprint of a specific diet regimen, linked to the Diet model through
@@ -44,7 +45,7 @@ func (p *Plan) Validate() (*Plan, error) {
 	}
 
 	if p.Diet == nil {
-		errs = errutil.Append(errs, errutil.Required("diet"))
+		errs = errutil.Append(errs, errors.Required("diet"))
 	} else if _, err := p.Diet.Validate(); err != nil {
 		errs = errutil.Append(errs, err)
 	}

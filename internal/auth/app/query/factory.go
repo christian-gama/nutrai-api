@@ -10,5 +10,5 @@ func MakeFindByEmailHandler() FindByEmailHandler {
 }
 
 func MakeAuthHandler() AuthHandler {
-	return NewAuthHandler(persistence.MakeSQLUser(), jwt.MakeVerifier())
+	return NewAuthHandler(persistence.MakeSQLUser(), jwt.MakeAccessVerifier())
 }

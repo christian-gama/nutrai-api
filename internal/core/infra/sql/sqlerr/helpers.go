@@ -1,7 +1,6 @@
 package sqlerr
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/iancoleman/strcase"
@@ -20,15 +19,4 @@ func getFriendlyTableName(tableName string) string {
 	}
 
 	return strcase.ToLowerCamel(tableName)
-}
-
-// getColumnName returns the column name from the error message.
-func getColumnName(err error) string {
-	splittedColumn := strings.Split(err.Error(), "column \"")
-	if len(splittedColumn) < 2 {
-		return "field"
-	}
-
-	columnName := strings.Split(splittedColumn[1], "\"")[0]
-	return fmt.Sprintf("field '%s'", strcase.ToLowerCamel(columnName))
 }

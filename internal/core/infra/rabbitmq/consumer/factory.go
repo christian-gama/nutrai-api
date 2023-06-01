@@ -2,7 +2,6 @@ package consumer
 
 import (
 	"github.com/christian-gama/nutrai-api/internal/core/domain/message"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/rabbitmq"
 )
 
@@ -17,12 +16,10 @@ var (
 	consumerConnection *rabbitmq.RabbitMQ
 )
 
-func MakeConsumer(opts ...func(*options)) message.Consumer {
-	log := log.MakeWithCaller()
-
+func MakeConsumer[Data any](opts ...func(*options)) message.Consumer[Data] {
 	if consumerConnection == nil {
-		consumerConnection = rabbitmq.NewConn(log, "consumer").Open()
+		consumerConnection = rabbitmq.NewConn("consumer")
 	}
 
-	return NewConsumer(consumerConnection, log, opts...)
+	return NewConsumer[Data](consumerConnection, opts...)
 }

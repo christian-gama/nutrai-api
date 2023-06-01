@@ -2,14 +2,14 @@ package command
 
 import (
 	"github.com/christian-gama/nutrai-api/internal/core/infra/rabbitmq/publisher"
-	"github.com/christian-gama/nutrai-api/internal/exception/app/event"
+	"github.com/christian-gama/nutrai-api/internal/exception/event"
 )
 
-func MakeSaveExceptionHandler() SaveExceptionHandler {
-	return NewSaveExceptionHandler(
-		publisher.MakePublisher(
-			publisher.WithExchange("exceptions"),
-			publisher.WithRoutingKey(event.SaveException),
+func MakeCatchExceptionHandler() CatchExceptionHandler {
+	return NewCatchExceptionHandler(
+		publisher.MakePublisher[CatchExceptionInput](
+			publisher.WithExchangeName(event.Exception),
+			publisher.WithRoutingKey(event.CatchException),
 		),
 	)
 }

@@ -9,7 +9,7 @@ import (
 	jwtValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/app/service"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
-	serviceMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/service"
+	svcMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/service"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -25,7 +25,7 @@ func TestRefreshTokenSuite(t *testing.T) {
 
 func (s *RefreshTokenSuite) TestHandle() {
 	type Mock struct {
-		RefreshTokenHandler *serviceMock.Handler[*service.RefreshTokenInput, *service.RefreshTokenOutput]
+		RefreshTokenHandler *svcMock.Handler[*service.RefreshTokenInput, *service.RefreshTokenOutput]
 	}
 
 	type Sut struct {
@@ -37,7 +37,7 @@ func (s *RefreshTokenSuite) TestHandle() {
 	makeSut := func() *Sut {
 		input := fake.RefreshTokenInput()
 		mocks := &Mock{
-			RefreshTokenHandler: serviceMock.NewHandler[*service.RefreshTokenInput, *service.RefreshTokenOutput](
+			RefreshTokenHandler: svcMock.NewHandler[*service.RefreshTokenInput, *service.RefreshTokenOutput](
 				s.T(),
 			),
 		}
@@ -64,7 +64,7 @@ func (s *RefreshTokenSuite) TestHandle() {
 			s.Equal(http.StatusOK, ctx.Writer.Status())
 			s.EqualValues(
 				accessToken,
-				body.Data.(map[string]any)["access"],
+				body["access"],
 				"should return access token",
 			)
 		})

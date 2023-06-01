@@ -27,13 +27,7 @@ func (s *PatientTestSuite) TestNewPatient() {
 		data := fake.Patient()
 
 		sut := func() (*patient.Patient, error) {
-			return patient.NewPatient().
-				SetAge(data.Age).
-				SetHeightM(data.HeightM).
-				SetWeightKG(data.WeightKG).
-				SetID(data.ID).
-				SetAllergies(data.Allergies).
-				Validate()
+			return data.Validate()
 		}
 
 		return &Sut{Sut: sut, Data: data}
@@ -125,12 +119,12 @@ func (s *PatientTestSuite) TestNewPatient() {
 			p, err := sut.Sut()
 			s.Require().NoError(err)
 
-			allergy := []*patient.Allergy{fake.Allergy().SetName("new allergy")}
-			p = p.SetAllergies(allergy)
+			allergies := []*patient.Allergy{fake.Allergy().SetName("new allergy")}
+			p = p.SetAllergies(allergies...)
 
 			s.Equal(1, len(p.Allergies), "should have 1 allergy")
 			s.Equal(p.ID, p.Allergies[0].PatientID, "should have the same patient id")
-			s.Equal(allergy[0].Name, p.Allergies[0].Name, "should have the same allergy name")
+			s.Equal(allergies[0].Name, p.Allergies[0].Name, "should have the same allergy name")
 		})
 
 		s.Run("Should append new allergies and keep the old ones", func() {
@@ -141,7 +135,7 @@ func (s *PatientTestSuite) TestNewPatient() {
 			originalAllergiesLen := len(p.Allergies)
 
 			allergy := []*patient.Allergy{fake.Allergy().SetName("new allergy")}
-			p = p.SetAllergies(append(p.Allergies, allergy...))
+			p = p.SetAllergies(append(p.Allergies, allergy...)...)
 
 			s.Equal(originalAllergiesLen+1, len(p.Allergies), "should have 1 allergy")
 		})

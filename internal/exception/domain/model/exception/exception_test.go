@@ -27,7 +27,6 @@ func (s *ErrorSuite) TestNewError() {
 
 		sut := func() (*exception.Exception, error) {
 			return exception.New().
-				SetCreatedAt(data.CreatedAt).
 				SetID(data.ID).
 				SetMessage(data.Message).
 				SetStack(data.Stack).

@@ -2,11 +2,11 @@ package query
 
 import (
 	"context"
-	"errors"
 
-	"github.com/christian-gama/nutrai-api/internal/core/app/query"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/query"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/model/patient"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/repo"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
 )
 
@@ -20,9 +20,7 @@ type findPatientHandlerImpl struct {
 
 // NewFindPatientHandler instantiates the FindPatient use case handler.
 func NewFindPatientHandler(patientRepo repo.Patient) FindPatientHandler {
-	if patientRepo == nil {
-		panic(errors.New("repo.Patient cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("repo.Patient", patientRepo)
 
 	return &findPatientHandlerImpl{patientRepo}
 }

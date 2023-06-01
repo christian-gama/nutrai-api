@@ -13,15 +13,14 @@ import (
 
 // Start starts the HTTP server.
 func Start(ctx context.Context) {
-	l := log.MakeWithCaller()
-	l.Loading(
+	log.Loading(
 		"Started in %s %s",
 		log.LoadingDetailColor(string(env.App.Env)),
 		log.LoadingColor("environment"),
 	)
-	l.Loading(
+	log.Loading(
 		"HTTP server is running on %s",
-		log.LoadingDetailColor(fmt.Sprintf("%s:%d", env.App.Host, env.App.Port)),
+		log.LoadingDetailColor(fmt.Sprintf("localhost:%d", env.App.Port)),
 	)
 
 	server := &http.Server{
@@ -32,12 +31,12 @@ func Start(ctx context.Context) {
 
 	go func() {
 		if err := server.ListenAndServe(); err != nil {
-			l.Fatal(err)
+			log.Fatal(err)
 		}
 	}()
 
 	<-ctx.Done()
 	if err := server.Shutdown(ctx); err != nil {
-		l.Fatal(err)
+		log.Fatal(err)
 	}
 }

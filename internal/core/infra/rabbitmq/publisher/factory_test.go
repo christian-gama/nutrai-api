@@ -18,8 +18,8 @@ func TestFactorySuite(t *testing.T) {
 
 func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
-		publisher.MakePublisher(
-			publisher.WithExchange("test"),
+		publisher.MakePublisher[any](
+			publisher.WithExchangeName("test"),
 			publisher.WithRoutingKey(event.New("test", event.Save)),
 		)
 	})

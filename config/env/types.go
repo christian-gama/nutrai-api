@@ -8,7 +8,8 @@ import (
 
 // Application.
 type (
-	AppEnv string
+	AppEnv      string
+	AppProtocol string
 )
 
 // Database.

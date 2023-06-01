@@ -25,6 +25,7 @@ func (d *docker) check() {
 
 	d.setupDBHost()
 	d.setupRabbitMQHost()
+	d.setupRedisHost()
 }
 
 // setupDBHost sets up the DB host environment variable.
@@ -49,6 +50,18 @@ func (d *docker) setupRabbitMQHost() {
 	}
 
 	os.Setenv("RABBITMQ_HOST", rabbitMQHost)
+}
+
+// setupRedisHost sets up the Redis host environment variable.
+// The host value changes depending on whether the application is running in the test environment.
+func (d *docker) setupRedisHost() {
+	redisHost := "redis"
+
+	if d.isTestEnv() {
+		redisHost = "redis_test"
+	}
+
+	os.Setenv("REDIS_HOST", redisHost)
 }
 
 // isTestEnv checks if the application is running in the test environment.

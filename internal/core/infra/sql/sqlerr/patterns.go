@@ -14,4 +14,5 @@ var (
 	inputSyntaxPattern            = "SQLSTATE 22P02"
 	missingWhereConditionsPattern = "WHERE conditions required"
 	tooLongValuePattern           = "SQLSTATE 22001"
+	relationDoesNotExistPattern   = "SQLSTATE 42P01"
 )

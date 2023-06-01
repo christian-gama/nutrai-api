@@ -1,37 +1,25 @@
 package rabbitmq
 
 import (
-	"log"
 	"time"
 
-	"github.com/christian-gama/nutrai-api/internal/core/domain/logger"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
 	"github.com/christian-gama/nutrai-api/pkg/retry"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-type rabbitMQConn struct {
-	conn *amqp.Connection
-	log  logger.Logger
-	ch   chan *amqp.Channel
-	mode string
-}
-
 // NewConn creates a new RabbitMQ connection.
-func NewConn(log logger.Logger, mode string) *rabbitMQConn {
-	return &rabbitMQConn{log: log, mode: mode}
-}
-
-// Open opens the RabbitMQ connection.
-func (r *rabbitMQConn) Open() *RabbitMQ {
-	r.log.Loading("Connecting to RabbitMQ (%s)", r.mode)
+func NewConn(mode string) *RabbitMQ {
+	log.Loading("Connecting to RabbitMQ (%s)", mode)
 
 	const attempts = 90
 	var err error
+	rabbitMQ := &RabbitMQ{mode: mode}
 	retry.Retry(attempts, time.Second, func() error {
-		rmq, err := amqp.Dial(uri())
+		conn, err := amqp.Dial(uri())
 		if err == nil {
-			r.conn = rmq
-			r.ch = makeChannelPool(rmq)
+			rabbitMQ.conn = conn
+			rabbitMQ.ch = makeChannelPool(conn)
 		}
 		return err
 	})
@@ -40,13 +28,14 @@ func (r *rabbitMQConn) Open() *RabbitMQ {
 		log.Fatalf("\tFailed to connect to RabbitMQ after %d retries: %v", attempts, err)
 	}
 
-	return &RabbitMQ{conn: r.conn, ch: r.ch}
+	return rabbitMQ
 }
 
 // RabbitMQ is a wrapper for amqp.Connection.
 type RabbitMQ struct {
 	conn *amqp.Connection
 	ch   chan *amqp.Channel
+	mode string
 }
 
 // Close closes the RabbitMQ connection.

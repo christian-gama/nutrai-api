@@ -3,7 +3,7 @@ package value
 import (
 	"fmt"
 
-	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 // MonthlyCostUSD is a data type that denotes the monthly cost of a specific diet plan, measured in
@@ -21,15 +21,15 @@ func (c MonthlyCostUSD) Validate() error {
 	const maxCost = 9_999
 
 	if c == 0 {
-		return errutil.Required(fieldName)
+		return errors.Required(fieldName)
 	}
 
 	if c < 0 {
-		return errutil.Invalid(fieldName, "cannot be negative")
+		return errors.Invalid(fieldName, "cannot be negative")
 	}
 
 	if c > maxCost {
-		return errutil.Invalid(fieldName, fmt.Sprintf("cannot be greater than %d", maxCost))
+		return errors.Invalid(fieldName, fmt.Sprintf("cannot be greater than %d", maxCost))
 	}
 
 	return nil

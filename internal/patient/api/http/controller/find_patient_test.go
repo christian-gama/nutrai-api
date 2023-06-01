@@ -9,7 +9,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/patient/app/query"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/patient/app/query"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
-	mocks "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/query"
+	mocks "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/query"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

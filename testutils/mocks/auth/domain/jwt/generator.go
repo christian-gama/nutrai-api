@@ -14,23 +14,23 @@ type Generator struct {
 	mock.Mock
 }
 
-// Generate provides a mock function with given fields: data
-func (_m *Generator) Generate(data *jwt.Subject) (value.Token, error) {
-	ret := _m.Called(data)
+// Generate provides a mock function with given fields: data, persist
+func (_m *Generator) Generate(data *jwt.Subject, persist bool) (value.Token, error) {
+	ret := _m.Called(data, persist)
 
 	var r0 value.Token
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*jwt.Subject) (value.Token, error)); ok {
-		return rf(data)
+	if rf, ok := ret.Get(0).(func(*jwt.Subject, bool) (value.Token, error)); ok {
+		return rf(data, persist)
 	}
-	if rf, ok := ret.Get(0).(func(*jwt.Subject) value.Token); ok {
-		r0 = rf(data)
+	if rf, ok := ret.Get(0).(func(*jwt.Subject, bool) value.Token); ok {
+		r0 = rf(data, persist)
 	} else {
 		r0 = ret.Get(0).(value.Token)
 	}
 
-	if rf, ok := ret.Get(1).(func(*jwt.Subject) error); ok {
-		r1 = rf(data)
+	if rf, ok := ret.Get(1).(func(*jwt.Subject, bool) error); ok {
+		r1 = rf(data, persist)
 	} else {
 		r1 = ret.Error(1)
 	}

@@ -102,6 +102,7 @@ bin/
 .docker/
 tmp/
 nutrai-api
+output.txt
 
 # Env
 .env

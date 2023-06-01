@@ -1,12 +1,11 @@
 package controller
 
 import (
-	"errors"
-
 	"github.com/christian-gama/nutrai-api/internal/auth/app/command"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,9 +14,7 @@ type DeleteMe = controller.Controller
 
 // NewDeleteMe returns a new controller to delete the current user.
 func NewDeleteMe(deleteMeHandler command.DeleteMeHandler) DeleteMe {
-	if deleteMeHandler == nil {
-		panic(errors.New("command.DeleteMeHandler cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("command.DeleteMeHandler", deleteMeHandler)
 
 	return controller.NewController(
 		func(ctx *gin.Context, input *command.DeleteMeInput) {

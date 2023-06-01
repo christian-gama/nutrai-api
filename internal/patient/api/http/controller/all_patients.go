@@ -1,12 +1,11 @@
 package controller
 
 import (
-	"errors"
-
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
 	"github.com/christian-gama/nutrai-api/internal/patient/app/query"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,9 +14,7 @@ type AllPatients = controller.Controller
 
 // NewAllPatients returns a new controller to fetch all patients.
 func NewAllPatients(allPatientsHandler query.AllPatientsHandler) AllPatients {
-	if allPatientsHandler == nil {
-		panic(errors.New("query.AllPatientsHandler cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("query.AllPatientsHandler", allPatientsHandler)
 
 	return controller.NewController(
 		func(ctx *gin.Context, input *query.AllPatientsInput) {

@@ -8,15 +8,15 @@ import (
 
 func Patient() *patient.Patient {
 	data := new(patient.Patient)
-	data.Allergies = []*patient.Allergy{
-		Allergy().SetPatientID(data.ID),
-		Allergy().SetPatientID(data.ID),
-	}
-
 	err := faker.FakeData(data)
 	if err != nil {
 		ErrGenerating(err)
 	}
+
+	data.SetAllergies(
+		Allergy().SetPatientID(data.ID),
+		Allergy().SetPatientID(data.ID),
+	)
 
 	if _, err := data.Validate(); err != nil {
 		ErrGenerating(err)

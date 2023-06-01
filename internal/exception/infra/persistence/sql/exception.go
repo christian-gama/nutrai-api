@@ -2,13 +2,13 @@ package persistence
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/manager"
 	"github.com/christian-gama/nutrai-api/internal/exception/domain/model/exception"
 	"github.com/christian-gama/nutrai-api/internal/exception/domain/repo"
 	"github.com/christian-gama/nutrai-api/internal/exception/infra/persistence/sql/schema"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"gorm.io/gorm"
 )
 
@@ -19,9 +19,7 @@ type exceptionSQLImpl struct {
 
 // NewSQLException returns a new Exception.
 func NewSQLException(db *gorm.DB) repo.Exception {
-	if db == nil {
-		panic(errors.New("db cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("gorm.DB", db)
 
 	return &exceptionSQLImpl{
 		manager: manager.NewManager[exception.Exception, schema.Exception](db),

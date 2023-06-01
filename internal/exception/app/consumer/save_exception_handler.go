@@ -2,39 +2,34 @@ package consumer
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/message"
+	"github.com/christian-gama/nutrai-api/internal/exception/app/command"
 	"github.com/christian-gama/nutrai-api/internal/exception/domain/model/exception"
 	"github.com/christian-gama/nutrai-api/internal/exception/domain/repo"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 // SaveException is the handler for the SaveException command.
 type SaveExceptionHandler interface {
 	Handle()
-	ConsumerHandler(body []byte) error
+	ConsumerHandler(input command.CatchExceptionInput) error
 }
 
 // saveExceptionHandlerImpl is the implementation of the SaveExceptionHandler.
 type saveExceptionHandlerImpl struct {
-	message.Consumer
+	message.Consumer[command.CatchExceptionInput]
 	repo.Exception
 }
 
 // NewSaveException creates a new SaveException.
 func NewSaveExceptionHandler(
-	consumer message.Consumer,
+	consumer message.Consumer[command.CatchExceptionInput],
 	exceptionRepo repo.Exception,
 ) SaveExceptionHandler {
-	if consumer == nil {
-		panic(errors.New("message.Consumer is required"))
-	}
-
-	if exceptionRepo == nil {
-		panic(errors.New("repo.Exception is required"))
-	}
+	errutil.MustBeNotEmpty("message.Consumer", consumer)
+	errutil.MustBeNotEmpty("repo.Exception", exceptionRepo)
 
 	return &saveExceptionHandlerImpl{consumer, exceptionRepo}
 }
@@ -45,17 +40,12 @@ func (j *saveExceptionHandlerImpl) Handle() {
 }
 
 // ConsumerHandler handles the event.
-func (j *saveExceptionHandlerImpl) ConsumerHandler(body []byte) error {
-	var e exception.Exception
-	if err := json.Unmarshal(body, &e); err != nil {
-		return errutil.InternalServerError(err.Error())
-	}
-
+func (j *saveExceptionHandlerImpl) ConsumerHandler(input command.CatchExceptionInput) error {
 	_, err := j.Save(context.Background(), repo.SaveExceptionInput{
-		Exception: &e,
+		Exception: exception.New().SetMessage(input.Message).SetStack(input.Stack),
 	})
 	if err != nil {
-		return errutil.InternalServerError(err.Error())
+		return errors.InternalServerError(err.Error())
 	}
 
 	return nil

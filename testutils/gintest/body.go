@@ -2,12 +2,10 @@ package gintest
 
 import (
 	"encoding/json"
-
-	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
 )
 
-func GetBody(body string) *response.Body {
-	var b *response.Body
+func GetBody(body string) map[string]any {
+	var b map[string]any
 	json.Unmarshal([]byte(body), &b)
 	return b
 }

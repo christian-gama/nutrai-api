@@ -5,13 +5,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/auth/infra/store"
+	"github.com/christian-gama/nutrai-api/internal/auth/infra/ctxstore"
 	"github.com/christian-gama/nutrai-api/internal/patient/api/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/patient/app/command"
 	value "github.com/christian-gama/nutrai-api/internal/patient/domain/value/patient"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/patient/app/command"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
-	commandMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/app/command"
+	cmdMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/command"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -29,12 +29,12 @@ func (s *SavePatientSuite) TestHandle() {
 	type Sut struct {
 		Sut                controller.SavePatient
 		Input              *command.SavePatientInput
-		SavePatientHandler *commandMock.Handler[*command.SavePatientInput]
+		SavePatientHandler *cmdMock.Handler[*command.SavePatientInput]
 	}
 
 	makeSut := func() *Sut {
 		input := fake.SavePatientInput()
-		savePatient := commandMock.NewHandler[*command.SavePatientInput](s.T())
+		savePatient := cmdMock.NewHandler[*command.SavePatientInput](s.T())
 		sut := controller.NewSavePatient(savePatient)
 		return &Sut{Sut: sut, SavePatientHandler: savePatient, Input: input}
 	}
@@ -157,7 +157,7 @@ func (s *SavePatientSuite) TestHandle() {
 	s.Run("should panic when user is not in context", func() {
 		sut := makeSut()
 
-		s.PanicsWithValue(store.ErrUserNotFound, func() {
+		s.PanicsWithValue(ctxstore.ErrUserNotFound, func() {
 			gintest.MustRequest(sut.Sut, gintest.Option{
 				Data:        sut.Input,
 				CurrentUser: nil,

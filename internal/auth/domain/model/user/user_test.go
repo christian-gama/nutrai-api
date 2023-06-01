@@ -26,11 +26,7 @@ func (s *UserTestSuite) TestNewUser() {
 		data := fake.User()
 
 		sut := func() (*user.User, error) {
-			return user.NewUser().
-				SetEmail(data.Email).
-				SetPassword(data.Password).
-				SetName(data.Name).
-				Validate()
+			return data.Validate()
 		}
 
 		return &Sut{Sut: sut, Data: data}

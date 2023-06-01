@@ -1,14 +1,13 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/christian-gama/nutrai-api/internal/core/infra/bench"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
+	"github.com/christian-gama/nutrai-api/pkg/screen"
 )
 
 func init() {
-	fmt.Print("\033[H\033[2J")
+	screen.Clear()
 }
 
 func main() {
@@ -16,5 +15,5 @@ func main() {
 		cmd.Execute()
 	})
 
-	log.MakeWithCaller().Infof("\tFinished in %s", duration)
+	log.Infof("\tFinished in %s", duration)
 }

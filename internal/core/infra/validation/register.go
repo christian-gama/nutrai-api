@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/querying"
-	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	v "github.com/go-playground/validator/v10"
 )
 
@@ -55,7 +55,7 @@ func RegisterValidation(
 		errorMsgs[tag] = defaultError
 	} else {
 		errorMsgs[tag] = func(field, param string) error {
-			return errutil.Invalid(field, errMsgFunc(field, param))
+			return errors.Invalid(field, errMsgFunc(field, param))
 		}
 	}
 

@@ -5,7 +5,8 @@ import (
 
 	userCmd "github.com/christian-gama/nutrai-api/internal/auth/app/command"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/jwt"
-	"github.com/christian-gama/nutrai-api/internal/core/app/service"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/service"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
 // LoginHandler handles the login request and returns the access and refresh tokens.
@@ -23,6 +24,10 @@ func NewLoginHandler(
 	refreshToken jwt.Generator,
 	checkCredentialsHandler userCmd.CheckCredentialsHandler,
 ) LoginHandler {
+	errutil.MustBeNotEmpty("jwt.Generator", accessToken)
+	errutil.MustBeNotEmpty("jwt.Generator", refreshToken)
+	errutil.MustBeNotEmpty("userCmd.CheckCredentialsHandler", checkCredentialsHandler)
+
 	return &loginHandlerImpl{
 		accessToken:             accessToken,
 		refreshToken:            refreshToken,
@@ -40,18 +45,18 @@ func (h *loginHandlerImpl) Handle(ctx context.Context, input *LoginInput) (*Logi
 	}
 
 	subject := &jwt.Subject{Email: input.Email}
-	access, err := h.accessToken.Generate(subject)
+	accessToken, err := h.accessToken.Generate(subject, false)
 	if err != nil {
 		return nil, err
 	}
 
-	refresh, err := h.refreshToken.Generate(subject)
+	refreshToken, err := h.refreshToken.Generate(subject, true)
 	if err != nil {
 		return nil, err
 	}
 
 	return &LoginOutput{
-		Access:  access,
-		Refresh: refresh,
+		Access:  accessToken,
+		Refresh: refreshToken,
 	}, nil
 }

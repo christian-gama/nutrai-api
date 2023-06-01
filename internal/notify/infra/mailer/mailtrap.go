@@ -1,47 +1,66 @@
 package mailer
 
 import (
+	"context"
+	"path"
+
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/notify/domain/mailer"
 	"github.com/christian-gama/nutrai-api/internal/notify/domain/model/mail"
 	value "github.com/christian-gama/nutrai-api/internal/notify/domain/value/mail"
+	"github.com/christian-gama/nutrai-api/internal/notify/infra/mailer/render"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
 	"gopkg.in/gomail.v2"
 )
 
-type mailtrapMailer struct{}
+type mailtrapMailer struct {
+	msg    *gomail.Message
+	dialer *gomail.Dialer
+	render *render.Render
+}
 
 func newMailtrapMailer() mailer.Mailer {
-	return &mailtrapMailer{}
+	return &mailtrapMailer{
+		msg: gomail.NewMessage(),
+		dialer: gomail.NewDialer(
+			env.Mailtrap.Host,
+			env.Mailtrap.Port,
+			env.Mailtrap.Username,
+			env.Mailtrap.Password,
+		),
+		render: render.New(),
+	}
 }
 
 // Send implements mailer.Mailer.
-func (m *mailtrapMailer) Send(mail *mail.Mail) error {
-	mailer := gomail.NewMessage()
+func (m *mailtrapMailer) Send(ctx context.Context, mail *mail.Mail) error {
+	m.setHeaders(mail)
+	m.setBody(mail)
+	m.setAttachments(mail)
+	return m.dialer.DialAndSend(m.msg)
+}
 
-	mailer.SetHeader("From", env.Mailer.From)
-
-	mailer.SetHeader(
+func (m *mailtrapMailer) setHeaders(mail *mail.Mail) {
+	m.msg.SetHeader("From", env.Mailer.From)
+	m.msg.SetHeader(
 		"To",
 		slice.Map(mail.To, func(to *value.To) string { return to.Email }).Build()...,
 	)
+	m.msg.SetHeader("Subject", mail.Subject)
+}
 
-	mailer.SetHeader("Subject", mail.Subject)
+func (m *mailtrapMailer) setBody(mail *mail.Mail) {
+	render := m.render.Render(mail)
 
-	mailer.SetBody("text/html", mail.HTML)
+	m.msg.SetBody("text/html", render.ToHTML())
+	m.msg.AddAlternative("text/plain", render.ToPlainText())
+}
 
-	mailer.AddAlternative("text/plain", mail.PlainText)
-
+func (m *mailtrapMailer) setAttachments(mail *mail.Mail) {
 	for _, attachmentURL := range mail.AttachmentURLs {
-		mailer.Attach(attachmentURL)
+		m.msg.Attach(attachmentURL, gomail.SetHeader(map[string][]string{
+			"Content-Disposition": {"inline"},
+			"Content-ID":          {path.Base(attachmentURL)},
+		}))
 	}
-
-	dialer := gomail.NewDialer(
-		env.Mailtrap.Host,
-		env.Mailtrap.Port,
-		env.Mailtrap.Username,
-		env.Mailtrap.Password,
-	)
-
-	return dialer.DialAndSend(mailer)
 }

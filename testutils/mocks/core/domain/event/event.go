@@ -27,14 +27,14 @@ func (_m *Event) Action() event.Action {
 }
 
 // Name provides a mock function with given fields:
-func (_m *Event) Name() string {
+func (_m *Event) Name() event.Name {
 	ret := _m.Called()
 
-	var r0 string
-	if rf, ok := ret.Get(0).(func() string); ok {
+	var r0 event.Name
+	if rf, ok := ret.Get(0).(func() event.Name); ok {
 		r0 = rf()
 	} else {
-		r0 = ret.Get(0).(string)
+		r0 = ret.Get(0).(event.Name)
 	}
 
 	return r0

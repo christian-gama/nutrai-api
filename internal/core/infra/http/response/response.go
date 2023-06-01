@@ -1,10 +1,11 @@
 package response
 
 import (
-	"errors"
+	_errors "errors"
 	"fmt"
 
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -39,11 +40,16 @@ func handleError(ctx *gin.Context, r any) {
 
 func handleSpecificErrors(ctx *gin.Context, err error) bool {
 	errorResponses := []errorResponse{
-		{ErrorAssertFunc: isErrNotFound, Response: NotFound},
-		{ErrorAssertFunc: isErrInternal, Response: InternalServerError},
+		{ErrorAssertFunc: isErrAlreadyExists, Response: Conflict},
+		{ErrorAssertFunc: isErrInternalServerError, Response: InternalServerError},
 		{ErrorAssertFunc: isErrInvalid, Response: BadRequest},
+		{ErrorAssertFunc: isErrNoChanges, Response: BadRequest},
+		{ErrorAssertFunc: isErrNotFound, Response: NotFound},
+		{ErrorAssertFunc: isErrRequired, Response: BadRequest},
+		{ErrorAssertFunc: isErrTimeout, Response: GatewayTimeout},
+		{ErrorAssertFunc: isErrTooManyRequests, Response: TooManyRequests},
 		{ErrorAssertFunc: isErrUnauthorized, Response: Unauthorized},
-		{ErrorAssertFunc: isErrRepository, Response: BadRequest},
+		{ErrorAssertFunc: isErrUnavailable, Response: ServiceUnavailable},
 	}
 
 	for _, errorHandler := range errorResponses {
@@ -64,27 +70,52 @@ func handleGenericErrors(ctx *gin.Context, err error) {
 	InternalServerError(ctx, fmt.Errorf("%v", err))
 }
 
-func isErrNotFound(err error) bool {
-	var errNotFound *errutil.ErrNotFound
-	return errors.As(err, &errNotFound)
+func isErrAlreadyExists(err error) bool {
+	var errAlreadyExists *errors.ErrAlreadyExists
+	return _errors.As(err, &errAlreadyExists)
 }
 
-func isErrInternal(err error) bool {
-	var errInternal *errutil.ErrInternal
-	return errors.As(err, &errInternal)
+func isErrInternalServerError(err error) bool {
+	var errInternalServerError *errors.ErrInternalServerError
+	return _errors.As(err, &errInternalServerError)
 }
 
 func isErrInvalid(err error) bool {
-	var errInvalid *errutil.ErrInvalid
-	return errors.As(err, &errInvalid)
+	var errInvalid *errors.ErrInvalid
+	return _errors.As(err, &errInvalid)
+}
+
+func isErrNoChanges(err error) bool {
+	var errNoChanges *errors.ErrNoChanges
+	return _errors.As(err, &errNoChanges)
+}
+
+func isErrNotFound(err error) bool {
+	var errNotFound *errors.ErrNotFound
+	return _errors.As(err, &errNotFound)
+}
+
+func isErrRequired(err error) bool {
+	var errRequired *errors.ErrRequired
+	return _errors.As(err, &errRequired)
+}
+
+func isErrTimeout(err error) bool {
+	var errTimeout *errors.ErrTimeout
+	return _errors.As(err, &errTimeout)
+}
+
+func isErrTooManyRequests(err error) bool {
+	var errTooManyRequests *errors.ErrTooManyRequests
+	return _errors.As(err, &errTooManyRequests)
 }
 
 func isErrUnauthorized(err error) bool {
-	var errUnauthorized *errutil.ErrUnauthorized
-	return errors.As(err, &errUnauthorized)
+	var errUnauthorized *errors.ErrUnauthorized
+	return _errors.As(err, &errUnauthorized)
 }
 
-func isErrRepository(err error) bool {
-	var errRepository *errutil.ErrRepository
-	return errors.As(err, &errRepository)
+func isErrUnavailable(err error) bool {
+	var errUnavailable *errors.ErrUnavailable
+	return _errors.As(err, &errUnavailable)
 }

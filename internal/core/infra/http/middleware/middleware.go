@@ -1,9 +1,8 @@
 package middleware
 
 import (
-	"errors"
-
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,9 +22,7 @@ type middlewareImpl struct {
 
 // NewMiddleware creates a new middleware.
 func NewMiddleware(handler Handler) Middleware {
-	if handler == nil {
-		panic(errors.New("handler is nil"))
-	}
+	errutil.MustBeNotEmpty("handler", handler)
 
 	return &middlewareImpl{
 		Handler: handler,

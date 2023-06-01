@@ -4,6 +4,7 @@ import (
 	value "github.com/christian-gama/nutrai-api/internal/auth/domain/value/user"
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 // User represents a User model, containing essential credentials and personal identification
@@ -33,15 +34,15 @@ func (u User) Validate() (*User, error) {
 	var errs *errutil.Error
 
 	if u.Email == "" {
-		errs = errutil.Append(errs, errutil.Required("Email"))
+		errs = errutil.Append(errs, errors.Required("Email"))
 	}
 
 	if u.Password == "" {
-		errs = errutil.Append(errs, errutil.Required("Password"))
+		errs = errutil.Append(errs, errors.Required("Password"))
 	}
 
 	if u.Name == "" {
-		errs = errutil.Append(errs, errutil.Required("Name"))
+		errs = errutil.Append(errs, errors.Required("Name"))
 	}
 
 	if errs.HasErrors() {
