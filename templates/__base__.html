@@ -1,16 +1,12 @@
 {{define "base"}}
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{.Title}}</title>
-
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Roboto:wght@400;700&display=swap"
-    rel="stylesheet">
 
   <style>
     * {
@@ -19,40 +15,43 @@
       padding: 0;
     }
 
-    .container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+    body {
       background-color: #27D481;
-      padding: 16px;
     }
 
-    .card {
+    table.container {
+      width: 100%;
+      min-height: 100%;
+      background-color: #27D481;
+      padding: 4px;
+    }
+
+    table.card {
+      margin: 0 auto;
       width: 100%;
       background-color: #FFFFFF;
-      border-radius: 4px;
-      padding: 20px 48px 40px 48px;
       max-width: 600px;
+      padding: 20px 8px 40px 8px;
+      border-radius: 8px;
     }
 
-    @media (max-width: 600px) {
-      .container {
-        padding: 12px;
+    @media (min-width: 480px) {
+      table.container {
+        padding: 16px;
       }
 
-      .card {
+      table.card {
         padding: 20px 24px 40px 24px;
       }
     }
 
-    @media (max-width: 400px) {
-      .container {
-        padding: 8px;
+    @media (min-width: 600px) {
+      table.container {
+        padding: 12px;
       }
 
-      .card {
-        padding: 20px 16px 40px 16px;
+      table.card {
+        padding: 20px 48px 40px 48px;
       }
     }
   </style>
@@ -61,11 +60,19 @@
 </head>
 
 <body>
-  <div class="container">
-    <div class="card">
-      {{template "body" .}}
-    </div>
-  </div>
+  <table class="container">
+    <tr>
+      <td>
+        <table class="card">
+          <tr>
+            <td>
+              {{template "body" .}}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
 
 </html>

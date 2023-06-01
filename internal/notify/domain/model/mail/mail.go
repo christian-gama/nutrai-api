@@ -12,11 +12,11 @@ import (
 
 // Mail represents an email message.
 type Mail struct {
-	To             []*value.To     `json:"to" faker:"-"`
-	Subject        string          `json:"subject" faker:"len=50"`
-	Context        value.Context   `json:"context" faker:"-"`
-	Template       *value.Template `json:"templatePath" faker:"-"`
-	AttachmentURLs []string        `json:"attachmentURLs" faker:"-"`
+	To          []*value.To         `json:"to" faker:"-"`
+	Subject     string              `json:"subject" faker:"len=50"`
+	Context     value.Context       `json:"context" faker:"-"`
+	Template    *value.Template     `json:"templatePath" faker:"-"`
+	Attachments []*value.Attachment `json:"attachments" faker:"-"`
 }
 
 // NewMail creates a new Mail.
@@ -88,15 +88,8 @@ func (m *Mail) SetTemplate(name string) *Mail {
 
 // SetAttachmentURLs sets the AttachmentURLs field. The names should be the base name of the file,
 // such as "welcome.png".
-func (m *Mail) SetAttachmentURLs(paths ...string) *Mail {
-	for _, path := range paths {
-		if path == "" {
-			continue
-		}
-
-		m.AttachmentURLs = append(m.AttachmentURLs, path)
-	}
-
+func (m *Mail) SetAttachments(att ...*value.Attachment) *Mail {
+	m.Attachments = att
 	return m
 }
 

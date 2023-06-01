@@ -2,7 +2,7 @@ package mailer
 
 import (
 	"context"
-	"path"
+	"os"
 
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/notify/domain/mailer"
@@ -57,10 +57,14 @@ func (m *mailtrapMailer) setBody(mail *mail.Mail) {
 }
 
 func (m *mailtrapMailer) setAttachments(mail *mail.Mail) {
-	for _, attachmentURL := range mail.AttachmentURLs {
-		m.msg.Attach(attachmentURL, gomail.SetHeader(map[string][]string{
+	for _, attachment := range mail.Attachments {
+		m.msg.Attach(attachment.Filename, gomail.SetHeader(map[string][]string{
 			"Content-Disposition": {"inline"},
-			"Content-ID":          {path.Base(attachmentURL)},
+			"Content-ID":          {attachment.ContentID()},
+			"Content-Type":        {attachment.ContentType()},
+			"Content":             {attachment.Content(os.ReadFile)},
+			"Name":                {attachment.Name()},
+			"Filename":            {attachment.Filename},
 		}))
 	}
 }

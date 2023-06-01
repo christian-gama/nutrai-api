@@ -2,6 +2,7 @@ package mailer
 
 import (
 	"context"
+	"os"
 
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/notify/domain/mailer"
@@ -39,11 +40,23 @@ func (s *sendgridMailer) message(mail *mail.Mail) *sendgridmail.SGMailV3 {
 
 	render := s.render.Render(mail)
 
-	return sendgridmail.NewSingleEmail(
+	v3 := sendgridmail.NewV3MailInit(
 		from,
 		mail.Subject,
 		to,
-		render.ToPlainText(),
-		render.ToHTML(),
+		sendgridmail.NewContent("text/plain", render.ToPlainText()),
+		sendgridmail.NewContent("text/html", render.ToHTML()),
 	)
+
+	for _, attachment := range mail.Attachments {
+		a := sendgridmail.NewAttachment()
+		a.SetFilename(attachment.Filename)
+		a.SetContentID(attachment.ContentID())
+		a.SetDisposition(attachment.Disposition)
+		a.SetType(attachment.ContentType())
+		a.SetContent(attachment.Content(os.ReadFile))
+		v3.AddAttachment(a)
+	}
+
+	return v3
 }
