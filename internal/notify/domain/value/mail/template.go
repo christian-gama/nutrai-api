@@ -3,27 +3,25 @@ package value
 import (
 	"os"
 	"path"
+
+	"github.com/christian-gama/nutrai-api/config/env"
 )
 
 type Template struct {
 	path    string
 	baseDir string
-	ext     string
 }
 
 // NewTemplatePath creates a new TemplatePath.
 func NewTemplate(fileName string) *Template {
-	baseDir := path.Join(os.Getenv("PWD"), "templates")
-	ext := ".html"
+	baseDir := path.Join(os.Getenv("PWD"), env.Mailer.TemplatePath)
 
 	fullPath := []string{baseDir}
 	fullPath = append(fullPath, fileName)
 	path := path.Join(fullPath...)
-	path += ext
 
 	return &Template{
 		baseDir: baseDir,
-		ext:     ext,
 		path:    path,
 	}
 }
@@ -36,9 +34,4 @@ func (t *Template) Path() string {
 // BaseDir returns the baseDir field.
 func (t *Template) BaseDir() string {
 	return t.baseDir
-}
-
-// Ext returns the ext field.
-func (t *Template) Ext() string {
-	return t.ext
 }

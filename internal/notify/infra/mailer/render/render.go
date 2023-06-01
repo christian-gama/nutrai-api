@@ -2,8 +2,10 @@ package render
 
 import (
 	"bytes"
+	"path"
 	"text/template"
 
+	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/notify/domain/model/mail"
 	value "github.com/christian-gama/nutrai-api/internal/notify/domain/value/mail"
 	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
@@ -14,6 +16,7 @@ import (
 type Render struct {
 	template *template.Template
 	buffer   bytes.Buffer
+	base     string
 }
 
 // New creates a new render.
@@ -30,7 +33,9 @@ func (r *Render) loadTemplate(templatePath *value.Template) {
 		return
 	}
 
-	template, err := template.ParseFiles(templatePath.Path())
+	r.base = path.Join(env.Mailer.TemplatePath, "__base__.html")
+
+	template, err := template.ParseFiles(r.base, templatePath.Path())
 	if err != nil {
 		panic(errors.InternalServerError("failed to load '%s' template", templatePath.Path()))
 	}
@@ -47,8 +52,8 @@ func (r *Render) Render(mail *mail.Mail) *rendered {
 
 // renderWithTemplate renders the template.
 func (r *Render) renderWithTemplate(context value.Context) *rendered {
-	if err := r.template.Execute(&r.buffer, context); err != nil {
-		panic(errors.InternalServerError("failed to render template"))
+	if err := r.template.ExecuteTemplate(&r.buffer, "base", context); err != nil {
+		panic(errors.InternalServerError("failed to render template: %v", err))
 	}
 
 	return &rendered{buffer: r.buffer}

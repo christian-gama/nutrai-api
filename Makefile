@@ -128,7 +128,6 @@ list-env: .cmd-exists-go .clear-screen .check-env-file
 # 	ENV_FILE: The path to the environment file.
 #   TO: The email address to send the email to.
 #   SUBJECT: The subject of the email.
-#   BODY: The body of the email.
 #   NAME: The name of the recipient.
 # ==============================================================================================
 .PHONY: mail
@@ -143,17 +142,12 @@ mail: .cmd-exists-go .clear-screen .check-env-file
 		exit 1; \
 	fi;
 
-	@if [ -z "$(BODY)" ]; then \
-		echo "Error: expected BODY"; \
-		exit 1; \
-	fi;
-
 	@if [ -z "$(NAME)" ]; then \
 		echo "Error: expected NAME"; \
 		exit 1; \
 	fi;
 
-	@go run ./cmd/mail/*.go -e $(ENV_FILE) -t "$(TO)" -s "$(SUBJECT)" -b "$(BODY)" -n "$(NAME)"
+	@go run ./cmd/mail/*.go -e $(ENV_FILE) -t "$(TO)" -s "$(SUBJECT)" -n "$(NAME)"
 
 
 # ==============================================================================================

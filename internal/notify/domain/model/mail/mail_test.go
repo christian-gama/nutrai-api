@@ -28,12 +28,7 @@ func (s *MailTestSuite) TestNewMail() {
 		data := fake.Mail()
 
 		sut := func() (*mail.Mail, error) {
-			return mail.NewMail().
-				SetContext(data.Context).
-				SetSubject(data.Subject).
-				SetTemplatePath(data.Template).
-				SetTo(data.To...).
-				Validate()
+			return data.Validate()
 		}
 
 		return &Sut{Sut: sut, Data: data}

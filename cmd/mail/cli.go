@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/bench"
@@ -17,7 +18,6 @@ var (
 	to      string
 	subject string
 	name    string
-	body    string
 	cmd     = &cobra.Command{
 		Use: "mail",
 		Run: run,
@@ -35,9 +35,6 @@ func init() {
 	cmd.PersistentFlags().StringVarP(&subject, "subject", "s", "", "Email subject line")
 	cmd.MarkPersistentFlagRequired("subject")
 
-	cmd.PersistentFlags().StringVarP(&body, "body", "b", "", "Content for email body")
-	cmd.MarkPersistentFlagRequired("body")
-
 	cmd.PersistentFlags().StringVarP(&name, "name", "n", "", "Recipient user's name")
 	cmd.MarkPersistentFlagRequired("name")
 }
@@ -47,10 +44,11 @@ func run(cmd *cobra.Command, args []string) {
 	log.SugaredLogger = log.New()
 
 	mail, err := mail.NewMail().
-		SetSubject(subject).
+		SetContext(value.Context{"Name": name, "Title": fmt.Sprintf("Welcome, %s!", name)}).
+		SetSubject("Welcome to Nutrai!").
 		SetTo(&value.To{Email: to, Name: name}).
-		SetTemplatePath(mail.WelcomeTemplate).
-		SetContext(value.Context{"Name": name}).
+		SetAttachmentURLs(mail.BuildAssetURL("welcome.png")).
+		SetTemplate("welcome.html").
 		Validate()
 	if err != nil {
 		log.Fatal(err)

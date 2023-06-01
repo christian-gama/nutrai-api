@@ -23,7 +23,7 @@ func (s *TemplateTestSuite) TestNewTemplate() {
 
 	makeSut := func() *Sut {
 		sut := func() *value.Template {
-			return value.NewTemplate("test")
+			return value.NewTemplate("test.html")
 		}
 
 		return &Sut{Sut: sut}
@@ -37,7 +37,7 @@ func (s *TemplateTestSuite) TestNewTemplate() {
 		s.NotNil(mail)
 		s.Equal(
 			mail.Path(),
-			fmt.Sprintf("%s/%s%s", mail.BaseDir(), "test", mail.Ext()),
+			fmt.Sprintf("%s/%s", mail.BaseDir(), "test.html"),
 		)
 	})
 }

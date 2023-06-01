@@ -121,6 +121,12 @@ type mailer struct {
 	// From is the mailer from address.
 	From string `env:"MAILER_FROM,required"`
 
+	// TemplatePath is the mailer template path.
+	TemplatePath string `env:"MAILER_TEMPLATE_PATH,required"`
+
+	// AssetsPath is the mailer template assets path.
+	AssetsPath string `env:"MAILER_ASSETS_PATH,required"`
+
 	// FromName is the mailtrap from name.
 	FromName string `env:"MAILER_FROM_NAME,required"`
 }

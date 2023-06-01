@@ -1,6 +1,10 @@
 package mail
 
 import (
+	"os"
+	"path"
+
+	"github.com/christian-gama/nutrai-api/config/env"
 	value "github.com/christian-gama/nutrai-api/internal/notify/domain/value/mail"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
@@ -11,7 +15,7 @@ type Mail struct {
 	To             []*value.To     `json:"to" faker:"-"`
 	Subject        string          `json:"subject" faker:"len=50"`
 	Context        value.Context   `json:"context" faker:"-"`
-	Template       *value.Template `json:"templatePath"`
+	Template       *value.Template `json:"templatePath" faker:"-"`
 	AttachmentURLs []string        `json:"attachmentURLs" faker:"-"`
 }
 
@@ -75,13 +79,28 @@ func (m *Mail) SetContext(context value.Context) *Mail {
 	return m
 }
 
-// SetTemplatePath sets the Template field.
-func (m *Mail) SetTemplatePath(path *value.Template) *Mail {
-	m.Template = path
+// SetTemplate sets the Template field. The name should be the base name of the file, such as
+// "welcome.html".
+func (m *Mail) SetTemplate(name string) *Mail {
+	m.Template = value.NewTemplate(name)
 	return m
 }
 
-var (
-	WelcomeTemplate       = value.NewTemplate("welcome")
-	ResetPasswordTemplate = value.NewTemplate("reset_password")
-)
+// SetAttachmentURLs sets the AttachmentURLs field. The names should be the base name of the file,
+// such as "welcome.png".
+func (m *Mail) SetAttachmentURLs(paths ...string) *Mail {
+	for _, path := range paths {
+		if path == "" {
+			continue
+		}
+
+		m.AttachmentURLs = append(m.AttachmentURLs, path)
+	}
+
+	return m
+}
+
+// BuildAssetURL builds the URL path to the asset.
+func BuildAssetURL(name string) string {
+	return path.Join(os.Getenv("PWD"), env.Mailer.AssetsPath, name)
+}

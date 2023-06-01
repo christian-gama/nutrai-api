@@ -2,6 +2,7 @@ package consumer
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/app/command"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/message"
@@ -43,10 +44,11 @@ func (j *sendWelcomeHandlerImpl) Handle() {
 // ConsumerHandler handles the event.
 func (j *sendWelcomeHandlerImpl) ConsumerHandler(input command.SaveUserInput) error {
 	mail, err := mail.NewMail().
-		SetContext(value.Context{"Name": input.Name.String()}).
+		SetContext(value.Context{"Name": input.Name.String(), "Title": fmt.Sprintf("Welcome, %s!", input.Name.String())}).
 		SetSubject("Welcome to Nutrai!").
 		SetTo(&value.To{Email: input.Email.String(), Name: input.Name.String()}).
-		SetTemplatePath(mail.WelcomeTemplate).
+		SetAttachmentURLs(mail.BuildAssetURL("welcome.png")).
+		SetTemplate("welcome").
 		Validate()
 	if err != nil {
 		return errors.InternalServerError(err.Error())

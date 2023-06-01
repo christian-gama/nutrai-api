@@ -1,33 +1,74 @@
-<!DOCTYPE html>
-<html>
+{{define "style"}}
+<style>
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 32px;
+        height: 150px;
+    }
 
-<head>
-    <title>Welcome Email</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            color: #333;
+    .title {
+        font-size: 40px;
+        color: #373F3C;
+        font-family: 'Open Sans', sans-serif;
+        line-height: 1.1;
+    }
+
+    .nutrai {
+        font-size: 64px;
+    }
+
+    .image {
+        width: 150px;
+        height: 150px;
+    }
+
+    .text {
+        font-size: 16px;
+        color: #606060;
+        font-family: 'Roboto', sans-serif;
+        line-height: 1.5;
+    }
+
+    .text:first-child {
+        margin-bottom: 16px;
+    }
+
+    @media (max-width: 600px) {
+        .card-header {
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 24px;
+            height: auto;
         }
 
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
+        .title {
+            font-size: 32px;
+            text-align: center;
         }
 
-        h1 {
-            color: #444;
+        .image {
+            margin-top: 16px;
         }
-    </style>
-</head>
+    }
+</style>
+{{end}}
 
-<body>
-    <div class="container">
-        <h1>Welcome!!</h1>
-        <p>{{.Name}}</p>
-    </div>
-</body>
+{{define "body"}}
+<div class="card-header">
+    <h1 class="title">Welcome to <span class="nutrai">Nutrai!</span></h1>
+    <img class="image" src="cid:welcome.png" alt="Welcome image">
+</div>
 
-</html>
+<div class="card-body">
+    <p class="text">
+        Hi, {{.Name}}! We're thrilled to have you on board. Get ready to discover personalized meal
+        recommendations designed just for you, with your unique tastes and dietary needs in mind. Your
+        journey towards healthier and tastier eating starts here.
+    </p>
+    <p class="text">
+        Thanks for joining us! Let's get cooking!
+    </p>
+</div>
+{{end}}
