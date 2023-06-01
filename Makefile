@@ -27,7 +27,7 @@ help: .clear-screen
 # ==============================================================================================
 # Target: init
 # Brief: Initializes the project.
-# Usage: Run the command 'make'.
+# Usage: Run the command 'make init'.
 # ==============================================================================================
 .PHONY: init
 init: .cmd-exists-git .cmd-exists-go .cmd-exists-docker .cmd-exists-sh .clear-screen
@@ -103,6 +103,7 @@ list-routes: .cmd-exists-go .clear-screen
 ifneq ($(RUNNING_IN_DOCKER), true)
 	@ENV_FILE=.env.dev $(MAKE) postgres
 	@ENV_FILE=.env.dev $(MAKE) rabbitmq
+	@ENV_FILE=.env.dev $(MAKE) redis
 endif
 	@go run ./cmd/routes/main.go
 

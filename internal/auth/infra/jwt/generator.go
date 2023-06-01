@@ -99,10 +99,10 @@ func (g *generatorImpl) getExpiresAtDuration(unix int64) time.Duration {
 // these claims before setting them into the token.
 func (g *generatorImpl) setClaims(subject *jwt.Subject) _jwt.MapClaims {
 	claims := g.token.Claims.(_jwt.MapClaims)
-	claims["aud"] = env.App.Host
+	claims["aud"] = env.Jwt.Audience
 	claims["exp"] = time.Now().Add(g.duration).Unix()
 	claims["iat"] = time.Now().Unix()
-	claims["iss"] = env.App.Host
+	claims["iss"] = env.Jwt.Issuer
 	claims["jti"] = g.uuid.Generate()
 	claims["nbf"] = time.Now().Unix()
 	claims["sub"] = map[string]any{"email": subject.Email}

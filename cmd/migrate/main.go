@@ -15,5 +15,5 @@ func main() {
 		cmd.Execute()
 	})
 
-	log.MakeWithCaller().Infof("\tFinished in %s", duration)
+	log.Infof("\tFinished in %s", duration)
 }

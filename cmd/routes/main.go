@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router"
@@ -15,7 +16,7 @@ func init() {
 	screen.Clear()
 
 	os.Setenv("CONFIG_DEBUG", "false")
-	os.Setenv("CONFIG_LOG_LEVEL", "panic")
+	os.Setenv("CONFIG_LOG_LEVEL", string(env.LogLevelPanic))
 }
 
 func main() {

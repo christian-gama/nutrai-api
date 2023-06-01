@@ -3,7 +3,8 @@
 package mocks
 
 import (
-	exception "github.com/christian-gama/nutrai-api/internal/exception/domain/model/exception"
+	command "github.com/christian-gama/nutrai-api/internal/exception/app/command"
+
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -12,13 +13,13 @@ type SaveExceptionHandler struct {
 	mock.Mock
 }
 
-// ConsumerHandler provides a mock function with given fields: e
-func (_m *SaveExceptionHandler) ConsumerHandler(e exception.Exception) error {
-	ret := _m.Called(e)
+// ConsumerHandler provides a mock function with given fields: input
+func (_m *SaveExceptionHandler) ConsumerHandler(input command.CatchExceptionInput) error {
+	ret := _m.Called(input)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(exception.Exception) error); ok {
-		r0 = rf(e)
+	if rf, ok := ret.Get(0).(func(command.CatchExceptionInput) error); ok {
+		r0 = rf(input)
 	} else {
 		r0 = ret.Error(0)
 	}

@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/christian-gama/nutrai-api/internal/core/domain/logger"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/message"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/bench"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/rabbitmq"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -15,14 +15,12 @@ import (
 // consumerImpl is a RabbitMQ consumer implementation.
 type consumerImpl[Data any] struct {
 	rmq     *rabbitmq.RabbitMQ
-	log     logger.Logger
 	options *options
 }
 
 // NewConsumer creates a new RabbitMQ consumer.
 func NewConsumer[Data any](
 	rmq *rabbitmq.RabbitMQ,
-	log logger.Logger,
 	opts ...func(*options),
 ) message.Consumer[Data] {
 	options := &options{
@@ -52,7 +50,7 @@ func NewConsumer[Data any](
 		options.QueueName = options.RoutingKey
 	}
 
-	return &consumerImpl[Data]{rmq, log, options}
+	return &consumerImpl[Data]{rmq, options}
 }
 
 // Handle handles a message.
@@ -130,7 +128,7 @@ func (c *consumerImpl[Data]) Handle(handler func(data Data) error) {
 func (c *consumerImpl[Data]) handle(msg amqp.Delivery, handler func(data Data) error) {
 	defer func() {
 		if r := recover(); r != nil {
-			c.log.Warnf("Consumer | %12s | Recovered from panic: %s", c.options.QueueName, r)
+			log.Warnf("Consumer | %12s | Recovered from panic: %s", c.options.QueueName, r)
 			msg.Nack(false, false)
 		}
 	}()
@@ -140,7 +138,7 @@ func (c *consumerImpl[Data]) handle(msg amqp.Delivery, handler func(data Data) e
 		var data Data
 		err = json.Unmarshal(msg.Body, &data)
 		if err != nil {
-			c.log.Warnf(
+			log.Warnf(
 				"Consumer | %s | Could not unmarshal message: %s",
 				c.options.QueueName,
 				err.Error(),
@@ -153,13 +151,13 @@ func (c *consumerImpl[Data]) handle(msg amqp.Delivery, handler func(data Data) e
 	})
 
 	if err != nil {
-		c.log.Warnf(
+		log.Warnf(
 			"Consumer | %s | Could not process message: %s",
 			c.options.QueueName,
 			err.Error(),
 		)
 	} else {
-		c.log.Infof("Consumer | %12s | Message processed successfully in %s", c.options.QueueName, duration.Truncate(time.Millisecond))
+		log.Infof("Consumer | %12s | Message processed successfully in %s", c.options.QueueName, duration.Truncate(time.Millisecond))
 	}
 
 	msg.Ack(false)

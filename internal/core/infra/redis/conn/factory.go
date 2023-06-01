@@ -1,7 +1,6 @@
 package conn
 
 import (
-	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -12,9 +11,7 @@ func MakeDefaultRedis() *redis.Conn {
 		return defaultRedisConnection
 	}
 
-	log := log.MakeWithCaller()
-	conn := NewConn(log)
-	defaultRedisConnection = conn.Open(0)
+	defaultRedisConnection = NewConn(0)
 
 	return defaultRedisConnection
 }

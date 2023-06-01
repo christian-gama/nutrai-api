@@ -22,13 +22,12 @@ func Register(fn func(), workersAmount int) {
 		workersAmount = runtime.NumCPU()
 	}
 
-	log.MakeWithCaller().
-		Loading(
-			"Creating %s %s %s",
-			log.LoadingDetailColor(fmt.Sprint(workersAmount)),
-			log.LoadingColor("%s for", worker),
-			log.LoadingDetailColor(name(fn)),
-		)
+	log.Loading(
+		"Creating %s %s %s",
+		log.LoadingDetailColor(fmt.Sprint(workersAmount)),
+		log.LoadingColor("%s for", worker),
+		log.LoadingDetailColor(name(fn)),
+	)
 	for i := 0; i < workersAmount; i++ {
 		go fn()
 	}

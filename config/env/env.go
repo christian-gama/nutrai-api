@@ -59,6 +59,12 @@ type jwt struct {
 
 	// RefreshExpire is the JWT refresh token expiration time.
 	RefreshExpire JwtExpire `env:"JWT_REFRESH_EXPIRE,required"`
+
+	// Audience is the JWT audience.
+	Audience string `env:"JWT_AUDIENCE,required"`
+
+	// Issuer is the JWT issuer.
+	Issuer string `env:"JWT_ISSUER,required"`
 }
 
 // app is the application environment variables.
@@ -71,6 +77,10 @@ type app struct {
 
 	// Env is the application environment. It expects "dev", "prod" or "test".
 	Env AppEnv `env:"APP_ENV,required"`
+
+	// AllowedOrigins is the list of origins a cross-domain request can be executed from.
+	// If the special "*" value is present in the list, all origins will be allowed.
+	AllowedOrigins []string `env:"APP_ALLOWED_ORIGINS,required"`
 }
 
 // config is the configuration environment variables.

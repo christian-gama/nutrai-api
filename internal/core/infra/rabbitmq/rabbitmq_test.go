@@ -4,9 +4,7 @@ import (
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/core/infra/rabbitmq"
-	mocks "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/logger"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
-	"github.com/stretchr/testify/mock"
 )
 
 type RabbitMQSuite struct {
@@ -18,9 +16,7 @@ func TestRabbitMQ(t *testing.T) {
 }
 
 func (s *RabbitMQSuite) TestNewConnection() {
-	log := mocks.NewLogger(s.T())
-	log.On("Loading", mock.Anything, mock.Anything)
-	rmq := rabbitmq.NewConn(log, "test").Open()
+	rmq := rabbitmq.NewConn("test")
 	defer rmq.Close()
 
 	channel := rmq.ChannelPool()
@@ -31,9 +27,7 @@ func (s *RabbitMQSuite) TestNewConnection() {
 }
 
 func (s *RabbitMQSuite) TestChannelPool() {
-	log := mocks.NewLogger(s.T())
-	log.On("Loading", mock.Anything, mock.Anything)
-	rmq := rabbitmq.NewConn(log, "test").Open()
+	rmq := rabbitmq.NewConn("test")
 	defer rmq.Close()
 
 	channel := rmq.ChannelPool()
@@ -43,9 +37,7 @@ func (s *RabbitMQSuite) TestChannelPool() {
 }
 
 func (s *RabbitMQSuite) TestReleaseChannelPool() {
-	log := mocks.NewLogger(s.T())
-	log.On("Loading", mock.Anything, mock.Anything)
-	rmq := rabbitmq.NewConn(log, "test").Open()
+	rmq := rabbitmq.NewConn("test")
 	defer rmq.Close()
 
 	s.NotPanics(func() {

@@ -3,7 +3,8 @@
 package mocks
 
 import (
-	user "github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
+	command "github.com/christian-gama/nutrai-api/internal/auth/app/command"
+
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -12,13 +13,13 @@ type SendWelcomeHandler struct {
 	mock.Mock
 }
 
-// ConsumerHandler provides a mock function with given fields: u
-func (_m *SendWelcomeHandler) ConsumerHandler(u user.User) error {
-	ret := _m.Called(u)
+// ConsumerHandler provides a mock function with given fields: input
+func (_m *SendWelcomeHandler) ConsumerHandler(input command.SaveUserInput) error {
+	ret := _m.Called(input)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(user.User) error); ok {
-		r0 = rf(u)
+	if rf, ok := ret.Get(0).(func(command.SaveUserInput) error); ok {
+		r0 = rf(input)
 	} else {
 		r0 = ret.Error(0)
 	}

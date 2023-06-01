@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"log"
 
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/bench"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
 	"github.com/christian-gama/nutrai-api/internal/notify/domain/model/mail"
 	value "github.com/christian-gama/nutrai-api/internal/notify/domain/value/mail"
 	"github.com/christian-gama/nutrai-api/internal/notify/infra/mailer"
@@ -44,6 +44,7 @@ func init() {
 
 func run(cmd *cobra.Command, args []string) {
 	env.NewLoader(envFile).Load()
+	log.SugaredLogger = log.New()
 
 	mail, err := mail.NewMail().
 		SetSubject(subject).
@@ -62,5 +63,5 @@ func run(cmd *cobra.Command, args []string) {
 		}
 	})
 
-	log.Printf("[%s] - Sent email to '%s' in %s", env.Mailer.Provider, to, duration)
+	log.Infof("[%s] - Sent email to '%s' in %s", env.Mailer.Provider, to, duration)
 }

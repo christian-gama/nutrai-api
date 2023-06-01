@@ -27,10 +27,8 @@ func (m Module) String() string {
 // Init performs the initialization of a module, logging the process and calling the given
 // function.
 func Init(callback func() (*Module, func())) {
-	l := log.MakeWithCaller(1)
-
 	module, init := callback()
-	l.Loading(
+	log.Loading(
 		"Initializing %s %s",
 		log.LoadingDetailColor(module.String()),
 		log.LoadingColor("module"),

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	ratelimit "github.com/JGLTechnologies/gin-rate-limit"
+	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/bench"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
@@ -32,14 +33,16 @@ func logging() gin.HandlerFunc {
 // cors returns a gin middleware that enables CORS.
 func cors() gin.HandlerFunc {
 	return _cors.New(_cors.Config{
-		AllowAllOrigins: true,
-		AllowFiles:      true,
-		AllowHeaders:    []string{"Origin", "Content-Type", "Accept", "Authorization"},
+		AllowFiles:    true,
+		AllowOrigins:  env.App.AllowedOrigins,
+		AllowWildcard: true,
+		AllowHeaders:  []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		AllowMethods: []string{
 			http.MethodGet.String(),
 			http.MethodPost.String(),
 			http.MethodPut.String(),
 			http.MethodDelete.String(),
+			http.MethodPatch.String(),
 		},
 	})
 }
@@ -60,14 +63,6 @@ func limitBodySize() gin.HandlerFunc {
 			return
 		}
 
-		ctx.Next()
-	}
-}
-
-// content returns a gin middleware that sets the content type.
-func content() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		ctx.Header("Content-Type", "application/json")
 		ctx.Next()
 	}
 }

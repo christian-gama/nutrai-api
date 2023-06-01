@@ -103,7 +103,11 @@ func (s *verifierImpl) validate(claims *jwt.Claims) error {
 		return ErrInvalidToken
 	}
 
-	if claims.Aud != env.App.Host {
+	if claims.Aud != env.Jwt.Audience {
+		return ErrInvalidToken
+	}
+
+	if claims.Iss != env.Jwt.Issuer {
 		return ErrInvalidToken
 	}
 

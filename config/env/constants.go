@@ -12,6 +12,14 @@ const (
 )
 
 const (
+	// Http is the http string representation of the app protocol.
+	Http AppProtocol = "http"
+
+	// Https is the https string representation of the app protocol.
+	Https AppProtocol = "https"
+)
+
+const (
 	// SslModeDisable	don't care about security, and don't want to pay the overhead of encryption.
 	SslModeDisable DBSslMode = "disable"
 

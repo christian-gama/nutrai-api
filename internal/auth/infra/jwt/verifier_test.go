@@ -25,7 +25,7 @@ func TestVerifierSuite(t *testing.T) {
 	suite.RunUnitTest(t, new(VerifierSuite))
 }
 
-func (s *VerifierSuite) TestGenerate() {
+func (s *VerifierSuite) TestVerify() {
 	type Mock struct {
 		TokenRepo *repoMock.Token
 	}

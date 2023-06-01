@@ -11,10 +11,9 @@ import (
 func logLevel(status int, duration time.Duration) func(string, ...any) {
 	switch {
 	case status >= 500:
-		return log.New(&log.Config{}).Errorf
+		return log.Errorf
 
 	default:
-		log := log.New(&log.Config{})
 		if duration > 300*time.Millisecond {
 			return log.Warnf
 		}

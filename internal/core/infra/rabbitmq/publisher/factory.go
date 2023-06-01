@@ -2,7 +2,6 @@ package publisher
 
 import (
 	"github.com/christian-gama/nutrai-api/internal/core/domain/message"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/rabbitmq"
 )
 
@@ -19,7 +18,7 @@ var (
 
 func MakePublisher[Data any](opts ...func(*options)) message.Publisher[Data] {
 	if publisherConnection == nil {
-		publisherConnection = rabbitmq.NewConn(log.MakeWithCaller(), "publisher").Open()
+		publisherConnection = rabbitmq.NewConn("publisher")
 	}
 
 	return NewPublisher[Data](publisherConnection, opts...)

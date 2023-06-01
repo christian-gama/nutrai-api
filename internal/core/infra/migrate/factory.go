@@ -1,7 +1,6 @@
 package migrate
 
 import (
-	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/conn"
 )
 
@@ -11,5 +10,5 @@ func MakeMigrate() *Migrate {
 		panic(err)
 	}
 
-	return New(db, log.MakeWithCaller())
+	return New(db)
 }
