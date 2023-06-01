@@ -14,11 +14,12 @@ import (
 )
 
 var (
-	envFile string
-	to      string
-	subject string
-	name    string
-	cmd     = &cobra.Command{
+	envFile  string
+	to       string
+	subject  string
+	provider string
+	name     string
+	cmd      = &cobra.Command{
 		Use: "mail",
 		Run: run,
 	}
@@ -37,17 +38,24 @@ func init() {
 
 	cmd.PersistentFlags().StringVarP(&name, "name", "n", "", "Recipient user's name")
 	cmd.MarkPersistentFlagRequired("name")
+
+	cmd.PersistentFlags().
+		StringVarP(&provider, "provider", "p", "mailtrap", "Email provider: mailtrap, sendgrid")
 }
 
 func run(cmd *cobra.Command, args []string) {
 	env.NewLoader(envFile).Load()
+	env.Mailer.Provider = env.MailerProvider(provider)
 	log.SugaredLogger = log.New()
 
 	mail, err := mail.NewMail().
 		SetContext(value.Context{"Name": name, "Title": fmt.Sprintf("Welcome, %s!", name)}).
-		SetSubject("Welcome to Nutrai!").
+		SetSubject(subject).
 		SetTo(&value.To{Email: to, Name: name}).
-		SetAttachmentURLs(mail.BuildAssetURL("welcome.png")).
+		SetAttachments(value.NewAttachment().
+			SetFilename(mail.BuildAssetURL("welcome.png")).
+			SetDisposition("inline"),
+		).
 		SetTemplate("welcome.html").
 		Validate()
 	if err != nil {

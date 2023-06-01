@@ -23,7 +23,7 @@ func SetupRouter() {
 	r.Use(cors())
 	r.Use(logging())
 	r.Use(limitBodySize())
-	r.Use(rateLimiter(env.Config.GlobalRateLimit, time.Minute))
+	r.Use(RateLimiter(env.Config.GlobalRateLimit, time.Minute))
 
 	Router = r
 }

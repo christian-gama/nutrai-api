@@ -22,6 +22,7 @@ func NewRegister(registerHandler service.RegisterHandler) Register {
 			if err != nil {
 				panic(err)
 			}
+
 			response.Created(ctx, output)
 		},
 
@@ -29,6 +30,7 @@ func NewRegister(registerHandler service.RegisterHandler) Register {
 			Path:     controller.JoinPath("register"),
 			Method:   http.MethodPost,
 			IsPublic: true,
+			RPM:      5,
 		},
 	)
 }

@@ -22,12 +22,13 @@ func TestRoutesSuite(t *testing.T) {
 }
 
 type Controller struct {
-	status   int
-	method   http.Method
-	path     controller.Path
-	params   controller.Params
-	isPublic bool
-	handler  func(*gin.Context) string
+	status    int
+	method    http.Method
+	path      controller.Path
+	params    controller.Params
+	isPublic  bool
+	rateLimit int
+	handler   func(*gin.Context) string
 }
 
 func (h *Controller) Handle(c *gin.Context) {
@@ -48,6 +49,10 @@ func (h *Controller) IsPublic() bool {
 
 func (h *Controller) Params() controller.Params {
 	return h.params
+}
+
+func (h *Controller) RPM() int {
+	return h.rateLimit
 }
 
 type Middleware struct {

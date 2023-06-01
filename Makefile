@@ -147,7 +147,7 @@ mail: .cmd-exists-go .clear-screen .check-env-file
 		exit 1; \
 	fi;
 
-	@go run ./cmd/mail/*.go -e $(ENV_FILE) -t "$(TO)" -s "$(SUBJECT)" -n "$(NAME)"
+	@go run ./cmd/mail/*.go -e $(ENV_FILE) -t "$(TO)" -s "$(SUBJECT)" -n "$(NAME)" -p "$(PROVIDER)"
 
 
 # ==============================================================================================

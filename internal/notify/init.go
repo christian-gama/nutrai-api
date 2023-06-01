@@ -11,6 +11,6 @@ import (
 func Init() (*module.Module, func()) {
 	return Module, func() {
 		// Add the logic to initialize this module here:
-		worker.Register(consumer.MakeSendWelcomeHandler().Handle, 2)
+		worker.Register(consumer.MakeSendWelcomeHandler().Handle, 1)
 	}
 }

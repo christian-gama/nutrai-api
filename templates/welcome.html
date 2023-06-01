@@ -1,74 +1,94 @@
 {{define "style"}}
 <style>
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        margin-bottom: 32px;
-        height: 150px;
-    }
-
     .title {
-        font-size: 40px;
+        font-size: 36px;
         color: #373F3C;
-        font-family: 'Open Sans', sans-serif;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
         line-height: 1.1;
     }
 
     .nutrai {
-        font-size: 64px;
+        font-size: 48px;
     }
 
     .image {
         width: 150px;
         height: 150px;
+        display: none;
     }
 
     .text {
         font-size: 16px;
         color: #606060;
-        font-family: 'Roboto', sans-serif;
+        font-family: Arial, Helvetica, sans-serif;
         line-height: 1.5;
+        text-align: justify;
     }
 
-    .text:first-child {
-        margin-bottom: 16px;
+    .text-margin {
+        margin-top: 16px;
     }
 
-    @media (max-width: 600px) {
-        .card-header {
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 24px;
-            height: auto;
+    a.button {
+        display: inline-block;
+        padding: 12px 20px;
+        border-radius: 8px;
+        background-color: #17c270;
+        color: #FFFFFF;
+        font-size: 16px;
+        font-family: Arial, Helvetica, sans-serif;
+        text-decoration: none;
+        margin-top: 32px;
+        text-transform: capitalize;
+    }
+
+    @media (min-width: 600px) {
+        .title {
+            font-size: 48px;
         }
 
-        .title {
-            font-size: 32px;
-            text-align: center;
+        .nutrai {
+            font-size: 64px;
         }
 
         .image {
-            margin-top: 16px;
+            display: block;
         }
     }
 </style>
 {{end}}
 
 {{define "body"}}
-<div class="card-header">
-    <h1 class="title">Welcome to <span class="nutrai">Nutrai!</span></h1>
-    <img class="image" src="cid:welcome.png" alt="Welcome image">
-</div>
+<table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+        <td valign="bottom" style="vertical-align: bottom; min-width: 320px;">
+            <div class="title">Welcome to <span class="nutrai">Nutrai!</span></div>
+        </td>
+        <td align="right" style="text-align: right;">
+            <img class="image" src="cid:welcome" alt="Welcome image">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="height: 32px;"></td>
+    </tr>
+</table>
 
-<div class="card-body">
-    <p class="text">
-        Hi, {{.Name}}! We're thrilled to have you on board. Get ready to discover personalized meal
-        recommendations designed just for you, with your unique tastes and dietary needs in mind. Your
-        journey towards healthier and tastier eating starts here.
-    </p>
-    <p class="text">
-        Thanks for joining us! Let's get cooking!
-    </p>
-</div>
+<table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+        <td>
+            <div class="text">
+                Hi, {{.Name}}! We're thrilled to have you on board. Get ready to discover personalized meal
+                recommendations designed just for you, with your unique tastes and dietary needs in mind. Your
+                journey towards healthier and tastier eating starts here.
+            </div>
+            <div class="text text-margin">
+                Thanks for joining us! Let's get cooking!
+            </div>
+
+            <a href="#" class="button">
+                GET STARTED NOW
+            </a>
+        </td>
+    </tr>
+</table>
 {{end}}

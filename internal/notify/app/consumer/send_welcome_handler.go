@@ -47,8 +47,11 @@ func (j *sendWelcomeHandlerImpl) ConsumerHandler(input command.SaveUserInput) er
 		SetContext(value.Context{"Name": input.Name.String(), "Title": fmt.Sprintf("Welcome, %s!", input.Name.String())}).
 		SetSubject("Welcome to Nutrai!").
 		SetTo(&value.To{Email: input.Email.String(), Name: input.Name.String()}).
-		SetAttachmentURLs(mail.BuildAssetURL("welcome.png")).
-		SetTemplate("welcome").
+		SetAttachments(value.NewAttachment().
+			SetFilename(mail.BuildAssetURL("welcome.png")).
+			SetDisposition("inline"),
+		).
+		SetTemplate("welcome.html").
 		Validate()
 	if err != nil {
 		return errors.InternalServerError(err.Error())
