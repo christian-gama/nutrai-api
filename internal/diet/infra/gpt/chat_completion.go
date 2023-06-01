@@ -6,31 +6,17 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
 )
 
-type ChatCompletionConfigInput struct {
-	Model                string
-	Temperature          float32 // 0.0 to 1.0
-	TopP                 float32 // 0.0 to 1.0 - to a low value, like 0.1, the model will be very conservative in its word choices, and will tend to generate relatively predictable prompts
-	N                    int     // number of messages to generate
-	PresencePenalty      float32 // -2.0 to 2.0 - Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
-	FrequencyPenalty     float32 // -2.0 to 2.0 - Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, increasing the model's likelihood to talk about new topics.
-	InitialSystemMessage string
-}
-
-type ChatCompletionInput struct {
-	Message string `json:"message"`
-}
-
 type ChatCompletionOutput struct {
 	Content string `json:"content"`
 }
 
 type ChatCompletion struct {
-	Config ChatCompletionConfigInput
+	Config repo.ChatCompletionConfigInput
 	Client repo.GptClient
 }
 
 func NewChatCompletion(
-	config ChatCompletionConfigInput,
+	config repo.ChatCompletionConfigInput,
 	client repo.GptClient,
 ) *ChatCompletion {
 	return &ChatCompletion{
@@ -39,17 +25,7 @@ func NewChatCompletion(
 	}
 }
 
-func (c *ChatCompletion) Execute(ctx context.Context, input ChatCompletionInput) (*ChatCompletionOutput, error) {
-	messages := []repo.ChatCompletionMessage{
-		{
-			Role:    "System",
-			Content: c.Config.InitialSystemMessage,
-		},
-		{
-			Role:    "User",
-			Content: input.Message,
-		},
-	}
+func (c *ChatCompletion) Execute(ctx context.Context, messages []repo.ChatCompletionMessage) (*ChatCompletionOutput, error) {
 
 	resp, err := c.Client.CreateChatCompletion(
 		context.Background(),
