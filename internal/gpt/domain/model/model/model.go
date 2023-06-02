@@ -6,8 +6,14 @@ import (
 )
 
 type Model struct {
-	Name      value.Name      `faker:"sentence"`
-	MaxTokens value.MaxTokens `faker:"boundary_start=1024, boundary_end=1024"`
+	Name             value.Name             `faker:"sentence"`
+	MaxTokens        value.MaxTokens        `faker:"boundary_start=1024, boundary_end=1024"`
+	Temperature      value.Temperature      `faker:"boundary_start=0.0, boundary_end=1.0"` // 0.0 - 1.0
+	TopP             value.TopP             `faker:"boundary_start=0.0, boundary_end=1.0"` // 0.0 - 1.0
+	N                value.N                `faker:"boundary_start=1, boundary_end=100"`   // number of responses
+	Stop             []value.Stop           `faker:"len=3"`
+	PresencePenalty  value.PresencePenalty  `faker:"boundary_start=-2.0, boundary_end=2.0"` // -2.0 to 2.0 - Number beetwen -2.0 and 2.0
+	FrequencyPenalty value.FrequencyPenalty `faker:"boundary_start=-2.0, boundary_end=2.0"` // -2.0 to 2.0 - Number beetwen -2.0 and 2.0
 }
 
 // NewModel returns a new Model instance.
@@ -48,5 +54,41 @@ func (m *Model) SetName(name value.Name) *Model {
 // SetMaxTokens sets the MaxTokens of the Model.
 func (m *Model) SetMaxTokens(maxTokens value.MaxTokens) *Model {
 	m.MaxTokens = maxTokens
+	return m
+}
+
+// SetTemperature sets the Temperature of the Model.
+func (m *Model) SetTemperature(temperature value.Temperature) *Model {
+	m.Temperature = temperature
+	return m
+}
+
+// SetTopP sets the TopP of the Model.
+func (m *Model) SetTopP(topP value.TopP) *Model {
+	m.TopP = topP
+	return m
+}
+
+// SetN sets the N of the Model.
+func (m *Model) SetN(n value.N) *Model {
+	m.N = n
+	return m
+}
+
+// SetStop sets the Stop of the Model.
+func (m *Model) SetStop(stop []value.Stop) *Model {
+	m.Stop = stop
+	return m
+}
+
+// SetPresencePenalty sets the PresencePenalty of the Model.
+func (m *Model) SetPresencePenalty(presencePenalty value.PresencePenalty) *Model {
+	m.PresencePenalty = presencePenalty
+	return m
+}
+
+// SetFrequencyPenalty sets the FrequencyPenalty of the Model.
+func (m *Model) SetFrequencyPenalty(frequencyPenalty value.FrequencyPenalty) *Model {
+	m.FrequencyPenalty = frequencyPenalty
 	return m
 }

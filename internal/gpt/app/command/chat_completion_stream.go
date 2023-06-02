@@ -28,7 +28,6 @@ func NewChatCompletionStream(
 }
 
 func (c *ChatCompletionStream) Execute(ctx context.Context, messages []repo.ChatCompletionMessage, stream chan ChatCompletionStreamOutput) error {
-
 	resp, err := c.Client.CreateChatCompletionStream(
 		context.Background(),
 		repo.ChatCompletionInput{
@@ -73,5 +72,4 @@ func (c *ChatCompletionStream) Execute(ctx context.Context, messages []repo.Chat
 	}
 
 	return nil
-
 }

@@ -29,7 +29,6 @@ func (c *ChatCompletion) Execute(
 	ctx context.Context,
 	messages []repo.ChatCompletionMessage,
 ) (*ChatCompletionOutput, error) {
-
 	resp, err := c.Client.CreateChatCompletion(
 		context.Background(),
 		repo.ChatCompletionInput{
@@ -48,7 +47,6 @@ func (c *ChatCompletion) Execute(
 			},
 		},
 	)
-
 	if err != nil {
 		return nil, err
 	}
@@ -56,5 +54,4 @@ func (c *ChatCompletion) Execute(
 	return &ChatCompletionOutput{
 		Content: resp.Choices[0].Message.Content,
 	}, nil
-
 }
