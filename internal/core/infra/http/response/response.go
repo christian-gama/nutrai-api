@@ -40,16 +40,16 @@ func handleError(ctx *gin.Context, r any) {
 
 func handleSpecificErrors(ctx *gin.Context, err error) bool {
 	errorResponses := []errorResponse{
-		{ErrorAssertFunc: isErrAlreadyExists, Response: Conflict},
-		{ErrorAssertFunc: isErrInternalServerError, Response: InternalServerError},
-		{ErrorAssertFunc: isErrInvalid, Response: BadRequest},
-		{ErrorAssertFunc: isErrNoChanges, Response: BadRequest},
-		{ErrorAssertFunc: isErrNotFound, Response: NotFound},
-		{ErrorAssertFunc: isErrRequired, Response: BadRequest},
-		{ErrorAssertFunc: isErrTimeout, Response: GatewayTimeout},
-		{ErrorAssertFunc: isErrTooManyRequests, Response: TooManyRequests},
-		{ErrorAssertFunc: isErrUnauthorized, Response: Unauthorized},
-		{ErrorAssertFunc: isErrUnavailable, Response: ServiceUnavailable},
+		{Response: BadRequest, ErrorAssertFunc: isErrAlreadyExists},
+		{Response: BadRequest, ErrorAssertFunc: isErrInvalid},
+		{Response: BadRequest, ErrorAssertFunc: isErrNoChanges},
+		{Response: BadRequest, ErrorAssertFunc: isErrRequired},
+		{Response: GatewayTimeout, ErrorAssertFunc: isErrTimeout},
+		{Response: InternalServerError, ErrorAssertFunc: isErrInternalServerError},
+		{Response: NotFound, ErrorAssertFunc: isErrNotFound},
+		{Response: ServiceUnavailable, ErrorAssertFunc: isErrUnavailable},
+		{Response: TooManyRequests, ErrorAssertFunc: isErrTooManyRequests},
+		{Response: Unauthorized, ErrorAssertFunc: isErrUnauthorized},
 	}
 
 	for _, errorHandler := range errorResponses {

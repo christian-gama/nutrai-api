@@ -30,7 +30,7 @@ func NewRegister(registerHandler service.RegisterHandler) Register {
 			Path:     controller.JoinPath("register"),
 			Method:   http.MethodPost,
 			IsPublic: true,
-			RPM:      5,
+			RPM:      20,
 		},
 	)
 }

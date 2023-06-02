@@ -1,13 +1,11 @@
 package routes
 
 import (
-	"time"
-
 	"github.com/christian-gama/nutrai-api/config/env"
-	authMiddleware "github.com/christian-gama/nutrai-api/internal/auth/api/http/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router"
+	routerMiddleware "github.com/christian-gama/nutrai-api/internal/core/infra/http/router/middleware"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
 	"github.com/gin-gonic/gin"
 )
@@ -62,7 +60,7 @@ func (r *routes) initializeHandlers(
 	handlers[len(handlers)-1] = controller.Handle
 
 	handlers = r.addAuthIfNeeded(controller, handlers)
-	handlers = r.addRateLimitIfNeeded(controller, handlers)
+	handlers = r.addRateLimit(controller, handlers)
 
 	return handlers
 }
@@ -84,23 +82,29 @@ func (r *routes) addAuthIfNeeded(
 	handlers []gin.HandlerFunc,
 ) []gin.HandlerFunc {
 	if !controller.IsPublic() {
-		handlers = slice.Unshift(handlers, authMiddleware.MakeAuth().Handle).Build()
+		handlers = slice.Unshift(handlers, routerMiddleware.MakeAuth().Handle).Build()
 	}
 
 	return handlers
 }
 
-// addRateLimitIfNeeded is a helper function that adds a rate limit middleware if the controller
+// addRateLimit is a helper function that adds a rate limit middleware if the controller
 // has a rate limit.
-func (r *routes) addRateLimitIfNeeded(
+func (r *routes) addRateLimit(
 	controller controller.Controller,
 	handlers []gin.HandlerFunc,
 ) []gin.HandlerFunc {
-	if controller.RPM() > 0 && env.Config.EnableRateLimit {
-		handlers = slice.
-			Unshift(handlers, router.RateLimiter(controller.RPM(), time.Minute)).
-			Build()
+	hasNoRateLimitSet := controller.RPM() == 0 && env.Config.GlobalRateLimit == 0
+	if !env.Config.EnableRateLimit || hasNoRateLimitSet {
+		return handlers
 	}
+
+	rpm := controller.RPM()
+	if rpm == 0 {
+		rpm = env.Config.GlobalRateLimit
+	}
+
+	handlers = slice.Unshift(handlers, routerMiddleware.MakeRateLimiter(rpm).Handle).Build()
 
 	return handlers
 }

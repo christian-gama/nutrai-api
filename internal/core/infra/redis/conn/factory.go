@@ -4,14 +4,14 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-var defaultRedisConnection *redis.Conn
+var redisClient *redis.Client
 
-func MakeDefaultRedis() *redis.Conn {
-	if defaultRedisConnection != nil {
-		return defaultRedisConnection
+func MakeRedis() *redis.Client {
+	if redisClient != nil {
+		return redisClient
 	}
 
-	defaultRedisConnection = NewConn(0)
+	redisClient = NewConn(0)
 
-	return defaultRedisConnection
+	return redisClient
 }

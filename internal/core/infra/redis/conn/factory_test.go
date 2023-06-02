@@ -17,6 +17,6 @@ func TestFactorySuite(t *testing.T) {
 
 func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
-		conn.MakeDefaultRedis()
+		conn.MakeRedis()
 	})
 }

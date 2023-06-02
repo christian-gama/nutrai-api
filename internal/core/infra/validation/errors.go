@@ -9,19 +9,19 @@ import (
 // errorMsgs is a map of errors messages that are more user friendly.
 var errorMsgs = map[string]func(field string, param string) error{
 	"eqcsfield": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("must be equal to %s", param))
+		return errors.Invalid(field, "must be equal to %s", param)
 	},
 
 	"eqfield": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("must be equal to %s", param))
+		return errors.Invalid(field, "must be equal to %s", param)
 	},
 
 	"fieldcontains": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("must contain %s", param))
+		return errors.Invalid(field, "must contain %s", param)
 	},
 
 	"fieldexcludes": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("must not contain %s", param))
+		return errors.Invalid(field, "must not contain %s", param)
 	},
 
 	"cidr": func(field string, param string) error {
@@ -149,7 +149,7 @@ var errorMsgs = map[string]func(field string, param string) error{
 	},
 
 	"contains": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("must contain %s", param))
+		return errors.Invalid(field, "must contain %s", param)
 	},
 
 	"containsany": func(field string, param string) error {
@@ -160,19 +160,19 @@ var errorMsgs = map[string]func(field string, param string) error{
 	},
 
 	"containsrune": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("must contain the character %s", param))
+		return errors.Invalid(field, "must contain the character %s", param)
 	},
 
 	"endsnotwith": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("must not end with %s", param))
+		return errors.Invalid(field, "must not end with %s", param)
 	},
 
 	"endswith": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("must end with %s", param))
+		return errors.Invalid(field, "must end with %s", param)
 	},
 
 	"excludes": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("must not contain %s", param))
+		return errors.Invalid(field, "must not contain %s", param)
 	},
 
 	"excludesall": func(field string, param string) error {
@@ -183,7 +183,7 @@ var errorMsgs = map[string]func(field string, param string) error{
 	},
 
 	"excludesrune": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("must not contain the character %s", param))
+		return errors.Invalid(field, "must not contain the character %s", param)
 	},
 
 	"lowercase": func(field string, param string) error {
@@ -207,11 +207,11 @@ var errorMsgs = map[string]func(field string, param string) error{
 	},
 
 	"startsnotwith": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("must not start with %s", param))
+		return errors.Invalid(field, "must not start with %s", param)
 	},
 
 	"startswith": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("must start with %s", param))
+		return errors.Invalid(field, "must start with %s", param)
 	},
 
 	"uppercase": func(field string, param string) error {
@@ -457,11 +457,11 @@ var errorMsgs = map[string]func(field string, param string) error{
 	},
 
 	"eq": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("is not equal to %s", param))
+		return errors.Invalid(field, "is not equal to %s", param)
 	},
 
 	"gt": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("is not greater than %s", param))
+		return errors.Invalid(field, "is not greater than %s", param)
 	},
 
 	"gte": func(field string, param string) error {
@@ -472,15 +472,15 @@ var errorMsgs = map[string]func(field string, param string) error{
 	},
 
 	"lt": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("is not less than %s", param))
+		return errors.Invalid(field, "is not less than %s", param)
 	},
 
 	"lte": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("is not less than or equal to %s", param))
+		return errors.Invalid(field, "is not less than or equal to %s", param)
 	},
 
 	"ne": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("is not not equal to %s", param))
+		return errors.Invalid(field, "is not not equal to %s", param)
 	},
 
 	"dir": func(field string, param string) error {
@@ -500,7 +500,7 @@ var errorMsgs = map[string]func(field string, param string) error{
 	},
 
 	"max": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("is not less than or equal to %s", param))
+		return errors.Invalid(field, "is not less than or equal to %s", param)
 	},
 
 	"min": func(field string, param string) error {
@@ -527,23 +527,23 @@ var errorMsgs = map[string]func(field string, param string) error{
 	},
 
 	"required_with": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("is required with %s", param))
+		return errors.Invalid(field, "is required with %s", param)
 	},
 
 	"required_with_all": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("is required with %s", param))
+		return errors.Invalid(field, "is required with %s", param)
 	},
 
 	"required_without": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("is required without %s", param))
+		return errors.Invalid(field, "is required without %s", param)
 	},
 
 	"required_without_all": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("is required without %s", param))
+		return errors.Invalid(field, "is required without %s", param)
 	},
 
 	"excluded_if": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("is not allowed when %s is present", param))
+		return errors.Invalid(field, "is not allowed when %s is present", param)
 	},
 
 	"excluded_unless": func(field string, param string) error {
@@ -554,11 +554,11 @@ var errorMsgs = map[string]func(field string, param string) error{
 	},
 
 	"excluded_with": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("is not allowed when %s is present", param))
+		return errors.Invalid(field, "is not allowed when %s is present", param)
 	},
 
 	"excluded_with_all": func(field string, param string) error {
-		return errors.Invalid(field, fmt.Sprintf("is not allowed when %s is present", param))
+		return errors.Invalid(field, "is not allowed when %s is present", param)
 	},
 
 	"excluded_without": func(field string, param string) error {

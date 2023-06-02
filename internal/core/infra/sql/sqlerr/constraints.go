@@ -123,7 +123,7 @@ func tooLongConstraint(err error) error {
 		}).
 		Build()
 
-	return errors.Invalid("", fmt.Sprintf("value is too long (max %d character)", value[0]))
+	return errors.Invalid("", "value is too long (max %d character)", value[0])
 }
 
 // uniqueConstraint is an error that occurs when a unique constraint is violated.

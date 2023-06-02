@@ -12,6 +12,7 @@ type Controller interface {
 	Path() Path
 	Params() Params
 	IsPublic() bool
+	RPM() int
 }
 ```
 

@@ -1,9 +1,8 @@
 package router
 
 import (
-	"time"
-
 	"github.com/christian-gama/nutrai-api/config/env"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,11 +18,8 @@ func SetupRouter() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	r := gin.New()
-	r.Use(cors())
-	r.Use(logging())
-	r.Use(limitBodySize())
-	r.Use(RateLimiter(env.Config.GlobalRateLimit, time.Minute))
-
-	Router = r
+	Router = gin.New()
+	Router.Use(middleware.MakeCors().Handle)
+	Router.Use(middleware.MakeLogging().Handle)
+	Router.Use(middleware.MakeLimitBodySize().Handle)
 }

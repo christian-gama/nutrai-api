@@ -11,7 +11,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func NewConn(db int) (conn *redis.Conn) {
+func NewConn(db int) *redis.Client {
 	log.Loading("\tConnecting to Redis (%d)", db)
 
 	client := redis.NewClient(&redis.Options{
@@ -24,15 +24,14 @@ func NewConn(db int) (conn *redis.Conn) {
 	err := retry.Retry(attempts, time.Second, func() error {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 		defer cancel()
-		conn = client.Conn()
-		_, err := conn.Ping(ctx).Result()
+		_, err := client.Ping(ctx).Result()
 		return err
 	})
 	if err != nil {
 		log.Fatalf("\tFailed to connect to redis after %d retries: %v", attempts, err)
 	}
 
-	return conn
+	return client
 }
 
 func addr() string {

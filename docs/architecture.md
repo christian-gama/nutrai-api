@@ -9,6 +9,7 @@ root
  ┣ internal
  ┣ migration
  ┣ pkg
+ ┣ templates
  ┗ scripts
 ```
 

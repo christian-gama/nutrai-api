@@ -11,10 +11,10 @@ import (
 )
 
 type tokenImpl struct {
-	redis *redis.Conn
+	redis *redis.Client
 }
 
-func NewRedisToken(redis *redis.Conn) repo.Token {
+func NewRedisToken(redis *redis.Client) repo.Token {
 	return &tokenImpl{
 		redis: redis,
 	}

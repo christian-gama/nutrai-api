@@ -31,5 +31,7 @@ func NewMiddleware(handler Handler) Middleware {
 
 // Handle implements Middleware.
 func (c *middlewareImpl) Handle(ctx *gin.Context) {
-	response.Response(ctx, func() { c.Handler(ctx) })
+	response.Response(ctx, func() {
+		c.Handler(ctx)
+	})
 }

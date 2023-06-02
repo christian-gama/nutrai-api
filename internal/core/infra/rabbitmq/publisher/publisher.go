@@ -3,7 +3,6 @@ package publisher
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/message"
@@ -70,7 +69,7 @@ func (p *publisherImpl[Data]) Handle(data Data) {
 
 	msg, err := json.Marshal(&data)
 	if err != nil {
-		panic(errors.InternalServerError(fmt.Sprintf("could not marshal message: %s", err)))
+		panic(errors.InternalServerError("could not marshal message: %s", err))
 	}
 
 	err = ch.PublishWithContext(ctx,
@@ -84,6 +83,6 @@ func (p *publisherImpl[Data]) Handle(data Data) {
 		},
 	)
 	if err != nil {
-		panic(errors.InternalServerError(fmt.Sprintf("could not publish message: %s", err)))
+		panic(errors.InternalServerError("could not publish message: %s", err))
 	}
 }

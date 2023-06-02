@@ -6,5 +6,5 @@ import (
 )
 
 func MakeRedisToken() repo.Token {
-	return NewRedisToken(conn.MakeDefaultRedis())
+	return NewRedisToken(conn.MakeRedis())
 }
