@@ -1,4 +1,4 @@
-package gpt
+package service
 
 import (
 	"context"
