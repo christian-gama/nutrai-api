@@ -2,35 +2,34 @@ package gpt
 
 import (
 	"context"
+	"errors"
+	"io"
 
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
 )
 
-type ChatCompletionOutput struct {
+type ChatCompletionStreamOutput struct {
 	Content string `json:"content"`
 }
 
-type ChatCompletion struct {
+type ChatCompletionStream struct {
 	Config repo.ChatCompletionConfigInput
 	Client repo.GptClient
 }
 
-func NewChatCompletion(
+func NewChatCompletionStream(
 	config repo.ChatCompletionConfigInput,
 	client repo.GptClient,
-) *ChatCompletion {
-	return &ChatCompletion{
+) *ChatCompletionStream {
+	return &ChatCompletionStream{
 		Config: config,
 		Client: client,
 	}
 }
 
-func (c *ChatCompletion) Execute(
-	ctx context.Context,
-	messages []repo.ChatCompletionMessage,
-) (*ChatCompletionOutput, error) {
+func (c *ChatCompletionStream) Execute(ctx context.Context, messages []repo.ChatCompletionMessage, stream chan ChatCompletionStreamOutput) error {
 
-	resp, err := c.Client.CreateChatCompletion(
+	resp, err := c.Client.CreateChatCompletionStream(
 		context.Background(),
 		repo.ChatCompletionInput{
 			Messages: messages,
@@ -43,18 +42,36 @@ func (c *ChatCompletion) Execute(
 				MaxTokens:        c.Config.MaxTokens,
 				N:                c.Config.N,
 				Stop:             c.Config.Stop,
-				LogitBias:        c.Config.LogitBias,
-				User:             c.Config.User,
 			},
 		},
 	)
 
+	defer resp.Close()
+
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &ChatCompletionOutput{
-		Content: resp.Choices[0].Message.Content,
-	}, nil
+	for {
+		response, err := resp.Read()
+
+		if errors.Is(err, io.EOF) {
+			break
+		}
+
+		if err != nil {
+			return err
+		}
+
+		content := response.Choices[0].Delta.Content
+
+		r := ChatCompletionStreamOutput{
+			Content: content,
+		}
+
+		stream <- r
+	}
+
+	return nil
 
 }

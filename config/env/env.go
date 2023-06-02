@@ -158,14 +158,16 @@ type sendgrid struct {
 }
 
 type gpt struct {
-	Model                string  `env:"GPT_MODEL,required"`
-	Temperature          float32 `env:"GPT_TEMPERATURE,required"`
-	TopP                 float32 `env:"GPT_TOP_P,required"`
-	N                    int     `env:"GPT_N,required"`
-	PresencePenalty      float32 `env:"GPT_PRESENCE_PENALTY,required"`
-	FrequencyPenalty     float32 `env:"GPT_FREQUENCY_PENALTY,required"`
-	InitialSystemMessage string  `env:"GPT_INITIAL_SYSTEM_MESSAGE,required"`
-	ApiKey               string  `env:"GPT_API_KEY,required"`
+	Model                string   `env:"GPT_MODEL,required"`
+	MaxTokens            int      `env:"GPT_MAX_TOKENS,required"`
+	Stop                 []string `env:"GPT_STOP,required"`
+	Temperature          float32  `env:"GPT_TEMPERATURE,required"`
+	TopP                 float32  `env:"GPT_TOP_P,required"`
+	N                    int      `env:"GPT_N,required"`
+	PresencePenalty      float32  `env:"GPT_PRESENCE_PENALTY,required"`
+	FrequencyPenalty     float32  `env:"GPT_FREQUENCY_PENALTY,required"`
+	InitialSystemMessage string   `env:"GPT_INITIAL_SYSTEM_MESSAGE,required"`
+	ApiKey               string   `env:"GPT_API_KEY,required"`
 }
 
 // DB is the database environment variables.c.

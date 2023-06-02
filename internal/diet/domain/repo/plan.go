@@ -57,6 +57,8 @@ type Plan interface {
 	Update(ctx context.Context, input UpdatePlanInput) error
 }
 
+// --- GPT ---
+
 // ChatCompletionMessage represents a message to be sent to the OpenAI API.
 type ChatCompletionMessage struct {
 	Role    string `json:"role"`
@@ -65,28 +67,22 @@ type ChatCompletionMessage struct {
 
 // ChatCompletionConfigInput represents the configuration for the OpenAI API.
 type ChatCompletionConfigInput struct {
-	Model            string                  `json:"model"`
-	Messages         []ChatCompletionMessage `json:"messages"`
-	MaxTokens        int                     `json:"max_tokens,omitempty"`
-	Temperature      float32                 `json:"temperature,omitempty"`
-	TopP             float32                 `json:"top_p,omitempty"`
-	N                int                     `json:"n,omitempty"`
-	Stream           bool                    `json:"stream,omitempty"`
-	Stop             []string                `json:"stop,omitempty"`
-	PresencePenalty  float32                 `json:"presence_penalty,omitempty"`
-	FrequencyPenalty float32                 `json:"frequency_penalty,omitempty"`
-	LogitBias        map[string]int          `json:"logit_bias,omitempty"`
-	User             string                  `json:"user,omitempty"`
+	Model            string         `json:"model"`
+	MaxTokens        int            `json:"max_tokens,omitempty"`
+	Temperature      float32        `json:"temperature,omitempty"`
+	TopP             float32        `json:"top_p,omitempty"`
+	N                int            `json:"n,omitempty"`
+	Stop             []string       `json:"stop,omitempty"`
+	PresencePenalty  float32        `json:"presence_penalty,omitempty"`
+	FrequencyPenalty float32        `json:"frequency_penalty,omitempty"`
+	LogitBias        map[string]int `json:"logit_bias,omitempty"`
+	User             string         `json:"user,omitempty"`
 }
 
-// ChatCompletionOutput represents the output from the OpenAI API.
-type ChatCompletionOutput struct {
-	ID      string                 `json:"id"`
-	Object  string                 `json:"object"`
-	Created int64                  `json:"created"`
-	Model   string                 `json:"model"`
-	Choices []ChatCompletionChoice `json:"choices"`
-	Usage   Usage                  `json:"usage"`
+// ChatCompletionInput represents the input to the OpenAI API.
+type ChatCompletionInput struct {
+	Messages []ChatCompletionMessage `json:"messages"`
+	Config   ChatCompletionConfigInput
 }
 
 // ChatCompletionChoice represents a choice from the OpenAI API.
@@ -103,6 +99,44 @@ type Usage struct {
 	TotalTokens      int `json:"total_tokens"`
 }
 
+// ChatCompletionOutput represents the output from the OpenAI API.
+type ChatCompletionOutput struct {
+	ID      string                 `json:"id"`
+	Object  string                 `json:"object"`
+	Created int64                  `json:"created"`
+	Model   string                 `json:"model"`
+	Choices []ChatCompletionChoice `json:"choices"`
+	Usage   Usage                  `json:"usage"`
+}
+
+// --- GPT Stream ---
+
+type ChatCompletionStreamChoice struct {
+	Index        int                   `json:"index"`
+	Delta        ChatCompletionMessage `json:"delta"`
+	FinishReason string                `json:"finish_reason"`
+}
+
+type ChatCompletionStreamResponse struct {
+	ID      string                       `json:"id"`
+	Object  string                       `json:"object"`
+	Created int64                        `json:"created"`
+	Model   string                       `json:"model"`
+	Choices []ChatCompletionStreamChoice `json:"choices"`
+}
+
+// ChatCompletionStream
+// Note: Perhaps it is more elegant to abstract Stream using generics.
+type ChatCompletionStream struct {
+	streamReader
+}
+
+type streamReader interface {
+	Read() (*ChatCompletionStreamResponse, error)
+	Close() error
+}
+
 type GptClient interface {
-	CreateChatCompletion(ctx context.Context, input ChatCompletionConfigInput) (*ChatCompletionOutput, error)
+	CreateChatCompletion(ctx context.Context, input ChatCompletionInput) (*ChatCompletionOutput, error)
+	CreateChatCompletionStream(ctx context.Context, input ChatCompletionInput) (*ChatCompletionStream, error)
 }

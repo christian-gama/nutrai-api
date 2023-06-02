@@ -25,7 +25,7 @@ func NewAllDietsHandler(dietRepo repo.Diet) AllDietsHandler {
 	return &allDietsHandlerImpl{dietRepo}
 }
 
-// Handle implements query.Handler
+// Handle implements query.Handler.
 func (q *allDietsHandlerImpl) Handle(
 	ctx context.Context,
 	input *AllDietsInput,

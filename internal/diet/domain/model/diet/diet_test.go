@@ -33,7 +33,6 @@ func (s *DietTestSuite) TestNewDiet() {
 	}
 
 	s.Run("TestNewDiet (Error)", func() {
-
 		s.Run("MonthlyCostUSD", func() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()

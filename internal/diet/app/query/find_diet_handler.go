@@ -26,7 +26,7 @@ func NewFindDietHandler(dietRepo repo.Diet) FindDietHandler {
 	return &findDietHandlerImpl{dietRepo}
 }
 
-// Handle implements query.Handler
+// Handle implements query.Handler.
 func (q *findDietHandlerImpl) Handle(ctx context.Context, input *FindDietInput) (*FindDietOutput, error) {
 	diet, err := q.Diet.Find(
 		ctx,

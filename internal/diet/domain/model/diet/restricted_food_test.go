@@ -35,7 +35,6 @@ func (s *RestrictedFoodTestSuite) TestNewRestrictedFood() {
 	}
 
 	s.Run("TestNewRestrictedFood (Error)", func() {
-
 		s.Run("Name", func() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
