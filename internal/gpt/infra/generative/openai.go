@@ -22,7 +22,6 @@ func (g *Generative) ChatCompletion(
 	ctx context.Context,
 	input []*gpt.Message,
 ) (*gpt.Message, error) {
-
 	var messages []openai.ChatCompletionMessage
 
 	for _, message := range input {
@@ -53,7 +52,6 @@ func (g *Generative) ChatCompletion(
 			Stop:             stop,
 		},
 	)
-
 	if err != nil {
 		return nil, err
 	}

@@ -3,55 +3,61 @@ package gpt
 import (
 	"context"
 
-	"github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
+	gpt "github.com/christian-gama/nutrai-api/internal/gpt/domain/model/message"
+	"github.com/christian-gama/nutrai-api/internal/gpt/domain/repo"
+	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/message"
 )
 
-type ChatCompletionOutput struct {
+type message struct {
+	Role    string `json:"role"`
 	Content string `json:"content"`
+}
+type ChatCompletionOutput struct {
+	Message message `json:"message"`
+}
+
+type ChatCompletionInput struct {
+	Messages []message `json:"messages"`
 }
 
 type ChatCompletion struct {
-	Config repo.ChatCompletionConfigInput
-	Client repo.GptClient
+	Client repo.Generative
 }
 
 func NewChatCompletion(
-	config repo.ChatCompletionConfigInput,
-	client repo.GptClient,
+	client repo.Generative,
 ) *ChatCompletion {
 	return &ChatCompletion{
-		Config: config,
 		Client: client,
 	}
 }
 
 func (c *ChatCompletion) Execute(
 	ctx context.Context,
-	messages []repo.ChatCompletionMessage,
+	input *ChatCompletionInput,
 ) (*ChatCompletionOutput, error) {
-	resp, err := c.Client.CreateChatCompletion(
+
+	var messages []*gpt.Message
+
+	for _, message := range input.Messages {
+		messages = append(messages, &gpt.Message{
+			Role:    value.Role(message.Role),
+			Content: value.Content(message.Content),
+		})
+	}
+
+	resp, err := c.Client.ChatCompletion(
 		context.Background(),
-		repo.ChatCompletionInput{
-			Messages: messages,
-			Config: repo.ChatCompletionConfigInput{
-				Model:            c.Config.Model,
-				Temperature:      c.Config.Temperature,
-				TopP:             c.Config.TopP,
-				PresencePenalty:  c.Config.PresencePenalty,
-				FrequencyPenalty: c.Config.FrequencyPenalty,
-				MaxTokens:        c.Config.MaxTokens,
-				N:                c.Config.N,
-				Stop:             c.Config.Stop,
-				LogitBias:        c.Config.LogitBias,
-				User:             c.Config.User,
-			},
-		},
+		messages,
 	)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ChatCompletionOutput{
-		Content: resp.Choices[0].Message.Content,
+		Message: message{
+			Role:    resp.Role.String(),
+			Content: resp.Content.String(),
+		},
 	}, nil
 }
