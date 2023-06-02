@@ -2,6 +2,7 @@ package gpt
 
 import (
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
+	gpt "github.com/christian-gama/nutrai-api/internal/gpt/domain/model/model"
 	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/message"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
@@ -11,6 +12,7 @@ type Message struct {
 	Role    value.Role     `faker:"-"`
 	Content value.Content  `faker:"sequence"`
 	Tokens  value.Tokens   `faker:"boundary_start=1, boundary_end=1024"`
+	Model   *gpt.Model     `faker:"-"`
 }
 
 // NewMessage returns a new Message instance.
@@ -44,4 +46,34 @@ func (m *Message) Validate() (*Message, error) {
 	}
 
 	return m, nil
+}
+
+// SetID sets the ID of the Message.
+func (m *Message) SetID(id coreValue.UUID) *Message {
+	m.ID = id
+	return m
+}
+
+// SetRole sets the Role of the Message.
+func (m *Message) SetRole(role value.Role) *Message {
+	m.Role = role
+	return m
+}
+
+// SetContent sets the Content of the Message.
+func (m *Message) SetContent(content value.Content) *Message {
+	m.Content = content
+	return m
+}
+
+// SetTokens sets the Tokens of the Message.
+func (m *Message) SetTokens(tokens value.Tokens) *Message {
+	m.Tokens = tokens
+	return m
+}
+
+// SetModel sets the Model of the Message.
+func (m *Message) SetModel(model *gpt.Model) *Message {
+	m.Model = model
+	return m
 }
