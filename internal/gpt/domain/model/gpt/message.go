@@ -4,7 +4,6 @@ import (
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/message"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
-	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 type Message struct {
@@ -12,7 +11,6 @@ type Message struct {
 	Role    value.Role     `faker:"-"`
 	Content value.Content  `faker:"sentence"`
 	Tokens  value.Tokens   `faker:"boundary_start=1, boundary_end=1024"`
-	Model   *Model         `faker:"-"`
 }
 
 // NewMessage returns a new Message instance.
@@ -38,12 +36,6 @@ func (m *Message) Validate() (*Message, error) {
 	}
 
 	if err := m.Tokens.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
-	}
-
-	if m.Model == nil {
-		errs = errutil.Append(errs, errors.Required("model is required"))
-	} else if _, err := m.Model.Validate(); err != nil {
 		errs = errutil.Append(errs, err)
 	}
 
@@ -75,11 +67,5 @@ func (m *Message) SetContent(content value.Content) *Message {
 // SetTokens sets the Tokens of the Message.
 func (m *Message) SetTokens(tokens value.Tokens) *Message {
 	m.Tokens = tokens
-	return m
-}
-
-// SetModel sets the Model of the Message.
-func (m *Message) SetModel(model *Model) *Message {
-	m.Model = model
 	return m
 }

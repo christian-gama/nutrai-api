@@ -66,17 +66,5 @@ func (s *MessageTestSuite) TestNewMessage() {
 				s.Nil(message)
 			})
 		})
-
-		s.Run("Model", func() {
-			s.Run("Should return an error when empty", func() {
-				sut := makeSut()
-				sut.Data.Model = nil
-
-				message, err := sut.Sut()
-
-				s.ErrorAsRequired(err)
-				s.Nil(message)
-			})
-		})
 	})
 }

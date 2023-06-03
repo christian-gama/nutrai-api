@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/christian-gama/nutrai-api/internal/gpt/domain/model/gpt"
+	"github.com/christian-gama/nutrai-api/internal/gpt/domain/repo"
 	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/message"
 	"github.com/sashabaranov/go-openai"
 )
@@ -20,18 +21,18 @@ func NewGenerative(client *openai.Client) *Generative {
 
 func (g *Generative) ChatCompletion(
 	ctx context.Context,
-	input []*gpt.Message,
+	input repo.ChatCompletionInput,
 ) (*gpt.Message, error) {
 	var messages []openai.ChatCompletionMessage
 
-	for _, message := range input {
+	for _, message := range input.Messages {
 		messages = append(messages, openai.ChatCompletionMessage{
 			Role:    message.Role.String(),
 			Content: message.Content.String(),
 		})
 	}
 
-	model := input[0].Model
+	model := input.Model
 
 	stop := []string{}
 

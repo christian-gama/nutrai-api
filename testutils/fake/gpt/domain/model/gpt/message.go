@@ -15,7 +15,6 @@ func Message() *gpt.Message {
 		ErrGenerating(err)
 	}
 
-	data.Model = Model()
 	data.Role = value.User
 
 	if _, err := data.Validate(); err != nil {

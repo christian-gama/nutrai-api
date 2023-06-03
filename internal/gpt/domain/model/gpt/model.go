@@ -1,6 +1,7 @@
 package gpt
 
 import (
+	"github.com/christian-gama/nutrai-api/config/env"
 	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/model"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
@@ -18,7 +19,15 @@ type Model struct {
 
 // NewModel returns a new Model instance.
 func NewModel() *Model {
-	return &Model{}
+	return &Model{
+		Name:             value.Name(env.Gpt.Model),
+		MaxTokens:        value.MaxTokens(env.Gpt.MaxTokens),
+		Temperature:      value.Temperature(env.Gpt.Temperature),
+		TopP:             value.TopP(env.Gpt.TopP),
+		N:                value.N(env.Gpt.N),
+		PresencePenalty:  value.PresencePenalty(env.Gpt.PresencePenalty),
+		FrequencyPenalty: value.FrequencyPenalty(env.Gpt.FrequencyPenalty),
+	}
 }
 
 // String implements the fmt.Stringer interface.

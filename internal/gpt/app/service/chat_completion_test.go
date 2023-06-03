@@ -56,7 +56,7 @@ func (s *ChatCompletionTestSuite) TestNewChatCompletion() {
 			sut.Mock.Client.On("ChatCompletion", mock.Anything, mock.Anything).
 				Return(nil, assert.AnError)
 
-			output, err := sut.Sut.Execute(sut.Ctx, sut.Input)
+			output, err := sut.Sut.Handle(sut.Ctx, sut.Input)
 
 			assert.Nil(s.T(), output)
 
@@ -71,7 +71,7 @@ func (s *ChatCompletionTestSuite) TestNewChatCompletion() {
 			sut.Mock.Client.On("ChatCompletion", mock.Anything, mock.Anything).
 				Return(message, nil)
 
-			output, err := sut.Sut.Execute(sut.Ctx, sut.Input)
+			output, err := sut.Sut.Handle(sut.Ctx, sut.Input)
 
 			s.Nil(err)
 
