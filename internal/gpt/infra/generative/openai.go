@@ -5,7 +5,7 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/gpt/domain/model/gpt"
 	"github.com/christian-gama/nutrai-api/internal/gpt/domain/repo"
-	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/message"
+	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/gpt"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -60,7 +60,7 @@ func (g *Generative) ChatCompletion(
 	content := resp.Choices[0].Message.Content
 
 	return &gpt.Message{
-		Role:    value.Assistant,
+		Role:    gpt.Assistant,
 		Content: value.Content(content),
 	}, nil
 }

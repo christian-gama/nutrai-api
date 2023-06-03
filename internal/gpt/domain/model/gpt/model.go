@@ -2,8 +2,9 @@ package gpt
 
 import (
 	"github.com/christian-gama/nutrai-api/config/env"
-	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/model"
+	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/gpt"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 type Model struct {
@@ -39,32 +40,41 @@ func (Model) String() string {
 func (m *Model) Validate() (*Model, error) {
 	var errs *errutil.Error
 
-	if err := m.Name.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if m.Name == "" {
+		errs = errutil.Append(errs, errors.Required("Name"))
 	}
 
-	if err := m.MaxTokens.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if m.MaxTokens <= 0 {
+		errs = errutil.Append(errs, errors.Invalid("MaxTokens", "MaxTokens must be greater than 0"))
 	}
 
-	if err := m.Temperature.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if m.Temperature < 0.0 || m.Temperature > 1.0 {
+		errs = errutil.Append(
+			errs,
+			errors.Invalid("Temperature", "Temperature must be between 0.0 and 1.0"),
+		)
 	}
 
-	if err := m.TopP.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if m.TopP < 0.0 || m.TopP > 1.0 {
+		errs = errutil.Append(errs, errors.Invalid("TopP", "TopP must be between 0.0 and 1.0"))
 	}
 
-	if err := m.N.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if m.N <= 0 {
+		errs = errutil.Append(errs, errors.Invalid("N", "N must be greater than 0"))
 	}
 
-	if err := m.PresencePenalty.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if m.PresencePenalty < -2.0 || m.PresencePenalty > 2.0 {
+		errs = errutil.Append(
+			errs,
+			errors.Invalid("PresencePenalty", "PresencePenalty must be between -2.0 and 2.0"),
+		)
 	}
 
-	if err := m.FrequencyPenalty.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if m.FrequencyPenalty < -2.0 || m.FrequencyPenalty > 2.0 {
+		errs = errutil.Append(
+			errs,
+			errors.Invalid("FrequencyPenalty", "FrequencyPenalty must be between -2.0 and 2.0"),
+		)
 	}
 
 	if errs.HasErrors() {

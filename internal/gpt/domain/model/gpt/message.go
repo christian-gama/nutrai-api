@@ -2,8 +2,15 @@ package gpt
 
 import (
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
-	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/message"
+	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/gpt"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
+)
+
+const (
+	User      value.Role = "user"
+	System    value.Role = "system"
+	Assistant value.Role = "assistant"
 )
 
 type Message struct {
@@ -27,16 +34,19 @@ func (Message) String() string {
 func (m *Message) Validate() (*Message, error) {
 	var errs *errutil.Error
 
-	if err := m.Role.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if m.Role != User && m.Role != System && m.Role != Assistant {
+		errs = errutil.Append(
+			errs,
+			errors.Invalid("Role", "Role must be one of: user, system, assistant"),
+		)
 	}
 
-	if err := m.Content.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if m.Content == "" {
+		errs = errutil.Append(errs, errors.Required("Content"))
 	}
 
-	if err := m.Tokens.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if m.Tokens <= 0 {
+		errs = errutil.Append(errs, errors.Invalid("Tokens", "Tokens must be greater than 0"))
 	}
 
 	if errs.HasErrors() {

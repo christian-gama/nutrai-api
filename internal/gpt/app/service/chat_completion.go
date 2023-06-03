@@ -6,7 +6,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/core/domain/service"
 	"github.com/christian-gama/nutrai-api/internal/gpt/domain/model/gpt"
 	"github.com/christian-gama/nutrai-api/internal/gpt/domain/repo"
-	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/message"
+	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/gpt"
 )
 
 type message struct {

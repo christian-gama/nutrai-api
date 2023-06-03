@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/gpt/domain/model/gpt"
-	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/model"
+	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/gpt"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/gpt/domain/model/gpt"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )

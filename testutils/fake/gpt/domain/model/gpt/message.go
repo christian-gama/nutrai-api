@@ -2,7 +2,6 @@ package fake
 
 import (
 	"github.com/christian-gama/nutrai-api/internal/gpt/domain/model/gpt"
-	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/message"
 	. "github.com/christian-gama/nutrai-api/testutils/fake"
 	"github.com/go-faker/faker/v4"
 )
@@ -15,7 +14,7 @@ func Message() *gpt.Message {
 		ErrGenerating(err)
 	}
 
-	data.Role = value.User
+	data.Role = gpt.User
 
 	if _, err := data.Validate(); err != nil {
 		ErrGenerating(err)
