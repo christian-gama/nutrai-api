@@ -5,12 +5,13 @@ import (
 	gpt "github.com/christian-gama/nutrai-api/internal/gpt/domain/model/model"
 	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/message"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 type Message struct {
 	ID      coreValue.UUID `faker:"uuid_digit"`
 	Role    value.Role     `faker:"-"`
-	Content value.Content  `faker:"sequence"`
+	Content value.Content  `faker:"sentence"`
 	Tokens  value.Tokens   `faker:"boundary_start=1, boundary_end=1024"`
 	Model   *gpt.Model     `faker:"-"`
 }
@@ -38,6 +39,12 @@ func (m *Message) Validate() (*Message, error) {
 	}
 
 	if err := m.Tokens.Validate(); err != nil {
+		errs = errutil.Append(errs, err)
+	}
+
+	if m.Model == nil {
+		errs = errutil.Append(errs, errors.Required("model is required"))
+	} else if _, err := m.Model.Validate(); err != nil {
 		errs = errutil.Append(errs, err)
 	}
 

@@ -24,5 +24,9 @@ func (n Role) Validate() error {
 		return errors.Required(fieldName)
 	}
 
+	if n != User && n != System && n != Assistant {
+		return errors.Invalid(fieldName, "must be one of user, system or assistant")
+	}
+
 	return nil
 }
