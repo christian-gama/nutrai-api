@@ -6,6 +6,7 @@ import (
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/migrate"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/conn"
 	"github.com/spf13/cobra"
 )
 
@@ -125,5 +126,6 @@ func initialize() {
 	env.NewLoader(envFile).Load()
 	env.Config.LogLevel = env.LogLevelInfo
 	log.SugaredLogger = log.New()
+	conn.MakePsql()
 	m = migrate.MakeMigrate()
 }

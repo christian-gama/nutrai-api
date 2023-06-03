@@ -6,8 +6,9 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
-	"github.com/christian-gama/nutrai-api/internal/core/infra/http/middleware"
+	httpmiddleware "github.com/christian-gama/nutrai-api/internal/core/infra/http/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router"
+	routesMiddleware "github.com/christian-gama/nutrai-api/internal/core/infra/http/router/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router/routes"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/gin-gonic/gin"
@@ -21,58 +22,9 @@ func TestRoutesSuite(t *testing.T) {
 	suite.RunIntegrationTest(t, new(RoutesSuite))
 }
 
-type Controller struct {
-	status    int
-	method    http.Method
-	path      controller.Path
-	params    controller.Params
-	isPublic  bool
-	rateLimit int
-	handler   func(*gin.Context) string
-}
-
-func (h *Controller) Handle(c *gin.Context) {
-	c.String(h.status, h.handler(c))
-}
-
-func (h *Controller) Method() http.Method {
-	return h.method
-}
-
-func (h *Controller) Path() controller.Path {
-	return h.path
-}
-
-func (h *Controller) IsPublic() bool {
-	return h.isPublic
-}
-
-func (h *Controller) Params() controller.Params {
-	return h.params
-}
-
-func (h *Controller) RPM() int {
-	return h.rateLimit
-}
-
-type Middleware struct {
-	Value string
-	Key   string
-}
-
-func (m *Middleware) Handle(c *gin.Context) {
-	c.Set(m.Key, m.Value)
-	c.Next()
-}
-
-func MakeMiddleware(key, value string) *Middleware {
-	return &Middleware{
-		Value: value,
-		Key:   key,
-	}
-}
-
 func (s *RoutesSuite) TestApi() {
+	routesMiddleware.SetAuthMiddleware(MakeAuthMiddleware())
+
 	setupRouter := func() {
 		gin.SetMode(gin.TestMode)
 		router.Router = gin.New()
@@ -246,7 +198,7 @@ func (s *RoutesSuite) TestApi() {
 				path:    "/",
 				handler: func(c *gin.Context) string { return "ok" },
 			},
-				middleware.NewMiddleware(func(ctx *gin.Context) {
+				httpmiddleware.NewMiddleware(func(ctx *gin.Context) {
 					called = true
 				}),
 			)
@@ -270,4 +222,65 @@ func Request(
 	router.Router.ServeHTTP(response, httptest.NewRequest(string(method), path, nil))
 
 	return response
+}
+
+type Controller struct {
+	status    int
+	method    http.Method
+	path      controller.Path
+	params    controller.Params
+	isPublic  bool
+	rateLimit int
+	handler   func(*gin.Context) string
+}
+
+func (h *Controller) Handle(c *gin.Context) {
+	c.String(h.status, h.handler(c))
+}
+
+func (h *Controller) Method() http.Method {
+	return h.method
+}
+
+func (h *Controller) Path() controller.Path {
+	return h.path
+}
+
+func (h *Controller) IsPublic() bool {
+	return h.isPublic
+}
+
+func (h *Controller) Params() controller.Params {
+	return h.params
+}
+
+func (h *Controller) RPM() int {
+	return h.rateLimit
+}
+
+type Middleware struct {
+	Value string
+	Key   string
+}
+
+func (m *Middleware) Handle(c *gin.Context) {
+	c.Set(m.Key, m.Value)
+	c.Next()
+}
+
+func MakeMiddleware(key, value string) *Middleware {
+	return &Middleware{
+		Value: value,
+		Key:   key,
+	}
+}
+
+type AuthMiddleware struct{}
+
+func (m *AuthMiddleware) Handle(c *gin.Context) {
+	c.AbortWithStatus(http.StatusUnauthorized)
+}
+
+func MakeAuthMiddleware() *AuthMiddleware {
+	return &AuthMiddleware{}
 }

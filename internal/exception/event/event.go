@@ -6,4 +6,4 @@ import (
 
 const Exception = "exception"
 
-var CatchException = event.New(Exception, event.Error)
+var Recovery = event.New(Exception, event.Error)

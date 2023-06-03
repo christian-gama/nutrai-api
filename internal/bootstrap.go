@@ -3,27 +3,51 @@ package internal
 import (
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/auth"
+	authMiddleware "github.com/christian-gama/nutrai-api/internal/auth/api/http/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/module"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router"
+	routesMiddleware "github.com/christian-gama/nutrai-api/internal/core/infra/http/router/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
+	redisconn "github.com/christian-gama/nutrai-api/internal/core/infra/redis/conn"
+	sqlconn "github.com/christian-gama/nutrai-api/internal/core/infra/sql/conn"
 	"github.com/christian-gama/nutrai-api/internal/diet"
 	"github.com/christian-gama/nutrai-api/internal/exception"
+	expectionMiddleware "github.com/christian-gama/nutrai-api/internal/exception/api/http/middleware"
+	"github.com/christian-gama/nutrai-api/internal/metrics"
 	"github.com/christian-gama/nutrai-api/internal/notify"
 	"github.com/christian-gama/nutrai-api/internal/patient"
 )
 
-// Bootstrap is responsible for booting up the application.
-func Bootstrap(envFile string) {
-	env.NewLoader(envFile).Load()
-	log.SugaredLogger = log.New()
-	router.SetupRouter()
-
-	// Order matters.
+// setupModules is responsible for setting up the modules of the application. When creating a new
+// module, it should be added here. The order of the modules is important, as some modules may
+// behave differently depending on the order.
+func setupModules() {
+	module.Init(core.Init)
 	module.Init(exception.Init)
 	module.Init(auth.Init)
-	module.Init(core.Init)
+	module.Init(metrics.Init)
 	module.Init(patient.Init)
 	module.Init(diet.Init)
 	module.Init(notify.Init)
+}
+
+// Bootstrap is responsible for booting up the application.
+func Bootstrap(envFile string) {
+	env.NewLoader(envFile).Load()
+
+	// Logger
+	log.SugaredLogger = log.New()
+
+	// Connections
+	sqlconn.MakePsql()
+	redisconn.MakeRedis()
+
+	// Routes
+	routesMiddleware.SetAuthMiddleware(authMiddleware.MakeAuth())
+	routesMiddleware.SetRecoveryMiddleware(expectionMiddleware.MakeRecovery())
+	router.SetupRouter()
+
+	// Modules
+	setupModules()
 }

@@ -11,7 +11,7 @@ import (
 // Init is the function that initializes this module.
 func Init() (*module.Module, func()) {
 	return Module, func() {
-		worker.Register(consumer.MakeSaveExceptionHandler().Handle, 1)
+		worker.Register(consumer.MakeRecoveryHandler().Handle, 1)
 		routes.Register()
 	}
 }

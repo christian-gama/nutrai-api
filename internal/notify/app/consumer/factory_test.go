@@ -3,7 +3,7 @@ package consumer_test
 import (
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/exception/app/consumer"
+	"github.com/christian-gama/nutrai-api/internal/notify/app/consumer"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
 
@@ -17,6 +17,6 @@ func TestFactorySuite(t *testing.T) {
 
 func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
-		consumer.MakeSaveExceptionHandler()
+		consumer.MakeSendWelcomeHandler()
 	})
 }

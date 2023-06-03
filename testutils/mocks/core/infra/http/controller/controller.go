@@ -79,6 +79,20 @@ func (_m *Controller) Path() controller.Path {
 	return r0
 }
 
+// RPM provides a mock function with given fields:
+func (_m *Controller) RPM() int {
+	ret := _m.Called()
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func() int); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	return r0
+}
+
 type mockConstructorTestingTNewController interface {
 	mock.TestingT
 	Cleanup(func())

@@ -12,7 +12,7 @@ type FactorySuite struct {
 }
 
 func TestFactorySuite(t *testing.T) {
-	suite.RunIntegrationTest(t, new(FactorySuite))
+	suite.RunUnitTest(t, new(FactorySuite))
 }
 
 func (s *FactorySuite) TestFactory() {

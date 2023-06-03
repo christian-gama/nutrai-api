@@ -12,13 +12,18 @@ import (
 // dialector is a function that returns a GORM dialector.
 type dialector func(dsn string) gorm.Dialector
 
+type conn struct {
+	*gorm.DB
+}
+
 // NewConn creates a new instance of a GORM connection.
-func NewConn(dialector dialector, opt *gorm.Config) (db *gorm.DB) {
+func NewConn(dialector dialector, opt *gorm.Config) (conn *conn) {
 	const attempts = 90
 
 	log.Loading("\tConnecting to SQL database")
 
 	var err error
+	var db *gorm.DB
 	err = retry.Retry(attempts, time.Second, func() error {
 		db, err = gorm.Open(dialector(dsn()), opt)
 		return err
@@ -31,7 +36,7 @@ func NewConn(dialector dialector, opt *gorm.Config) (db *gorm.DB) {
 }
 
 // connectionPool will setup the connection pool.
-func connectionPool(db *gorm.DB) *gorm.DB {
+func connectionPool(db *gorm.DB) *conn {
 	sqlDB, err := db.DB()
 	if err != nil {
 		panic(err)
@@ -41,5 +46,5 @@ func connectionPool(db *gorm.DB) *gorm.DB {
 	sqlDB.SetMaxOpenConns(env.DB.MaxOpenConns)
 	sqlDB.SetConnMaxLifetime(env.DB.ConnMaxLifetime)
 
-	return db
+	return &conn{db}
 }

@@ -61,12 +61,12 @@ func (s *SQLManagerSuite) SetupTest() {
 		return manager.NewManager[Sample, Sample](db)
 	}
 
-	db := conn.MakePostgres()
+	db := conn.GetPsql()
 	db.AutoMigrate(&Sample{})
 }
 
 func (s *SQLManagerSuite) AfterTest() {
-	db := conn.MakePostgres()
+	db := conn.GetPsql()
 	db.Migrator().DropTable(&Sample{})
 }
 

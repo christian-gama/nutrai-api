@@ -6,5 +6,5 @@ import (
 )
 
 func MakeSQLUser() repo.User {
-	return NewSQLUser(conn.MakePostgres())
+	return NewSQLUser(conn.GetPsql())
 }

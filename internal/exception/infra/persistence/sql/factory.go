@@ -6,5 +6,5 @@ import (
 )
 
 func MakeSQLException() repo.Exception {
-	return NewSQLException(conn.MakePostgres())
+	return NewSQLException(conn.GetPsql())
 }

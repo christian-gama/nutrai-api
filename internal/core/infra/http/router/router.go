@@ -7,7 +7,9 @@ import (
 )
 
 // Router is the global router of the application.
-var Router *gin.Engine
+var (
+	Router *gin.Engine
+)
 
 // SetupRouter sets the mode of the router and returns a new router.
 // It will also set up the global middlewares.
@@ -19,6 +21,7 @@ func SetupRouter() {
 	}
 
 	Router = gin.New()
+	Router.Use(middleware.MakeRecovery().Handle)
 	Router.Use(middleware.MakeCors().Handle)
 	Router.Use(middleware.MakeLogging().Handle)
 	Router.Use(middleware.MakeLimitBodySize().Handle)

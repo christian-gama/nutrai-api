@@ -349,6 +349,18 @@ redis: .cmd-exists-docker .clear-screen .check-env-file
 
 
 # ==============================================================================================
+# Target: grafana
+# Brief: Runs the grafana in a docker container.
+# Usage: Run the command 'make grafana [ENV_FILE="<env_file>"]'.
+# Args:
+# 	ENV_FILE: The env file to be loaded.
+# ==============================================================================================
+.PHONY: grafana
+grafana: .cmd-exists-docker .clear-screen .check-env-file
+	@$(MAKE) .docker COMMAND=up FLAG=-d SERVICE=grafana
+
+
+# ==============================================================================================
 # Target: mock
 # Brief: Generates mocks for all interfaces in the project, excluding the vendor folder.
 # Usage: Run the command 'make mock'.

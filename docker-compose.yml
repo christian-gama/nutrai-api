@@ -1,5 +1,27 @@
 version: '3.9'
+
 services:
+  grafana:
+    image: grafana/grafana
+    ports:
+      - '3000:3000'
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: password
+    depends_on:
+      - prometheus
+    links:
+      - prometheus
+    volumes:
+      - ./metrics/grafana/provisioning/:/etc/grafana/provisioning/
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./metrics/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
   # Database service to run both in development and production. The variables
   # are configured in .env.$APP_ENV and it will run according to the variables
   # you set there.
@@ -89,6 +111,7 @@ services:
       - psql
       - rabbitmq
       - redis
+      - grafana
     links:
       - psql
       - rabbitmq

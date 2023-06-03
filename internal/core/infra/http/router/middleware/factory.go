@@ -8,7 +8,6 @@ import (
 	"time"
 
 	ratelimit "github.com/JGLTechnologies/gin-rate-limit"
-	"github.com/christian-gama/nutrai-api/internal/auth/app/query"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/redis/conn"
 )
 
@@ -24,16 +23,18 @@ func MakeLimitBodySize() LimitBodySize {
 	return NewLimitBodySize()
 }
 
-// MakeRateLimiter is used by the routes internally, so there is no need to set it as a global
-// middleware.
 func MakeRateLimiter(rpm int) RateLimiter {
 	return NewRateLimiter(ratelimit.RedisStore(&ratelimit.RedisOptions{
 		Rate:        time.Minute,
 		Limit:       uint(rpm),
-		RedisClient: conn.MakeRedis(),
+		RedisClient: conn.GetRedis(),
 	}))
 }
 
 func MakeAuth() Auth {
-	return NewAuth(query.MakeAuthHandler())
+	return NewAuth()
+}
+
+func MakeRecovery() Recovery {
+	return NewRecovery()
 }

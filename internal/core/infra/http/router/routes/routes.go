@@ -23,10 +23,17 @@ type routes struct {
 	group *gin.RouterGroup
 }
 
-// Api initializes a new instance of routes with a given group.
+// Api initializes a new instance of routes with a given group with a "api" prefix.
 func Api(group ...string) *routes {
 	return &routes{
 		group: router.Router.Group("api").Group(slice.FirstElementOrDefault(group)),
+	}
+}
+
+// Root initializes a new instance of routes with a given group and a root path (no prefix).
+func Root(group ...string) *routes {
+	return &routes{
+		group: router.Router.Group(slice.FirstElementOrDefault(group)),
 	}
 }
 
@@ -81,8 +88,13 @@ func (r *routes) addAuthIfNeeded(
 	controller controller.Controller,
 	handlers []gin.HandlerFunc,
 ) []gin.HandlerFunc {
+	authHandler := routerMiddleware.MakeAuth()
+	if authHandler == nil {
+		return handlers
+	}
+
 	if !controller.IsPublic() {
-		handlers = slice.Unshift(handlers, routerMiddleware.MakeAuth().Handle).Build()
+		handlers = slice.Unshift(handlers, authHandler.Handle).Build()
 	}
 
 	return handlers

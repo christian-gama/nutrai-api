@@ -7,11 +7,11 @@ import (
 	persistence "github.com/christian-gama/nutrai-api/internal/exception/infra/persistence/sql"
 )
 
-func MakeSaveExceptionHandler() SaveExceptionHandler {
-	return NewSaveExceptionHandler(
-		consumer.MakeConsumer[command.CatchExceptionInput](
+func MakeRecoveryHandler() RecoveryHandler {
+	return NewRecoveryHandler(
+		consumer.MakeConsumer[command.RecoveryInput](
 			consumer.WithExchangeName(event.Exception),
-			consumer.WithRoutingKey(event.CatchException),
+			consumer.WithRoutingKey(event.Recovery),
 		),
 		persistence.MakeSQLException(),
 	)

@@ -10,11 +10,11 @@ import (
 )
 
 func init() {
+	env.NewLoader(".env.test").Load()
+
 	log.SugaredLogger = zap.NewNop().Sugar()
 	faker.Init()
 
 	authValidation.Register()
 	patientValidation.Register()
-
-	env.NewLoader(".env.test").Load()
 }

@@ -11,7 +11,11 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func NewConn(db int) *redis.Client {
+type conn struct {
+	client *redis.Client
+}
+
+func NewConn(db int) *conn {
 	log.Loading("\tConnecting to Redis (%d)", db)
 
 	client := redis.NewClient(&redis.Options{
@@ -31,9 +35,24 @@ func NewConn(db int) *redis.Client {
 		log.Fatalf("\tFailed to connect to redis after %d retries: %v", attempts, err)
 	}
 
-	return client
+	return &conn{client}
 }
 
 func addr() string {
 	return fmt.Sprintf("%s:%d", env.Redis.Host, env.Redis.Port)
+}
+
+func (c *conn) Close() error {
+	c.check()
+	return c.client.Close()
+}
+
+func (c *conn) check() {
+	if c.client == nil {
+		panic("redis connection is nil")
+	}
+}
+
+func (c *conn) GetClient() *redis.Client {
+	return c.client
 }

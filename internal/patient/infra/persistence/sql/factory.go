@@ -6,5 +6,5 @@ import (
 )
 
 func MakeSQLPatient() repo.Patient {
-	return NewSQLPatient(conn.MakePostgres())
+	return NewSQLPatient(conn.GetPsql())
 }

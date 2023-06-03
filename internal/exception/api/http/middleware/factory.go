@@ -4,6 +4,6 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/exception/app/command"
 )
 
-func MakeSaveException() SaveException {
-	return NewSaveException(command.MakeCatchExceptionHandler())
+func MakeRecovery() Recovery {
+	return NewRecovery(command.MakeRecoveryHandler())
 }

@@ -5,7 +5,7 @@ import (
 )
 
 func MakeMigrate() *Migrate {
-	db, err := conn.MakePostgres().DB()
+	db, err := conn.GetPsql().DB()
 	if err != nil {
 		panic(err)
 	}

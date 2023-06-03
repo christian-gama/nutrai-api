@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/christian-gama/nutrai-api/config/env"
-	http1 "github.com/christian-gama/nutrai-api/internal/core/infra/http/router"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
 )
 
@@ -26,7 +26,7 @@ func Start(ctx context.Context) {
 	server := &http.Server{
 		Addr:              fmt.Sprintf(":%d", env.App.Port),
 		ReadHeaderTimeout: 3 * time.Second,
-		Handler:           http1.Router,
+		Handler:           router.Router,
 	}
 
 	go func() {

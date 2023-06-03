@@ -5,11 +5,11 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/exception/event"
 )
 
-func MakeCatchExceptionHandler() CatchExceptionHandler {
-	return NewCatchExceptionHandler(
-		publisher.MakePublisher[CatchExceptionInput](
+func MakeRecoveryHandler() RecoveryHandler {
+	return NewRecoveryHandler(
+		publisher.MakePublisher[RecoveryInput](
 			publisher.WithExchangeName(event.Exception),
-			publisher.WithRoutingKey(event.CatchException),
+			publisher.WithRoutingKey(event.Recovery),
 		),
 	)
 }

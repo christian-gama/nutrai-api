@@ -7,11 +7,9 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-var postgresConnection *gorm.DB
-
-func MakePostgres() *gorm.DB {
-	if postgresConnection != nil {
-		return postgresConnection
+func MakePsql() {
+	if psql != nil {
+		return
 	}
 
 	gormLogger := logger.Discard
@@ -19,7 +17,5 @@ func MakePostgres() *gorm.DB {
 		gormLogger = logger.Default
 	}
 
-	postgresConnection = NewConn(postgres.Open, &gorm.Config{Logger: gormLogger})
-
-	return postgresConnection
+	psql = NewConn(postgres.Open, &gorm.Config{Logger: gormLogger})
 }
