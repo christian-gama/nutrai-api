@@ -113,3 +113,6 @@ output.txt
 *.jmx
 *.jtl
 jmeter.log
+
+# Linter
+*.golangci_fix
