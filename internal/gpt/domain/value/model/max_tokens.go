@@ -13,8 +13,8 @@ func (n MaxTokens) Int() int {
 func (n MaxTokens) Validate() error {
 	const fieldName = "MaxTokens"
 
-	if n < 0 {
-		return errors.Invalid(fieldName, "must be greater than or equal to 0")
+	if n <= 0 {
+		return errors.Required(fieldName)
 	}
 
 	return nil

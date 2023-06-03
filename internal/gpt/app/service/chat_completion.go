@@ -36,7 +36,6 @@ func (c *ChatCompletion) Execute(
 	ctx context.Context,
 	input *ChatCompletionInput,
 ) (*ChatCompletionOutput, error) {
-
 	var messages []*gpt.Message
 
 	for _, message := range input.Messages {

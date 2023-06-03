@@ -158,16 +158,32 @@ type sendgrid struct {
 }
 
 type gpt struct {
-	Model                string   `env:"GPT_MODEL,required"`
-	MaxTokens            int      `env:"GPT_MAX_TOKENS,required"`
-	Stop                 []string `env:"GPT_STOP,required"`
-	Temperature          float32  `env:"GPT_TEMPERATURE,required"`
-	TopP                 float32  `env:"GPT_TOP_P,required"`
-	N                    int      `env:"GPT_N,required"`
-	PresencePenalty      float32  `env:"GPT_PRESENCE_PENALTY,required"`
-	FrequencyPenalty     float32  `env:"GPT_FREQUENCY_PENALTY,required"`
-	InitialSystemMessage string   `env:"GPT_INITIAL_SYSTEM_MESSAGE,required"`
-	ApiKey               string   `env:"GPT_API_KEY,required"`
+	// Model is the GPT model.
+	Model string `env:"GPT_MODEL,required"`
+
+	// MaxTokens is the GPT max tokens.
+	MaxTokens int `env:"GPT_MODEL_MAX_TOKENS,required"`
+
+	// Stop is the GPT stop tokens.
+	Stop []string `env:"GPT_STOP,required"`
+
+	// Temperature is the GPT temperature.
+	Temperature float32 `env:"GPT_TEMPERATURE,required"`
+
+	// TopP is the GPT top p.
+	TopP float32 `env:"GPT_TOP_P,required"`
+
+	// N is number of completions to generate for each prompt.
+	N int `env:"GPT_N,required"`
+
+	// PresencePenalty is the GPT presence penalty.
+	PresencePenalty float32 `env:"GPT_PRESENCE_PENALTY"`
+
+	// FrequencyPenalty is the GPT frequency penalty.
+	FrequencyPenalty float32 `env:"GPT_FREQUENCY_PENALTY"`
+
+	// ApiKey is the GPT API key.
+	ApiKey string `env:"GPT_API_KEY,required"`
 }
 
 // DB is the database environment variables.c.

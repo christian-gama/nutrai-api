@@ -11,7 +11,7 @@ type Model struct {
 	Temperature      value.Temperature      `faker:"boundary_start=0.0, boundary_end=1.0"` // 0.0 - 1.0
 	TopP             value.TopP             `faker:"boundary_start=0.0, boundary_end=1.0"` // 0.0 - 1.0
 	N                value.N                `faker:"boundary_start=1, boundary_end=100"`   // number of responses
-	Stop             []value.Stop           `faker:"len=3"`
+	Stop             []value.Stop           `faker:"-"`
 	PresencePenalty  value.PresencePenalty  `faker:"boundary_start=-2.0, boundary_end=2.0"` // -2.0 to 2.0 - Number beetwen -2.0 and 2.0
 	FrequencyPenalty value.FrequencyPenalty `faker:"boundary_start=-2.0, boundary_end=2.0"` // -2.0 to 2.0 - Number beetwen -2.0 and 2.0
 }
@@ -35,6 +35,26 @@ func (m *Model) Validate() (*Model, error) {
 	}
 
 	if err := m.MaxTokens.Validate(); err != nil {
+		errs = errutil.Append(errs, err)
+	}
+
+	if err := m.Temperature.Validate(); err != nil {
+		errs = errutil.Append(errs, err)
+	}
+
+	if err := m.TopP.Validate(); err != nil {
+		errs = errutil.Append(errs, err)
+	}
+
+	if err := m.N.Validate(); err != nil {
+		errs = errutil.Append(errs, err)
+	}
+
+	if err := m.PresencePenalty.Validate(); err != nil {
+		errs = errutil.Append(errs, err)
+	}
+
+	if err := m.FrequencyPenalty.Validate(); err != nil {
 		errs = errutil.Append(errs, err)
 	}
 
