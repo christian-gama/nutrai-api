@@ -23,5 +23,6 @@ func (s *FactorySuite) TestFactory() {
 		controller.MakeDeleteUser()
 		controller.MakeChangePassword()
 		controller.MakeLogout()
+		controller.MakeLogoutAll()
 	})
 }

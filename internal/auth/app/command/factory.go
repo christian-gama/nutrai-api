@@ -4,6 +4,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/auth/event"
 	"github.com/christian-gama/nutrai-api/internal/auth/infra/hash"
+	"github.com/christian-gama/nutrai-api/internal/auth/infra/jwt"
 	redisPersistence "github.com/christian-gama/nutrai-api/internal/auth/infra/persistence/redis"
 	sqlPersistence "github.com/christian-gama/nutrai-api/internal/auth/infra/persistence/sql"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/rabbitmq/publisher"
@@ -41,5 +42,9 @@ func MakeSaveUserHandler() SaveUserHandler {
 }
 
 func MakeLogoutHandler() LogoutHandler {
-	return NewLogoutHandler(redisPersistence.MakeRedisToken())
+	return NewLogoutHandler(redisPersistence.MakeRedisToken(), jwt.MakeRefreshVerifier())
+}
+
+func MakeLogoutAllHandler() LogoutAllHandler {
+	return NewLogoutAllHandler(redisPersistence.MakeRedisToken())
 }

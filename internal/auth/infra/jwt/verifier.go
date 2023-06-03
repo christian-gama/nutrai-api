@@ -35,7 +35,7 @@ func NewVerifier(tokenType jwt.TokenType, tokenRepo repo.Token) jwt.Verifier {
 func (s *verifierImpl) Verify(t jwtValue.Token, checkIsStored bool) (*jwt.Claims, error) {
 	token, err := _jwt.Parse(t.String(), keyFunc)
 	if err != nil {
-		return nil, err
+		return nil, ErrInvalidToken
 	}
 
 	mapClaims, ok := token.Claims.(_jwt.MapClaims)
@@ -60,6 +60,7 @@ func (s *verifierImpl) Verify(t jwtValue.Token, checkIsStored bool) (*jwt.Claims
 func (s *verifierImpl) isStored(claims jwt.Claims) error {
 	if _, err := s.tokenRepo.Find(context.Background(), repo.FindTokenInput{
 		Email: claims.Sub.Email,
+		Jti:   claims.Jti,
 	}); err != nil {
 		return ErrInvalidToken
 	}

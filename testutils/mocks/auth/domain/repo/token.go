@@ -30,6 +30,20 @@ func (_m *Token) Delete(ctx context.Context, input repo.DeleteTokenInput) error 
 	return r0
 }
 
+// DeleteAll provides a mock function with given fields: ctx, input
+func (_m *Token) DeleteAll(ctx context.Context, input repo.DeleteAllTokenInput) error {
+	ret := _m.Called(ctx, input)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, repo.DeleteAllTokenInput) error); ok {
+		r0 = rf(ctx, input)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // Find provides a mock function with given fields: ctx, input
 func (_m *Token) Find(ctx context.Context, input repo.FindTokenInput) (*token.Token, error) {
 	ret := _m.Called(ctx, input)

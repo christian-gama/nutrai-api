@@ -14,8 +14,7 @@ var (
 		"it's expected to have a valid bearer token as 'Bearer <token>'",
 	)
 
-	ErrInvalidToken = errors.Invalid(
-		"token",
-		"the token is invalid",
+	ErrInvalidToken = errors.Unauthorized(
+		"invalid token",
 	)
 )

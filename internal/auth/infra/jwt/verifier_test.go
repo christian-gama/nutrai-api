@@ -104,7 +104,7 @@ func (s *VerifierSuite) TestVerify() {
 		claims, err := sut.Sut(token, false)
 
 		s.Require().Error(err)
-		s.Contains(err.Error(), "expired")
+		s.Contains(err.Error(), "invalid token")
 		s.Nil(claims)
 	})
 

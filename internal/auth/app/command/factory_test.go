@@ -17,10 +17,11 @@ func TestFactorySuite(t *testing.T) {
 
 func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
-		command.MakeLogoutHandler()
 		command.MakeChangePasswordHandler()
-		command.MakeDeleteMeHandler()
-		command.MakeSaveUserHandler()
 		command.MakeCheckCredentialsHandler()
+		command.MakeDeleteMeHandler()
+		command.MakeLogoutAllHandler()
+		command.MakeLogoutHandler()
+		command.MakeSaveUserHandler()
 	})
 }

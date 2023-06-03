@@ -11,7 +11,8 @@ func Register() {
 		SetController(controller.MakeLogin()).
 		SetController(controller.MakeRegister()).
 		SetController(controller.MakeRefreshToken()).
-		SetController(controller.MakeLogout())
+		SetController(controller.MakeLogout()).
+		SetController(controller.MakeLogoutAll())
 
 	routes.Api("/v1/users").
 		SetController(controller.MakeDeleteUser()).

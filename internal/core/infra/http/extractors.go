@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"reflect"
 	"strings"
 
@@ -31,7 +30,7 @@ func extract[Input any](ctx *gin.Context, input *Input, extractFn func(any) erro
 func ExtractBody[Body any](ctx *gin.Context, body *Body) {
 	err := extract(ctx, body, ctx.ShouldBindJSON)
 	if err != nil {
-		response.BadRequest(ctx, fmt.Errorf("could not extract body: %w", err))
+		response.BadRequest(ctx, errors.Invalid("could not extract body: %s", err.Error()))
 	}
 }
 
@@ -39,7 +38,7 @@ func ExtractBody[Body any](ctx *gin.Context, body *Body) {
 func ExtractQuery[Query any](ctx *gin.Context, query *Query) {
 	err := extract(ctx, query, ctx.ShouldBindQuery)
 	if err != nil {
-		response.BadRequest(ctx, fmt.Errorf("could not extract query: %w", err))
+		response.BadRequest(ctx, errors.Invalid("could not extract query: %s", err.Error()))
 	}
 }
 
@@ -47,7 +46,7 @@ func ExtractQuery[Query any](ctx *gin.Context, query *Query) {
 func ExtractParams[Params any](ctx *gin.Context, params *Params) {
 	err := extract(ctx, params, ctx.ShouldBindUri)
 	if err != nil && !strings.Contains(err.Error(), "EOF") {
-		response.BadRequest(ctx, fmt.Errorf("could not extract params: %w", err))
+		response.BadRequest(ctx, errors.Invalid("could not extract params: %s", err.Error()))
 	}
 }
 

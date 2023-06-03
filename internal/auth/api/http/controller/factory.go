@@ -28,3 +28,7 @@ func MakeChangePassword() ChangePassword {
 func MakeLogout() Logout {
 	return NewLogout(command.MakeLogoutHandler())
 }
+
+func MakeLogoutAll() LogoutAll {
+	return NewLogoutAll(command.MakeLogoutAllHandler())
+}

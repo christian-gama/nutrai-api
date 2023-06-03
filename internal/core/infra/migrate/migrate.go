@@ -55,7 +55,7 @@ func (m *Migrate) Down() {
 
 	if err := m.mig.Down(); err != nil {
 		if errors.Is(err, migrate.ErrNoChange) {
-			fmt.Println("No changes")
+			log.Warn("No changes")
 			return
 		}
 
