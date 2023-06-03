@@ -20,19 +20,26 @@ type ChatCompletionInput struct {
 	Messages []message `json:"messages"`
 }
 
-type ChatCompletion struct {
+type ChatCompletion interface {
+	Execute(
+		ctx context.Context,
+		input *ChatCompletionInput,
+	) (*ChatCompletionOutput, error)
+}
+
+type ChatCompletionImpl struct {
 	Client repo.Generative
 }
 
 func NewChatCompletion(
 	client repo.Generative,
-) *ChatCompletion {
-	return &ChatCompletion{
+) ChatCompletion {
+	return &ChatCompletionImpl{
 		Client: client,
 	}
 }
 
-func (c *ChatCompletion) Execute(
+func (c *ChatCompletionImpl) Execute(
 	ctx context.Context,
 	input *ChatCompletionInput,
 ) (*ChatCompletionOutput, error) {
