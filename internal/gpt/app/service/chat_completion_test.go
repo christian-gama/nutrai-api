@@ -6,7 +6,7 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/gpt/app/service"
 	serviceFake "github.com/christian-gama/nutrai-api/testutils/fake/gpt/app/service"
-	messageFake "github.com/christian-gama/nutrai-api/testutils/fake/gpt/domain/model/message"
+	messageFake "github.com/christian-gama/nutrai-api/testutils/fake/gpt/domain/model/gpt"
 	generativeMock "github.com/christian-gama/nutrai-api/testutils/mocks/gpt/domain/repo"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"

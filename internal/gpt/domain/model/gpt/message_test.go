@@ -3,8 +3,8 @@ package gpt_test
 import (
 	"testing"
 
-	gpt "github.com/christian-gama/nutrai-api/internal/gpt/domain/model/message"
-	fake "github.com/christian-gama/nutrai-api/testutils/fake/gpt/domain/model/message"
+	"github.com/christian-gama/nutrai-api/internal/gpt/domain/model/gpt"
+	fake "github.com/christian-gama/nutrai-api/testutils/fake/gpt/domain/model/gpt"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
 

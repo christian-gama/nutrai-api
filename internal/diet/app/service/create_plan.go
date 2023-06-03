@@ -1,5 +1,3 @@
 package service
 
-type CreatePlanInput struct {
-    
-}
+type CreatePlanInput struct{}

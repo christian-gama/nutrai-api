@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	gpt "github.com/christian-gama/nutrai-api/internal/gpt/domain/model/message"
+	"github.com/christian-gama/nutrai-api/internal/gpt/domain/model/gpt"
 	mock "github.com/stretchr/testify/mock"
 )
 

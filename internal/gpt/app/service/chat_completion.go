@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	gpt "github.com/christian-gama/nutrai-api/internal/gpt/domain/model/message"
+	"github.com/christian-gama/nutrai-api/internal/gpt/domain/model/gpt"
 	"github.com/christian-gama/nutrai-api/internal/gpt/domain/repo"
 	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/message"
 )

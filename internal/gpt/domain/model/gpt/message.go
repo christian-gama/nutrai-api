@@ -2,7 +2,6 @@ package gpt
 
 import (
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
-	gpt "github.com/christian-gama/nutrai-api/internal/gpt/domain/model/model"
 	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/message"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
@@ -13,7 +12,7 @@ type Message struct {
 	Role    value.Role     `faker:"-"`
 	Content value.Content  `faker:"sentence"`
 	Tokens  value.Tokens   `faker:"boundary_start=1, boundary_end=1024"`
-	Model   *gpt.Model     `faker:"-"`
+	Model   *Model         `faker:"-"`
 }
 
 // NewMessage returns a new Message instance.
@@ -80,7 +79,7 @@ func (m *Message) SetTokens(tokens value.Tokens) *Message {
 }
 
 // SetModel sets the Model of the Message.
-func (m *Message) SetModel(model *gpt.Model) *Message {
+func (m *Message) SetModel(model *Model) *Message {
 	m.Model = model
 	return m
 }
