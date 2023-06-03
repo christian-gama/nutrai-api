@@ -20,6 +20,7 @@ type Diet struct {
 	Goal            value.Goal            `faker:"-"`
 	MealPlan        value.MealPlan        `faker:"-"`
 	MonthlyCostUSD  value.MonthlyCostUSD  `faker:"boundary_start=12.65, boundary_end=184.05"`
+	RestrictedFood  []*RestrictedFood     `faker:"-"`
 }
 
 // NewDiet returns a new Diet instance.
@@ -35,10 +36,6 @@ func (Diet) String() string {
 // Validate returns an error if the diet is invalid.
 func (d *Diet) Validate() (*Diet, error) {
 	var errs *errutil.Error
-
-	if err := d.ID.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
-	}
 
 	if err := d.PatientID.Validate(); err != nil {
 		errs = errutil.Append(errs, err)
@@ -66,6 +63,12 @@ func (d *Diet) Validate() (*Diet, error) {
 
 	if err := d.MonthlyCostUSD.Validate(); err != nil {
 		errs = errutil.Append(errs, err)
+	}
+
+	for _, rf := range d.RestrictedFood {
+		if _, err := rf.Validate(); err != nil {
+			errs = errutil.Append(errs, err)
+		}
 	}
 
 	if errs.HasErrors() {
@@ -120,5 +123,28 @@ func (d *Diet) SetMealPlan(mealPlan value.MealPlan) *Diet {
 // SetMonthlyCostUSD sets the diet's monthly cost in USD.
 func (d *Diet) SetMonthlyCostUSD(monthlyCostUSD value.MonthlyCostUSD) *Diet {
 	d.MonthlyCostUSD = monthlyCostUSD
+	return d
+}
+
+// SetRestrictedFood sets the diet's restricted food.
+// Verify if the restricted food already exists in the diet, if it does not, add it.
+func (d *Diet) SetRestrictedFood(restrictedFood []*RestrictedFood) *Diet {
+	restrictedFoodMap := make(map[value.RestrictedFood]*RestrictedFood, len(d.RestrictedFood))
+
+	for _, rf := range d.RestrictedFood {
+		restrictedFoodMap[rf.Name] = rf
+	}
+
+	d.RestrictedFood = make([]*RestrictedFood, len(restrictedFood))
+
+	for i, rf := range restrictedFood {
+		if _, ok := restrictedFoodMap[rf.Name]; !ok {
+			d.RestrictedFood[i] = rf
+			continue
+		}
+
+		d.RestrictedFood[i] = rf.SetDietID(d.ID)
+	}
+
 	return d
 }

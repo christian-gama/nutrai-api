@@ -17,6 +17,10 @@ func Diet() *diet.Diet {
 
 	data.Goal = value.WeightLoss
 	data.MealPlan = value.Vegetarian
+	data.RestrictedFood = []*diet.RestrictedFood{
+		RestrictedFood().SetDietID(data.ID),
+		RestrictedFood().SetDietID(data.ID),
+	}
 
 	if _, err := data.Validate(); err != nil {
 		ErrGenerating(err)

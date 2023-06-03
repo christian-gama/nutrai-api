@@ -31,14 +31,6 @@ func (RestrictedFood) String() string {
 func (rf *RestrictedFood) Validate() (*RestrictedFood, error) {
 	var errs *errutil.Error
 
-	if err := rf.ID.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
-	}
-
-	if err := rf.DietID.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
-	}
-
 	if err := rf.Name.Validate(); err != nil {
 		errs = errutil.Append(errs, err)
 	}

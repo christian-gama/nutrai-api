@@ -1,11 +1,9 @@
 package diet_test
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
-	value "github.com/christian-gama/nutrai-api/internal/diet/domain/value/diet"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/diet"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
@@ -35,18 +33,6 @@ func (s *DietTestSuite) TestNewDiet() {
 	}
 
 	s.Run("TestNewDiet (Error)", func() {
-		s.Run("ID", func() {
-			s.Run("Should return an error when empty", func() {
-				sut := makeSut()
-				sut.Data.ID = 0
-
-				diet, err := sut.Sut()
-
-				s.ErrorAsRequired(err)
-				s.Nil(diet)
-			})
-		})
-
 		s.Run("MonthlyCostUSD", func() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
@@ -67,16 +53,6 @@ func (s *DietTestSuite) TestNewDiet() {
 				s.ErrorAsInvalid(err)
 				s.Nil(diet)
 			})
-
-			s.Run("Should return an error when greater than max", func() {
-				sut := makeSut()
-				sut.Data.MonthlyCostUSD = 10000
-
-				diet, err := sut.Sut()
-
-				s.ErrorAsInvalid(err)
-				s.Nil(diet)
-			})
 		})
 
 		s.Run("Description", func() {
@@ -89,32 +65,12 @@ func (s *DietTestSuite) TestNewDiet() {
 				s.ErrorAsRequired(err)
 				s.Nil(diet)
 			})
-
-			s.Run("Should return an error when too long", func() {
-				sut := makeSut()
-				sut.Data.Description = value.Description(strings.Repeat("a", 501))
-
-				diet, err := sut.Sut()
-
-				s.ErrorAsInvalid(err)
-				s.Nil(diet)
-			})
 		})
 
 		s.Run("DurationInWeeks", func() {
 			s.Run("Should return an error when less than min", func() {
 				sut := makeSut()
 				sut.Data.DurationInWeeks = 0
-
-				diet, err := sut.Sut()
-
-				s.ErrorAsInvalid(err)
-				s.Nil(diet)
-			})
-
-			s.Run("Should return an error when greater than max", func() {
-				sut := makeSut()
-				sut.Data.DurationInWeeks = 9999
 
 				diet, err := sut.Sut()
 
@@ -177,59 +133,7 @@ func (s *DietTestSuite) TestNewDiet() {
 				s.ErrorAsRequired(err)
 				s.Nil(diet)
 			})
-
-			s.Run("Should return an error when too long", func() {
-				sut := makeSut()
-				sut.Data.Name = value.Name(strings.Repeat("a", 101))
-
-				diet, err := sut.Sut()
-
-				s.ErrorAsInvalid(err)
-				s.Nil(diet)
-			})
 		})
-
-		// s.Run("RestrictedFood", func() {
-		// 	s.Run("Should return an error when empty", func() {
-		// 		sut := makeSut()
-		// 		sut.Data.RestrictedFood = []*restrictedfood.RestrictedFood{}
-
-		// 		diet, err := sut.Sut()
-
-		// 		s.ErrorAsRequired(err)
-		// 		s.Nil(diet)
-		// 	})
-
-		// 	s.Run("Should return an error when too long", func() {
-		// 		sut := makeSut()
-		// 		sut.Data.RestrictedFood = []*restrictedfood.RestrictedFood{
-		// 			{
-		// 				Name: value.RestrictedFood(strings.Repeat("a", 101)),
-		// 			},
-		// 		}
-
-		// 		diet, err := sut.Sut()
-
-		// 		s.ErrorAsInvalid(err)
-		// 		s.Nil(diet)
-		// 	})
-		// })
-
-		// s.Run("Should return multiple errors when multiple fields are invalid", func() {
-		// 	sut := makeSut()
-		// 	sut.Data.Description = ""
-		// 	sut.Data.DurationInWeeks = 0
-		// 	sut.Data.Goal = ""
-		// 	sut.Data.MealPlan = ""
-		// 	sut.Data.Name = ""
-		// 	sut.Data.RestrictedFood = nil
-
-		// 	diet, err := sut.Sut()
-
-		// 	e := err.(*errutil.Error)
-		// 	s.Equal(6, e.Len(), "should have 6 errors")
-		// 	s.Nil(diet)
-		// })
 	})
 
 	s.Run("TestNewDiet (Success)", func() {

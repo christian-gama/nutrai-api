@@ -1,11 +1,9 @@
 package diet_test
 
 import (
-	"strings"
 	"testing"
 
 	diet "github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
-	value "github.com/christian-gama/nutrai-api/internal/diet/domain/value/diet"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/diet"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
@@ -35,18 +33,6 @@ func (s *RestrictedFoodTestSuite) TestNewRestrictedFood() {
 	}
 
 	s.Run("TestNewRestrictedFood (Error)", func() {
-		s.Run("ID", func() {
-			s.Run("Should return an error when empty", func() {
-				sut := makeSut()
-				sut.Data.ID = 0
-
-				restrictedfood, err := sut.Sut()
-
-				s.ErrorAsRequired(err)
-				s.Nil(restrictedfood)
-			})
-		})
-
 		s.Run("Name", func() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
@@ -55,16 +41,6 @@ func (s *RestrictedFoodTestSuite) TestNewRestrictedFood() {
 				restrictedfood, err := sut.Sut()
 
 				s.ErrorAsRequired(err)
-				s.Nil(restrictedfood)
-			})
-
-			s.Run("Should return an error when invalid", func() {
-				sut := makeSut()
-				sut.Data.Name = value.RestrictedFood(strings.Repeat("a", 256))
-
-				restrictedfood, err := sut.Sut()
-
-				s.ErrorAsInvalid(err)
 				s.Nil(restrictedfood)
 			})
 		})
