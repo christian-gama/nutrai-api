@@ -6,5 +6,5 @@ import (
 )
 
 func MakeSQLDiet() repo.Diet {
-	return NewSQLDiet(conn.MakePostgres())
+	return NewSQLDiet(conn.GetPsql())
 }
