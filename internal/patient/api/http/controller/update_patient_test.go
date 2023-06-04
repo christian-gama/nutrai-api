@@ -1,7 +1,6 @@
 package controller_test
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 	"testing"
@@ -58,28 +57,11 @@ func (s *UpdatePatientSuite) TestHandle() {
 
 		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
 			Data:        sut.Input,
-			Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
 			CurrentUser: sut.Input.User,
 		})
 
 		s.Equal(http.StatusOK, ctx.Writer.Status())
 		sut.Mock.UpdatePatientHandler.AssertCalled(s.T(), "Handle", mock.Anything, sut.Input)
-	})
-
-	s.Run("ID", func() {
-		s.Run("should return error when empty", func() {
-			sut := makeSut()
-
-			sut.Input.ID = 0
-
-			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
-				Data:        sut.Input,
-				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
-				CurrentUser: sut.Input.User,
-			})
-
-			s.Equal(http.StatusBadRequest, ctx.Writer.Status())
-		})
 	})
 
 	s.Run("Age", func() {
@@ -90,7 +72,6 @@ func (s *UpdatePatientSuite) TestHandle() {
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data:        sut.Input,
-				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
 				CurrentUser: sut.Input.User,
 			})
 
@@ -104,7 +85,6 @@ func (s *UpdatePatientSuite) TestHandle() {
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data:        sut.Input,
-				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
 				CurrentUser: sut.Input.User,
 			})
 
@@ -120,7 +100,6 @@ func (s *UpdatePatientSuite) TestHandle() {
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data:        sut.Input,
-				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
 				CurrentUser: sut.Input.User,
 			})
 
@@ -134,7 +113,6 @@ func (s *UpdatePatientSuite) TestHandle() {
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data:        sut.Input,
-				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
 				CurrentUser: sut.Input.User,
 			})
 
@@ -150,7 +128,6 @@ func (s *UpdatePatientSuite) TestHandle() {
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data:        sut.Input,
-				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
 				CurrentUser: sut.Input.User,
 			})
 
@@ -164,7 +141,6 @@ func (s *UpdatePatientSuite) TestHandle() {
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data:        sut.Input,
-				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
 				CurrentUser: sut.Input.User,
 			})
 
@@ -180,7 +156,6 @@ func (s *UpdatePatientSuite) TestHandle() {
 
 			ctx, _ := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data:        sut.Input,
-				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
 				CurrentUser: sut.Input.User,
 			})
 
@@ -194,7 +169,6 @@ func (s *UpdatePatientSuite) TestHandle() {
 		s.PanicsWithValue(ctxstore.ErrUserNotFound, func() {
 			gintest.MustRequest(sut.Sut, gintest.Option{
 				Data:        sut.Input,
-				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
 				CurrentUser: nil,
 			})
 		})
@@ -210,7 +184,6 @@ func (s *UpdatePatientSuite) TestHandle() {
 		s.Panics(func() {
 			gintest.MustRequest(sut.Sut, gintest.Option{
 				Data:        sut.Input,
-				Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},
 				CurrentUser: sut.Input.User,
 			})
 		})

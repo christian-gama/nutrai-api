@@ -28,7 +28,6 @@ func NewUpdatePatient(updatePatientHandler command.UpdatePatientHandler) UpdateP
 		controller.Options{
 			Path:   controller.JoinPath(""),
 			Method: http.MethodPut,
-			Params: controller.AddParams("id"),
 		},
 	)
 }

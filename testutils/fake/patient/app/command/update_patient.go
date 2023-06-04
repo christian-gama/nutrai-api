@@ -11,7 +11,6 @@ import (
 func UpdatePatientInput() *command.UpdatePatientInput {
 	data := new(command.UpdatePatientInput)
 	data.User = fake.User()
-	data.ID = data.User.ID
 	data.Allergies = []value.Allergy{
 		value.Allergy(faker.Name()),
 		value.Allergy(faker.Name()),

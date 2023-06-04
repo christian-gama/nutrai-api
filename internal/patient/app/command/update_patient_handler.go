@@ -31,7 +31,7 @@ func NewUpdatePatientHandler(patientRepo repo.Patient) UpdatePatientHandler {
 func (c *updatePatientHandlerImpl) Handle(ctx context.Context, input *UpdatePatientInput) error {
 	savedPatient, err := c.Find(ctx,
 		repo.FindPatientInput{
-			ID:        input.ID,
+			ID:        input.User.ID,
 			Preloader: querying.AddPreload("Allergies"),
 		},
 	)
@@ -55,5 +55,5 @@ func (c *updatePatientHandlerImpl) Handle(ctx context.Context, input *UpdatePati
 		return err
 	}
 
-	return c.Update(ctx, repo.UpdatePatientInput{Patient: patient, ID: input.ID})
+	return c.Update(ctx, repo.UpdatePatientInput{Patient: patient, ID: input.User.ID})
 }
