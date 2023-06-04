@@ -17,7 +17,7 @@ type deletePlanHandlerImpl struct {
 	repo.Plan
 }
 
-// NewDeletePlanHandler returns a new Delete instance.
+// NewDeletePlanHandler returns a new DeletePlanHandler instance.
 func NewDeletePlanHandler(repoPlan repo.Plan) DeletePlanHandler {
 	errutil.MustBeNotEmpty("repo.Plan", repoPlan)
 

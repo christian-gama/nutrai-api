@@ -9,10 +9,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// DeletePlan is a controller to delete the current user.
+// DeletePlan is a controller to delete the current user's plan.
 type DeletePlan = controller.Controller
 
-// NewDeletePlan returns a new controller to delete the current user.
+// NewDeletePlan returns a new controller to delete the current user's plan.
 func NewDeletePlan(deletePlanHandler command.DeletePlanHandler) DeletePlan {
 	errutil.MustBeNotEmpty("command.DeletePlanHandler", deletePlanHandler)
 
