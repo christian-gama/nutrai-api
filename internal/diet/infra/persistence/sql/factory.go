@@ -8,3 +8,7 @@ import (
 func MakeSQLDiet() repo.Diet {
 	return NewSQLDiet(conn.GetPsql())
 }
+
+func MakeSQLPlan() repo.Plan {
+	return NewSQLPlan(conn.GetPsql())
+}

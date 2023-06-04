@@ -44,7 +44,7 @@ func (s *LogoutAllSuite) TestHandle() {
 		return &Sut{Sut: sut, Mock: mocks, Input: input, CurrentUser: input.User}
 	}
 
-	s.Run("should logout all the current user's logins", func() {
+	s.Run("should logout all the current user's refresh tokens", func() {
 		sut := makeSut()
 
 		sut.Mock.LogoutAllHandler.
