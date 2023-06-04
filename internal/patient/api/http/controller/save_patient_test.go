@@ -154,13 +154,17 @@ func (s *SavePatientSuite) TestHandle() {
 		})
 	})
 
-	s.Run("should panic when user is not in context", func() {
-		sut := makeSut()
+	s.Run("User", func() {
+		s.Run("should panic when empty", func() {
+			sut := makeSut()
 
-		s.PanicsWithValue(ctxstore.ErrUserNotFound, func() {
-			gintest.MustRequest(sut.Sut, gintest.Option{
-				Data:        sut.Input,
-				CurrentUser: nil,
+			sut.Input.User = nil
+
+			s.PanicsWithValue(ctxstore.ErrUserNotFound, func() {
+				gintest.MustRequestWithBody(sut.Sut, gintest.Option{
+					Data:        sut.Input,
+					CurrentUser: sut.Input.User,
+				})
 			})
 		})
 	})

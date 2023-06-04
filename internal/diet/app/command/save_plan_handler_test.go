@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/diet/app/command"
+	"github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
 	cmdFake "github.com/christian-gama/nutrai-api/testutils/fake/diet/app/command"
 	dietFake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/diet"
 	planFake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/plan"
@@ -102,6 +103,32 @@ func (s *SavePlanHandlerSuite) TestSaveHandler() {
 			err := sut.Sut.Handle(sut.Ctx, sut.Input)
 
 			s.NoError(err)
+		})
+
+		s.Run("Should call Save with correct Diet data", func() {
+			sut := makeSut()
+
+			diet := dietFake.Diet()
+			diet.ID = sut.Input.DietID
+			sut.Mock.DietRepo.
+				On("Find", sut.Ctx, mock.Anything).
+				Return(diet, nil)
+
+			sut.Mock.PlanRepo.
+				On("Save", sut.Ctx, mock.Anything).
+				Return(planFake.Plan(), nil)
+
+			err := sut.Sut.Handle(sut.Ctx, sut.Input)
+
+			s.NoError(err)
+			sut.Mock.PlanRepo.AssertCalled(
+				s.T(),
+				"Save",
+				sut.Ctx,
+				mock.MatchedBy(func(r repo.SavePlanInput) bool {
+					return r.Plan.Diet == diet && r.Plan.DietID == diet.ID
+				}),
+			)
 		})
 	})
 }

@@ -9,26 +9,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// SavePlan is a controller to save a plan.
-type SavePlan = controller.Controller
+// DeletePlan is a controller to delete the current user.
+type DeletePlan = controller.Controller
 
-// NewSavePlan returns a new controller to save a plan.
-func NewSavePlan(c command.SavePlanHandler) SavePlan {
-	errutil.MustBeNotEmpty("command.SavePlanHandler", c)
+// NewDeletePlan returns a new controller to delete the current user.
+func NewDeletePlan(deletePlanHandler command.DeletePlanHandler) DeletePlan {
+	errutil.MustBeNotEmpty("command.DeletePlanHandler", deletePlanHandler)
 
 	return controller.NewController(
-		func(ctx *gin.Context, input *command.SavePlanInput) {
-			err := c.Handle(ctx.Request.Context(), input)
+		func(ctx *gin.Context, input *command.DeletePlanInput) {
+			err := deletePlanHandler.Handle(ctx.Request.Context(), input)
 			if err != nil {
 				panic(err)
 			}
-			response.Created(ctx, nil)
+			response.NoContent(ctx)
 		},
 
 		controller.Options{
 			Path:   controller.JoinPath(""),
-			Method: http.MethodPost,
-			RPM:    5,
+			Method: http.MethodDelete,
+			Params: controller.AddParams("id"),
 		},
 	)
 }

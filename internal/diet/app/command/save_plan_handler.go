@@ -20,7 +20,10 @@ type savePlanHandlerImpl struct {
 }
 
 // NewSavePlanHandler returns a new Save instance.
-func NewSavePlanHandler(planRepo repo.Plan, dietRepo repo.Diet) SavePlanHandler {
+func NewSavePlanHandler(
+	planRepo repo.Plan,
+	dietRepo repo.Diet,
+) SavePlanHandler {
 	errutil.MustBeNotEmpty("repo.Plan", planRepo)
 	errutil.MustBeNotEmpty("repo.Diet", dietRepo)
 
@@ -33,7 +36,7 @@ func (c *savePlanHandlerImpl) Handle(ctx context.Context, input *SavePlanInput) 
 		ctx,
 		repo.FindDietInput{
 			ID:       input.DietID,
-			Filterer: querying.AddFilter("patientID", "eq", input.User.ID),
+			Filterer: querying.AddFilter("patientID", querying.EqOperator, input.User.ID),
 		},
 	)
 	if err != nil {

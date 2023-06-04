@@ -16,3 +16,7 @@ func MakeFindPlan() FindPlan {
 func MakeSavePlan() SavePlan {
 	return NewSavePlan(command.MakeSavePlanHandler())
 }
+
+func MakeDeletePlan() DeletePlan {
+	return NewDeletePlan(command.MakeDeletePlanHandler())
+}

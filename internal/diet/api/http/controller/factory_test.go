@@ -3,6 +3,7 @@ package controller_test
 import (
 	"testing"
 
+	"github.com/christian-gama/nutrai-api/internal/diet/api/http/controller"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
 
@@ -16,5 +17,9 @@ func TestFactorySuite(t *testing.T) {
 
 func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
+		controller.MakeAllPlans()
+		controller.MakeFindPlan()
+		controller.MakeSavePlan()
+		controller.MakeDeletePlan()
 	})
 }

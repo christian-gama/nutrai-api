@@ -11,5 +11,6 @@ func Register() {
 		Api("/v1/diets").
 		SetController(controller.MakeAllPlans()).
 		SetController(controller.MakeFindPlan()).
-		SetController(controller.MakeSavePlan())
+		SetController(controller.MakeSavePlan()).
+		SetController(controller.MakeDeletePlan())
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/auth/api/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/auth/app/command"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
+	"github.com/christian-gama/nutrai-api/internal/auth/infra/ctxstore"
 	cmdFake "github.com/christian-gama/nutrai-api/testutils/fake/auth/app/command"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
 	cmdMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/command"
@@ -57,6 +58,21 @@ func (s *LogoutAllSuite) TestHandle() {
 		})
 
 		s.Equal(http.StatusOK, ctx.Writer.Status())
+	})
+
+	s.Run("User", func() {
+		s.Run("should panic when empty", func() {
+			sut := makeSut()
+
+			sut.Input.User = nil
+
+			s.PanicsWithValue(ctxstore.ErrUserNotFound, func() {
+				gintest.MustRequestWithBody(sut.Sut, gintest.Option{
+					Data:        sut.Input,
+					CurrentUser: sut.Input.User,
+				})
+			})
+		})
 	})
 
 	s.Run("panics when LogoutAllHandler.Handle returns error", func() {

@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/internal/patient/api/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/patient/app/query"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/patient/app/query"
@@ -78,9 +79,9 @@ func (s *AllPatientsSuite) TestHandle() {
 		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
 			Queries: gintest.BuildScopeQuery(
 				gintest.FilterOption(sut.Input.Filter.
-					Add("age", "eq", 123).
-					Add("weightKG", "eq", 123).
-					Add("heightM", "eq", 123).
+					Add("age", querying.EqOperator, 123).
+					Add("weightKG", querying.EqOperator, 123).
+					Add("heightM", querying.EqOperator, 123).
 					Slice()),
 
 				gintest.SortOption(sut.Input.Sort.

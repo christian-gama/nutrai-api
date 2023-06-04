@@ -6,6 +6,7 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/internal/diet/api/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/diet/app/query"
 	userFake "github.com/christian-gama/nutrai-api/testutils/fake/auth/domain/model/user"
@@ -88,8 +89,8 @@ func (s *AllPlansSuite) TestHandle() {
 		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
 			Queries: gintest.BuildScopeQuery(
 				gintest.FilterOption(sut.Input.Filter.
-					Add("dietID", "eq", 123).
-					Add("text", "like", "any").
+					Add("dietID", querying.EqOperator, 123).
+					Add("text", querying.LikeOperator, "any").
 					Slice()),
 
 				gintest.SortOption(sut.Input.Sort.

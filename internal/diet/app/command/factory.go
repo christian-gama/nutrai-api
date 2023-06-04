@@ -9,3 +9,7 @@ func MakeSaveDietHandler() SaveDietHandler {
 func MakeSavePlanHandler() SavePlanHandler {
 	return NewSavePlanHandler(persistence.MakeSQLPlan(), persistence.MakeSQLDiet())
 }
+
+func MakeDeletePlanHandler() DeletePlanHandler {
+	return NewDeletePlanHandler(persistence.MakeSQLPlan())
+}
