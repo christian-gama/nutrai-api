@@ -7,6 +7,6 @@ import (
 
 // LogoutInput represents the input data for the LogoutInput command.
 type LogoutInput struct {
-	User    *user.User  `ctx:"currentUser" json:"-"`
+	User    *user.User  `ctx:"current_user" json:"-"`
 	Refresh value.Token `json:"refresh" validate:"required,jwt" faker:"jwt"`
 }

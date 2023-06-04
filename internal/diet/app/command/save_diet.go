@@ -8,7 +8,7 @@ import (
 
 // SaveDietInput represents the input data for the SaveDiet command.
 type SaveDietInput struct {
-	User *user.User `ctx:"currentUser" json:"-"`
+	User *user.User `ctx:"current_user" json:"-"`
 
 	Name            value.Name             `json:"name" validate:"required, diet_name" faker:"len=50"`
 	Description     value.Description      `json:"description" validate:"required, diet_description" faker:"len=100"`

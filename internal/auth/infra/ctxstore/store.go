@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const currentUserKey = "currentUser"
+const currentUserKey = "current_user"
 
 // SetUser is a function that stores the current authenticated user in the Gin context.
 // The Gin context is a per-request context, it carries data across API boundaries and between

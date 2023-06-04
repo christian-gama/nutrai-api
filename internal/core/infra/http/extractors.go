@@ -51,7 +51,7 @@ func ExtractParams[Params any](ctx *gin.Context, params *Params) {
 }
 
 // ExtractCurrentUser extracts the current user from the request. It expects the input to have a
-// field with the tag `ctx:"currentUser"`.
+// field with the tag `ctx:"current_user"`.
 func ExtractCurrentUser[Input any](ctx *gin.Context, input *Input) {
 	if err := validateInput(ctx, input); err != nil {
 		panic(err)
@@ -62,7 +62,7 @@ func ExtractCurrentUser[Input any](ctx *gin.Context, input *Input) {
 	}
 
 	reflection.IterateStructFields(input, func(opts *reflection.FieldIterationOptions) {
-		if opts.Tag.Get("ctx") == "currentUser" {
+		if opts.Tag.Get("ctx") == "current_user" {
 			currentUser, err := ctxstore.GetUser(ctx)
 			if err != nil {
 				opts.Field.Set(reflect.Zero(opts.Field.Type()))

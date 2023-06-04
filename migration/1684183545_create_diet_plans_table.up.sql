@@ -8,7 +8,7 @@ CREATE TABLE "diet_plans" (
     "updated_at" TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-CREATE UNIQUE INDEX "uidx__plans__diet_id" ON "diet_plans" ("diet_id");
+CREATE INDEX "idx__plans__diet_id" ON "diet_plans" ("diet_id");
 
 ALTER TABLE "diet_plans"
 ADD CONSTRAINT "fk__diet_id__diets.id"

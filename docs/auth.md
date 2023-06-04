@@ -18,11 +18,11 @@ type Controller interface {
 
 ## Input with User
 
-One key detail in the controller design is how the current user is passed into the handler function. This is done through the `Input` struct, where you can add a `User` field with the `ctx:"currentUser"` tag. This tag informs the application to automatically set the user in the input.
+One key detail in the controller design is how the current user is passed into the handler function. This is done through the `Input` struct, where you can add a `User` field with the `ctx:"current_user"` tag. This tag informs the application to automatically set the user in the input.
 
 ```go
 type Input struct {
-	User *user.User `ctx:"currentUser" json:"-"`
+	User *user.User `ctx:"current_user" json:"-"`
 }
 ```
 

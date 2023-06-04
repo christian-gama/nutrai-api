@@ -8,7 +8,7 @@ import (
 
 // UpdatePatientInput represents the input data for the UpdatePatient command.
 type UpdatePatientInput struct {
-	User *user.User `ctx:"currentUser" json:"-"`
+	User *user.User `ctx:"current_user" json:"-"`
 
 	ID coreValue.ID `uri:"id" validate:"required,min=1" faker:"uint"`
 

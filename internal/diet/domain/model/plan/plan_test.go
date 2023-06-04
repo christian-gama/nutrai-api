@@ -33,18 +33,6 @@ func (s *PlanSuite) TestNewPlan() {
 	}
 
 	s.Run("TestNewPlan (Error)", func() {
-		s.Run("ID", func() {
-			s.Run("Should return an error when empty", func() {
-				sut := makeSut()
-				sut.Data.ID = 0
-
-				plan, err := sut.Sut()
-
-				s.ErrorAsRequired(err)
-				s.Nil(plan)
-			})
-		})
-
 		s.Run("DietID", func() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()

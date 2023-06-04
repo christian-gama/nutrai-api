@@ -6,5 +6,5 @@ import (
 
 // DeleteMeInput represents the input data for the DeleteMe command.
 type DeleteMeInput struct {
-	User *user.User `ctx:"currentUser" json:"-"`
+	User *user.User `ctx:"current_user" json:"-"`
 }

@@ -32,10 +32,6 @@ func (Plan) String() string {
 func (p *Plan) Validate() (*Plan, error) {
 	var errs *errutil.Error
 
-	if err := p.ID.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
-	}
-
 	if err := p.DietID.Validate(); err != nil {
 		errs = errutil.Append(errs, err)
 	}

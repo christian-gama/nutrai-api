@@ -7,7 +7,7 @@ import (
 
 // ChangePasswordInput represents the input data for the ChangePassword command.
 type ChangePasswordInput struct {
-	User *user.User `ctx:"currentUser" json:"-"`
+	User *user.User `ctx:"current_user" json:"-"`
 
 	Password value.Password `json:"password" faker:"len=8" validate:"required,user_password"`
 }

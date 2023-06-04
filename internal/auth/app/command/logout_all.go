@@ -6,5 +6,5 @@ import (
 
 // LogoutInput represents the input data for the LogoutInput command.
 type LogoutAllInput struct {
-	User *user.User `ctx:"currentUser" json:"-"`
+	User *user.User `ctx:"current_user" json:"-"`
 }

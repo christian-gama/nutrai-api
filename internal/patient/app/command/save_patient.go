@@ -7,7 +7,7 @@ import (
 
 // SavePatientInput represents the input data for the SavePatient command.
 type SavePatientInput struct {
-	User *user.User `ctx:"currentUser" json:"-"`
+	User *user.User `ctx:"current_user" json:"-"`
 
 	Age       value.Age       `json:"age" validate:"required,patient_age" faker:"boundary_start=18,boundary_end=100"`
 	HeightM   value.HeightM   `json:"heightM" validate:"required,patient_height_m" faker:"boundary_start=1,boundary_end=2"`
