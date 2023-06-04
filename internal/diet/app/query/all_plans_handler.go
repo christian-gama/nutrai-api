@@ -34,7 +34,6 @@ func (q *allPlansHandlerImpl) Handle(
 		Filterer:  input.Filter,
 		Paginator: &input.Pagination,
 		Sorter:    input.Sort,
-		Preloader: input.Preload,
 	})
 	if err != nil {
 		return nil, err

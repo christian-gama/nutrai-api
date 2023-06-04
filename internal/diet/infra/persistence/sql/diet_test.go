@@ -314,6 +314,27 @@ func (s *DietSuite) TestAll() {
 		s.Len(result.Results, 1, "Should return the correct number of diets")
 		s.Equal(int(diets[0].ID), int(result.Results[0].ID), "Should return the correct diet")
 	})
+
+	s.Run("Should return the correct diets using preloads", func(db *gorm.DB) {
+		sut := makeSut(db)
+
+		dietDeps := fixture.SaveDiet(db, nil)
+		fixture.SavePlan(db, &fixture.PlanDeps{
+			Diet: dietDeps.Diet,
+		})
+
+		sut.Input.Preloader = querying.AddPreload("plans").Add("patient")
+
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
+
+		s.NoError(err)
+		s.Equal(
+			dietDeps.Diet.ID,
+			result.Results[0].Plans[0].DietID,
+			"Should return the correct plan",
+		)
+		s.Len(result.Results[0].Plans, 1, "Should return the correct number of plans")
+	})
 }
 
 func (s *DietSuite) TestUpdate() {

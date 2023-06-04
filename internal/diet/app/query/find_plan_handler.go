@@ -33,7 +33,7 @@ func (q *findPlanHandlerImpl) Handle(
 ) (*FindPlanOutput, error) {
 	plan, err := q.Plan.Find(
 		ctx,
-		repo.FindPlanInput{ID: input.ID, Preloader: input.Preload},
+		repo.FindPlanInput{ID: input.ID},
 	)
 	if err != nil {
 		return nil, err
