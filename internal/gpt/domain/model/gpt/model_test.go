@@ -14,7 +14,6 @@ type ModelTestSuite struct {
 }
 
 func TestModelSuite(t *testing.T) {
-	t.Skip()
 	suite.RunUnitTest(t, new(ModelTestSuite))
 }
 

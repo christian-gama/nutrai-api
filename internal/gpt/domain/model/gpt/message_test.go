@@ -13,7 +13,6 @@ type MessageTestSuite struct {
 }
 
 func TestMessageSuite(t *testing.T) {
-	t.Skip()
 	suite.RunUnitTest(t, new(MessageTestSuite))
 }
 
