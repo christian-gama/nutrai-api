@@ -9,7 +9,7 @@ import (
 	persistence "github.com/christian-gama/nutrai-api/internal/diet/infra/persistence/sql"
 	"github.com/christian-gama/nutrai-api/internal/patient/domain/model/patient"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/diet"
-	userFixture "github.com/christian-gama/nutrai-api/testutils/fixture/patient/sql"
+	fixture "github.com/christian-gama/nutrai-api/testutils/fixture/patient/sql"
 	"gorm.io/gorm"
 )
 
@@ -24,8 +24,7 @@ func SaveDiet(db *gorm.DB, deps *DietDeps) *DietDeps {
 	}
 
 	if deps.Patient == nil {
-		patient := userFixture.SavePatient(db, nil)
-		deps.Patient = patient.Patient
+		deps.Patient = fixture.SavePatient(db, nil).Patient
 	}
 
 	diet := deps.Diet
@@ -33,6 +32,7 @@ func SaveDiet(db *gorm.DB, deps *DietDeps) *DietDeps {
 		diet = fake.Diet()
 	}
 
+	diet.ID = deps.Patient.ID
 	diet.PatientID = deps.Patient.ID
 	diet, err := persistence.NewSQLDiet(db).
 		Save(context.Background(), repo.SaveDietInput{

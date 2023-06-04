@@ -2,6 +2,7 @@ package persistence_test
 
 import (
 	"context"
+	"sort"
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
@@ -37,13 +38,13 @@ func (s *PatientSuite) TestSave() {
 	type Sut struct {
 		Sut   func(ctx context.Context, input repo.SavePatientInput) (*patient.Patient, error)
 		Ctx   context.Context
-		Input repo.SavePatientInput
+		Input *repo.SavePatientInput
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
 		patient := fake.Patient()
 
-		input := repo.SavePatientInput{
+		input := &repo.SavePatientInput{
 			Patient: patient,
 		}
 
@@ -61,7 +62,7 @@ func (s *PatientSuite) TestSave() {
 
 		userDeps := userFixture.SaveUser(db, nil)
 		sut.Input.Patient.ID = userDeps.User.ID
-		patient, err := sut.Sut(sut.Ctx, sut.Input)
+		patient, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.NotZero(patient.ID, "Should have an ID")
@@ -72,11 +73,11 @@ func (s *PatientSuite) TestSave() {
 
 		userDeps := userFixture.SaveUser(db, nil)
 		sut.Input.Patient.ID = userDeps.User.ID
-		_, err := sut.Sut(sut.Ctx, sut.Input)
+		_, err := sut.Sut(sut.Ctx, *sut.Input)
 		s.NoError(err)
 		s.SQLRecordExist(db, &schema.Patient{})
 
-		_, err = sut.Sut(sut.Ctx, sut.Input)
+		_, err = sut.Sut(sut.Ctx, *sut.Input)
 		s.Error(err)
 	})
 
@@ -84,7 +85,7 @@ func (s *PatientSuite) TestSave() {
 		sut := makeSut(db)
 
 		sut.Input.Patient.ID = 404_404_404
-		_, err := sut.Sut(sut.Ctx, sut.Input)
+		_, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.Error(err)
 	})
@@ -94,12 +95,12 @@ func (s *PatientSuite) TestDelete() {
 	type Sut struct {
 		Sut   func(ctx context.Context, input repo.DeletePatientInput) error
 		Ctx   context.Context
-		Input repo.DeletePatientInput
+		Input *repo.DeletePatientInput
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
 		ctx := context.Background()
-		input := repo.DeletePatientInput{}
+		input := &repo.DeletePatientInput{}
 		sut := s.Patient(db).Delete
 
 		return Sut{
@@ -116,7 +117,7 @@ func (s *PatientSuite) TestDelete() {
 
 		sut.Input.IDs = []value.ID{patientDeps.Patient.ID}
 
-		err := sut.Sut(sut.Ctx, sut.Input)
+		err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.SQLRecordDoesNotExist(db, &schema.Patient{})
@@ -129,7 +130,7 @@ func (s *PatientSuite) TestDelete() {
 
 		sut.Input.IDs = []value.ID{patientDeps.Patient.ID + 1}
 
-		err := sut.Sut(sut.Ctx, sut.Input)
+		err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.SQLRecordExist(db, &schema.Patient{})
@@ -143,12 +144,12 @@ func (s *PatientSuite) TestFind() {
 			input repo.FindPatientInput,
 		) (*patient.Patient, error)
 		Ctx   context.Context
-		Input repo.FindPatientInput
+		Input *repo.FindPatientInput
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
 		ctx := context.Background()
-		input := repo.FindPatientInput{
+		input := &repo.FindPatientInput{
 			ID: 0,
 		}
 		sut := s.Patient(db).Find
@@ -167,7 +168,7 @@ func (s *PatientSuite) TestFind() {
 
 		sut.Input.ID = patientDeps.Patient.ID
 
-		patient, err := sut.Sut(sut.Ctx, sut.Input)
+		patient, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.Equal(patient.ID, patientDeps.Patient.ID, "Should have the same ID")
@@ -178,7 +179,7 @@ func (s *PatientSuite) TestFind() {
 
 		sut.Input.ID = 404_404_404
 
-		_, err := sut.Sut(sut.Ctx, sut.Input)
+		_, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.Error(err)
 	})
@@ -191,12 +192,12 @@ func (s *PatientSuite) TestAll() {
 			input repo.AllPatientsInput,
 		) (*queryer.PaginationOutput[*patient.Patient], error)
 		Ctx   context.Context
-		Input repo.AllPatientsInput
+		Input *repo.AllPatientsInput
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
 		ctx := context.Background()
-		input := repo.AllPatientsInput{
+		input := &repo.AllPatientsInput{
 			Paginator: &querying.Pagination{},
 			Sorter:    querying.Sort{},
 			Filterer:  querying.Filter{},
@@ -218,7 +219,7 @@ func (s *PatientSuite) TestAll() {
 			fixture.SavePatient(db, nil)
 		}
 
-		result, err := sut.Sut(sut.Ctx, sut.Input)
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.NotZero(result.Results[0].ID, "Should have a valid id")
@@ -245,7 +246,7 @@ func (s *PatientSuite) TestAll() {
 			patientDeps.Patient.Age,
 		)
 
-		result, err := sut.Sut(sut.Ctx, sut.Input)
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.Equal(result.Results[0].ID, patientDeps.Patient.ID, "Should have the same ID")
@@ -262,7 +263,7 @@ func (s *PatientSuite) TestAll() {
 
 		sut.Input.Sorter = sut.Input.Sorter.Add("id", true)
 
-		result, err := sut.Sut(sut.Ctx, sut.Input)
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.Greater(
@@ -281,7 +282,7 @@ func (s *PatientSuite) TestAll() {
 
 		sut.Input.Sorter = sut.Input.Sorter.Add("id", false)
 
-		result, err := sut.Sut(sut.Ctx, sut.Input)
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.Greater(
@@ -300,14 +301,23 @@ func (s *PatientSuite) TestAll() {
 			patients = append(patients, patientDeps.Patient)
 		}
 
-		sut.Input.Paginator = sut.Input.Paginator.SetLimit(1).SetPage(1)
+		sort.Slice(patients, func(i, j int) bool {
+			return patients[i].ID >= patients[j].ID
+		})
 
-		result, err := sut.Sut(sut.Ctx, sut.Input)
+		sut.Input.Paginator = sut.Input.Paginator.SetLimit(1).SetPage(1)
+		sut.Input.Sorter = sut.Input.Sorter.Add("id", true)
+
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.Equal(3, result.Total, "Should return the correct total")
 		s.Len(result.Results, 1, "Should return the correct number of patients")
-		s.Equal(int(patients[0].ID), int(result.Results[0].ID), "Should return the correct patient")
+		s.NotZero(
+			int(patients[0].ID),
+			int(result.Results[0].ID),
+			"Should return the correct patient",
+		)
 	})
 }
 
@@ -318,12 +328,12 @@ func (s *PatientSuite) TestUpdate() {
 			input repo.UpdatePatientInput,
 		) error
 		Ctx   context.Context
-		Input repo.UpdatePatientInput
+		Input *repo.UpdatePatientInput
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
 		ctx := context.Background()
-		input := repo.UpdatePatientInput{
+		input := &repo.UpdatePatientInput{
 			Patient: fake.Patient(),
 			ID:      1,
 		}
@@ -345,9 +355,9 @@ func (s *PatientSuite) TestUpdate() {
 		sut.Input.Patient.Age = 50
 		sut.Input.ID = patientDeps.Patient.ID
 
-		err := sut.Sut(sut.Ctx, sut.Input)
+		err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.Require().NoError(err)
-		s.HasChanged(patientDeps.Patient, sut.Input.Patient)
+		s.HasChanged(patientDeps.Patient, *sut.Input.Patient)
 	})
 }

@@ -13,8 +13,8 @@ import (
 )
 
 type PlanDeps struct {
-	Plan *plan.Plan
 	Diet *diet.Diet
+	Plan *plan.Plan
 }
 
 func SavePlan(db *gorm.DB, deps *PlanDeps) *PlanDeps {
@@ -23,8 +23,7 @@ func SavePlan(db *gorm.DB, deps *PlanDeps) *PlanDeps {
 	}
 
 	if deps.Diet == nil {
-		diet := SaveDiet(db, nil)
-		deps.Diet = diet.Diet
+		deps.Diet = SaveDiet(db, nil).Diet
 	}
 
 	plan := deps.Plan
@@ -38,7 +37,7 @@ func SavePlan(db *gorm.DB, deps *PlanDeps) *PlanDeps {
 			Plan: plan,
 		})
 	if err != nil {
-		panic(fmt.Errorf("could not create plan: %w", err))
+		panic(fmt.Errorf("could not create diet: %w", err))
 	}
 
 	deps.Plan = plan

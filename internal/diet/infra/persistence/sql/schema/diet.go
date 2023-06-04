@@ -15,6 +15,7 @@ type Diet struct {
 	ID              coreValue.ID `gorm:"primaryKey"`
 	PatientID       coreValue.ID
 	Patient         *schema.Patient `gorm:"foreignKey:PatientID"`
+	Plans           []*Plan         `gorm:"foreignKey:DietID"`
 	Name            value.Name
 	Description     value.Description
 	DurationInWeeks value.DurationInWeeks

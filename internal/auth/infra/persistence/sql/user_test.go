@@ -2,6 +2,7 @@ package persistence_test
 
 import (
 	"context"
+	"sort"
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
@@ -36,13 +37,13 @@ func (s *UserSuite) TestSave() {
 	type Sut struct {
 		Sut   func(ctx context.Context, input repo.SaveUserInput) (*user.User, error)
 		Ctx   context.Context
-		Input repo.SaveUserInput
+		Input *repo.SaveUserInput
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
 		user := fake.User()
 
-		input := repo.SaveUserInput{
+		input := &repo.SaveUserInput{
 			User: user,
 		}
 
@@ -58,7 +59,7 @@ func (s *UserSuite) TestSave() {
 	s.Run("Should create a new user", func(db *gorm.DB) {
 		sut := makeSut(db)
 
-		user, err := sut.Sut(sut.Ctx, sut.Input)
+		user, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.NotZero(user.ID, "Should have an ID")
@@ -68,10 +69,10 @@ func (s *UserSuite) TestSave() {
 	s.Run("Should return an error when the user already exists", func(db *gorm.DB) {
 		sut := makeSut(db)
 
-		_, err := sut.Sut(sut.Ctx, sut.Input)
+		_, err := sut.Sut(sut.Ctx, *sut.Input)
 		s.NoError(err)
 
-		_, err = sut.Sut(sut.Ctx, sut.Input)
+		_, err = sut.Sut(sut.Ctx, *sut.Input)
 		s.Error(err)
 	})
 }
@@ -80,12 +81,12 @@ func (s *UserSuite) TestDelete() {
 	type Sut struct {
 		Sut   func(ctx context.Context, input repo.DeleteUserInput) error
 		Ctx   context.Context
-		Input repo.DeleteUserInput
+		Input *repo.DeleteUserInput
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
 		ctx := context.Background()
-		input := repo.DeleteUserInput{}
+		input := &repo.DeleteUserInput{}
 		sut := s.User(db).Delete
 
 		return Sut{
@@ -102,7 +103,7 @@ func (s *UserSuite) TestDelete() {
 
 		sut.Input.IDs = []value.ID{userDeps.User.ID}
 
-		err := sut.Sut(sut.Ctx, sut.Input)
+		err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 	})
@@ -112,7 +113,7 @@ func (s *UserSuite) TestDelete() {
 
 		sut.Input.IDs = []value.ID{404_404_404}
 
-		err := sut.Sut(sut.Ctx, sut.Input)
+		err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 	})
@@ -125,12 +126,12 @@ func (s *UserSuite) TestFind() {
 			input repo.FindUserInput,
 		) (*user.User, error)
 		Ctx   context.Context
-		Input repo.FindUserInput
+		Input *repo.FindUserInput
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
 		ctx := context.Background()
-		input := repo.FindUserInput{
+		input := &repo.FindUserInput{
 			ID: 0,
 		}
 		sut := s.User(db).Find
@@ -149,7 +150,7 @@ func (s *UserSuite) TestFind() {
 
 		sut.Input.ID = userDeps.User.ID
 
-		user, err := sut.Sut(sut.Ctx, sut.Input)
+		user, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.Equal(user.ID, userDeps.User.ID, "Should have the same ID")
@@ -160,7 +161,7 @@ func (s *UserSuite) TestFind() {
 
 		sut.Input.ID = 404_404_404
 
-		_, err := sut.Sut(sut.Ctx, sut.Input)
+		_, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.Error(err)
 	})
@@ -173,12 +174,12 @@ func (s *UserSuite) TestAll() {
 			input repo.AllUsersInput,
 		) (*queryer.PaginationOutput[*user.User], error)
 		Ctx   context.Context
-		Input repo.AllUsersInput
+		Input *repo.AllUsersInput
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
 		ctx := context.Background()
-		input := repo.AllUsersInput{
+		input := &repo.AllUsersInput{
 			Paginator: &querying.Pagination{},
 			Sorter:    querying.Sort{},
 			Filterer:  querying.Filter{},
@@ -200,7 +201,7 @@ func (s *UserSuite) TestAll() {
 			fixture.SaveUser(db, nil)
 		}
 
-		result, err := sut.Sut(sut.Ctx, sut.Input)
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.NotZero(result.Results[0].ID, "Should have a valid id")
@@ -223,7 +224,7 @@ func (s *UserSuite) TestAll() {
 			userDeps.User.Name,
 		)
 
-		result, err := sut.Sut(sut.Ctx, sut.Input)
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.Equal(result.Results[0].ID, userDeps.User.ID, "Should have the same ID")
@@ -240,7 +241,7 @@ func (s *UserSuite) TestAll() {
 
 		sut.Input.Sorter = sut.Input.Sorter.Add("id", true)
 
-		result, err := sut.Sut(sut.Ctx, sut.Input)
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.Greater(
@@ -259,7 +260,7 @@ func (s *UserSuite) TestAll() {
 
 		sut.Input.Sorter = sut.Input.Sorter.Add("id", false)
 
-		result, err := sut.Sut(sut.Ctx, sut.Input)
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.Greater(
@@ -278,9 +279,14 @@ func (s *UserSuite) TestAll() {
 			users = append(users, userDeps.User)
 		}
 
-		sut.Input.Paginator = sut.Input.Paginator.SetLimit(1).SetPage(1)
+		sort.Slice(users, func(i, j int) bool {
+			return users[i].ID >= users[j].ID
+		})
 
-		result, err := sut.Sut(sut.Ctx, sut.Input)
+		sut.Input.Paginator = sut.Input.Paginator.SetLimit(1).SetPage(1)
+		sut.Input.Sorter = sut.Input.Sorter.Add("id", true)
+
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.Equal(3, result.Total, "Should return the correct total")
@@ -296,12 +302,12 @@ func (s *UserSuite) TestUpdate() {
 			input repo.UpdateUserInput,
 		) error
 		Ctx   context.Context
-		Input repo.UpdateUserInput
+		Input *repo.UpdateUserInput
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
 		ctx := context.Background()
-		input := repo.UpdateUserInput{
+		input := &repo.UpdateUserInput{
 			User: fake.User(),
 			ID:   1,
 		}
@@ -323,9 +329,9 @@ func (s *UserSuite) TestUpdate() {
 		sut.Input.User.Name = "new name"
 		sut.Input.ID = userDeps.User.ID
 
-		err := sut.Sut(sut.Ctx, sut.Input)
+		err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.Require().NoError(err)
-		s.HasChanged(userDeps.User, sut.Input.User)
+		s.HasChanged(userDeps.User, *sut.Input.User)
 	})
 }

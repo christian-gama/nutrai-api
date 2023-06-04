@@ -2,6 +2,7 @@ package manager_test
 
 import (
 	"context"
+	"sort"
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
@@ -74,13 +75,13 @@ func (s *SQLManagerSuite) TestSave() {
 	type Sut struct {
 		Sut   func(ctx context.Context, input manager.SaveInput[Sample]) (*Sample, error)
 		Ctx   context.Context
-		Input manager.SaveInput[Sample]
+		Input *manager.SaveInput[Sample]
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
 		ctx := context.Background()
 		sample := FakeSample()
-		input := manager.SaveInput[Sample]{
+		input := &manager.SaveInput[Sample]{
 			Model: sample,
 		}
 
@@ -96,7 +97,7 @@ func (s *SQLManagerSuite) TestSave() {
 	s.Run("Should create a new sample", func(db *gorm.DB) {
 		sut := makeSut(db)
 
-		sample, err := sut.Sut(sut.Ctx, sut.Input)
+		sample, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.NotZero(sample.ID, "Should have an ID")
@@ -106,11 +107,11 @@ func (s *SQLManagerSuite) TestSave() {
 	s.Run("Should return an error when the sample already exists", func(db *gorm.DB) {
 		sut := makeSut(db)
 
-		_, err := sut.Sut(sut.Ctx, sut.Input)
+		_, err := sut.Sut(sut.Ctx, *sut.Input)
 		s.NoError(err)
 		s.SQLRecordExist(db, &Sample{})
 
-		_, err = sut.Sut(sut.Ctx, sut.Input)
+		_, err = sut.Sut(sut.Ctx, *sut.Input)
 		s.Error(err)
 	})
 }
@@ -119,12 +120,12 @@ func (s *SQLManagerSuite) TestDelete() {
 	type Sut struct {
 		Sut   func(ctx context.Context, input manager.DeleteInput[Sample]) error
 		Ctx   context.Context
-		Input manager.DeleteInput[Sample]
+		Input *manager.DeleteInput[Sample]
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
 		ctx := context.Background()
-		input := manager.DeleteInput[Sample]{}
+		input := &manager.DeleteInput[Sample]{}
 		sut := s.Sample(db).Delete
 
 		return Sut{
@@ -141,7 +142,7 @@ func (s *SQLManagerSuite) TestDelete() {
 
 		sut.Input.IDs = []value.ID{sample.ID}
 
-		err := sut.Sut(sut.Ctx, sut.Input)
+		err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.SQLRecordDoesNotExist(db, &Sample{})
@@ -152,7 +153,7 @@ func (s *SQLManagerSuite) TestDelete() {
 
 		sut.Input.IDs = []value.ID{404_404_404}
 
-		err := sut.Sut(sut.Ctx, sut.Input)
+		err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.SQLRecordDoesNotExist(db, &Sample{})
@@ -165,7 +166,7 @@ func (s *SQLManagerSuite) TestDelete() {
 
 		sut.Input.IDs = []value.ID{sample.ID + 1}
 
-		err := sut.Sut(sut.Ctx, sut.Input)
+		err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.SQLRecordExist(db, &Sample{})
@@ -179,12 +180,12 @@ func (s *SQLManagerSuite) TestFind() {
 			input manager.FindInput[Sample],
 		) (*Sample, error)
 		Ctx   context.Context
-		Input manager.FindInput[Sample]
+		Input *manager.FindInput[Sample]
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
 		ctx := context.Background()
-		input := manager.FindInput[Sample]{
+		input := &manager.FindInput[Sample]{
 			ID: 0,
 		}
 		sut := s.Sample(db).Find
@@ -203,7 +204,7 @@ func (s *SQLManagerSuite) TestFind() {
 
 		sut.Input.ID = sampleFixture.ID
 
-		sample, err := sut.Sut(sut.Ctx, sut.Input)
+		sample, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.Equal(sample.ID, sampleFixture.ID)
@@ -214,7 +215,7 @@ func (s *SQLManagerSuite) TestFind() {
 
 		sut.Input.ID = 404_404_404
 
-		_, err := sut.Sut(sut.Ctx, sut.Input)
+		_, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.Error(err)
 	})
@@ -227,12 +228,12 @@ func (s *SQLManagerSuite) TestAll() {
 			input manager.AllInput[Sample],
 		) (*queryer.PaginationOutput[*Sample], error)
 		Ctx   context.Context
-		Input manager.AllInput[Sample]
+		Input *manager.AllInput[Sample]
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
 		ctx := context.Background()
-		input := manager.AllInput[Sample]{
+		input := &manager.AllInput[Sample]{
 			Paginator: &querying.Pagination{},
 			Sorter:    querying.Sort{},
 			Filterer:  querying.Filter{},
@@ -255,7 +256,7 @@ func (s *SQLManagerSuite) TestAll() {
 			SaveSample(db)
 		}
 
-		result, err := sut.Sut(sut.Ctx, sut.Input)
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.NotZero(result.Results[0].ID, "Should have a valid id")
@@ -278,7 +279,7 @@ func (s *SQLManagerSuite) TestAll() {
 			sample.Name,
 		)
 
-		result, err := sut.Sut(sut.Ctx, sut.Input)
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.Equal(result.Results[0].ID, sample.ID, "Should have the same ID")
@@ -295,7 +296,7 @@ func (s *SQLManagerSuite) TestAll() {
 
 		sut.Input.Sorter = sut.Input.Sorter.Add("id", true)
 
-		result, err := sut.Sut(sut.Ctx, sut.Input)
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.Greater(
@@ -314,7 +315,7 @@ func (s *SQLManagerSuite) TestAll() {
 
 		sut.Input.Sorter = sut.Input.Sorter.Add("id", false)
 
-		result, err := sut.Sut(sut.Ctx, sut.Input)
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.Greater(
@@ -333,9 +334,14 @@ func (s *SQLManagerSuite) TestAll() {
 			samples = append(samples, sample)
 		}
 
-		sut.Input.Paginator = sut.Input.Paginator.SetLimit(1).SetPage(1)
+		sort.Slice(samples, func(i, j int) bool {
+			return samples[i].ID >= samples[j].ID
+		})
 
-		result, err := sut.Sut(sut.Ctx, sut.Input)
+		sut.Input.Paginator = sut.Input.Paginator.SetLimit(1).SetPage(1)
+		sut.Input.Sorter = sut.Input.Sorter.Add("id", true)
+
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.NoError(err)
 		s.Equal(3, result.Total, "Should return the correct total")
@@ -351,12 +357,12 @@ func (s *SQLManagerSuite) TestUpdate() {
 			input manager.UpdateInput[Sample],
 		) error
 		Ctx   context.Context
-		Input manager.UpdateInput[Sample]
+		Input *manager.UpdateInput[Sample]
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
 		ctx := context.Background()
-		input := manager.UpdateInput[Sample]{
+		input := &manager.UpdateInput[Sample]{
 			Model: FakeSample(),
 			ID:    1,
 		}
@@ -378,9 +384,9 @@ func (s *SQLManagerSuite) TestUpdate() {
 		sut.Input.Model.Name = "new name"
 		sut.Input.ID = sample.ID
 
-		err := sut.Sut(sut.Ctx, sut.Input)
+		err := sut.Sut(sut.Ctx, *sut.Input)
 
 		s.Require().NoError(err)
-		s.HasChanged(sample, sut.Input.Model)
+		s.HasChanged(sample, *sut.Input.Model)
 	})
 }

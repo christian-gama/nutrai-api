@@ -15,9 +15,6 @@ func Transaction(
 	fn func(tx *gorm.DB),
 ) {
 	db := conn.GetPsql()
-	defer func() {
-		conn.ClosePsql()
-	}()
 
 	tx := func(tx *gorm.DB) error {
 		defer func() {
@@ -29,8 +26,16 @@ func Transaction(
 
 		fn(tx)
 
-		return errors.New("it will rollback automatically on error")
+		return errors.New("roll back")
 	}
 
-	db.Transaction(tx, &gosql.TxOptions{Isolation: gosql.LevelSerializable})
+	if err := db.Transaction(tx, &gosql.TxOptions{Isolation: gosql.LevelSnapshot}); err != nil {
+		const (
+			alreadyCommittedOrRolledBack = "sql: Transaction has already been committed or rolled back"
+			defaultExpectedErrorMsg      = "roll back"
+		)
+		if err.Error() != alreadyCommittedOrRolledBack && err.Error() != defaultExpectedErrorMsg {
+			failFn("could not run transaction", "error: %v", err)
+		}
+	}
 }

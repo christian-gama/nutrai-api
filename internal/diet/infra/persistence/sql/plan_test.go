@@ -2,6 +2,7 @@ package persistence_test
 
 import (
 	"context"
+	"sort"
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
@@ -11,10 +12,9 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
 	persistence "github.com/christian-gama/nutrai-api/internal/diet/infra/persistence/sql"
 	"github.com/christian-gama/nutrai-api/internal/diet/infra/persistence/sql/schema"
-	dietFake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/diet"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/plan"
+	dietFixture "github.com/christian-gama/nutrai-api/testutils/fixture/diet/sql"
 	fixture "github.com/christian-gama/nutrai-api/testutils/fixture/diet/sql"
-
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"gorm.io/gorm"
 )
@@ -38,19 +38,70 @@ func (s *PlanSuite) TestSave() {
 	type Sut struct {
 		Sut   func(ctx context.Context, input repo.SavePlanInput) (*plan.Plan, error)
 		Ctx   context.Context
-		Input repo.SavePlanInput
+		Input *repo.SavePlanInput
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
-		ctx := context.Background()
 		plan := fake.Plan()
-		diet := dietFake.Diet()
-		plan.DietID = diet.ID
-		input := repo.SavePlanInput{
+
+		input := &repo.SavePlanInput{
 			Plan: plan,
 		}
 
 		sut := s.Plan(db).Save
+
+		return Sut{
+			Sut:   sut,
+			Ctx:   context.Background(),
+			Input: input,
+		}
+	}
+
+	s.Run("Should create a new plan", func(db *gorm.DB) {
+		sut := makeSut(db)
+
+		dietDeps := dietFixture.SaveDiet(db, nil)
+		sut.Input.Plan.DietID = dietDeps.Diet.ID
+		plan, err := sut.Sut(sut.Ctx, *sut.Input)
+
+		s.NoError(err)
+		s.NotZero(plan.ID, "Should have an ID")
+	})
+
+	s.Run("Should return an error when the plan already exists", func(db *gorm.DB) {
+		sut := makeSut(db)
+
+		dietDeps := dietFixture.SaveDiet(db, nil)
+		sut.Input.Plan.DietID = dietDeps.Diet.ID
+		_, err := sut.Sut(sut.Ctx, *sut.Input)
+		s.NoError(err)
+		s.SQLRecordExist(db, &schema.Plan{})
+
+		_, err = sut.Sut(sut.Ctx, *sut.Input)
+		s.Error(err)
+	})
+
+	s.Run("Should return an error when the diet does not exist", func(db *gorm.DB) {
+		sut := makeSut(db)
+
+		sut.Input.Plan.ID = 404_404_404
+		_, err := sut.Sut(sut.Ctx, *sut.Input)
+
+		s.Error(err)
+	})
+}
+
+func (s *PlanSuite) TestDelete() {
+	type Sut struct {
+		Sut   func(ctx context.Context, input repo.DeletePlanInput) error
+		Ctx   context.Context
+		Input *repo.DeletePlanInput
+	}
+
+	makeSut := func(db *gorm.DB) Sut {
+		ctx := context.Background()
+		input := &repo.DeletePlanInput{}
+		sut := s.Plan(db).Delete
 
 		return Sut{
 			Sut:   sut,
@@ -59,58 +110,48 @@ func (s *PlanSuite) TestSave() {
 		}
 	}
 
-	s.Run("TestSave (Error)", func(db *gorm.DB) {
-		s.Run("Should create a new plan", func(db *gorm.DB) {
-			sut := makeSut(db)
+	s.Run("Should delete a plan", func(db *gorm.DB) {
+		sut := makeSut(db)
 
-			dietDeps := fixture.SaveDiet(db, nil)
+		planDeps := fixture.SavePlan(db, nil)
 
-			sut.Input.Plan.DietID = dietDeps.Diet.ID
+		sut.Input.IDs = []value.ID{planDeps.Plan.ID}
 
-			plan, err := sut.Sut(sut.Ctx, sut.Input)
+		err := sut.Sut(sut.Ctx, *sut.Input)
 
-			s.NoError(err)
-			s.NotZero(plan.ID, "Should have an ID")
-		})
+		s.NoError(err)
+		s.SQLRecordDoesNotExist(db, &schema.Plan{})
 	})
 
-	s.Run("TestSave (Success)", func(db *gorm.DB) {
-		s.Run("Should return an error when the plan already exists", func(db *gorm.DB) {
-			sut := makeSut(db)
+	s.Run("Should delete nothing if the plan ID is invalid", func(db *gorm.DB) {
+		sut := makeSut(db)
 
-			dietDeps := fixture.SaveDiet(db, nil)
+		planDeps := fixture.SavePlan(db, nil)
 
-			sut.Input.Plan.DietID = dietDeps.Diet.ID
+		sut.Input.IDs = []value.ID{planDeps.Plan.ID + 1}
 
-			plan, err := sut.Sut(sut.Ctx, sut.Input)
+		err := sut.Sut(sut.Ctx, *sut.Input)
 
-			s.NoError(err)
-			s.NotZero(plan.ID, "Should have an ID")
-
-			plan, err = sut.Sut(sut.Ctx, sut.Input)
-
-			s.Error(err)
-			s.Nil(plan)
-		})
+		s.NoError(err)
+		s.SQLRecordExist(db, &schema.Plan{})
 	})
 }
 
 func (s *PlanSuite) TestFind() {
 	type Sut struct {
-		Sut   func(ctx context.Context, input repo.FindPlanInput) (*plan.Plan, error)
+		Sut func(
+			ctx context.Context,
+			input repo.FindPlanInput,
+		) (*plan.Plan, error)
 		Ctx   context.Context
-		Input repo.FindPlanInput
+		Input *repo.FindPlanInput
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
 		ctx := context.Background()
-		plan := fake.Plan()
-		diet := dietFake.Diet()
-		plan.DietID = diet.ID
-		input := repo.FindPlanInput{
-			ID: plan.ID,
+		input := &repo.FindPlanInput{
+			ID: 0,
 		}
-
 		sut := s.Plan(db).Find
 
 		return Sut{
@@ -120,40 +161,38 @@ func (s *PlanSuite) TestFind() {
 		}
 	}
 
-	s.Run("TestFind (Error)", func(db *gorm.DB) {
-		s.Run("Should return an error when the plan does not exist", func(db *gorm.DB) {
-			sut := makeSut(db)
+	s.Run("Should find a plan", func(db *gorm.DB) {
+		sut := makeSut(db)
 
-			sut.Input.ID = 404_404_404
+		planDeps := fixture.SavePlan(db, nil)
 
-			plan, err := sut.Sut(sut.Ctx, sut.Input)
+		sut.Input.ID = planDeps.Plan.ID
 
-			s.Error(err)
-			s.Nil(plan)
-		})
+		plan, err := sut.Sut(sut.Ctx, *sut.Input)
+
+		s.NoError(err)
+		s.Equal(plan.ID, planDeps.Plan.ID, "Should have the same ID")
 	})
 
-	s.Run("TestFind (Success)", func(db *gorm.DB) {
-		s.Run("Should return the plan", func(db *gorm.DB) {
-			sut := makeSut(db)
+	s.Run("Should return an error if the plan does not exist", func(db *gorm.DB) {
+		sut := makeSut(db)
 
-			planDeps := fixture.SavePlan(db, nil)
+		sut.Input.ID = 404_404_404
 
-			sut.Input.ID = planDeps.Plan.ID
+		_, err := sut.Sut(sut.Ctx, *sut.Input)
 
-			plan, err := sut.Sut(sut.Ctx, sut.Input)
-
-			s.NoError(err)
-			s.NotZero(plan.ID, "Should have an ID")
-		})
+		s.Error(err)
 	})
 }
 
 func (s *PlanSuite) TestAll() {
 	type Sut struct {
-		Sut   func(ctx context.Context, input repo.AllPlansInput) (*queryer.PaginationOutput[*plan.Plan], error)
+		Sut func(
+			ctx context.Context,
+			input repo.AllPlansInput,
+		) (*queryer.PaginationOutput[*plan.Plan], error)
 		Ctx   context.Context
-		Input repo.AllPlansInput
+		Input *repo.AllPlansInput
 	}
 
 	makeSut := func(db *gorm.DB) Sut {
@@ -168,107 +207,121 @@ func (s *PlanSuite) TestAll() {
 		return Sut{
 			Sut:   sut,
 			Ctx:   ctx,
-			Input: input,
+			Input: &input,
 		}
 	}
 
-	s.Run("TestAll (Error)", func(db *gorm.DB) {
-		s.Run("Should return the correct plans using filters", func(db *gorm.DB) {
-			sut := makeSut(db)
+	s.Run("Should find all plans", func(db *gorm.DB) {
+		sut := makeSut(db)
 
-			planDeps := fixture.SavePlan(db, nil)
-			length := 3
+		length := 3
+		for i := 0; i < length; i++ {
+			fixture.SavePlan(db, nil)
+		}
 
-			for i := 0; i < length; i++ {
-				fixture.SavePlan(db, nil)
-			}
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
 
-			sut.Input.Filterer = sut.Input.Filterer.Add(
-				"ID",
-				querying.EqOperator,
-				planDeps.Plan.ID,
-			)
-
-			result, err := sut.Sut(sut.Ctx, sut.Input)
-
-			s.NoError(err)
-			s.NotZero(result.Results[0].ID, "Should have an ID")
-			s.Equal(1, len(result.Results), "Should have the same length")
-			s.Len(result.Results, 1, "Should have the same length")
-		})
-
-		s.Run("Should return the correct plans using sorter as desc", func(db *gorm.DB) {
-			sut := makeSut(db)
-
-			length := 3
-
-			for i := 0; i < length; i++ {
-				fixture.SavePlan(db, nil)
-			}
-
-			sut.Input.Sorter = sut.Input.Sorter.Add(
-				"ID",
-				true,
-			)
-
-			result, err := sut.Sut(sut.Ctx, sut.Input)
-
-			s.NoError(err)
-			s.Greater(
-				int(result.Results[0].ID),
-				int(result.Results[1].ID),
-				"Should have the correct order",
-			)
-		})
-
-		s.Run("Should return the correct plans using sorter as asc", func(db *gorm.DB) {
-			sut := makeSut(db)
-
-			length := 3
-
-			for i := 0; i < length; i++ {
-				fixture.SavePlan(db, nil)
-			}
-
-			sut.Input.Sorter = sut.Input.Sorter.Add(
-				"ID",
-				false,
-			)
-
-			result, err := sut.Sut(sut.Ctx, sut.Input)
-
-			s.NoError(err)
-			s.Greater(
-				int(result.Results[1].ID),
-				int(result.Results[0].ID),
-				"Should have the correct order",
-			)
-		})
+		s.NoError(err)
+		s.NotZero(result.Results[0].ID, "Should have a valid id")
+		s.Equal(length, result.Total, "Should return %d total", length)
+		s.Len(result.Results, length, "Should return %d results", length)
 	})
 
-	s.Run("TestAll (Success)", func(db *gorm.DB) {
-		s.Run("Should return all plans", func(db *gorm.DB) {
-			sut := makeSut(db)
+	s.Run("Should return the correct plans using filter", func(db *gorm.DB) {
+		sut := makeSut(db)
 
-			length := 3
+		plan := fake.Plan()
+		plan.Text = "test"
+		planDeps := fixture.SavePlan(db, &fixture.PlanDeps{Plan: plan})
+		length := 2
+		for i := 0; i < length; i++ {
+			plan := fake.Plan()
+			fixture.SavePlan(db, &fixture.PlanDeps{Plan: plan})
+		}
 
-			for i := 0; i < length; i++ {
-				fixture.SavePlan(db, nil)
-			}
+		sut.Input.Filterer = sut.Input.Filterer.Add(
+			"text",
+			querying.EqOperator,
+			plan.Text,
+		)
 
-			result, err := sut.Sut(sut.Ctx, sut.Input)
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
 
-			s.NoError(err)
-			s.NotZero(result.Results[0].ID, "Should have an ID")
-			s.Equal(length, len(result.Results), "Should have the same length")
-			s.Len(result.Results, length, "Should have the same length")
+		s.NoError(err)
+		s.Equal(result.Results[0].ID, planDeps.Plan.ID, "Should have the same ID")
+		s.Equal(1, result.Total, "Should return only one plan")
+		s.Len(result.Results, 1, "Should return only one plan")
+	})
+
+	s.Run("Should return the correct plans using sorter as desc", func(db *gorm.DB) {
+		sut := makeSut(db)
+
+		for i := 0; i < 3; i++ {
+			fixture.SavePlan(db, nil)
+		}
+
+		sut.Input.Sorter = sut.Input.Sorter.Add("id", true)
+
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
+
+		s.NoError(err)
+		s.Greater(
+			int(result.Results[1].ID),
+			int(result.Results[2].ID),
+			"Should have the correct order",
+		)
+	})
+
+	s.Run("Should return the correct plans using sorter as asc", func(db *gorm.DB) {
+		sut := makeSut(db)
+
+		for i := 0; i < 3; i++ {
+			fixture.SavePlan(db, nil)
+		}
+
+		sut.Input.Sorter = sut.Input.Sorter.Add("id", false)
+
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
+
+		s.NoError(err)
+		s.Greater(
+			int(result.Results[2].ID),
+			int(result.Results[1].ID),
+			"Should have the correct order",
+		)
+	})
+
+	s.Run("Should return the correct plans using pagination", func(db *gorm.DB) {
+		sut := makeSut(db)
+
+		plans := make([]*plan.Plan, 0)
+		for i := 0; i < 3; i++ {
+			planDeps := fixture.SavePlan(db, nil)
+			plans = append(plans, planDeps.Plan)
+		}
+
+		sort.Slice(plans, func(i, j int) bool {
+			return plans[i].ID >= plans[j].ID
 		})
+
+		sut.Input.Paginator = sut.Input.Paginator.SetLimit(1).SetPage(1)
+		sut.Input.Sorter = sut.Input.Sorter.Add("id", true)
+
+		result, err := sut.Sut(sut.Ctx, *sut.Input)
+
+		s.NoError(err)
+		s.Equal(3, result.Total, "Should return the correct total")
+		s.Len(result.Results, 1, "Should return the correct number of plans")
+		s.Equal(int(plans[0].ID), int(result.Results[0].ID), "Should return the correct plan")
 	})
 }
 
 func (s *PlanSuite) TestUpdate() {
 	type Sut struct {
-		Sut   func(ctx context.Context, input repo.UpdatePlanInput) error
+		Sut func(
+			ctx context.Context,
+			input repo.UpdatePlanInput,
+		) error
 		Ctx   context.Context
 		Input repo.UpdatePlanInput
 	}
@@ -288,68 +341,18 @@ func (s *PlanSuite) TestUpdate() {
 		}
 	}
 
-	s.Run("TestUpdate (Error)", func(db *gorm.DB) {
-		s.Run("Should return an error when the plan does not exist", func(db *gorm.DB) {
-			sut := makeSut(db)
+	s.Run("Should update a plan", func(db *gorm.DB) {
+		sut := makeSut(db)
 
-			sut.Input.ID = 404_404_404
+		planDeps := fixture.SavePlan(db, nil)
 
-			err := sut.Sut(sut.Ctx, sut.Input)
+		*sut.Input.Plan = *planDeps.Plan
+		sut.Input.Plan.Text = "new text"
+		sut.Input.ID = planDeps.Plan.ID
 
-			s.Error(err)
-		})
-	})
+		err := sut.Sut(sut.Ctx, sut.Input)
 
-	s.Run("TestUpdate (Success)", func(db *gorm.DB) {
-		s.Run("Should update the plan", func(db *gorm.DB) {
-			sut := makeSut(db)
-
-			planDeps := fixture.SavePlan(db, nil)
-
-			*sut.Input.Plan = *planDeps.Plan
-			sut.Input.Plan.Text = "new text"
-			sut.Input.ID = planDeps.Plan.ID
-			sut.Input.Plan.ID = planDeps.Plan.ID
-
-			err := sut.Sut(sut.Ctx, sut.Input)
-
-			s.Require().NoError(err)
-			s.HasChanged(planDeps.Plan, sut.Input.Plan)
-		})
-	})
-}
-
-func (s *PlanSuite) TestDelete() {
-	type Sut struct {
-		Sut   func(ctx context.Context, input repo.DeletePlanInput) error
-		Ctx   context.Context
-		Input repo.DeletePlanInput
-	}
-
-	makeSut := func(db *gorm.DB) Sut {
-		ctx := context.Background()
-		input := repo.DeletePlanInput{}
-		sut := s.Plan(db).Delete
-
-		return Sut{
-			Sut:   sut,
-			Ctx:   ctx,
-			Input: input,
-		}
-	}
-
-	s.Run("TestDelete (Success)", func(db *gorm.DB) {
-		s.Run("Should delete the plan", func(db *gorm.DB) {
-			sut := makeSut(db)
-
-			planDeps := fixture.SavePlan(db, nil)
-
-			sut.Input.IDs = []value.ID{planDeps.Plan.ID}
-
-			err := sut.Sut(sut.Ctx, sut.Input)
-
-			s.Require().NoError(err)
-			s.SQLRecordDoesNotExist(db, &schema.Plan{})
-		})
+		s.Require().NoError(err)
+		s.HasChanged(planDeps.Plan, sut.Input.Plan)
 	})
 }
