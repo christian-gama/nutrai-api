@@ -11,6 +11,6 @@ type LoginInput struct {
 }
 
 type LoginOutput struct {
-	Access  jwtValue.Token `json:"access"`
-	Refresh jwtValue.Token `json:"refresh"`
+	Access  jwtValue.Token `json:"access" faker:"jwt"`
+	Refresh jwtValue.Token `json:"refresh" faker:"jwt"`
 }

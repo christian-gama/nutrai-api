@@ -16,3 +16,14 @@ func LoginInput() *service.LoginInput {
 
 	return data
 }
+
+func LoginOutput() *service.LoginOutput {
+	data := new(service.LoginOutput)
+
+	err := faker.FakeData(data)
+	if err != nil {
+		ErrGenerating(err)
+	}
+
+	return data
+}

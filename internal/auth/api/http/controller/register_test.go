@@ -7,7 +7,6 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/auth/api/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/auth/app/service"
-	jwtValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
 	userValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/user"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/app/service"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
@@ -50,14 +49,10 @@ func (s *RegisterSuite) TestHandle() {
 	s.Run("should register a patient", func() {
 		sut := makeSut()
 
-		access := jwtValue.Token("access")
-		refresh := jwtValue.Token("refresh")
+		registerOutput := fake.RegisterOutput()
 		sut.Mock.RegisterHandler.
 			On("Handle", mock.Anything, sut.Input).
-			Return(&service.RegisterOutput{
-				Access:  access,
-				Refresh: refresh,
-			}, nil)
+			Return(registerOutput, nil)
 
 		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
 			Data: sut.Input,

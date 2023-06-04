@@ -41,11 +41,11 @@ func (q *allDietsHandlerImpl) Handle(
 
 	output := &queryer.PaginationOutput[*AllDietsOutput]{
 		Total:   pagination.Total,
-		Results: []*FindDietOutput{},
+		Results: make([]*FindDietOutput, len(pagination.Results)),
 	}
 
-	for _, diet := range pagination.Results {
-		output.Results = append(output.Results, &FindDietOutput{
+	for i, diet := range pagination.Results {
+		output.Results[i] = &FindDietOutput{
 			ID:              diet.ID,
 			Name:            diet.Name,
 			Description:     diet.Description,
@@ -53,7 +53,7 @@ func (q *allDietsHandlerImpl) Handle(
 			Goal:            diet.Goal,
 			MealPlan:        diet.MealPlan,
 			MonthlyCostUSD:  diet.MonthlyCostUSD,
-		})
+		}
 	}
 
 	return output, nil

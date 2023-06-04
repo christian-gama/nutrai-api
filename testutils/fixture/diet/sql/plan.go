@@ -32,7 +32,7 @@ func SavePlan(db *gorm.DB, deps *PlanDeps) *PlanDeps {
 		plan = fake.Plan()
 	}
 
-	plan.Diet = deps.Diet
+	plan.DietID = deps.Diet.ID
 	plan, err := persistence.NewSQLPlan(db).
 		Save(context.Background(), repo.SavePlanInput{
 			Plan: plan,

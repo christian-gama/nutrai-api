@@ -2,6 +2,7 @@ package diet
 
 import (
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
+	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/plan"
 	value "github.com/christian-gama/nutrai-api/internal/diet/domain/value/diet"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
@@ -21,6 +22,7 @@ type Diet struct {
 	MealPlan        value.MealPlan        `faker:"-"`
 	MonthlyCostUSD  value.MonthlyCostUSD  `faker:"boundary_start=12.65, boundary_end=184.05"`
 	RestrictedFood  []*RestrictedFood     `faker:"-"`
+	Plans           []*plan.Plan          `faker:"-"`
 }
 
 // NewDiet returns a new Diet instance.
@@ -146,5 +148,10 @@ func (d *Diet) SetRestrictedFood(restrictedFood []*RestrictedFood) *Diet {
 		d.RestrictedFood[i] = rf.SetDietID(d.ID)
 	}
 
+	return d
+}
+
+func (d *Diet) SetPlans(plans []*plan.Plan) *Diet {
+	d.Plans = plans
 	return d
 }

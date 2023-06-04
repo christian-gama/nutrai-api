@@ -15,11 +15,11 @@ type FindDietInput struct {
 
 // FindDietOutput is the output data of the diet query.
 type FindDietOutput struct {
-	ID              coreValue.ID          `json:"id"`
-	Name            value.Name            `json:"name"`
-	Description     value.Description     `json:"description"`
-	DurationInWeeks value.DurationInWeeks `json:"durationInWeeks"`
-	Goal            value.Goal            `json:"goal"`
-	MealPlan        value.MealPlan        `json:"mealPlan"`
-	MonthlyCostUSD  value.MonthlyCostUSD  `json:"monthlyCostUSD"`
+	ID              coreValue.ID          `json:"id" faker:"uint"`
+	Name            value.Name            `json:"name" faker:"name"`
+	Description     value.Description     `json:"description" faker:"sentence"`
+	DurationInWeeks value.DurationInWeeks `json:"durationInWeeks" faker:"uint"`
+	Goal            value.Goal            `json:"goal" faker:"sentence"`
+	MealPlan        value.MealPlan        `json:"mealPlan" faker:"sentence"`
+	MonthlyCostUSD  value.MonthlyCostUSD  `json:"monthlyCostUSD" faker:"sentence"`
 }

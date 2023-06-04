@@ -14,6 +14,6 @@ type RegisterInput struct {
 
 // RegisterOutput is the output of the Register service.
 type RegisterOutput struct {
-	Access  jwtValue.Token `json:"access"`
-	Refresh jwtValue.Token `json:"refresh"`
+	Access  jwtValue.Token `json:"access" faker:"jwt"`
+	Refresh jwtValue.Token `json:"refresh" faker:"jwt"`
 }

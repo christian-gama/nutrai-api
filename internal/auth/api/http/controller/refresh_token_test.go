@@ -6,7 +6,6 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/auth/api/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/auth/app/service"
-	jwtValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/app/service"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
 	svcMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/service"
@@ -50,12 +49,10 @@ func (s *RefreshTokenSuite) TestHandle() {
 		func() {
 			sut := makeSut()
 
-			accessToken := jwtValue.Token("access")
+			refreshTokenOutput := fake.RefreshTokenOutput()
 			sut.Mock.RefreshTokenHandler.
 				On("Handle", mock.Anything, sut.Input).
-				Return(&service.RefreshTokenOutput{
-					Access: accessToken,
-				}, nil)
+				Return(refreshTokenOutput, nil)
 
 			ctx, body := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 				Data: sut.Input,
@@ -63,7 +60,7 @@ func (s *RefreshTokenSuite) TestHandle() {
 
 			s.Equal(http.StatusOK, ctx.Writer.Status())
 			s.EqualValues(
-				accessToken,
+				refreshTokenOutput.Access,
 				body["access"],
 				"should return access token",
 			)

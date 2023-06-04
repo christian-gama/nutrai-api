@@ -45,7 +45,7 @@ func (s *PlanSuite) TestSave() {
 		ctx := context.Background()
 		plan := fake.Plan()
 		diet := dietFake.Diet()
-		plan.Diet = diet
+		plan.DietID = diet.ID
 		input := repo.SavePlanInput{
 			Plan: plan,
 		}
@@ -65,7 +65,7 @@ func (s *PlanSuite) TestSave() {
 
 			dietDeps := fixture.SaveDiet(db, nil)
 
-			sut.Input.Plan.Diet = dietDeps.Diet
+			sut.Input.Plan.DietID = dietDeps.Diet.ID
 
 			plan, err := sut.Sut(sut.Ctx, sut.Input)
 
@@ -80,7 +80,7 @@ func (s *PlanSuite) TestSave() {
 
 			dietDeps := fixture.SaveDiet(db, nil)
 
-			sut.Input.Plan.Diet = dietDeps.Diet
+			sut.Input.Plan.DietID = dietDeps.Diet.ID
 
 			plan, err := sut.Sut(sut.Ctx, sut.Input)
 
@@ -106,7 +106,7 @@ func (s *PlanSuite) TestFind() {
 		ctx := context.Background()
 		plan := fake.Plan()
 		diet := dietFake.Diet()
-		plan.Diet = diet
+		plan.DietID = diet.ID
 		input := repo.FindPlanInput{
 			ID: plan.ID,
 		}

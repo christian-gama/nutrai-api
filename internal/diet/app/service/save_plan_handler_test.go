@@ -1,12 +1,12 @@
-package command_test
+package service_test
 
 import (
 	"context"
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/diet/app/command"
+	"github.com/christian-gama/nutrai-api/internal/diet/app/service"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
-	cmdFake "github.com/christian-gama/nutrai-api/testutils/fake/diet/app/command"
+	svcFake "github.com/christian-gama/nutrai-api/testutils/fake/diet/app/service"
 	dietFake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/diet"
 	planFake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/plan"
 	dietRepoMock "github.com/christian-gama/nutrai-api/testutils/mocks/diet/domain/repo"
@@ -30,9 +30,9 @@ func (s *SavePlanHandlerSuite) TestSaveHandler() {
 	}
 
 	type Sut struct {
-		Sut   command.SavePlanHandler
+		Sut   service.SavePlanHandler
 		Ctx   context.Context
-		Input *command.SavePlanInput
+		Input *service.SavePlanInput
 		Mock  *Mock
 	}
 
@@ -42,9 +42,9 @@ func (s *SavePlanHandlerSuite) TestSaveHandler() {
 			DietRepo: dietRepoMock.NewDiet(s.T()),
 		}
 
-		input := cmdFake.SavePlanInput()
+		input := svcFake.SavePlanInput()
 
-		sut := command.NewSavePlanHandler(mock.PlanRepo, mock.DietRepo)
+		sut := service.NewSavePlanHandler(mock.PlanRepo, mock.DietRepo)
 
 		return Sut{
 			Sut:   sut,
@@ -66,9 +66,10 @@ func (s *SavePlanHandlerSuite) TestSaveHandler() {
 				On("Save", sut.Ctx, mock.Anything).
 				Return(nil, assert.AnError)
 
-			err := sut.Sut.Handle(sut.Ctx, sut.Input)
+			result, err := sut.Sut.Handle(sut.Ctx, sut.Input)
 
 			s.ErrorIs(err, assert.AnError)
+			s.Nil(result)
 		})
 
 		s.Run("Should return error when validating plan fails", func() {
@@ -82,9 +83,10 @@ func (s *SavePlanHandlerSuite) TestSaveHandler() {
 				On("Save", sut.Ctx, mock.Anything).
 				Return(nil, assert.AnError)
 
-			err := sut.Sut.Handle(sut.Ctx, sut.Input)
+			result, err := sut.Sut.Handle(sut.Ctx, sut.Input)
 
 			s.ErrorIs(err, assert.AnError)
+			s.Nil(result)
 		})
 	})
 
@@ -100,9 +102,10 @@ func (s *SavePlanHandlerSuite) TestSaveHandler() {
 				On("Save", sut.Ctx, mock.Anything).
 				Return(planFake.Plan(), nil)
 
-			err := sut.Sut.Handle(sut.Ctx, sut.Input)
+			result, err := sut.Sut.Handle(sut.Ctx, sut.Input)
 
 			s.NoError(err)
+			s.NotNil(result)
 		})
 
 		s.Run("Should call Save with correct Diet data", func() {
@@ -118,15 +121,16 @@ func (s *SavePlanHandlerSuite) TestSaveHandler() {
 				On("Save", sut.Ctx, mock.Anything).
 				Return(planFake.Plan(), nil)
 
-			err := sut.Sut.Handle(sut.Ctx, sut.Input)
+			result, err := sut.Sut.Handle(sut.Ctx, sut.Input)
 
 			s.NoError(err)
+			s.NotNil(result)
 			sut.Mock.PlanRepo.AssertCalled(
 				s.T(),
 				"Save",
 				sut.Ctx,
 				mock.MatchedBy(func(r repo.SavePlanInput) bool {
-					return r.Plan.Diet == diet && r.Plan.DietID == diet.ID
+					return r.Plan.DietID == diet.ID
 				}),
 			)
 		})

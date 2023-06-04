@@ -10,6 +10,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/diet/api/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/diet/app/query"
 	userFake "github.com/christian-gama/nutrai-api/testutils/fake/auth/domain/model/user"
+	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/app/query"
 	qryFake "github.com/christian-gama/nutrai-api/testutils/fake/diet/app/query"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
 	qryMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/query"
@@ -59,12 +60,7 @@ func (s *AllPlansSuite) TestHandle() {
 
 		sut.Mock.AllPlansHandler.
 			On("Handle", mock.Anything, mock.Anything).
-			Return(&queryer.PaginationOutput[*query.AllPlansOutput]{
-				Total: 1,
-				Results: []*query.AllPlansOutput{
-					&query.FindPlanOutput{},
-				},
-			}, nil)
+			Return(fake.AllPlansOutput(), nil)
 
 		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
 			CurrentUser: sut.CurrentUser,

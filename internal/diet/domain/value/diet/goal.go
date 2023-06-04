@@ -44,10 +44,10 @@ func (g Goal) Validate() error {
 }
 
 const (
-	WeightLoss     Goal = "WEIGHT_LOSS"
-	WeightGain     Goal = "WEIGHT_GAIN"
-	Maintain       Goal = "MAINTAIN"
-	ImprovedHealth Goal = "IMPROVED_HEALTH"
-	IncreaseEnergy Goal = "INCREASE_ENERGY"
-	MuscleGain     Goal = "MUSCLE_GAIN"
+	WeightLoss     Goal = "weight_loss"
+	WeightGain     Goal = "weight_gain"
+	Maintain       Goal = "maintain"
+	ImprovedHealth Goal = "improved_health"
+	IncreaseEnergy Goal = "increase_energy"
+	MuscleGain     Goal = "muscle_gain"
 )

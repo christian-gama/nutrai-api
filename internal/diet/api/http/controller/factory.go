@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/christian-gama/nutrai-api/internal/diet/app/command"
 	"github.com/christian-gama/nutrai-api/internal/diet/app/query"
+	"github.com/christian-gama/nutrai-api/internal/diet/app/service"
 )
 
 func MakeAllPlans() AllPlans {
@@ -14,7 +15,7 @@ func MakeFindPlan() FindPlan {
 }
 
 func MakeSavePlan() SavePlan {
-	return NewSavePlan(command.MakeSavePlanHandler())
+	return NewSavePlan(service.MakeSavePlanHandler())
 }
 
 func MakeDeletePlan() DeletePlan {

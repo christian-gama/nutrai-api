@@ -56,18 +56,6 @@ func (s *PlanSuite) TestNewPlan() {
 				s.Nil(plan)
 			})
 		})
-
-		s.Run("Diet", func() {
-			s.Run("Should return an error when empty", func() {
-				sut := makeSut()
-				sut.Data.Diet = nil
-
-				plan, err := sut.Sut()
-
-				s.ErrorAsRequired(err)
-				s.Nil(plan)
-			})
-		})
 	})
 
 	s.Run("TestNewPlan (Success)", func() {
@@ -81,7 +69,6 @@ func (s *PlanSuite) TestNewPlan() {
 			s.Equal(sut.Data.ID, plan.ID, "should have the same id")
 			s.Equal(sut.Data.Text, plan.Text, "should have the same text")
 			s.Equal(sut.Data.DietID, plan.DietID, "should have the same diet id")
-			s.Equal(sut.Data.Diet, plan.Diet, "should have the same diet")
 		})
 	})
 }

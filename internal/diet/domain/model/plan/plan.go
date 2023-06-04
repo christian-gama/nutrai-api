@@ -2,8 +2,7 @@ package plan
 
 import (
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
-	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
-	value "github.com/christian-gama/nutrai-api/internal/diet/domain/value/diet"
+	value "github.com/christian-gama/nutrai-api/internal/diet/domain/value/plan"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
@@ -14,8 +13,7 @@ import (
 type Plan struct {
 	ID     coreValue.ID `faker:"uint"`
 	DietID coreValue.ID `faker:"uint"`
-	Diet   *diet.Diet   `faker:"-"`
-	Text   value.Plan   `faker:"paragraph"`
+	Text   value.Text   `faker:"paragraph"`
 }
 
 // NewPlan creates a new Plan instance.
@@ -36,14 +34,8 @@ func (p *Plan) Validate() (*Plan, error) {
 		errs = errutil.Append(errs, err)
 	}
 
-	if err := p.Text.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
-	}
-
-	if p.Diet == nil {
-		errs = errutil.Append(errs, errors.Required("diet"))
-	} else if _, err := p.Diet.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if p.Text == "" {
+		errs = errutil.Append(errs, errors.Required("text"))
 	}
 
 	if errs != nil {
@@ -65,14 +57,8 @@ func (p *Plan) SetDietID(dietID coreValue.ID) *Plan {
 	return p
 }
 
-// SetDiet sets the Diet of the Plan.
-func (p *Plan) SetDiet(diet *diet.Diet) *Plan {
-	p.Diet = diet
-	return p
-}
-
 // SetText sets the Text of the Plan.
-func (p *Plan) SetText(text value.Plan) *Plan {
+func (p *Plan) SetText(text value.Text) *Plan {
 	p.Text = text
 	return p
 }

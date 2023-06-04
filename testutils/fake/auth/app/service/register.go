@@ -16,3 +16,14 @@ func RegisterInput() *service.RegisterInput {
 
 	return data
 }
+
+func RegisterOutput() *service.RegisterOutput {
+	data := new(service.RegisterOutput)
+
+	err := faker.FakeData(data)
+	if err != nil {
+		ErrGenerating(err)
+	}
+
+	return data
+}

@@ -1,9 +1,9 @@
-package command
+package service
 
 import (
 	"context"
 
-	"github.com/christian-gama/nutrai-api/internal/core/domain/command"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/service"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/sql/querying"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/plan"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
@@ -11,7 +11,7 @@ import (
 )
 
 // SavePlanHandler represents the SavePlan command.
-type SavePlanHandler = command.Handler[*SavePlanInput]
+type SavePlanHandler = service.Handler[*SavePlanInput, *SavePlanOutput]
 
 // savePlanHandlerImpl represents the implementation of the SavePlan command.
 type savePlanHandlerImpl struct {
@@ -31,7 +31,10 @@ func NewSavePlanHandler(
 }
 
 // Handle implements command.Handler.
-func (c *savePlanHandlerImpl) Handle(ctx context.Context, input *SavePlanInput) error {
+func (c *savePlanHandlerImpl) Handle(
+	ctx context.Context,
+	input *SavePlanInput,
+) (*SavePlanOutput, error) {
 	savedDiet, err := c.Diet.Find(
 		ctx,
 		repo.FindDietInput{
@@ -40,17 +43,25 @@ func (c *savePlanHandlerImpl) Handle(ctx context.Context, input *SavePlanInput) 
 		},
 	)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	data, err := plan.NewPlan().
-		SetDietID(input.DietID).
-		SetDiet(savedDiet).
+	p, err := plan.NewPlan().
+		SetDietID(savedDiet.ID).
 		SetText("replace with AI Generated data").
 		Validate()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return command.Response(c.Plan.Save(ctx, repo.SavePlanInput{Plan: data}))
+	p, err = c.Plan.Save(ctx, repo.SavePlanInput{Plan: p})
+	if err != nil {
+		return nil, err
+	}
+
+	return &SavePlanOutput{
+		ID:     p.ID,
+		DietID: p.DietID,
+		Text:   p.Text,
+	}, nil
 }

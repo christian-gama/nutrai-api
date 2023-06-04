@@ -4,7 +4,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
-	"github.com/christian-gama/nutrai-api/internal/diet/app/command"
+	"github.com/christian-gama/nutrai-api/internal/diet/app/service"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/gin-gonic/gin"
 )
@@ -13,16 +13,16 @@ import (
 type SavePlan = controller.Controller
 
 // NewSavePlan returns a new controller to save a plan.
-func NewSavePlan(c command.SavePlanHandler) SavePlan {
-	errutil.MustBeNotEmpty("command.SavePlanHandler", c)
+func NewSavePlan(c service.SavePlanHandler) SavePlan {
+	errutil.MustBeNotEmpty("service.SavePlanHandler", c)
 
 	return controller.NewController(
-		func(ctx *gin.Context, input *command.SavePlanInput) {
-			err := c.Handle(ctx.Request.Context(), input)
+		func(ctx *gin.Context, input *service.SavePlanInput) {
+			result, err := c.Handle(ctx.Request.Context(), input)
 			if err != nil {
 				panic(err)
 			}
-			response.Created(ctx, nil)
+			response.Created(ctx, result)
 		},
 
 		controller.Options{

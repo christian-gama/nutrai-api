@@ -53,12 +53,14 @@ func (s *FindPlanSuite) TestHandle() {
 		return &Sut{Sut: sut, Mock: mock, Input: *input, CurrentUser: currentUser}
 	}
 
-	s.Run("should find one patient successfuly", func() {
+	s.Run("should find one plan successfuly", func() {
 		sut := makeSut()
 
+		findPlanOutput := fake.FindPlanOutput()
+		findPlanOutput.ID = sut.Input.ID
 		sut.Mock.FindPlanHandler.
 			On("Handle", mock.Anything, mock.Anything).
-			Return(&query.AllPlansOutput{ID: sut.Input.ID}, nil)
+			Return(findPlanOutput, nil)
 
 		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
 			Params:      []string{fmt.Sprintf("%v", sut.Input.ID)},

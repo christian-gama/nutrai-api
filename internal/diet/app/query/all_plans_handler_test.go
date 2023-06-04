@@ -4,8 +4,11 @@ import (
 	"context"
 	"testing"
 
+	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/diet/app/query"
+	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/plan"
 	queryFake "github.com/christian-gama/nutrai-api/testutils/fake/diet/app/query"
+	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/domain/model/plan"
 	mocks "github.com/christian-gama/nutrai-api/testutils/mocks/diet/domain/repo"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"
@@ -69,7 +72,10 @@ func (s *AllPlansHandlerSuite) TestPlanHandler() {
 			sut := makeSut()
 
 			sut.Mock.PlanRepo.On("All", sut.Ctx, mock.Anything).
-				Return(queryFake.AllPlansOutput(), nil)
+				Return(&queryer.PaginationOutput[*plan.Plan]{
+					Results: []*plan.Plan{fake.Plan()},
+					Total:   1,
+				}, nil)
 
 			output, err := sut.Sut.Handle(sut.Ctx, sut.Input)
 

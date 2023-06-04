@@ -16,3 +16,14 @@ func RefreshTokenInput() *service.RefreshTokenInput {
 
 	return data
 }
+
+func RefreshTokenOutput() *service.RefreshTokenOutput {
+	data := new(service.RefreshTokenOutput)
+
+	err := faker.FakeData(data)
+	if err != nil {
+		ErrGenerating(err)
+	}
+
+	return data
+}

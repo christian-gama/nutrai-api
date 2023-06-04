@@ -7,7 +7,6 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal/auth/api/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/auth/app/service"
-	jwtValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
 	userValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/user"
 	fake "github.com/christian-gama/nutrai-api/testutils/fake/auth/app/service"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
@@ -48,14 +47,10 @@ func (s *LoginSuite) TestHandle() {
 	s.Run("should return an access token and refresh token when login succeeds", func() {
 		sut := makeSut()
 
-		accessToken := jwtValue.Token("access")
-		refreshToken := jwtValue.Token("refresh")
+		loginOutput := fake.LoginOutput()
 		sut.Mock.LoginHandler.
 			On("Handle", mock.Anything, sut.Input).
-			Return(&service.LoginOutput{
-				Access:  accessToken,
-				Refresh: refreshToken,
-			}, nil)
+			Return(loginOutput, nil)
 
 		ctx, body := gintest.MustRequestWithBody(sut.Sut, gintest.Option{
 			Data: sut.Input,
@@ -63,12 +58,12 @@ func (s *LoginSuite) TestHandle() {
 
 		s.Equal(http.StatusOK, ctx.Writer.Status())
 		s.EqualValues(
-			accessToken,
+			loginOutput.Access,
 			body["access"],
 			"should return access token",
 		)
 		s.EqualValues(
-			refreshToken,
+			loginOutput.Refresh,
 			body["refresh"],
 			"should return refresh token",
 		)

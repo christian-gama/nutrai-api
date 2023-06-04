@@ -48,9 +48,11 @@ func (s *FindPatientSuite) TestHandle() {
 	s.Run("should find one patient successfuly", func() {
 		sut := makeSut()
 
+		findPatientOutput := fake.FindPatientOutput()
+		findPatientOutput.ID = sut.Input.ID
 		sut.Mock.FindPatientHandler.
 			On("Handle", mock.Anything, mock.Anything).
-			Return(&query.AllPatientsOutput{ID: sut.Input.ID}, nil)
+			Return(findPatientOutput, nil)
 
 		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
 			Params: []string{fmt.Sprintf("%v", sut.Input.ID)},

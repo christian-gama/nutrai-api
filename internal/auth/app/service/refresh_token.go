@@ -9,5 +9,5 @@ type RefreshTokenInput struct {
 
 // RefreshTokenOutput is the output of the RefreshToken service.
 type RefreshTokenOutput struct {
-	Access value.Token `json:"access"`
+	Access value.Token `json:"access" faker:"jwt"`
 }

@@ -5,10 +5,10 @@ import (
 	"testing"
 
 	"github.com/christian-gama/nutrai-api/internal/diet/api/http/controller"
-	"github.com/christian-gama/nutrai-api/internal/diet/app/command"
-	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/app/command"
+	"github.com/christian-gama/nutrai-api/internal/diet/app/service"
+	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/app/service"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
-	cmdMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/command"
+	svcMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/service"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -25,13 +25,13 @@ func TestSavePlanSuite(t *testing.T) {
 func (s *SavePlanSuite) TestHandle() {
 	type Sut struct {
 		Sut             controller.SavePlan
-		Input           *command.SavePlanInput
-		SavePlanHandler *cmdMock.Handler[*command.SavePlanInput]
+		Input           *service.SavePlanInput
+		SavePlanHandler *svcMock.Handler[*service.SavePlanInput, *service.SavePlanOutput]
 	}
 
 	makeSut := func() *Sut {
 		input := fake.SavePlanInput()
-		savePlan := cmdMock.NewHandler[*command.SavePlanInput](s.T())
+		savePlan := svcMock.NewHandler[*service.SavePlanInput, *service.SavePlanOutput](s.T())
 		sut := controller.NewSavePlan(savePlan)
 		return &Sut{Sut: sut, SavePlanHandler: savePlan, Input: input}
 	}
@@ -41,7 +41,7 @@ func (s *SavePlanSuite) TestHandle() {
 
 		sut.SavePlanHandler.
 			On("Handle", mock.Anything, sut.Input).
-			Return(nil)
+			Return(fake.SavePlanOutput(), nil)
 
 		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
 			Data:        sut.Input,

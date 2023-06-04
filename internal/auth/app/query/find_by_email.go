@@ -12,7 +12,7 @@ type FindByEmailInput struct {
 
 // FindByEmailOutput is the output of the query to find a user by email.
 type FindByEmailOutput struct {
-	ID    coreValue.ID    `json:"id"`
-	Email userValue.Email `json:"email"`
-	Name  userValue.Name  `json:"name"`
+	ID    coreValue.ID    `json:"id" faker:"uint"`
+	Email userValue.Email `json:"email" faker:"email"`
+	Name  userValue.Name  `json:"name" faker:"name"`
 }

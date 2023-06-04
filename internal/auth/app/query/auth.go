@@ -13,8 +13,8 @@ type AuthInput struct {
 
 // AuthOutput is the output of the AuthInput query.
 type AuthOutput struct {
-	ID       coreValue.ID       `json:"id"`
-	Email    userValue.Email    `json:"email"`
-	Name     userValue.Name     `json:"name"`
-	Password userValue.Password `json:"-"`
+	ID       coreValue.ID       `json:"id" faker:"uint"`
+	Email    userValue.Email    `json:"email" faker:"email"`
+	Name     userValue.Name     `json:"name" faker:"name"`
+	Password userValue.Password `json:"-" faker:"len=8"`
 }

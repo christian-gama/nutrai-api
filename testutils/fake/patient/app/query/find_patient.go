@@ -16,3 +16,14 @@ func FindPatientInput() *query.FindPatientInput {
 
 	return data
 }
+
+func FindPatientOutput() *query.FindPatientOutput {
+	data := new(query.FindPatientOutput)
+
+	err := faker.FakeData(data)
+	if err != nil {
+		ErrGenerating(err)
+	}
+
+	return data
+}

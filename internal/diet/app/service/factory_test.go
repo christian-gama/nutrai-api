@@ -1,9 +1,9 @@
-package command_test
+package service_test
 
 import (
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/diet/app/command"
+	"github.com/christian-gama/nutrai-api/internal/diet/app/service"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
 
@@ -17,7 +17,6 @@ func TestFactorySuite(t *testing.T) {
 
 func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
-		command.MakeSaveDietHandler()
-		command.MakeDeletePlanHandler()
+		service.MakeSavePlanHandler()
 	})
 }

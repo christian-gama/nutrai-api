@@ -43,11 +43,11 @@ func (q *allPatientsHandlerImpl) Handle(
 
 	output := &queryer.PaginationOutput[*AllPatientsOutput]{
 		Total:   pagination.Total,
-		Results: []*FindPatientOutput{},
+		Results: make([]*FindPatientOutput, len(pagination.Results)),
 	}
 
-	for _, p := range pagination.Results {
-		output.Results = append(output.Results, &FindPatientOutput{
+	for i, p := range pagination.Results {
+		output.Results[i] = &FindPatientOutput{
 			ID:       p.ID,
 			Age:      p.Age,
 			HeightM:  p.HeightM,
@@ -62,7 +62,7 @@ func (q *allPatientsHandlerImpl) Handle(
 					}
 				}).
 				Build(),
-		})
+		}
 	}
 
 	return output, nil

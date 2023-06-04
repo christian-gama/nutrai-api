@@ -24,7 +24,7 @@ type FindPatientOutput struct {
 }
 
 type FindPatientAllergiesOutput struct {
-	ID        coreValue.ID  `json:"id"`
-	Name      value.Allergy `json:"name"`
-	PatientID coreValue.ID  `json:"patientID"`
+	ID        coreValue.ID  `json:"id" faker:"uint"`
+	Name      value.Allergy `json:"name" faker:"sentence"`
+	PatientID coreValue.ID  `json:"patientID" faker:"uint"`
 }
