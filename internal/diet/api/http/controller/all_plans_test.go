@@ -4,10 +4,12 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/diet/api/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/diet/app/query"
-	fake "github.com/christian-gama/nutrai-api/testutils/fake/diet/app/query"
+	userFake "github.com/christian-gama/nutrai-api/testutils/fake/auth/domain/model/user"
+	qryFake "github.com/christian-gama/nutrai-api/testutils/fake/diet/app/query"
 	"github.com/christian-gama/nutrai-api/testutils/gintest"
 	qryMock "github.com/christian-gama/nutrai-api/testutils/mocks/core/domain/query"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
@@ -29,23 +31,29 @@ func (s *AllPlansSuite) TestHandle() {
 	}
 
 	type Sut struct {
-		Sut   controller.AllPlans
-		Input query.AllPlansInput
-		Mock  *Mock
+		Sut         controller.AllPlans
+		Input       query.AllPlansInput
+		CurrentUser *user.User
+		Mock        *Mock
 	}
 
 	makeSut := func() *Sut {
-		input := fake.AllPlansInput()
+		input := qryFake.AllPlansInput()
+
 		mocks := &Mock{
 			AllPlansHandler: qryMock.NewHandler[*query.AllPlansInput, *queryer.PaginationOutput[*query.AllPlansOutput]](
 				s.T(),
 			),
 		}
+
+		currentUser := userFake.User()
+
 		sut := controller.NewAllPlans(mocks.AllPlansHandler)
-		return &Sut{Sut: sut, Mock: mocks, Input: *input}
+
+		return &Sut{Sut: sut, Mock: mocks, Input: *input, CurrentUser: currentUser}
 	}
 
-	s.Run("should fetch all patients successfuly", func() {
+	s.Run("should fetch all plans successfuly", func() {
 		sut := makeSut()
 
 		sut.Mock.AllPlansHandler.
@@ -57,13 +65,15 @@ func (s *AllPlansSuite) TestHandle() {
 				},
 			}, nil)
 
-		ctx := gintest.MustRequest(sut.Sut, gintest.Option{})
+		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
+			CurrentUser: sut.CurrentUser,
+		})
 
 		s.Equal(http.StatusOK, ctx.Writer.Status())
 		sut.Mock.AllPlansHandler.AssertCalled(s.T(), "Handle", mock.Anything, mock.Anything)
 	})
 
-	s.Run("should fetch all patients successfuly using queries", func() {
+	s.Run("should fetch all plans successfuly using queries", func() {
 		sut := makeSut()
 
 		sut.Mock.AllPlansHandler.
@@ -78,17 +88,17 @@ func (s *AllPlansSuite) TestHandle() {
 		ctx := gintest.MustRequest(sut.Sut, gintest.Option{
 			Queries: gintest.BuildScopeQuery(
 				gintest.FilterOption(sut.Input.Filter.
-					Add("age", "eq", 123).
-					Add("weightKG", "eq", 123).
-					Add("heightM", "eq", 123).
+					Add("dietID", "eq", 123).
+					Add("text", "like", "any").
 					Slice()),
 
 				gintest.SortOption(sut.Input.Sort.
-					Add("age", false).
-					Add("weightKG", false).
-					Add("heightM", false).
+					Add("dietID", false).
+					Add("id", true).
 					Slice()),
 			),
+
+			CurrentUser: sut.CurrentUser,
 		})
 
 		s.Equal(http.StatusOK, ctx.Writer.Status())
@@ -104,6 +114,8 @@ func (s *AllPlansSuite) TestHandle() {
 					sut.Input.Filter.Add("invalid", "invalid", "invalid").Slice(),
 				),
 			),
+
+			CurrentUser: sut.CurrentUser,
 		})
 
 		s.Equal(http.StatusBadRequest, ctx.Writer.Status())
@@ -116,6 +128,8 @@ func (s *AllPlansSuite) TestHandle() {
 			Queries: gintest.BuildScopeQuery(
 				gintest.SortOption(sut.Input.Sort.Add("invalid", false).Slice()),
 			),
+
+			CurrentUser: sut.CurrentUser,
 		})
 
 		s.Equal(http.StatusBadRequest, ctx.Writer.Status())

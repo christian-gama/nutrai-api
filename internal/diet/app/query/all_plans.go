@@ -6,7 +6,7 @@ import "github.com/christian-gama/nutrai-api/internal/core/infra/sql/querying"
 type AllPlansInput struct {
 	querying.Pagination `faker:"-"`
 	querying.Filter     `form:"filter" faker:"-" validate:"query,filter=dietID text"`
-	querying.Sort       `form:"sort" faker:"-" validate:"query,sort=id text"`
+	querying.Sort       `form:"sort" faker:"-" validate:"query,sort=id dietID text"`
 	querying.Preload    `form:"preload" faker:"-" validate:"query,preload=diet"`
 }
 

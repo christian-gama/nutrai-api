@@ -183,7 +183,7 @@ type gpt struct {
 	FrequencyPenalty float32 `env:"GPT_DEFAULT_FREQUENCY_PENALTY"`
 
 	// ApiKey is the GPT API key.
-	ApiKey string `env:"GPT_DEFAULT_API_KEY,required"`
+	ApiKey string `env:"GPT_API_KEY,required"`
 }
 
 // DB is the database environment variables.c.
