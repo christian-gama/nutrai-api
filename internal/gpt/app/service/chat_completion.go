@@ -3,9 +3,10 @@ package service
 import (
 	"context"
 
-	gpt "github.com/christian-gama/nutrai-api/internal/gpt/domain/model/message"
+	"github.com/christian-gama/nutrai-api/internal/core/domain/service"
+	"github.com/christian-gama/nutrai-api/internal/gpt/domain/model/gpt"
 	"github.com/christian-gama/nutrai-api/internal/gpt/domain/repo"
-	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/message"
+	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/gpt"
 )
 
 type message struct {
@@ -20,12 +21,7 @@ type ChatCompletionInput struct {
 	Messages []message `json:"messages"`
 }
 
-type ChatCompletion interface {
-	Execute(
-		ctx context.Context,
-		input *ChatCompletionInput,
-	) (*ChatCompletionOutput, error)
-}
+type ChatCompletion = service.Handler[*ChatCompletionInput, *ChatCompletionOutput]
 
 type ChatCompletionImpl struct {
 	Client repo.Generative
@@ -39,7 +35,7 @@ func NewChatCompletion(
 	}
 }
 
-func (c *ChatCompletionImpl) Execute(
+func (c *ChatCompletionImpl) Handle(
 	ctx context.Context,
 	input *ChatCompletionInput,
 ) (*ChatCompletionOutput, error) {
@@ -54,7 +50,10 @@ func (c *ChatCompletionImpl) Execute(
 
 	resp, err := c.Client.ChatCompletion(
 		context.Background(),
-		messages,
+		&repo.ChatCompletionInput{
+			Messages: messages,
+			Model:    gpt.NewModel(),
+		},
 	)
 	if err != nil {
 		return nil, err

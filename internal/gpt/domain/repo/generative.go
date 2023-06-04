@@ -3,12 +3,17 @@ package repo
 import (
 	"context"
 
-	gpt "github.com/christian-gama/nutrai-api/internal/gpt/domain/model/message"
+	"github.com/christian-gama/nutrai-api/internal/gpt/domain/model/gpt"
 )
+
+type ChatCompletionInput struct {
+	Messages []*gpt.Message
+	Model    *gpt.Model
+}
 
 type Generative interface {
 	ChatCompletion(
 		ctx context.Context,
-		input []*gpt.Message,
+		input *ChatCompletionInput,
 	) (*gpt.Message, error)
 }

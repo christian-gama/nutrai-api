@@ -1,7 +1,7 @@
 package fake
 
 import (
-	gpt "github.com/christian-gama/nutrai-api/internal/gpt/domain/model/model"
+	"github.com/christian-gama/nutrai-api/internal/gpt/domain/model/gpt"
 	. "github.com/christian-gama/nutrai-api/testutils/fake"
 	"github.com/go-faker/faker/v4"
 )

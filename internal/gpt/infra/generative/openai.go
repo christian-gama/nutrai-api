@@ -3,8 +3,9 @@ package generative
 import (
 	"context"
 
-	gpt "github.com/christian-gama/nutrai-api/internal/gpt/domain/model/message"
-	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/message"
+	"github.com/christian-gama/nutrai-api/internal/gpt/domain/model/gpt"
+	"github.com/christian-gama/nutrai-api/internal/gpt/domain/repo"
+	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/gpt"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -20,18 +21,18 @@ func NewGenerative(client *openai.Client) *Generative {
 
 func (g *Generative) ChatCompletion(
 	ctx context.Context,
-	input []*gpt.Message,
+	input repo.ChatCompletionInput,
 ) (*gpt.Message, error) {
 	var messages []openai.ChatCompletionMessage
 
-	for _, message := range input {
+	for _, message := range input.Messages {
 		messages = append(messages, openai.ChatCompletionMessage{
 			Role:    message.Role.String(),
 			Content: message.Content.String(),
 		})
 	}
 
-	model := input[0].Model
+	model := input.Model
 
 	stop := []string{}
 
@@ -59,7 +60,7 @@ func (g *Generative) ChatCompletion(
 	content := resp.Choices[0].Message.Content
 
 	return &gpt.Message{
-		Role:    value.Assistant,
+		Role:    gpt.Assistant,
 		Content: value.Content(content),
 	}, nil
 }

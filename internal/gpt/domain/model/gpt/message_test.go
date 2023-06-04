@@ -3,8 +3,8 @@ package gpt_test
 import (
 	"testing"
 
-	gpt "github.com/christian-gama/nutrai-api/internal/gpt/domain/model/message"
-	fake "github.com/christian-gama/nutrai-api/testutils/fake/gpt/domain/model/message"
+	"github.com/christian-gama/nutrai-api/internal/gpt/domain/model/gpt"
+	fake "github.com/christian-gama/nutrai-api/testutils/fake/gpt/domain/model/gpt"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
 
@@ -59,18 +59,6 @@ func (s *MessageTestSuite) TestNewMessage() {
 			s.Run("Should return an error when empty", func() {
 				sut := makeSut()
 				sut.Data.Content = ""
-
-				message, err := sut.Sut()
-
-				s.ErrorAsRequired(err)
-				s.Nil(message)
-			})
-		})
-
-		s.Run("Model", func() {
-			s.Run("Should return an error when empty", func() {
-				sut := makeSut()
-				sut.Data.Model = nil
 
 				message, err := sut.Sut()
 

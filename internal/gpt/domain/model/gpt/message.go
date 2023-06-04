@@ -2,10 +2,15 @@ package gpt
 
 import (
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
-	gpt "github.com/christian-gama/nutrai-api/internal/gpt/domain/model/model"
-	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/message"
+	value "github.com/christian-gama/nutrai-api/internal/gpt/domain/value/gpt"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
+)
+
+const (
+	User      value.Role = "user"
+	System    value.Role = "system"
+	Assistant value.Role = "assistant"
 )
 
 type Message struct {
@@ -13,7 +18,6 @@ type Message struct {
 	Role    value.Role     `faker:"-"`
 	Content value.Content  `faker:"sentence"`
 	Tokens  value.Tokens   `faker:"boundary_start=1, boundary_end=1024"`
-	Model   *gpt.Model     `faker:"-"`
 }
 
 // NewMessage returns a new Message instance.
@@ -30,22 +34,19 @@ func (Message) String() string {
 func (m *Message) Validate() (*Message, error) {
 	var errs *errutil.Error
 
-	if err := m.Role.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if m.Role != User && m.Role != System && m.Role != Assistant {
+		errs = errutil.Append(
+			errs,
+			errors.Invalid("Role", "Role must be one of: user, system, assistant"),
+		)
 	}
 
-	if err := m.Content.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if m.Content == "" {
+		errs = errutil.Append(errs, errors.Required("Content"))
 	}
 
-	if err := m.Tokens.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
-	}
-
-	if m.Model == nil {
-		errs = errutil.Append(errs, errors.Required("model is required"))
-	} else if _, err := m.Model.Validate(); err != nil {
-		errs = errutil.Append(errs, err)
+	if m.Tokens <= 0 {
+		errs = errutil.Append(errs, errors.Invalid("Tokens", "Tokens must be greater than 0"))
 	}
 
 	if errs.HasErrors() {
@@ -76,11 +77,5 @@ func (m *Message) SetContent(content value.Content) *Message {
 // SetTokens sets the Tokens of the Message.
 func (m *Message) SetTokens(tokens value.Tokens) *Message {
 	m.Tokens = tokens
-	return m
-}
-
-// SetModel sets the Model of the Message.
-func (m *Message) SetModel(model *gpt.Model) *Message {
-	m.Model = model
 	return m
 }
