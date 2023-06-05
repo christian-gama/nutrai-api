@@ -27,7 +27,10 @@ func NewFindDietHandler(dietRepo repo.Diet) FindDietHandler {
 }
 
 // Handle implements query.Handler.
-func (q *findDietHandlerImpl) Handle(ctx context.Context, input *FindDietInput) (*FindDietOutput, error) {
+func (q *findDietHandlerImpl) Handle(
+	ctx context.Context,
+	input *FindDietInput,
+) (*FindDietOutput, error) {
 	diet, err := q.Diet.Find(
 		ctx,
 		repo.FindDietInput{ID: input.ID, Preloader: input.Preload},

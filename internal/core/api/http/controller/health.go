@@ -20,7 +20,7 @@ func NewHealth() Health {
 		},
 
 		controller.Options{
-			IsPublic: true,
+			Security: controller.SecurityApiKey,
 			Path:     controller.JoinPath("health"),
 			Method:   http.MethodGet,
 			RPM:      300,

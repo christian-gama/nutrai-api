@@ -6,8 +6,8 @@ import (
 	"github.com/go-faker/faker/v4"
 )
 
-func AuthInput() *query.AuthInput {
-	data := new(query.AuthInput)
+func AuthInput() *query.JwtAuthInput {
+	data := new(query.JwtAuthInput)
 
 	err := faker.FakeData(data)
 	if err != nil {
@@ -17,8 +17,8 @@ func AuthInput() *query.AuthInput {
 	return data
 }
 
-func AuthOutput() *query.AuthOutput {
-	data := new(query.AuthOutput)
+func AuthOutput() *query.JwtAuthOutput {
+	data := new(query.JwtAuthOutput)
 
 	err := faker.FakeData(data)
 	if err != nil {

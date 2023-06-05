@@ -35,11 +35,11 @@ func (s *AuthSuite) TestHandle() {
 	)
 
 	type Mock struct {
-		AuthHandler *qryMock.Handler[*query.AuthInput, *query.AuthOutput]
+		AuthHandler *qryMock.Handler[*query.JwtAuthInput, *query.JwtAuthOutput]
 	}
 
 	type Sut struct {
-		Sut     middleware.Auth
+		Sut     middleware.JwtAuth
 		Mock    *Mock
 		Request *gohttp.Request
 		Engine  *gin.Engine
@@ -48,10 +48,10 @@ func (s *AuthSuite) TestHandle() {
 
 	makeSut := func() *Sut {
 		mock := &Mock{
-			AuthHandler: qryMock.NewHandler[*query.AuthInput, *query.AuthOutput](s.T()),
+			AuthHandler: qryMock.NewHandler[*query.JwtAuthInput, *query.JwtAuthOutput](s.T()),
 		}
 
-		sut := middleware.NewAuth(mock.AuthHandler)
+		sut := middleware.NewJwtAuth(mock.AuthHandler)
 
 		// Create a new Gin test context.
 		writer := httptest.NewRecorder()
@@ -102,7 +102,7 @@ func (s *AuthSuite) TestHandle() {
 
 		sut.Mock.AuthHandler.
 			On("Handle", mock.Anything, mock.Anything).
-			Return(&query.AuthOutput{}, errors.Unauthorized("any error"))
+			Return(&query.JwtAuthOutput{}, errors.Unauthorized("any error"))
 
 		sut.Engine.Handle(method.String(), path, func(c *gin.Context) {
 			c.Status(http.StatusOK)

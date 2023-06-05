@@ -48,6 +48,7 @@ init: .cmd-exists-git .cmd-exists-go .cmd-exists-docker .cmd-exists-sh .clear-sc
 .PHONY: env
 env: .cmd-exists-sh .clear-screen
 	@sh ./scripts/manage_env.sh
+	@$(MAKE) metric-key
 
 
 # ==============================================================================================
@@ -239,6 +240,23 @@ test-unit: .cmd-exists-go .clear-screen
 .PHONY: test-integration
 test-integration: .cmd-exists-go .clear-screen .prepare-test
 	@TEST_MODE=integration COUNT=$(COUNT) FLAG=$(FLAG) \
+	sh -c "./scripts/test.sh"
+
+
+# ==============================================================================================
+# Target: test-e2e
+# Brief: Runs end-to-end tests.
+# Usage: Run the command 'make test-e2e [FLAGS="<flags>"]'.
+# Usage:
+#   FLAG=<watch|cover> make test-e2e # Runs tests normally without any special flags
+#   COUNT=<count> make-e2e # Runs tests <count> times
+# Environment variables:
+#   COUNT: Number of times to run each test. Cannot be used with other flags.
+#   FLAG:  Defines the flag to run the tests with. Possible values: "cover", "watch".
+# ==============================================================================================
+.PHONY: test-e2e
+test-e2e: .cmd-exists-go .clear-screen .prepare-test
+	@TEST_MODE=e2e COUNT=$(COUNT) FLAG=$(FLAG) \
 	sh -c "./scripts/test.sh"
 
 

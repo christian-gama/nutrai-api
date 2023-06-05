@@ -28,7 +28,7 @@ func NewRefreshToken(refreshTokenHandler service.RefreshTokenHandler) RefreshTok
 		controller.Options{
 			Path:     controller.JoinPath("refresh"),
 			Method:   http.MethodPost,
-			IsPublic: true,
+			Security: controller.SecurityPublic,
 		},
 	)
 }

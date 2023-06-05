@@ -8,7 +8,6 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
 	httpmiddleware "github.com/christian-gama/nutrai-api/internal/core/infra/http/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router"
-	routesMiddleware "github.com/christian-gama/nutrai-api/internal/core/infra/http/router/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router/routes"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 	"github.com/gin-gonic/gin"
@@ -23,7 +22,7 @@ func TestRoutesSuite(t *testing.T) {
 }
 
 func (s *RoutesSuite) TestApi() {
-	routesMiddleware.SetAuthMiddleware(MakeAuthMiddleware())
+	controller.SecurityJwt.SetMiddleware(MakeAuthMiddleware())
 
 	setupRouter := func() {
 		gin.SetMode(gin.TestMode)
@@ -37,7 +36,7 @@ func (s *RoutesSuite) TestApi() {
 			method:   http.MethodGet,
 			path:     "/",
 			handler:  func(c *gin.Context) string { return "ok" },
-			isPublic: true,
+			security: controller.SecurityPublic,
 		})
 
 		response := Request(http.MethodGet, "/api/")
@@ -54,7 +53,7 @@ func (s *RoutesSuite) TestApi() {
 				method:   http.MethodGet,
 				path:     "/",
 				handler:  func(c *gin.Context) string { return c.GetString("middleware") },
-				isPublic: true,
+				security: controller.SecurityPublic,
 			})
 
 		response := Request(http.MethodGet, "/api/")
@@ -71,7 +70,7 @@ func (s *RoutesSuite) TestApi() {
 			SetController(&Controller{
 				method:   http.MethodGet,
 				path:     "/",
-				isPublic: true,
+				security: controller.SecurityPublic,
 				handler:  func(c *gin.Context) string { return c.GetString("middleware") },
 			}).
 			SetMiddleware(MakeMiddleware("middleware", "second_middleware"))
@@ -88,7 +87,7 @@ func (s *RoutesSuite) TestApi() {
 		routes.Api().
 			SetController(&Controller{
 				method:   http.MethodGet,
-				isPublic: true,
+				security: controller.SecurityPublic,
 				path:     "/",
 				handler:  func(c *gin.Context) string { return c.GetString("middleware") },
 			},
@@ -107,7 +106,7 @@ func (s *RoutesSuite) TestApi() {
 		routes.Api().
 			SetController(&Controller{
 				method:   http.MethodGet,
-				isPublic: true,
+				security: controller.SecurityPublic,
 				path:     "/",
 				handler:  func(c *gin.Context) string { return c.GetString("middleware") },
 			},
@@ -127,7 +126,7 @@ func (s *RoutesSuite) TestApi() {
 		routes.Api("new").
 			SetController(&Controller{
 				method:   http.MethodGet,
-				isPublic: true,
+				security: controller.SecurityPublic,
 				path:     "/",
 				handler:  func(c *gin.Context) string { return "ok" },
 			})
@@ -145,7 +144,7 @@ func (s *RoutesSuite) TestApi() {
 			SetController(&Controller{
 				method:   http.MethodGet,
 				path:     "/",
-				isPublic: true,
+				security: controller.SecurityPublic,
 				handler:  func(c *gin.Context) string { return c.GetString("middleware") },
 			})
 
@@ -163,7 +162,7 @@ func (s *RoutesSuite) TestApi() {
 				method:   http.MethodGet,
 				path:     "",
 				params:   controller.AddParams("id"),
-				isPublic: true,
+				security: controller.SecurityPublic,
 				handler:  func(c *gin.Context) string { return c.Param("id") },
 			})
 
@@ -229,7 +228,7 @@ type Controller struct {
 	method    http.Method
 	path      controller.Path
 	params    controller.Params
-	isPublic  bool
+	security  *controller.Security
 	rateLimit int
 	handler   func(*gin.Context) string
 }
@@ -246,16 +245,20 @@ func (h *Controller) Path() controller.Path {
 	return h.path
 }
 
-func (h *Controller) IsPublic() bool {
-	return h.isPublic
-}
-
 func (h *Controller) Params() controller.Params {
 	return h.params
 }
 
 func (h *Controller) RPM() int {
 	return h.rateLimit
+}
+
+func (h *Controller) Security() *controller.Security {
+	if h.security == nil {
+		return controller.SecurityJwt
+	}
+
+	return h.security
 }
 
 type Middleware struct {

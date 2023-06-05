@@ -23,29 +23,6 @@ type routes struct {
 	group *gin.RouterGroup
 }
 
-// Api initializes a new instance of routes with a given group with a "api" prefix.
-func Api(group ...string) *routes {
-	return &routes{
-		group: router.Router.Group("api").Group(slice.FirstElementOrDefault(group)),
-	}
-}
-
-// Root initializes a new instance of routes with a given group and a root path (no prefix).
-func Root(group ...string) *routes {
-	return &routes{
-		group: router.Router.Group(slice.FirstElementOrDefault(group)),
-	}
-}
-
-func Internal(group ...string) *routes {
-	g := router.Router.Group("internal").Group(slice.FirstElementOrDefault(group))
-	g.Use(routerMiddleware.MakeApiKey().Handle)
-
-	return &routes{
-		group: g,
-	}
-}
-
 // SetMiddleware sets the middleware to the router group. This middlewares runs before any
 // controller and auth middleware.
 func (r *routes) SetMiddleware(middleware middleware.Middleware) *routes {
@@ -94,16 +71,11 @@ func (r *routes) buildPath(controller controller.Controller) string {
 // addAuthIfNeeded is a helper function that adds an auth middleware if the controller is not
 // public.
 func (r *routes) addAuthIfNeeded(
-	controller controller.Controller,
+	c controller.Controller,
 	handlers []gin.HandlerFunc,
 ) []gin.HandlerFunc {
-	authHandler := routerMiddleware.MakeAuth()
-	if authHandler == nil {
-		return handlers
-	}
-
-	if !controller.IsPublic() {
-		handlers = slice.Unshift(handlers, authHandler.Handle).Build()
+	if c.Security().Middleware() != nil {
+		handlers = slice.Unshift(handlers, c.Security().Middleware().Handle).Build()
 	}
 
 	return handlers

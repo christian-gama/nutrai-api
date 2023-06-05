@@ -16,7 +16,7 @@ func NewMetric() Metric {
 		},
 
 		controller.Options{
-			IsPublic: true,
+			Security: controller.SecurityApiKey,
 			Path:     controller.JoinPath("metrics"),
 			Method:   http.MethodGet,
 			RPM:      300,

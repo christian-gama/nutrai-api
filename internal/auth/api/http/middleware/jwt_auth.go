@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/auth/app/query"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	value "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
@@ -12,25 +11,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Auth is the middleware that handles the authentication. It will read the JWT token from
+// JwtAuth is the middleware that handles the authentication. It will read the JWT token from
 // the request header, validate it and set the user in the context. If the token is invalid, it will
 // return an error.
-type Auth = middleware.Middleware
+type JwtAuth = middleware.Middleware
 
-// NewAuth creates a new AuthHandler.
-func NewAuth(authHandler query.AuthHandler) Auth {
+// NewJwtAuth creates a new AuthHandler.
+func NewJwtAuth(authHandler query.JwtAuthHandler) JwtAuth {
 	errutil.MustBeNotEmpty("query.AuthHandler", authHandler)
 
 	return middleware.NewMiddleware(
 		func(ctx *gin.Context) {
-			authorization, err := http.CheckAuthorizationHeader(ctx.Request, env.Jwt.Secret)
+			token, err := http.GetAuthorizationHeader(ctx.Request)
 			if err != nil {
 				panic(err)
 			}
 
 			authOutput, err := authHandler.Handle(
 				ctx,
-				&query.AuthInput{Access: value.Token(authorization)},
+				&query.JwtAuthInput{Access: value.Token(token)},
 			)
 			if err != nil {
 				panic(err)

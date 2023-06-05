@@ -29,7 +29,7 @@ func NewFindPatient(findPatientHandler query.FindPatientHandler) FindPatient {
 			Path:     controller.JoinPath(""),
 			Method:   http.MethodGet,
 			Params:   controller.AddParams("id"),
-			IsPublic: true,
+			Security: controller.SecurityPublic,
 		},
 	)
 }

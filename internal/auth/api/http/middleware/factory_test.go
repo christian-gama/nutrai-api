@@ -3,7 +3,7 @@ package middleware_test
 import (
 	"testing"
 
-	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router/middleware"
+	"github.com/christian-gama/nutrai-api/internal/auth/api/http/middleware"
 	"github.com/christian-gama/nutrai-api/testutils/suite"
 )
 
@@ -17,6 +17,7 @@ func TestFactorySuite(t *testing.T) {
 
 func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
-		middleware.MakeAuth()
+		middleware.MakeJwtAuth()
+		middleware.MakeApiKey()
 	})
 }

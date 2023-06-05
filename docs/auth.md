@@ -3,7 +3,7 @@ The HTTP controller package provides a structured way of handling HTTP requests 
 
 ## Controller
 
-The `Controller` interface allows us to create route handlers with specific behaviors. The `IsPublic` method is one of the key features here, which returns a boolean value. When set to `false`, the handler will require authentication, meaning that the route is private. On the other hand, if it's set to `true`, the handler will not require authentication, making the route public. 
+The `Controller` interface allows us to create route handlers with specific behaviors. The `Security` method is one of the key features here, which returns a security config. When set to nil, the handler will use the default authentication method, which is JWT, meaning that the route is private. On the other hand, if it's set to any other value, the handler will use the specified authentication method.
 
 ```go
 type Controller interface {
@@ -11,7 +11,7 @@ type Controller interface {
 	Method() http.Method
 	Path() Path
 	Params() Params
-	IsPublic() bool
+	Security() Security
 	RPM() int
 }
 ```
@@ -40,18 +40,20 @@ func (c controllerImpl[Input]) Handle(ctx *gin.Context) {
 ```
 
 ## Auth Middleware
-The Nutrai API uses middleware to add authentication to its endpoints. The middleware will check whether the endpoint is marked as public or not. If it's not public, the authMiddleware will be invoked before the handler function, ensuring only authenticated users can access the endpoint. This is implemented in the addAuthIfNeeded function of the routes package:
+The Nutrai API uses middleware to add authentication to its endpoints. The middleware will use the `Security` method of the controller to determine if the route is public or private. If it's private, the middleware will use the authentication method specified in the `Security` method. Otherwise, it will skip the authentication process. 
 
 ```go
 func (r *routes) addAuthIfNeeded(
-	controller controller.Controller,
+	c controller.Controller,
 	handlers []gin.HandlerFunc,
 ) []gin.HandlerFunc {
-	if !controller.IsPublic() {
-		handlers = slice.Unshift(handlers, authMiddleware.MakeAuth().Handle).Build()
+	if c.Security().Middleware() != nil {
+		handlers = slice.Unshift(handlers, c.Security().Middleware().Handle).Build()
 	}
+
 	return handlers
 }
 ```
 
-This way, we ensure that only authenticated users can access private routes.
+## Setting the Security Method
+At boot time, the application will set the security method of each `controller.Security`. If the method is not set at boot time, it will exit the application with an error.

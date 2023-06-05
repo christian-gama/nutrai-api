@@ -12,17 +12,17 @@ import (
 )
 
 const (
-	unitTests        = "unit"
-	integrationTests = "integration"
-	allTests         = "all"
+	UnitTests        = "unit"
+	IntegrationTests = "integration"
+	AllTests         = "all"
 )
 
-// mode returns the test mode to be executed.
-func mode() string {
-	modes := []string{unitTests, integrationTests, allTests}
+// Mode returns the test Mode to be executed.
+func Mode() string {
+	modes := []string{UnitTests, IntegrationTests, AllTests}
 	mode, ok := os.LookupEnv("TEST_MODE")
 	if !ok {
-		return allTests
+		return AllTests
 	}
 
 	if !slice.Contains(modes, mode) {
@@ -38,8 +38,10 @@ func RunIntegrationTest(t *testing.T, s testify.TestingSuite) {
 	redisconn.MakeRedis()
 
 	t.Parallel()
-	if mode() == integrationTests || mode() == allTests {
+	if Mode() == IntegrationTests || Mode() == AllTests {
 		testify.Run(t, s)
+	} else {
+		t.SkipNow()
 	}
 }
 
@@ -51,19 +53,22 @@ func RunIntegrationTestOnce(t *testing.T, s testify.TestingSuite, ran *bool) {
 		redisconn.MakeRedis()
 
 		t.Parallel()
-		if mode() == integrationTests || mode() == allTests {
+		if Mode() == IntegrationTests || Mode() == AllTests {
+			*ran = true
 			testify.Run(t, s)
+		} else {
+			t.SkipNow()
 		}
-
-		*ran = true
 	}
 }
 
 // RunUnitTest runs the unit tests if the TEST_MODE is 'unit' or 'all'.
 func RunUnitTest(t *testing.T, s testify.TestingSuite) {
 	t.Parallel()
-	if mode() == unitTests || mode() == allTests {
+	if Mode() == UnitTests || Mode() == AllTests {
 		testify.Run(t, s)
+	} else {
+		t.SkipNow()
 	}
 }
 
@@ -72,10 +77,11 @@ func RunUnitTest(t *testing.T, s testify.TestingSuite) {
 func RunUnitTestOnce(t *testing.T, s testify.TestingSuite, ran *bool) {
 	if !*ran {
 		t.Parallel()
-		if mode() == unitTests || mode() == allTests {
+		if Mode() == UnitTests || Mode() == AllTests {
+			*ran = true
 			testify.Run(t, s)
+		} else {
+			t.SkipNow()
 		}
-
-		*ran = true
 	}
 }

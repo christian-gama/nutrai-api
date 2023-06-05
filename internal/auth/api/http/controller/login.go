@@ -28,7 +28,7 @@ func NewLogin(loginHandler service.LoginHandler) Login {
 		controller.Options{
 			Path:     controller.JoinPath("login"),
 			Method:   http.MethodPost,
-			IsPublic: true,
+			Security: controller.SecurityPublic,
 		},
 	)
 }

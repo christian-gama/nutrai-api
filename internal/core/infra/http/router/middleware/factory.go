@@ -31,14 +31,6 @@ func MakeRateLimiter(rpm int) RateLimiter {
 	}))
 }
 
-func MakeAuth() Auth {
-	return NewAuth()
-}
-
 func MakeRecovery() Recovery {
 	return NewRecovery()
-}
-
-func MakeApiKey() ApiKey {
-	return NewApiKey()
 }

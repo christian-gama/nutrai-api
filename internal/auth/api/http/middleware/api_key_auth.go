@@ -7,13 +7,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type ApiKey = middleware.Middleware
+type ApiKeyAuth = middleware.Middleware
 
-func NewApiKey() ApiKey {
+func NewApiKeyAuth() ApiKeyAuth {
 	return middleware.NewMiddleware(
 		func(ctx *gin.Context) {
-			if _, err := http.CheckAuthorizationHeader(ctx.Request, env.App.ApiKey); err != nil {
+			if key, err := http.GetAuthorizationHeader(ctx.Request); err != nil {
 				panic(err)
+			} else if key != env.App.ApiKey {
+				panic("invalid api key")
 			}
 
 			ctx.Next()

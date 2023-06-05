@@ -28,7 +28,7 @@ func NewAllPatients(allPatientsHandler query.AllPatientsHandler) AllPatients {
 		controller.Options{
 			Path:     controller.JoinPath(""),
 			Method:   http.MethodGet,
-			IsPublic: true,
+			Security: controller.SecurityPublic,
 		},
 	)
 }

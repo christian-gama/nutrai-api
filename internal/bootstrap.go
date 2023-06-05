@@ -6,6 +6,7 @@ import (
 	authMiddleware "github.com/christian-gama/nutrai-api/internal/auth/api/http/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/module"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router"
 	routesMiddleware "github.com/christian-gama/nutrai-api/internal/core/infra/http/router/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
@@ -43,8 +44,11 @@ func Bootstrap(envFile string) {
 	sqlconn.MakePsql()
 	redisconn.MakeRedis()
 
+	// Security Middlewares
+	controller.SecurityJwt.SetMiddleware(authMiddleware.MakeJwtAuth())
+	controller.SecurityApiKey.SetMiddleware(authMiddleware.MakeApiKey())
+
 	// Routes
-	routesMiddleware.SetAuthMiddleware(authMiddleware.MakeAuth())
 	routesMiddleware.SetRecoveryMiddleware(expectionMiddleware.MakeRecovery())
 	router.SetupRouter()
 

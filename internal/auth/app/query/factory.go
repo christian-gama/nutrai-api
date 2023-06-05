@@ -9,6 +9,6 @@ func MakeFindByEmailHandler() FindByEmailHandler {
 	return NewFindByEmailHandler(persistence.MakeSQLUser())
 }
 
-func MakeAuthHandler() AuthHandler {
-	return NewAuthHandler(persistence.MakeSQLUser(), jwt.MakeAccessVerifier())
+func MakeJwtAuthHandler() JwtAuthHandler {
+	return NewJwtAuthHandler(persistence.MakeSQLUser(), jwt.MakeAccessVerifier())
 }

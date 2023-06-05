@@ -29,8 +29,8 @@ func (s *ControllerSuite) TestNewController() {
 		opts := controller.Options{
 			Method:   http.MethodGet,
 			Path:     controller.JoinPath(""),
-			IsPublic: true,
 			Params:   controller.AddParams("id"),
+			Security: controller.SecurityPublic,
 		}
 		sut := controller.NewController[any]
 
@@ -107,8 +107,8 @@ func (s *ControllerSuite) TestController() {
 		controller.Options{
 			Method:   http.MethodPut,
 			Path:     controller.JoinPath(""),
-			IsPublic: true,
 			Params:   controller.AddParams("id"),
+			Security: controller.SecurityPublic,
 		},
 	)
 
@@ -128,12 +128,12 @@ func (s *ControllerSuite) TestController() {
 		s.EqualValues("/", path)
 	})
 
-	s.Run("controller.IsPublic returns the correct value", func() {
-		sut := sut.IsPublic
+	s.Run("controller.Security returns the correct security", func() {
+		sut := sut.Security
 
-		isPublic := sut()
+		name := sut()
 
-		s.True(isPublic)
+		s.EqualValues(controller.SecurityPublic, name)
 	})
 
 	s.Run("controller.Params returns the correct params", func() {
@@ -170,8 +170,8 @@ func (s *ControllerSuite) TestHandle() {
 			controller.Options{
 				Method:   http.MethodPut,
 				Path:     controller.JoinPath(""),
-				IsPublic: true,
 				Params:   controller.AddParams("id"),
+				Security: controller.SecurityPublic,
 			},
 		)
 

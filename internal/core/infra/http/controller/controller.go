@@ -32,22 +32,20 @@ type Controller interface {
 	// Params is the list of params that the handler will listen to.
 	Params() Params
 
-	// IsPublic is a flag that indicates if the handler is public or not.
-	IsPublic() bool
-
 	// RPM is the rate limit per minute for the handler. It's used to limit the number of requests
 	// per minute for the given endpoint. The default value is 0, which means that the endpoint
 	// will not be rate limited, unless the global rate limit is set. The priority is the
 	// controller's rate limit, then the global rate limit.
 	RPM() int
+
+	// Security is the security level of the endpoint. It's used to determine if the endpoint
+	// requires authentication or not.
+	Security() *Security
 }
 
 // ControllerOptions is the options for the controller constructor. It's used
 // to setup the controller before using it.
 type Options struct {
-	// IsPublic is a flag that indicates if the handler is public or not.
-	IsPublic bool
-
 	// Params is the list of params that the handler will listen to.
 	Params Params
 
@@ -62,6 +60,10 @@ type Options struct {
 	// will not be rate limited, unless the global rate limit is set. The priority is the
 	// controller's rate limit, then the global rate limit.
 	RPM int
+
+	// Security is the security level of the endpoint. It's used to determine if the endpoint
+	// requires authentication or not.
+	Security *Security
 }
 
 // controllerImpl is the implementation of the Controller interface.
@@ -69,9 +71,9 @@ type controllerImpl[Input any] struct {
 	handler  func(ctx *gin.Context, input *Input)
 	method   http.Method
 	path     Path
-	isPublic bool
 	rpm      int
 	params   Params
+	security *Security
 
 	input Input
 }
@@ -88,9 +90,9 @@ func NewController[Input any](
 		handler:  handler,
 		method:   opts.Method,
 		path:     opts.Path,
-		isPublic: opts.IsPublic,
 		params:   opts.Params,
 		rpm:      opts.RPM,
+		security: opts.Security,
 	}
 
 	controller.validate()
@@ -136,14 +138,18 @@ func (c *controllerImpl[P]) Path() Path {
 	return c.path
 }
 
-// IsPublic implements Controller.
-func (c *controllerImpl[P]) IsPublic() bool {
-	return c.isPublic
-}
-
 // Params implements Controller.
 func (c *controllerImpl[P]) Params() Params {
 	return c.params
+}
+
+// Security implements Controller.
+func (c *controllerImpl[P]) Security() *Security {
+	if c.security == nil {
+		return SecurityJwt
+	}
+
+	return c.security
 }
 
 // validate validates the controller.

@@ -11,7 +11,7 @@ import (
 )
 
 // AuthInput is the query to find a user by email.
-type AuthHandler = query.Handler[*AuthInput, *AuthOutput]
+type JwtAuthHandler = query.Handler[*JwtAuthInput, *JwtAuthOutput]
 
 // checkTokenHandlerImpl is the implementation of the AuthHandler interface.
 type checkTokenHandlerImpl struct {
@@ -19,8 +19,8 @@ type checkTokenHandlerImpl struct {
 	jwt.Verifier
 }
 
-// NewAuthHandler creates a new instance of the AuthHandler interface.
-func NewAuthHandler(userRepo repo.User, verifier jwt.Verifier) AuthHandler {
+// NewJwtAuthHandler creates a new instance of the AuthHandler interface.
+func NewJwtAuthHandler(userRepo repo.User, verifier jwt.Verifier) JwtAuthHandler {
 	errutil.MustBeNotEmpty("repo.User", userRepo)
 	errutil.MustBeNotEmpty("jwt.Verifier (Access)", verifier)
 
@@ -33,8 +33,8 @@ func NewAuthHandler(userRepo repo.User, verifier jwt.Verifier) AuthHandler {
 // Handle implements the AuthHandler interface.
 func (q *checkTokenHandlerImpl) Handle(
 	ctx context.Context,
-	input *AuthInput,
-) (*AuthOutput, error) {
+	input *JwtAuthInput,
+) (*JwtAuthOutput, error) {
 	claims, err := q.Verify(input.Access, false)
 	if err != nil {
 		return nil, errors.Unauthorized(err.Error())
@@ -45,7 +45,7 @@ func (q *checkTokenHandlerImpl) Handle(
 		return nil, errors.Unauthorized("you are not authorized to access this resource")
 	}
 
-	return &AuthOutput{
+	return &JwtAuthOutput{
 		ID:       user.ID,
 		Email:    user.Email,
 		Name:     user.Name,
