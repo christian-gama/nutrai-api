@@ -22,7 +22,7 @@ type checkTokenHandlerImpl struct {
 // NewAuthHandler creates a new instance of the AuthHandler interface.
 func NewAuthHandler(userRepo repo.User, verifier jwt.Verifier) AuthHandler {
 	errutil.MustBeNotEmpty("repo.User", userRepo)
-	errutil.MustBeNotEmpty("jwt.Verifier", verifier)
+	errutil.MustBeNotEmpty("jwt.Verifier (Access)", verifier)
 
 	return &checkTokenHandlerImpl{
 		User:     userRepo,

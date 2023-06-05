@@ -1,15 +1,12 @@
 package middleware
 
 import (
-	_errors "errors"
-
 	"github.com/christian-gama/nutrai-api/internal/auth/app/query"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/auth/infra/ctxstore"
 	"github.com/christian-gama/nutrai-api/internal/auth/infra/jwt"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/middleware"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
-	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,32 +23,23 @@ func NewAuth(authHandler query.AuthHandler) Auth {
 		func(ctx *gin.Context) {
 			token, err := jwt.GetTokenFromHeader(ctx)
 			if err != nil {
-				handleUnauthorizedError(err)
+				panic(err)
 			}
 
-			u, err := authHandler.Handle(ctx, &query.AuthInput{Access: token})
+			authOutput, err := authHandler.Handle(ctx, &query.AuthInput{Access: token})
 			if err != nil {
-				handleUnauthorizedError(err)
+				panic(err)
 			}
 
 			ctxstore.SetUser(ctx,
 				user.NewUser().
-					SetID(u.ID).
-					SetEmail(u.Email).
-					SetName(u.Name).
-					SetPassword(u.Password),
+					SetID(authOutput.ID).
+					SetEmail(authOutput.Email).
+					SetName(authOutput.Name).
+					SetPassword(authOutput.Password),
 			)
 
 			ctx.Next()
 		},
 	)
-}
-
-func handleUnauthorizedError(err error) {
-	var unauthorizedErr *errors.ErrUnauthorized
-	if _errors.As(err, &unauthorizedErr) {
-		panic(unauthorizedErr)
-	}
-
-	panic(errors.Unauthorized(err.Error()))
 }

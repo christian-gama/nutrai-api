@@ -6,15 +6,12 @@ import (
 
 var (
 	// ErrMissingAuthorizationHeader is the error returned when the authorization header is missing.
-	ErrMissingAuthorizationHeader = errors.Required("header:authorization")
+	ErrMissingAuthorizationHeader = errors.Unauthorized("missing header: Authorization")
 
 	// ErrInvalidAuthorizationHeader is the error returned when the authorization header is invalid.
-	ErrInvalidAuthorizationHeader = errors.Invalid(
-		"header:authorization",
-		"it's expected to have a valid bearer token as 'Bearer <token>'",
+	ErrInvalidAuthorizationHeader = errors.Unauthorized(
+		"Authorization token expects a valid bearer token",
 	)
 
-	ErrInvalidToken = errors.Unauthorized(
-		"invalid token",
-	)
+	ErrInvalidToken = errors.Unauthorized("invalid token")
 )
