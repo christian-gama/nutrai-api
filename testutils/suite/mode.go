@@ -34,11 +34,11 @@ func Mode() string {
 
 // RunIntegrationTest runs the integration tests if the TEST_MODE is 'integration' or all.
 func RunIntegrationTest(t *testing.T, s testify.TestingSuite) {
-	sqlconn.MakePsql()
-	redisconn.MakeRedis()
-
 	t.Parallel()
 	if Mode() == IntegrationTests || Mode() == AllTests {
+		sqlconn.MakePsql()
+		redisconn.MakeRedis()
+
 		testify.Run(t, s)
 	} else {
 		t.SkipNow()
@@ -48,13 +48,13 @@ func RunIntegrationTest(t *testing.T, s testify.TestingSuite) {
 // RunIntegrationTestOnce runs the integration tests if the TEST_MODE is 'integration' or all and
 // sets the ran flag to true, avoiding running the test twice.
 func RunIntegrationTestOnce(t *testing.T, s testify.TestingSuite, ran *bool) {
-	if !*ran {
-		sqlconn.MakePsql()
-		redisconn.MakeRedis()
-
-		t.Parallel()
-		if Mode() == IntegrationTests || Mode() == AllTests {
+	if Mode() == IntegrationTests || Mode() == AllTests {
+		if !*ran {
 			*ran = true
+			sqlconn.MakePsql()
+			redisconn.MakeRedis()
+
+			t.Parallel()
 			testify.Run(t, s)
 		} else {
 			t.SkipNow()
