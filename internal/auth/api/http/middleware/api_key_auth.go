@@ -4,6 +4,7 @@ import (
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/middleware"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,7 +16,7 @@ func NewApiKeyAuth() ApiKeyAuth {
 			if key, err := http.GetAuthorizationHeader(ctx.Request); err != nil {
 				panic(err)
 			} else if key != env.App.ApiKey {
-				panic("invalid api key")
+				panic(errors.Unauthorized("invalid api key"))
 			}
 
 			ctx.Next()
