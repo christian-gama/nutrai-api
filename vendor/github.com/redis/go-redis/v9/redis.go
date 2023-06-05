@@ -75,7 +75,8 @@ func (h *hooks) setDefaults() {
 // AddHook is to add a hook to the queue.
 // Hook is a function executed during network connection, command execution, and pipeline,
 // it is a first-in-first-out stack queue (FIFO).
-// You need to execute the next hook in each hook, unless you want to terminate the execution of the command.
+// You need to execute the next hook in each hook, unless you want to terminate the execution of the
+// command.
 // For example, you added hook-1, hook-2:
 //
 //	client.AddHook(hook-1, hook-2)

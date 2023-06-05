@@ -16,7 +16,7 @@ import (
 type Token struct {
 	Email     userValue.Email `faker:"email"`
 	Jti       coreValue.UUID  `faker:"uuid_hyphenated"`
-	ExpiresAt time.Duration   `faker:"unix_time"`
+	ExpiresAt time.Duration   `faker:"-"`
 }
 
 // NewToken returns a new token instance.

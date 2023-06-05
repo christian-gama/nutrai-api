@@ -1,5 +1,5 @@
 FROM golang:1.20-alpine AS base
-RUN apk update && apk add make
+RUN apk update && apk add make curl
 
 FROM base AS dev
 ARG WORKDIR

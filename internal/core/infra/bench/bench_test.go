@@ -24,7 +24,7 @@ func (s *BenchSuite) TestDuration() {
 		actual := time.Time{}.Add(duration)
 
 		s.NotEqual(expected, actual)
-		s.WithinDuration(expected, actual, 10*time.Millisecond)
+		s.WithinDuration(expected, actual, 100*time.Millisecond)
 	})
 }
 

@@ -94,6 +94,17 @@ services:
     command: sh -c "make run ENV_FILE=.env.$APP_ENV"
     container_name: nutrai-api
     restart: always
+    healthcheck:
+      interval: 1s
+      retries: 10
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:$APP_PORT/health"
+        ]
+      timeout: 1s
     build:
       context: .
       target: ${APP_ENV}
@@ -127,8 +138,6 @@ services:
       - ./scripts:$WORKDIR/scripts
       - ./testutils:$WORKDIR/testutils
       - ./vendor:$WORKDIR/vendor
-      - ./go.mod:$WORKDIR/go.mod
-      - ./go.sum:$WORKDIR/go.sum
       - ./Makefile:$WORKDIR/Makefile
 
   # Optimized for running tests. Do not use for development. It will run the 
@@ -178,7 +187,7 @@ services:
 
   # Optimized for running tests. Do not use for development.
   redis_test:
-    command: redis-server --port $REDIS_PORT
+    command: redis-server --port $REDIS_PORT --databases 9999999
     container_name: nutrai-redis-test
     image: redis:7.0.11-alpine
     restart: always

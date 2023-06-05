@@ -22,31 +22,33 @@ func NewRedisToken(redis *redis.Client) repo.Token {
 
 // Delete implements repo.Token.
 func (r *tokenImpl) Delete(ctx context.Context, input repo.DeleteTokenInput) error {
-	if input.Email == "" || input.Jti == "" {
-		return errors.InternalServerError("email and jti are required to delete a token")
+	count, err := r.redis.Del(ctx, fmt.Sprintf("%s:%s", input.Email.String(), input.Jti.String())).
+		Result()
+	if err != nil {
+		return errors.InternalServerError("failed to delete token: %s", err.Error())
 	}
 
-	return r.redis.Del(ctx, fmt.Sprintf("%s:%s", input.Email.String(), input.Jti.String())).Err()
+	if count == 0 {
+		return errors.NotFound("token not found")
+	}
+
+	return nil
 }
 
 // DeleteAll implements repo.Token.
 func (r *tokenImpl) DeleteAll(ctx context.Context, input repo.DeleteAllTokenInput) error {
-	if input.Email == "" {
-		return errors.InternalServerError("email is required to delete all tokens")
-	}
-
 	pattern := fmt.Sprintf("%s:*", input.Email.String())
 
-	keysCmd := r.redis.Keys(ctx, pattern)
-	if keysCmd.Err() != nil {
-		return errors.InternalServerError(keysCmd.Err().Error())
+	keys, err := r.redis.Keys(ctx, pattern).Result()
+	if err != nil {
+		return errors.InternalServerError("failed to delete all tokens: %s", err.Error())
 	}
 
-	if len(keysCmd.Val()) == 0 {
-		return nil
+	if len(keys) == 0 {
+		return errors.NotFound("tokens not found")
 	}
 
-	return r.redis.Del(ctx, keysCmd.Val()...).Err()
+	return r.redis.Del(ctx, keys...).Err()
 }
 
 // Find implements repo.Token.
@@ -54,24 +56,25 @@ func (r *tokenImpl) Find(
 	ctx context.Context,
 	input repo.FindTokenInput,
 ) (*token.Token, error) {
-	if input.Email == "" || input.Jti == "" {
-		return nil, errors.InternalServerError("email and jti are required to find a token")
+	value, err := r.redis.Get(ctx, fmt.Sprintf("%s:%s", input.Email.String(), input.Jti.String())).
+		Result()
+	if err != nil {
+		return nil, errors.InternalServerError("failed to find token: %s", err.Error())
 	}
 
-	strCmd := r.redis.Get(ctx, fmt.Sprintf("%s:%s", input.Email.String(), input.Jti.String()))
-	if strCmd.Err() != nil {
-		return nil, errors.Unauthorized("invalid token")
+	if value == "" {
+		return nil, errors.NotFound("token not found")
 	}
 
-	ttlCmd := r.redis.TTL(ctx, input.Email.String())
-	if ttlCmd.Err() != nil {
-		return nil, errors.Unauthorized("invalid token")
+	expiresAt, err := r.redis.TTL(ctx, input.Email.String()).Result()
+	if err != nil {
+		return nil, errors.InternalServerError("failed to find token: %s", err.Error())
 	}
 
 	return token.NewToken().
 		SetEmail(input.Email).
 		SetJti(input.Jti).
-		SetExpiresAt(ttlCmd.Val()), nil
+		SetExpiresAt(expiresAt), nil
 }
 
 // Save implements repo.Token.
@@ -79,12 +82,8 @@ func (r *tokenImpl) Save(
 	ctx context.Context,
 	input repo.SaveTokenInput,
 ) (*token.Token, error) {
-	if err := r.redis.Set(
-		ctx,
-		fmt.Sprintf("%s:%s", input.Token.Email.String(), input.Token.Jti.String()),
-		true,
-		input.Token.ExpiresAt,
-	).Err(); err != nil {
+	key := fmt.Sprintf("%s:%s", input.Token.Email.String(), input.Token.Jti.String())
+	if err := r.redis.Set(ctx, key, true, input.Token.ExpiresAt).Err(); err != nil {
 		return nil, err
 	}
 

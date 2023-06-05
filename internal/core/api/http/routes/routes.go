@@ -7,6 +7,6 @@ import (
 
 // Register registers the routes for  module.
 func Register() {
-	routes.Api().
+	routes.Root().
 		SetController(controller.MakeHealth())
 }
