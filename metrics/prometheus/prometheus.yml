@@ -1,5 +1,10 @@
 scrape_configs:
   - job_name: "nutrai-api"
     scrape_interval: 5s
+    metrics_path: /internal/metrics
+    scheme: http
     static_configs:
       - targets: ["api:8080"]
+    authorization:
+      type: Bearer
+      credentials_file: /etc/prometheus/prometheus-credentials

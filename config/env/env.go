@@ -81,6 +81,10 @@ type app struct {
 	// AllowedOrigins is the list of origins a cross-domain request can be executed from.
 	// If the special "*" value is present in the list, all origins will be allowed.
 	AllowedOrigins []string `env:"APP_ALLOWED_ORIGINS,required"`
+
+	// Key is the application key. It's usually passed in the request header and it's used to
+	// authenticate the request.
+	ApiKey string `env:"APP_API_KEY,required"`
 }
 
 // config is the configuration environment variables.

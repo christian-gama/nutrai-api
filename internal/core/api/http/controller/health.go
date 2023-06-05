@@ -23,6 +23,7 @@ func NewHealth() Health {
 			IsPublic: true,
 			Path:     controller.JoinPath("health"),
 			Method:   http.MethodGet,
+			RPM:      300,
 		},
 	)
 }

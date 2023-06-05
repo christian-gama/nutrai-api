@@ -38,3 +38,7 @@ func MakeAuth() Auth {
 func MakeRecovery() Recovery {
 	return NewRecovery()
 }
+
+func MakeApiKey() ApiKey {
+	return NewApiKey()
+}

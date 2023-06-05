@@ -23,5 +23,7 @@ func (s *FactorySuite) TestFactory() {
 		middleware.MakeLimitBodySize()
 		middleware.MakeRateLimiter(env.Config.GlobalRateLimit)
 		middleware.MakeAuth()
+		middleware.MakeRecovery()
+		middleware.MakeApiKey()
 	})
 }

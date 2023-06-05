@@ -1,10 +1,12 @@
 package middleware
 
 import (
+	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/auth/app/query"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
+	value "github.com/christian-gama/nutrai-api/internal/auth/domain/value/jwt"
 	"github.com/christian-gama/nutrai-api/internal/auth/infra/ctxstore"
-	"github.com/christian-gama/nutrai-api/internal/auth/infra/jwt"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/middleware"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/gin-gonic/gin"
@@ -21,12 +23,15 @@ func NewAuth(authHandler query.AuthHandler) Auth {
 
 	return middleware.NewMiddleware(
 		func(ctx *gin.Context) {
-			token, err := jwt.GetTokenFromHeader(ctx)
+			authorization, err := http.CheckAuthorizationHeader(ctx.Request, env.Jwt.Secret)
 			if err != nil {
 				panic(err)
 			}
 
-			authOutput, err := authHandler.Handle(ctx, &query.AuthInput{Access: token})
+			authOutput, err := authHandler.Handle(
+				ctx,
+				&query.AuthInput{Access: value.Token(authorization)},
+			)
 			if err != nil {
 				panic(err)
 			}

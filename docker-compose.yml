@@ -21,6 +21,7 @@ services:
       - '9090:9090'
     volumes:
       - ./metrics/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./metrics/prometheus/prometheus-$APP_ENV.key:/etc/prometheus/prometheus-credentials
 
   # Database service to run both in development and production. The variables
   # are configured in .env.$APP_ENV and it will run according to the variables
@@ -102,7 +103,9 @@ services:
           "CMD",
           "curl",
           "-f",
-          "http://localhost:$APP_PORT/health"
+          "http://localhost:$APP_PORT/internal/health",
+          "-H",
+          "Authorization: Bearer $APP_API_KEY"
         ]
       timeout: 1s
     build:

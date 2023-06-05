@@ -51,6 +51,18 @@ env: .cmd-exists-sh .clear-screen
 
 
 # ==============================================================================================
+# Target: metric-key
+# Brief: Generates a new metric key.
+# Usage: Run the command 'make metric-key'.
+# Flags:
+# 	ENV_FILE: The path to the environment file.
+# =============================================================================================
+.PHONY: metric-key .check-env-file .clear-screen
+metric-key:
+	@./scripts/metric_key.sh
+
+
+# ==============================================================================================
 # Target: run
 # Brief: Runs the API server.
 # Usage: Run the command 'make run [ENV_FILE="<path>"]'.
@@ -259,13 +271,12 @@ test-ci: .cmd-exists-go .clear-screen .prepare-test
 # ==============================================================================================
 # Target: create-migration
 # Brief: Creates a new migration file with the given name with the current timestamp.
-# Usage: Run the command 'make create-migration NAME="<name>"'.
-# Args:
-# 	NAME: The name of the migration.
+# Usage: Run the command 'make create-migration'.
 # ==============================================================================================
 .PHONY: create-migration
 create-migration: .cmd-exists-go .clear-screen
-	@sh -c "./scripts/create_migration.sh $(NAME)"
+	@read -p "Enter the name of the migration file: " NAME; \
+	sh -c "./scripts/create_migration.sh $$NAME"
 
 
 # ==============================================================================================

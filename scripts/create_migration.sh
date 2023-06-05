@@ -7,6 +7,11 @@
 # Usage:    ./scripts/create_migration.sh <name>
 # ==============================================================================================
 
+if [[ -z "$1" ]]; then
+    echo "Usage: $0 <migration_file_name>"
+    exit 1
+fi
+
 timestamp=$(date +%s)
 migration_dir="migration"
 

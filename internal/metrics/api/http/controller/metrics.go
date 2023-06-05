@@ -19,6 +19,7 @@ func NewMetric() Metric {
 			IsPublic: true,
 			Path:     controller.JoinPath("metrics"),
 			Method:   http.MethodGet,
+			RPM:      300,
 		},
 	)
 }

@@ -37,6 +37,15 @@ func Root(group ...string) *routes {
 	}
 }
 
+func Internal(group ...string) *routes {
+	g := router.Router.Group("internal").Group(slice.FirstElementOrDefault(group))
+	g.Use(routerMiddleware.MakeApiKey().Handle)
+
+	return &routes{
+		group: g,
+	}
+}
+
 // SetMiddleware sets the middleware to the router group. This middlewares runs before any
 // controller and auth middleware.
 func (r *routes) SetMiddleware(middleware middleware.Middleware) *routes {
