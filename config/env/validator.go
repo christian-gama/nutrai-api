@@ -1,8 +1,7 @@
 package env
 
 import (
-	"fmt"
-
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
 )
 
@@ -20,7 +19,7 @@ func validateDBSslMode() validator {
 		}
 
 		if !slice.Contains(validSslModes, DB.SslMode) {
-			return fmt.Errorf(
+			return errors.InternalServerError(
 				"Invalid env variable: '%s'. Must be one of: %v",
 				DB.SslMode,
 				validSslModes,
@@ -35,7 +34,7 @@ func validateAppEnv() validator {
 		validEnvs := []AppEnv{Production, Development, Test}
 
 		if !slice.Contains(validEnvs, App.Env) {
-			return fmt.Errorf(
+			return errors.InternalServerError(
 				"Invalid env variable: '%s'. Must be one of: %v",
 				App.Env,
 				validEnvs,
@@ -56,7 +55,7 @@ func validateConfigLogLevel() validator {
 		}
 
 		if !slice.Contains(validLogLevels, Config.LogLevel) {
-			return fmt.Errorf(
+			return errors.InternalServerError(
 				"Invalid env variable: '%s'. Must be one of: %v",
 				Config.LogLevel,
 				validLogLevels,
@@ -74,7 +73,7 @@ func validateMailerProvider() validator {
 		}
 
 		if !slice.Contains(validProviders, Mailer.Provider) {
-			return fmt.Errorf(
+			return errors.InternalServerError(
 				"Invalid env variable: '%s'. Must be one of: %v",
 				Mailer.Provider,
 				validProviders,

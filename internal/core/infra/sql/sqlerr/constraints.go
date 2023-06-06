@@ -115,7 +115,7 @@ func tooLongConstraint(err error) error {
 			v, err := strconv.Atoi(value)
 			if err != nil {
 				panic(
-					fmt.Errorf(fmt.Sprintf("failed to convert '%s' to int", value)),
+					errors.InternalServerError(fmt.Sprintf("failed to convert '%s' to int", value)),
 				)
 			}
 

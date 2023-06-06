@@ -1,10 +1,9 @@
 package controller
 
 import (
-	"errors"
-
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 // AuthStrategy is the interface that defines the authentication strategy. It is used to define the
@@ -34,7 +33,7 @@ func (s *authJwtStrategy) SetMiddleware(middleware middleware.Middleware) {
 
 func (s *authJwtStrategy) Middleware() middleware.Middleware {
 	if s.middleware == nil {
-		panic(errors.New("authJwtStrategy middleware is not set"))
+		log.Fatal(errors.InternalServerError("authJwtStrategy middleware is not set"))
 	}
 
 	return s.middleware
@@ -64,7 +63,7 @@ func (s *authApiKeyStrategy) SetMiddleware(middleware middleware.Middleware) {
 
 func (s *authApiKeyStrategy) Middleware() middleware.Middleware {
 	if s.middleware == nil {
-		panic(errors.New("authApiKeyStrategy middleware is not set"))
+		log.Fatal(errors.InternalServerError("authApiKeyStrategy middleware is not set"))
 	}
 
 	return s.middleware

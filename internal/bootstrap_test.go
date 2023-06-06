@@ -1,7 +1,6 @@
 package internal_test
 
 import (
-	"fmt"
 	"os"
 	"testing"
 
@@ -10,6 +9,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/redis/conn"
 	sqlconn "github.com/christian-gama/nutrai-api/internal/core/infra/sql/conn"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
 	"github.com/stretchr/testify/suite"
 )
@@ -30,7 +30,7 @@ func TestBootstrapSuite(t *testing.T) {
 		}
 
 		if !slice.Contains(modes, mode) {
-			panic(fmt.Errorf("expected TEST_MODE to be one of: %v", modes))
+			panic(errors.InternalServerError("expected TEST_MODE to be one of: %v", modes))
 		}
 
 		if mode != "unit" {

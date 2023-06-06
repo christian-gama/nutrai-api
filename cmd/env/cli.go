@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"os"
 
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/pkg/reflection"
@@ -26,7 +24,6 @@ func init() {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	checkEnvFile()
 	env.NewLoader(envFile).Load()
 
 	for envName, envStruct := range envsMap {
@@ -38,16 +35,6 @@ func run(cmd *cobra.Command, args []string) {
 				color.New(color.FgYellow).Sprintf(fmt.Sprint(opts.Field.Interface())),
 			)
 		})
-	}
-}
-
-func checkEnvFile() {
-	if envFile == "" {
-		log.Fatal("Please specify an environment file with the flag -e")
-	}
-
-	if _, err := os.Stat(envFile); os.IsNotExist(err) {
-		log.Fatalf("The file %s does not exist", envFile)
 	}
 }
 

@@ -2,7 +2,6 @@ package jwt
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/jwt"
@@ -11,6 +10,7 @@ import (
 	userValue "github.com/christian-gama/nutrai-api/internal/auth/domain/value/user"
 	coreValue "github.com/christian-gama/nutrai-api/internal/core/domain/value"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	_jwt "github.com/golang-jwt/jwt"
 )
 
@@ -92,7 +92,7 @@ func (s *verifierImpl) getClaims(mapClaims _jwt.MapClaims) *jwt.Claims {
 // secret key used for signing the token. If the signing method is not HMAC, it returns an error.
 func keyFunc(token *_jwt.Token) (any, error) {
 	if _, ok := token.Method.(*_jwt.SigningMethodHMAC); !ok {
-		return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		return nil, errors.InternalServerError("unexpected signing method: %v", token.Header["alg"])
 	}
 	return []byte(env.Jwt.Secret), nil
 }

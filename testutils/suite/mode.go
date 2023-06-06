@@ -1,12 +1,12 @@
 package suite
 
 import (
-	"fmt"
 	"os"
 	"testing"
 
 	redisconn "github.com/christian-gama/nutrai-api/internal/core/infra/redis/conn"
 	sqlconn "github.com/christian-gama/nutrai-api/internal/core/infra/sql/conn"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
 	testify "github.com/stretchr/testify/suite"
 )
@@ -26,7 +26,7 @@ func Mode() string {
 	}
 
 	if !slice.Contains(modes, mode) {
-		panic(fmt.Errorf("expected TEST_MODE to be one of: %v", modes))
+		panic(errors.InternalServerError("expected TEST_MODE to be one of: %v", modes))
 	}
 
 	return mode

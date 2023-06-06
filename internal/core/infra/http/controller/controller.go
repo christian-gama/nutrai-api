@@ -1,13 +1,13 @@
 package controller
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/response"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/validation"
 	"github.com/christian-gama/nutrai-api/pkg/errutil"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
 	"github.com/christian-gama/nutrai-api/pkg/unit"
 	"github.com/gin-gonic/gin"
@@ -156,14 +156,14 @@ func (c *controllerImpl[P]) validate() {
 		if !c.hasValidCharacters(unit.Alphabet, param) {
 			result = errutil.Append(
 				result,
-				fmt.Errorf("the param %s contains invalid characters", param),
+				errors.InternalServerError("the param %s contains invalid characters", param),
 			)
 		}
 
 		if slice.Count(c.params, param) > 1 {
 			result = errutil.Append(
 				result,
-				fmt.Errorf("the param %s is duplicated", param),
+				errors.InternalServerError("the param %s is duplicated", param),
 			)
 		}
 	}
@@ -171,14 +171,14 @@ func (c *controllerImpl[P]) validate() {
 	if !strings.HasPrefix(c.path.String(), "/") {
 		result = errutil.Append(
 			result,
-			fmt.Errorf("the path %s does not start with a slash", c.path),
+			errors.InternalServerError("the path %s does not start with a slash", c.path),
 		)
 	}
 
 	if !c.hasValidCharacters(append(unit.AlphaNumeric, []rune("-/")...), c.path.String()) {
 		result = errutil.Append(
 			result,
-			fmt.Errorf("the path %s contains invalid characters", c.path),
+			errors.InternalServerError("the path %s contains invalid characters", c.path),
 		)
 	}
 
@@ -188,21 +188,21 @@ func (c *controllerImpl[P]) validate() {
 	if !slice.Contains(methods, c.method) {
 		result = errutil.Append(
 			result,
-			fmt.Errorf("the method %s is invalid", c.method),
+			errors.InternalServerError("the method %s is invalid", c.method),
 		)
 	}
 
 	if c.rpm < 0 {
 		result = errutil.Append(
 			result,
-			fmt.Errorf("the rpm %d is invalid", c.rpm),
+			errors.InternalServerError("the rpm %d is invalid", c.rpm),
 		)
 	}
 
 	if c.authStrategy == nil {
 		result = errutil.Append(
 			result,
-			fmt.Errorf("the auth strategy is nil"),
+			errors.InternalServerError("the auth strategy is nil"),
 		)
 	}
 

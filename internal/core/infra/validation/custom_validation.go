@@ -1,11 +1,13 @@
 package validation
 
 import (
-	"errors"
 	"reflect"
 	"strings"
 
+	"github.com/christian-gama/nutrai-api/internal/core/infra/log"
+
 	"github.com/christian-gama/nutrai-api/internal/core/infra/validation/validators"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -14,9 +16,9 @@ func validateFilter(fl validator.FieldLevel) bool {
 		return false
 	}
 
-	params := strings.Split(fl.Param(), " ")
-	if len(params) == 0 {
-		panic(errors.New("the filter tag must have parameters"))
+	params := strings.Split(strings.TrimSpace(fl.Param()), " ")
+	if len(params) == 0 || params[0] == "" {
+		log.Panic(errors.InternalServerError("the filter tag must have parameters"))
 	}
 
 	return validators.Filter(fl.Field().String(), params)
@@ -28,8 +30,8 @@ func validateSort(fl validator.FieldLevel) bool {
 	}
 
 	params := strings.Split(fl.Param(), " ")
-	if len(params) == 0 {
-		panic(errors.New("the sort tag must have parameters"))
+	if len(params) == 0 || params[0] == "" {
+		log.Panic(errors.InternalServerError("the sort tag must have parameters"))
 	}
 
 	return validators.Sort(fl.Field().String(), params)
@@ -40,9 +42,9 @@ func validatePreload(fl validator.FieldLevel) bool {
 		return false
 	}
 
-	params := strings.Split(fl.Param(), " ")
-	if len(params) == 0 {
-		panic(errors.New("the preload tag must have parameters"))
+	params := strings.Split(strings.TrimSpace(fl.Param()), " ")
+	if len(params) == 0 || params[0] == "" {
+		log.Panic(errors.InternalServerError("the preload tag must have parameters"))
 	}
 
 	return validators.Preload(fl.Field().String(), params)

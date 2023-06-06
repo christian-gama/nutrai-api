@@ -2,11 +2,11 @@ package query
 
 import (
 	"context"
-	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/query"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
 // AllDietsHandler is the handler responsible for getting all diets.
@@ -19,9 +19,8 @@ type allDietsHandlerImpl struct {
 
 // NewAllDietsHandler instantiates the handler responsible for getting all diets.
 func NewAllDietsHandler(dietRepo repo.Diet) AllDietsHandler {
-	if dietRepo == nil {
-		panic(errors.New("repo.Diet cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("repo.Diet", dietRepo)
+
 	return &allDietsHandlerImpl{dietRepo}
 }
 

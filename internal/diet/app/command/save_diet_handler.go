@@ -2,12 +2,12 @@ package command
 
 import (
 	"context"
-	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/command"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/model/diet"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
 	value "github.com/christian-gama/nutrai-api/internal/diet/domain/value/diet"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
 )
 
@@ -21,9 +21,7 @@ type saveDietHandlerImpl struct {
 
 // NewSaveDietHandler returns a new Save instance.
 func NewSaveDietHandler(dietRepo repo.Diet) SaveDietHandler {
-	if dietRepo == nil {
-		panic(errors.New("repo.Diet cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("repo.Diet", dietRepo)
 
 	return &saveDietHandlerImpl{dietRepo}
 }
@@ -40,9 +38,12 @@ func (c *saveDietHandlerImpl) Handle(ctx context.Context, input *SaveDietInput) 
 		SetPatientID(input.PatientID).
 		SetRestrictedFood(
 			slice.
-				Map(input.RestrictedFood, func(restrictedFood value.RestrictedFood) *diet.RestrictedFood {
-					return diet.NewRestrictedFood().SetName(restrictedFood)
-				}).
+				Map(
+					input.RestrictedFood,
+					func(restrictedFood value.RestrictedFood) *diet.RestrictedFood {
+						return diet.NewRestrictedFood().SetName(restrictedFood)
+					},
+				).
 				Build(),
 		).
 		Validate()

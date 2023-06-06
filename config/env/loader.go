@@ -2,9 +2,9 @@ package env
 
 import (
 	"context"
-	"fmt"
 	"path/filepath"
 
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	"github.com/christian-gama/nutrai-api/pkg/path"
 	"github.com/joho/godotenv"
 	"github.com/sethvargo/go-envconfig"
@@ -33,7 +33,7 @@ func (e *loader) Load() {
 
 	err := godotenv.Load(Path(e.envFile))
 	if err != nil {
-		panic(fmt.Errorf("Error loading .env file: %w", err))
+		panic(errors.InternalServerError("Error loading .env file: %v", err))
 	}
 
 	e.loadEnvironmentVariables()
@@ -53,7 +53,7 @@ func (e *loader) loadEnvironmentVariables() {
 
 	for _, variable := range variables {
 		if err := envconfig.Process(e.ctx, variable); err != nil {
-			panic(fmt.Errorf("Error loading environment variables: %w", err))
+			panic(errors.InternalServerError("Error loading environment variables: %v", err))
 		}
 	}
 }

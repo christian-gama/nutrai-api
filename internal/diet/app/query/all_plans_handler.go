@@ -2,11 +2,11 @@ package query
 
 import (
 	"context"
-	"errors"
 
 	"github.com/christian-gama/nutrai-api/internal/core/domain/query"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/queryer"
 	"github.com/christian-gama/nutrai-api/internal/diet/domain/repo"
+	"github.com/christian-gama/nutrai-api/pkg/errutil"
 )
 
 // AllPlansHandler is the handler responsible for getting all plans.
@@ -19,9 +19,8 @@ type allPlansHandlerImpl struct {
 
 // NewAllPlansHandler instantiates the handler responsible for getting all plans.
 func NewAllPlansHandler(planRepo repo.Plan) AllPlansHandler {
-	if planRepo == nil {
-		panic(errors.New("repo.Plan cannot be nil"))
-	}
+	errutil.MustBeNotEmpty("repo.Plan", planRepo)
+
 	return &allPlansHandlerImpl{planRepo}
 }
 

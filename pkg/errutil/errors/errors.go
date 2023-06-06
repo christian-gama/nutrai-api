@@ -11,7 +11,11 @@ type BaseError struct {
 
 // Error implements the error interface.
 func (e *BaseError) Error() string {
-	return e.Message
+	if e.Param == "" {
+		return fmt.Sprintf("[%s]: %s", e.Kind, e.Message)
+	}
+
+	return fmt.Sprintf("[%s]: %s", e.Kind, e.Message)
 }
 
 // ErrAlreadyExists is returned when a resource already exists.

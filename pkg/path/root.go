@@ -1,9 +1,10 @@
 package path
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
 // Root searches for the 'go.mod' file from the current working directory upwards.
@@ -21,7 +22,7 @@ func Root() string {
 
 		parent := filepath.Dir(currentDir)
 		if parent == currentDir {
-			panic(fmt.Errorf("go.mod not found"))
+			panic(errors.InternalServerError("go.mod not found"))
 		}
 		currentDir = parent
 	}

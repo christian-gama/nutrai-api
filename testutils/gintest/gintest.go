@@ -10,6 +10,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/auth/domain/model/user"
 	"github.com/christian-gama/nutrai-api/internal/auth/infra/ctxstore"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
+	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 	"github.com/christian-gama/nutrai-api/testutils/httputil"
 	"github.com/gin-gonic/gin"
 )
@@ -64,7 +65,7 @@ func MustRequestWithBody(
 
 	r.ServeHTTP(ctx.Writer, ctx.Request)
 	if ctx.Writer.Status() == 404 {
-		panic(fmt.Errorf("path %s not found", path))
+		panic(errors.InternalServerError("path %s not found", path))
 	}
 
 	return ctx, GetBody(writer.Body.String())
