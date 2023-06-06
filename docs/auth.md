@@ -3,7 +3,7 @@ The HTTP controller package provides a structured way of handling HTTP requests 
 
 ## Controller
 
-The `Controller` interface allows us to create route handlers with specific behaviors. The `Security` method is one of the key features here, which returns a security config. When set to nil, the handler will use the default authentication method, which is JWT, meaning that the route is private. On the other hand, if it's set to any other value, the handler will use the specified authentication method.
+The `Controller` interface allows us to create route handlers with specific behaviors. The `AuthStrategy` method is one of the key features here, which returns a AuthStrategy config. When set to nil, the handler will use the default authentication method, which is JWT, meaning that the route is private. On the other hand, if it's set to any other value, the handler will use the specified authentication method.
 
 ```go
 type Controller interface {
@@ -11,8 +11,8 @@ type Controller interface {
 	Method() http.Method
 	Path() Path
 	Params() Params
-	Security() Security
 	RPM() int
+	AuthStrategy() AuthStrategy
 }
 ```
 
@@ -40,20 +40,20 @@ func (c controllerImpl[Input]) Handle(ctx *gin.Context) {
 ```
 
 ## Auth Middleware
-The Nutrai API uses middleware to add authentication to its endpoints. The middleware will use the `Security` method of the controller to determine if the route is public or private. If it's private, the middleware will use the authentication method specified in the `Security` method. Otherwise, it will skip the authentication process. 
+The Nutrai API uses middleware to add authentication to its endpoints. The middleware will use the `AuthStrategy` method of the controller to determine if the route is public or private. If it's private, the middleware will use the authentication method specified in the `AuthStrategy` method. Otherwise, it will skip the authentication process. 
 
 ```go
 func (r *routes) addAuthIfNeeded(
 	c controller.Controller,
 	handlers []gin.HandlerFunc,
 ) []gin.HandlerFunc {
-	if c.Security().Middleware() != nil {
-		handlers = slice.Unshift(handlers, c.Security().Middleware().Handle).Build()
+	if c.AuthStrategy().Middleware() != nil {
+		handlers = slice.Unshift(handlers, c.AuthStrategy().Middleware().Handle).Build()
 	}
 
 	return handlers
 }
 ```
 
-## Setting the Security Method
-At boot time, the application will set the security method of each `controller.Security`. If the method is not set at boot time, it will exit the application with an error.
+## Setting the AuthStrategy Method
+At boot time, the application will set the AuthStrategy method of each `controller.AuthStrategy`. If the method is not set at boot time, it will exit the application with an error.
