@@ -21,7 +21,7 @@ func SetupRouter() {
 	}
 
 	Router = gin.New()
-	Router.Use(middleware.MakeRecovery().Handle)
+	Router.Use(middleware.RecoveryAndPersistStrategy.Middleware().Handle)
 	Router.Use(middleware.MakeCors().Handle)
 	Router.Use(middleware.MakeLogging().Handle)
 	Router.Use(middleware.MakeLimitBodySize().Handle)

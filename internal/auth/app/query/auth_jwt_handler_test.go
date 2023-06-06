@@ -16,24 +16,24 @@ import (
 	userRepoMock "github.com/christian-gama/nutrai-api/testutils/mocks/auth/domain/repo"
 )
 
-type JwtAuthHandlerSuite struct {
+type AuthJwtHandlerSuite struct {
 	suite.Suite
 }
 
-func TestJwtAuthHandlerSuite(t *testing.T) {
-	suite.RunUnitTest(t, new(JwtAuthHandlerSuite))
+func TestAuthJwtHandlerSuite(t *testing.T) {
+	suite.RunUnitTest(t, new(AuthJwtHandlerSuite))
 }
 
-func (s *JwtAuthHandlerSuite) TestAuthHandler() {
+func (s *AuthJwtHandlerSuite) TestAuthHandler() {
 	type Mock struct {
 		UserRepo *userRepoMock.User
 		Verifier *jwtMock.Verifier
 	}
 
 	type Sut struct {
-		Sut   query.JwtAuthHandler
+		Sut   query.AuthJwtHandler
 		Ctx   context.Context
-		Input *query.JwtAuthInput
+		Input *query.AuthJwtInput
 		Mock  *Mock
 	}
 
@@ -43,9 +43,9 @@ func (s *JwtAuthHandlerSuite) TestAuthHandler() {
 			Verifier: jwtMock.NewVerifier(s.T()),
 		}
 
-		input := fake.AuthInput()
+		input := fake.AuthJwtInput()
 
-		sut := query.NewJwtAuthHandler(mock.UserRepo, mock.Verifier)
+		sut := query.NewAuthJwtHandler(mock.UserRepo, mock.Verifier)
 
 		return Sut{
 			Sut:   sut,

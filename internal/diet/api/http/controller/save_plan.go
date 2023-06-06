@@ -26,9 +26,10 @@ func NewSavePlan(c service.SavePlanHandler) SavePlan {
 		},
 
 		controller.Options{
-			Path:   controller.JoinPath(""),
-			Method: http.MethodPost,
-			RPM:    5,
+			Path:         controller.JoinPath(""),
+			Method:       http.MethodPost,
+			RPM:          5,
+			AuthStrategy: controller.AuthJwtStrategy,
 		},
 	)
 }

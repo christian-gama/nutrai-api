@@ -26,8 +26,9 @@ func NewLogout(logoutHandler command.LogoutHandler) Logout {
 		},
 
 		controller.Options{
-			Path:   controller.JoinPath("logout"),
-			Method: http.MethodPost,
+			Path:         controller.JoinPath("logout"),
+			Method:       http.MethodPost,
+			AuthStrategy: controller.AuthJwtStrategy,
 		},
 	)
 }

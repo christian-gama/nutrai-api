@@ -18,7 +18,7 @@ func TestFactorySuite(t *testing.T) {
 func (s *FactorySuite) TestFactory() {
 	s.NotPanics(func() {
 		query.MakeFindByEmailHandler()
-		query.MakeJwtAuthHandler()
-		query.MakeApiKeyAuthHandler()
+		query.MakeAuthJwtHandler()
+		query.MakeAuthApiKeyHandler()
 	})
 }

@@ -26,8 +26,9 @@ func NewLogoutAll(logoutAllHandler command.LogoutAllHandler) LogoutAll {
 		},
 
 		controller.Options{
-			Path:   controller.JoinPath("logout-all"),
-			Method: http.MethodPost,
+			Path:         controller.JoinPath("logout-all"),
+			Method:       http.MethodPost,
+			AuthStrategy: controller.AuthJwtStrategy,
 		},
 	)
 }

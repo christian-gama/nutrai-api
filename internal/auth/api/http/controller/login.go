@@ -26,9 +26,9 @@ func NewLogin(loginHandler service.LoginHandler) Login {
 		},
 
 		controller.Options{
-			Path:     controller.JoinPath("login"),
-			Method:   http.MethodPost,
-			Security: controller.SecurityPublic,
+			Path:         controller.JoinPath("login"),
+			Method:       http.MethodPost,
+			AuthStrategy: controller.AuthPublicStrategy,
 		},
 	)
 }

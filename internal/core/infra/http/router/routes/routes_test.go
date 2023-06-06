@@ -22,7 +22,7 @@ func TestRoutesSuite(t *testing.T) {
 }
 
 func (s *RoutesSuite) TestApi() {
-	controller.SecurityJwt.SetMiddleware(MakeAuthMiddleware())
+	controller.AuthJwtStrategy.SetMiddleware(MakeAuthMiddleware())
 
 	setupRouter := func() {
 		gin.SetMode(gin.TestMode)
@@ -33,10 +33,10 @@ func (s *RoutesSuite) TestApi() {
 		setupRouter()
 
 		routes.Api().SetController(&Controller{
-			method:   http.MethodGet,
-			path:     "/",
-			handler:  func(c *gin.Context) string { return "ok" },
-			security: controller.SecurityPublic,
+			method:       http.MethodGet,
+			path:         "/",
+			handler:      func(c *gin.Context) string { return "ok" },
+			authStrategy: controller.AuthPublicStrategy,
 		})
 
 		response := Request(http.MethodGet, "/api/")
@@ -50,10 +50,10 @@ func (s *RoutesSuite) TestApi() {
 		routes.Api().
 			SetMiddleware(MakeMiddleware("middleware", "ok")).
 			SetController(&Controller{
-				method:   http.MethodGet,
-				path:     "/",
-				handler:  func(c *gin.Context) string { return c.GetString("middleware") },
-				security: controller.SecurityPublic,
+				method:       http.MethodGet,
+				path:         "/",
+				handler:      func(c *gin.Context) string { return c.GetString("middleware") },
+				authStrategy: controller.AuthPublicStrategy,
 			})
 
 		response := Request(http.MethodGet, "/api/")
@@ -68,10 +68,10 @@ func (s *RoutesSuite) TestApi() {
 		routes.Api().
 			SetMiddleware(MakeMiddleware("middleware", "first_middleware")).
 			SetController(&Controller{
-				method:   http.MethodGet,
-				path:     "/",
-				security: controller.SecurityPublic,
-				handler:  func(c *gin.Context) string { return c.GetString("middleware") },
+				method:       http.MethodGet,
+				path:         "/",
+				authStrategy: controller.AuthPublicStrategy,
+				handler:      func(c *gin.Context) string { return c.GetString("middleware") },
 			}).
 			SetMiddleware(MakeMiddleware("middleware", "second_middleware"))
 
@@ -86,10 +86,10 @@ func (s *RoutesSuite) TestApi() {
 
 		routes.Api().
 			SetController(&Controller{
-				method:   http.MethodGet,
-				security: controller.SecurityPublic,
-				path:     "/",
-				handler:  func(c *gin.Context) string { return c.GetString("middleware") },
+				method:       http.MethodGet,
+				authStrategy: controller.AuthPublicStrategy,
+				path:         "/",
+				handler:      func(c *gin.Context) string { return c.GetString("middleware") },
 			},
 				MakeMiddleware("middleware", "local_middleware"),
 			)
@@ -105,10 +105,10 @@ func (s *RoutesSuite) TestApi() {
 
 		routes.Api().
 			SetController(&Controller{
-				method:   http.MethodGet,
-				security: controller.SecurityPublic,
-				path:     "/",
-				handler:  func(c *gin.Context) string { return c.GetString("middleware") },
+				method:       http.MethodGet,
+				authStrategy: controller.AuthPublicStrategy,
+				path:         "/",
+				handler:      func(c *gin.Context) string { return c.GetString("middleware") },
 			},
 				MakeMiddleware("middleware", "first_local_middleware"),
 				MakeMiddleware("middleware", "second_local_middleware"),
@@ -125,10 +125,10 @@ func (s *RoutesSuite) TestApi() {
 
 		routes.Api("new").
 			SetController(&Controller{
-				method:   http.MethodGet,
-				security: controller.SecurityPublic,
-				path:     "/",
-				handler:  func(c *gin.Context) string { return "ok" },
+				method:       http.MethodGet,
+				authStrategy: controller.AuthPublicStrategy,
+				path:         "/",
+				handler:      func(c *gin.Context) string { return "ok" },
 			})
 
 		response := Request(http.MethodGet, "/api/new/")
@@ -142,10 +142,10 @@ func (s *RoutesSuite) TestApi() {
 		routes.Api("new").
 			SetMiddleware(MakeMiddleware("middleware", "ok")).
 			SetController(&Controller{
-				method:   http.MethodGet,
-				path:     "/",
-				security: controller.SecurityPublic,
-				handler:  func(c *gin.Context) string { return c.GetString("middleware") },
+				method:       http.MethodGet,
+				path:         "/",
+				authStrategy: controller.AuthPublicStrategy,
+				handler:      func(c *gin.Context) string { return c.GetString("middleware") },
 			})
 
 		response := Request(http.MethodGet, "/api/new/")
@@ -159,11 +159,11 @@ func (s *RoutesSuite) TestApi() {
 
 		routes.Api().
 			SetController(&Controller{
-				method:   http.MethodGet,
-				path:     "",
-				params:   controller.AddParams("id"),
-				security: controller.SecurityPublic,
-				handler:  func(c *gin.Context) string { return c.Param("id") },
+				method:       http.MethodGet,
+				path:         "",
+				params:       controller.AddParams("id"),
+				authStrategy: controller.AuthPublicStrategy,
+				handler:      func(c *gin.Context) string { return c.Param("id") },
 			})
 
 		response := Request(http.MethodGet, "/api/1")
@@ -177,9 +177,10 @@ func (s *RoutesSuite) TestApi() {
 
 		routes.Api().
 			SetController(&Controller{
-				method:  http.MethodGet,
-				path:    "/",
-				handler: func(c *gin.Context) string { return "ok" },
+				method:       http.MethodGet,
+				path:         "/",
+				handler:      func(c *gin.Context) string { return "ok" },
+				authStrategy: controller.AuthJwtStrategy,
 			})
 
 		response := Request(http.MethodGet, "/api/")
@@ -193,9 +194,10 @@ func (s *RoutesSuite) TestApi() {
 
 		routes.Api().
 			SetController(&Controller{
-				method:  http.MethodGet,
-				path:    "/",
-				handler: func(c *gin.Context) string { return "ok" },
+				method:       http.MethodGet,
+				path:         "/",
+				handler:      func(c *gin.Context) string { return "ok" },
+				authStrategy: controller.AuthJwtStrategy,
 			},
 				httpmiddleware.NewMiddleware(func(ctx *gin.Context) {
 					called = true
@@ -224,13 +226,13 @@ func Request(
 }
 
 type Controller struct {
-	status    int
-	method    http.Method
-	path      controller.Path
-	params    controller.Params
-	security  *controller.Security
-	rateLimit int
-	handler   func(*gin.Context) string
+	status       int
+	method       http.Method
+	path         controller.Path
+	params       controller.Params
+	authStrategy controller.AuthStrategy
+	rateLimit    int
+	handler      func(*gin.Context) string
 }
 
 func (h *Controller) Handle(c *gin.Context) {
@@ -253,12 +255,8 @@ func (h *Controller) RPM() int {
 	return h.rateLimit
 }
 
-func (h *Controller) Security() *controller.Security {
-	if h.security == nil {
-		return controller.SecurityJwt
-	}
-
-	return h.security
+func (h *Controller) AuthStrategy() controller.AuthStrategy {
+	return h.authStrategy
 }
 
 type Middleware struct {

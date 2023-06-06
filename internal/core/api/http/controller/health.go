@@ -20,10 +20,10 @@ func NewHealth() Health {
 		},
 
 		controller.Options{
-			Security: controller.SecurityApiKey,
-			Path:     controller.JoinPath("health"),
-			Method:   http.MethodGet,
-			RPM:      300,
+			AuthStrategy: controller.AuthPublicStrategy,
+			Path:         controller.JoinPath("health"),
+			Method:       http.MethodGet,
+			RPM:          300,
 		},
 	)
 }

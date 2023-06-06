@@ -74,8 +74,8 @@ func (r *routes) addAuthIfNeeded(
 	c controller.Controller,
 	handlers []gin.HandlerFunc,
 ) []gin.HandlerFunc {
-	if c.Security().Middleware() != nil {
-		handlers = slice.Unshift(handlers, c.Security().Middleware().Handle).Build()
+	if c.AuthStrategy().Middleware() != nil {
+		handlers = slice.Unshift(handlers, c.AuthStrategy().Middleware().Handle).Build()
 	}
 
 	return handlers

@@ -8,10 +8,10 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/auth/app/query"
 )
 
-func MakeJwtAuth() JwtAuth {
-	return NewJwtAuth(query.MakeJwtAuthHandler())
+func MakeAuthJwt() AuthJwt {
+	return NewAuthJwt(query.MakeAuthJwtHandler())
 }
 
-func MakeApiKey() ApiKeyAuth {
-	return NewApiKeyAuth(query.MakeApiKeyAuthHandler())
+func MakeAuthApiKey() AuthApiKey {
+	return NewAuthApiKey(query.MakeAuthApiKeyHandler())
 }

@@ -27,10 +27,10 @@ func NewRegister(registerHandler service.RegisterHandler) Register {
 		},
 
 		controller.Options{
-			Path:     controller.JoinPath("register"),
-			Method:   http.MethodPost,
-			Security: controller.SecurityPublic,
-			RPM:      20,
+			Path:         controller.JoinPath("register"),
+			Method:       http.MethodPost,
+			AuthStrategy: controller.AuthPublicStrategy,
+			RPM:          20,
 		},
 	)
 }

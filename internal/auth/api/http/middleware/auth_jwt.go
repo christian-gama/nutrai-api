@@ -11,14 +11,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// JwtAuth is the middleware that handles the authentication. It will read the JWT token from
+// AuthJwt is the middleware that handles the authentication. It will read the JWT token from
 // the request header, validate it and set the user in the context. If the token is invalid, it will
 // return an error.
-type JwtAuth = middleware.Middleware
+type AuthJwt = middleware.Middleware
 
-// NewJwtAuth creates a new AuthHandler.
-func NewJwtAuth(jwtAuthHandler query.JwtAuthHandler) JwtAuth {
-	errutil.MustBeNotEmpty("query.AuthHandler", jwtAuthHandler)
+// NewAuthJwt creates a new AuthHandler.
+func NewAuthJwt(AuthJwtHandler query.AuthJwtHandler) AuthJwt {
+	errutil.MustBeNotEmpty("query.AuthHandler", AuthJwtHandler)
 
 	return middleware.NewMiddleware(
 		func(ctx *gin.Context) {
@@ -27,9 +27,9 @@ func NewJwtAuth(jwtAuthHandler query.JwtAuthHandler) JwtAuth {
 				panic(err)
 			}
 
-			authOutput, err := jwtAuthHandler.Handle(
+			authOutput, err := AuthJwtHandler.Handle(
 				ctx,
-				&query.JwtAuthInput{Access: value.Token(token)},
+				&query.AuthJwtInput{Access: value.Token(token)},
 			)
 			if err != nil {
 				panic(err)

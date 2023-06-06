@@ -26,8 +26,9 @@ func NewDeleteMe(deleteMeHandler command.DeleteMeHandler) DeleteMe {
 		},
 
 		controller.Options{
-			Path:   controller.JoinPath(""),
-			Method: http.MethodDelete,
+			Path:         controller.JoinPath(""),
+			Method:       http.MethodDelete,
+			AuthStrategy: controller.AuthJwtStrategy,
 		},
 	)
 }

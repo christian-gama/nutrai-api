@@ -26,8 +26,9 @@ func NewSavePatient(c command.SavePatientHandler) SavePatient {
 		},
 
 		controller.Options{
-			Path:   controller.JoinPath(""),
-			Method: http.MethodPost,
+			Path:         controller.JoinPath(""),
+			Method:       http.MethodPost,
+			AuthStrategy: controller.AuthJwtStrategy,
 		},
 	)
 }

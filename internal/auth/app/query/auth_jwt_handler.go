@@ -11,30 +11,30 @@ import (
 )
 
 // AuthInput is the query to find a user by email.
-type JwtAuthHandler = query.Handler[*JwtAuthInput, *JwtAuthOutput]
+type AuthJwtHandler = query.Handler[*AuthJwtInput, *AuthJwtOutput]
 
-// jwtAuthHandlerImpl is the implementation of the AuthHandler interface.
-type jwtAuthHandlerImpl struct {
+// AuthJwtHandlerImpl is the implementation of the AuthHandler interface.
+type AuthJwtHandlerImpl struct {
 	repo.User
 	jwt.Verifier
 }
 
-// NewJwtAuthHandler creates a new instance of the AuthHandler interface.
-func NewJwtAuthHandler(userRepo repo.User, verifier jwt.Verifier) JwtAuthHandler {
+// NewAuthJwtHandler creates a new instance of the AuthHandler interface.
+func NewAuthJwtHandler(userRepo repo.User, verifier jwt.Verifier) AuthJwtHandler {
 	errutil.MustBeNotEmpty("repo.User", userRepo)
 	errutil.MustBeNotEmpty("jwt.Verifier (Access)", verifier)
 
-	return &jwtAuthHandlerImpl{
+	return &AuthJwtHandlerImpl{
 		User:     userRepo,
 		Verifier: verifier,
 	}
 }
 
 // Handle implements the AuthHandler interface.
-func (q *jwtAuthHandlerImpl) Handle(
+func (q *AuthJwtHandlerImpl) Handle(
 	ctx context.Context,
-	input *JwtAuthInput,
-) (*JwtAuthOutput, error) {
+	input *AuthJwtInput,
+) (*AuthJwtOutput, error) {
 	claims, err := q.Verify(input.Access, false)
 	if err != nil {
 		return nil, errors.Unauthorized(err.Error())
@@ -45,7 +45,7 @@ func (q *jwtAuthHandlerImpl) Handle(
 		return nil, errors.Unauthorized("you are not authorized to access this resource")
 	}
 
-	return &JwtAuthOutput{
+	return &AuthJwtOutput{
 		ID:       user.ID,
 		Email:    user.Email,
 		Name:     user.Name,

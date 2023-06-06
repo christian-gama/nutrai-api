@@ -26,8 +26,9 @@ func NewAllPlans(allPlansHandler query.AllPlansHandler) AllPlans {
 		},
 
 		controller.Options{
-			Path:   controller.JoinPath(""),
-			Method: http.MethodGet,
+			Path:         controller.JoinPath(""),
+			Method:       http.MethodGet,
+			AuthStrategy: controller.AuthJwtStrategy,
 		},
 	)
 }

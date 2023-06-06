@@ -16,10 +16,10 @@ func NewMetric() Metric {
 		},
 
 		controller.Options{
-			Security: controller.SecurityApiKey,
-			Path:     controller.JoinPath("metrics"),
-			Method:   http.MethodGet,
-			RPM:      300,
+			AuthStrategy: controller.AuthApiKeyStrategy,
+			Path:         controller.JoinPath("metrics"),
+			Method:       http.MethodGet,
+			RPM:          300,
 		},
 	)
 }

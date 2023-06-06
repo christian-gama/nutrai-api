@@ -26,10 +26,10 @@ func NewFindPatient(findPatientHandler query.FindPatientHandler) FindPatient {
 		},
 
 		controller.Options{
-			Path:     controller.JoinPath(""),
-			Method:   http.MethodGet,
-			Params:   controller.AddParams("id"),
-			Security: controller.SecurityPublic,
+			Path:         controller.JoinPath(""),
+			Method:       http.MethodGet,
+			Params:       controller.AddParams("id"),
+			AuthStrategy: controller.AuthPublicStrategy,
 		},
 	)
 }

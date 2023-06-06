@@ -38,9 +38,9 @@ type Controller interface {
 	// controller's rate limit, then the global rate limit.
 	RPM() int
 
-	// Security is the security level of the endpoint. It's used to determine if the endpoint
+	// AuthStrategy is the security level of the endpoint. It's used to determine if the endpoint
 	// requires authentication or not.
-	Security() *Security
+	AuthStrategy() AuthStrategy
 }
 
 // ControllerOptions is the options for the controller constructor. It's used
@@ -61,19 +61,19 @@ type Options struct {
 	// controller's rate limit, then the global rate limit.
 	RPM int
 
-	// Security is the security level of the endpoint. It's used to determine if the endpoint
+	// AuthStrategy is the security level of the endpoint. It's used to determine if the endpoint
 	// requires authentication or not.
-	Security *Security
+	AuthStrategy AuthStrategy
 }
 
 // controllerImpl is the implementation of the Controller interface.
 type controllerImpl[Input any] struct {
-	handler  func(ctx *gin.Context, input *Input)
-	method   http.Method
-	path     Path
-	rpm      int
-	params   Params
-	security *Security
+	handler      func(ctx *gin.Context, input *Input)
+	method       http.Method
+	path         Path
+	rpm          int
+	params       Params
+	authStrategy AuthStrategy
 
 	input Input
 }
@@ -87,12 +87,12 @@ func NewController[Input any](
 	errutil.MustBeNotEmpty("options.Method", opts.Method)
 
 	controller := &controllerImpl[Input]{
-		handler:  handler,
-		method:   opts.Method,
-		path:     opts.Path,
-		params:   opts.Params,
-		rpm:      opts.RPM,
-		security: opts.Security,
+		handler:      handler,
+		method:       opts.Method,
+		path:         opts.Path,
+		params:       opts.Params,
+		rpm:          opts.RPM,
+		authStrategy: opts.AuthStrategy,
 	}
 
 	controller.validate()
@@ -143,13 +143,9 @@ func (c *controllerImpl[P]) Params() Params {
 	return c.params
 }
 
-// Security implements Controller.
-func (c *controllerImpl[P]) Security() *Security {
-	if c.security == nil {
-		return SecurityJwt
-	}
-
-	return c.security
+// AuthStrategy implements Controller.
+func (c *controllerImpl[P]) AuthStrategy() AuthStrategy {
+	return c.authStrategy
 }
 
 // validate validates the controller.
@@ -189,9 +185,25 @@ func (c *controllerImpl[P]) validate() {
 	methods := []http.Method{
 		http.MethodDelete, http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch,
 	}
-
 	if !slice.Contains(methods, c.method) {
-		panic(fmt.Errorf("the method %s is invalid", c.method))
+		result = errutil.Append(
+			result,
+			fmt.Errorf("the method %s is invalid", c.method),
+		)
+	}
+
+	if c.rpm < 0 {
+		result = errutil.Append(
+			result,
+			fmt.Errorf("the rpm %d is invalid", c.rpm),
+		)
+	}
+
+	if c.authStrategy == nil {
+		result = errutil.Append(
+			result,
+			fmt.Errorf("the auth strategy is nil"),
+		)
 	}
 
 	if result.HasErrors() {

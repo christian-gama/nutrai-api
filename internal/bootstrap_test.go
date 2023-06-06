@@ -7,6 +7,7 @@ import (
 
 	"github.com/christian-gama/nutrai-api/internal"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
+	"github.com/christian-gama/nutrai-api/internal/core/infra/http/router/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/redis/conn"
 	sqlconn "github.com/christian-gama/nutrai-api/internal/core/infra/sql/conn"
 	"github.com/christian-gama/nutrai-api/pkg/slice"
@@ -59,15 +60,22 @@ func (s *BootstrapSuite) TestBootstrap() {
 
 	s.Run("Should have jwt security middleware set", func() {
 		s.NotNil(
-			controller.SecurityJwt.Middleware(),
+			controller.AuthJwtStrategy.Middleware(),
 			"You must provide a middleware for security jwt",
 		)
 	})
 
 	s.Run("Should have api key security middleware set", func() {
 		s.NotNil(
-			controller.SecurityApiKey.Middleware(),
+			controller.AuthApiKeyStrategy.Middleware(),
 			"You must provide a middleware for security api_key",
+		)
+	})
+
+	s.Run("Should have recovery and persist middleware set", func() {
+		s.NotNil(
+			middleware.RecoveryAndPersistStrategy.Middleware(),
+			"You must provide a middleware for recovery and persist",
 		)
 	})
 }

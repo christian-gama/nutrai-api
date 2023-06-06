@@ -27,10 +27,10 @@ func (s *ControllerSuite) TestNewController() {
 	) {
 		handler := func(*gin.Context, *any) {}
 		opts := controller.Options{
-			Method:   http.MethodGet,
-			Path:     controller.JoinPath(""),
-			Params:   controller.AddParams("id"),
-			Security: controller.SecurityPublic,
+			Method:       http.MethodGet,
+			Path:         controller.JoinPath(""),
+			Params:       controller.AddParams("id"),
+			AuthStrategy: controller.AuthPublicStrategy,
 		}
 		sut := controller.NewController[any]
 
@@ -105,10 +105,10 @@ func (s *ControllerSuite) TestController() {
 		func(*gin.Context, *any) {},
 
 		controller.Options{
-			Method:   http.MethodPut,
-			Path:     controller.JoinPath(""),
-			Params:   controller.AddParams("id"),
-			Security: controller.SecurityPublic,
+			Method:       http.MethodPut,
+			Path:         controller.JoinPath(""),
+			Params:       controller.AddParams("id"),
+			AuthStrategy: controller.AuthPublicStrategy,
 		},
 	)
 
@@ -129,11 +129,11 @@ func (s *ControllerSuite) TestController() {
 	})
 
 	s.Run("controller.Security returns the correct security", func() {
-		sut := sut.Security
+		sut := sut.AuthStrategy
 
 		name := sut()
 
-		s.EqualValues(controller.SecurityPublic, name)
+		s.EqualValues(controller.AuthPublicStrategy, name)
 	})
 
 	s.Run("controller.Params returns the correct params", func() {
@@ -168,10 +168,10 @@ func (s *ControllerSuite) TestHandle() {
 		controller := controller.NewController(
 			handler,
 			controller.Options{
-				Method:   http.MethodPut,
-				Path:     controller.JoinPath(""),
-				Params:   controller.AddParams("id"),
-				Security: controller.SecurityPublic,
+				Method:       http.MethodPut,
+				Path:         controller.JoinPath(""),
+				Params:       controller.AddParams("id"),
+				AuthStrategy: controller.AuthPublicStrategy,
 			},
 		)
 

@@ -26,8 +26,9 @@ func NewUpdatePatient(updatePatientHandler command.UpdatePatientHandler) UpdateP
 		},
 
 		controller.Options{
-			Path:   controller.JoinPath(""),
-			Method: http.MethodPut,
+			Path:         controller.JoinPath(""),
+			Method:       http.MethodPut,
+			AuthStrategy: controller.AuthJwtStrategy,
 		},
 	)
 }

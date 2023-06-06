@@ -26,9 +26,10 @@ func NewFindPlan(findPlanHandler query.FindPlanHandler) FindPlan {
 		},
 
 		controller.Options{
-			Path:   controller.JoinPath(""),
-			Method: http.MethodGet,
-			Params: controller.AddParams("id"),
+			Path:         controller.JoinPath(""),
+			Method:       http.MethodGet,
+			Params:       controller.AddParams("id"),
+			AuthStrategy: controller.AuthJwtStrategy,
 		},
 	)
 }

@@ -9,10 +9,10 @@ func MakeFindByEmailHandler() FindByEmailHandler {
 	return NewFindByEmailHandler(persistence.MakeSQLUser())
 }
 
-func MakeJwtAuthHandler() JwtAuthHandler {
-	return NewJwtAuthHandler(persistence.MakeSQLUser(), jwt.MakeAccessVerifier())
+func MakeAuthJwtHandler() AuthJwtHandler {
+	return NewAuthJwtHandler(persistence.MakeSQLUser(), jwt.MakeAccessVerifier())
 }
 
-func MakeApiKeyAuthHandler() ApiKeyAuthHandler {
-	return NewApiKeyAuthHandler()
+func MakeAuthApiKeyHandler() AuthApiKeyHandler {
+	return NewAuthApiKeyHandler()
 }

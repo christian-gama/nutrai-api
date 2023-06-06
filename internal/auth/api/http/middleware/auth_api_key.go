@@ -8,10 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type ApiKeyAuth = middleware.Middleware
+type AuthApiKey = middleware.Middleware
 
-func NewApiKeyAuth(apiKeyAuthHandler query.ApiKeyAuthHandler) ApiKeyAuth {
-	errutil.MustBeNotEmpty("query.ApiKeyAuthHandler", apiKeyAuthHandler)
+func NewAuthApiKey(AuthApiKeyHandler query.AuthApiKeyHandler) AuthApiKey {
+	errutil.MustBeNotEmpty("query.AuthApiKeyHandler", AuthApiKeyHandler)
 
 	return middleware.NewMiddleware(
 		func(ctx *gin.Context) {
@@ -20,7 +20,7 @@ func NewApiKeyAuth(apiKeyAuthHandler query.ApiKeyAuthHandler) ApiKeyAuth {
 				panic(err)
 			}
 
-			_, err = apiKeyAuthHandler.Handle(ctx, &query.ApiKeyAuthInput{Key: key})
+			_, err = AuthApiKeyHandler.Handle(ctx, &query.AuthApiKeyInput{Key: key})
 			if err != nil {
 				panic(err)
 			}

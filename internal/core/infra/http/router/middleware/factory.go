@@ -30,7 +30,3 @@ func MakeRateLimiter(rpm int) RateLimiter {
 		RedisClient: conn.GetRedis(),
 	}))
 }
-
-func MakeRecovery() Recovery {
-	return NewRecovery()
-}

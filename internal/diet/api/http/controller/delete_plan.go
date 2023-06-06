@@ -26,9 +26,10 @@ func NewDeletePlan(deletePlanHandler command.DeletePlanHandler) DeletePlan {
 		},
 
 		controller.Options{
-			Path:   controller.JoinPath(""),
-			Method: http.MethodDelete,
-			Params: controller.AddParams("id"),
+			Path:         controller.JoinPath(""),
+			Method:       http.MethodDelete,
+			Params:       controller.AddParams("id"),
+			AuthStrategy: controller.AuthJwtStrategy,
 		},
 	)
 }

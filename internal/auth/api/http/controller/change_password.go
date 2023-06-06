@@ -23,9 +23,10 @@ func NewChangePassword(changePasswordHandler command.ChangePasswordHandler) Chan
 	return controller.NewController(
 		m.Handle,
 		controller.Options{
-			Path:   controller.JoinPath(""),
-			Method: http.MethodPatch,
-			RPM:    20,
+			Path:         controller.JoinPath(""),
+			Method:       http.MethodPatch,
+			RPM:          20,
+			AuthStrategy: controller.AuthJwtStrategy,
 		},
 	)
 }

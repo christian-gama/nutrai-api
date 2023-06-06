@@ -3,7 +3,7 @@ package internal
 import (
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/auth"
-	authMiddleware "github.com/christian-gama/nutrai-api/internal/auth/api/http/middleware"
+	"github.com/christian-gama/nutrai-api/internal/auth/api/http/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/module"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
@@ -33,25 +33,26 @@ func setupModules() {
 	module.Init(notify.Init)
 }
 
+// setupStrategies is responsible for setting up the strategies of the application. When creating a
+// new strategy, it should be added here.
+func setupStrategies() {
+	controller.AuthJwtStrategy.SetMiddleware(middleware.MakeAuthJwt())
+	controller.AuthApiKeyStrategy.SetMiddleware(middleware.MakeAuthApiKey())
+	routesMiddleware.RecoveryAndPersistStrategy.SetMiddleware(expectionMiddleware.MakeRecovery())
+}
+
+// setupConnections is responsible for setting up the connections of the application.
+func setupConnections() {
+	sqlconn.MakePsql()
+	redisconn.MakeRedis()
+}
+
 // Bootstrap is responsible for booting up the application.
 func Bootstrap(envFile string) {
 	env.NewLoader(envFile).Load()
-
-	// Logger
 	log.SugaredLogger = log.New()
-
-	// Connections
-	sqlconn.MakePsql()
-	redisconn.MakeRedis()
-
-	// Security Middlewares
-	controller.SecurityJwt.SetMiddleware(authMiddleware.MakeJwtAuth())
-	controller.SecurityApiKey.SetMiddleware(authMiddleware.MakeApiKey())
-	routesMiddleware.SetRecoveryMiddleware(expectionMiddleware.MakeRecovery())
-
-	// Routes
+	setupConnections()
+	setupStrategies()
 	router.SetupRouter()
-
-	// Modules
 	setupModules()
 }
