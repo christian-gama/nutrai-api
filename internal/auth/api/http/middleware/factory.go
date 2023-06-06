@@ -13,5 +13,5 @@ func MakeJwtAuth() JwtAuth {
 }
 
 func MakeApiKey() ApiKeyAuth {
-	return NewApiKeyAuth()
+	return NewApiKeyAuth(query.MakeApiKeyAuthHandler())
 }

@@ -47,9 +47,9 @@ func Bootstrap(envFile string) {
 	// Security Middlewares
 	controller.SecurityJwt.SetMiddleware(authMiddleware.MakeJwtAuth())
 	controller.SecurityApiKey.SetMiddleware(authMiddleware.MakeApiKey())
+	routesMiddleware.SetRecoveryMiddleware(expectionMiddleware.MakeRecovery())
 
 	// Routes
-	routesMiddleware.SetRecoveryMiddleware(expectionMiddleware.MakeRecovery())
 	router.SetupRouter()
 
 	// Modules

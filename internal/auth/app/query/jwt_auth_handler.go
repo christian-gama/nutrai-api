@@ -13,8 +13,8 @@ import (
 // AuthInput is the query to find a user by email.
 type JwtAuthHandler = query.Handler[*JwtAuthInput, *JwtAuthOutput]
 
-// checkTokenHandlerImpl is the implementation of the AuthHandler interface.
-type checkTokenHandlerImpl struct {
+// jwtAuthHandlerImpl is the implementation of the AuthHandler interface.
+type jwtAuthHandlerImpl struct {
 	repo.User
 	jwt.Verifier
 }
@@ -24,14 +24,14 @@ func NewJwtAuthHandler(userRepo repo.User, verifier jwt.Verifier) JwtAuthHandler
 	errutil.MustBeNotEmpty("repo.User", userRepo)
 	errutil.MustBeNotEmpty("jwt.Verifier (Access)", verifier)
 
-	return &checkTokenHandlerImpl{
+	return &jwtAuthHandlerImpl{
 		User:     userRepo,
 		Verifier: verifier,
 	}
 }
 
 // Handle implements the AuthHandler interface.
-func (q *checkTokenHandlerImpl) Handle(
+func (q *jwtAuthHandlerImpl) Handle(
 	ctx context.Context,
 	input *JwtAuthInput,
 ) (*JwtAuthOutput, error) {

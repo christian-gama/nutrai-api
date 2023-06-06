@@ -17,8 +17,8 @@ import (
 type JwtAuth = middleware.Middleware
 
 // NewJwtAuth creates a new AuthHandler.
-func NewJwtAuth(authHandler query.JwtAuthHandler) JwtAuth {
-	errutil.MustBeNotEmpty("query.AuthHandler", authHandler)
+func NewJwtAuth(jwtAuthHandler query.JwtAuthHandler) JwtAuth {
+	errutil.MustBeNotEmpty("query.AuthHandler", jwtAuthHandler)
 
 	return middleware.NewMiddleware(
 		func(ctx *gin.Context) {
@@ -27,7 +27,7 @@ func NewJwtAuth(authHandler query.JwtAuthHandler) JwtAuth {
 				panic(err)
 			}
 
-			authOutput, err := authHandler.Handle(
+			authOutput, err := jwtAuthHandler.Handle(
 				ctx,
 				&query.JwtAuthInput{Access: value.Token(token)},
 			)

@@ -99,15 +99,15 @@ func (m *Manager[Model, Schema]) All(
 		return nil, sqlerr.Error(err, m.model)
 	}
 
-	pagination := &queryer.PaginationOutput[*Model]{}
-	for _, sch := range schemas {
-		var model Model
-		pagination.Results = append(
-			pagination.Results,
-			convert.ToModel(&model, sch),
-		)
+	pagination := &queryer.PaginationOutput[*Model]{
+		Total:   int(totalCount),
+		Results: make([]*Model, len(schemas)),
 	}
-	pagination.Total = int(totalCount)
+
+	for i, sch := range schemas {
+		var model Model
+		pagination.Results[i] = convert.ToModel(&model, sch)
+	}
 
 	return pagination, nil
 }
