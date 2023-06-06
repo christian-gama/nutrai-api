@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-	metrics.Add(RequestsTotal, RequestsDuration)
+	metrics.Add(RequestsTotal, RequestsDuration, RequestsErrors)
 }
 
 var (
@@ -23,6 +23,14 @@ var (
 			Name:    "http_requests_duration_seconds",
 			Help:    "Duration of HTTP requests",
 			Buckets: prometheus.DefBuckets,
+		},
+		[]string{"path"},
+	)
+
+	RequestsErrors = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "http_requests_errors_total",
+			Help: "Number of HTTP requests errors",
 		},
 		[]string{"path"},
 	)

@@ -28,6 +28,8 @@ create_metric_key() {
 
   # Write the value to the metrics/prometheus.key file
   echo "$APP_API_KEY" > metrics/prometheus/prometheus-$APP_ENV.key
+
+  echo "Created metrics/prometheus/prometheus-$APP_ENV.key"
 }
 
 create_metric_key ".env.dev"

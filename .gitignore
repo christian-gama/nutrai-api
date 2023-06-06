@@ -108,8 +108,11 @@ output.txt
 .env
 .env.*
 !.env.example
+
+# Metrics
 *.key
-!prometheus.example.key
+!*.example.key
+
 
 # Jmeter
 *.jmx

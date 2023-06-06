@@ -15,6 +15,14 @@ func NewMetrics() Metrics {
 		timer := prometheus.NewTimer(http.RequestsDuration.WithLabelValues(fullpath))
 		http.RequestsTotal.WithLabelValues(fullpath).Inc()
 		defer timer.ObserveDuration()
+
+		defer func() {
+			if r := recover(); r != nil {
+				http.RequestsErrors.WithLabelValues(fullpath).Inc()
+				panic(r)
+			}
+		}()
+
 		ctx.Next()
 	})
 }

@@ -192,7 +192,6 @@ lint: .cmd-exists-docker .cmd-exists-sh .clear-screen
 # ==============================================================================================
 .PHONY: clear
 clear: .cmd-exists-sh .clear-screen
-	@rm -rf $(DOCKER_DIR)
 	@rm -rf $(BUILD_DIR)
 	@rm -rf ./coverage.out
 	@rm -rf ./coverage.html
@@ -455,8 +454,6 @@ docker-kill: .cmd-exists-docker .clear-screen
 .PHONY: docker-list-env
 docker-list-env: .cmd-exists-docker .clear-screen .check-env-file
 	@WORKDIR=$(WORKDIR)  \
-	DOCKER_DIR=$(DOCKER_DIR) \
-	BUILD_DIR=$(BUILD_DIR) \
 	AIRVERSION=$(AIRVERSION) \
 	docker compose \
 	--env-file "$(ENV_FILE)" \
@@ -476,7 +473,6 @@ docker-list-env: .cmd-exists-docker .clear-screen .check-env-file
 .PHONY: .docker
 .docker: .cmd-exists-docker .clear-screen .check-env-file
 	@RUNNING_IN_DOCKER=true \
-	DOCKER_DIR=$(DOCKER_DIR) \
 	BUILD_DIR=$(BUILD_DIR) \
 	WORKDIR=$(WORKDIR) \
 	AIRVERSION=$(AIRVERSION) \
@@ -539,4 +535,3 @@ docker-list-env: .cmd-exists-docker .clear-screen .check-env-file
 # ==============================================================================================
 MAKE = make --no-print-directory
 BUILD_DIR = bin/build
-DOCKER_DIR = .docker

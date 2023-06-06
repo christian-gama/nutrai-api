@@ -12,8 +12,8 @@ import (
 func Init() (*module.Module, func()) {
 	return Module, func() {
 		// Add the logic to initialize this module here:
-		hook.Register()
 		metrics.Register()
+		hook.Register()
 		routes.Register()
 	}
 }

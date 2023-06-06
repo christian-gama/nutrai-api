@@ -2,35 +2,46 @@ version: '3.9'
 
 services:
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:8.5.25-ubuntu
+    restart: always
     ports:
       - '3000:3000'
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: password
+    env_file:
+      - .env.$APP_ENV
     depends_on:
       - prometheus
+      - psql
     links:
       - prometheus
+      - psql
     volumes:
       - ./metrics/grafana/provisioning/:/etc/grafana/provisioning/
+      - ./metrics/grafana/dashboards/:/var/lib/grafana/dashboards/
+      - metrics_data:/var/lib/grafana
 
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v2.44.0
+    restart: always
     ports:
       - '9090:9090'
+    env_file:
+      - .env.$APP_ENV
     volumes:
       - ./metrics/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - ./metrics/prometheus/prometheus-$APP_ENV.key:/etc/prometheus/prometheus-credentials
+      - metrics_data:/prometheus
 
   # Database service to run both in development and production. The variables
   # are configured in .env.$APP_ENV and it will run according to the variables
   # you set there.
   psql:
-    command: -p $DB_PORT
+    command: -p "$DB_PORT" -c "max_connections=$DB_MAX_OPEN_CONNS"
     container_name: nutrai-psql
     image: postgres:15.2-alpine
-    restart: "no"
+    restart: "always"
     healthcheck:
       interval: 1s
       retries: 10
@@ -41,9 +52,8 @@ services:
       POSTGRES_PASSWORD: $DB_PASSWORD
       POSTGRES_PORT: $DB_PORT
       POSTGRES_USER: $DB_USER
-      POSTGRES_MAX_CONNECTIONS: $DB_MAX_OPEN_CONNS
     volumes:
-      - ./$DOCKER_DIR/db_data/$APP_ENV:/var/lib/postgresql/data
+      - psql_data:/var/lib/postgresql/data
     ports:
       - "$DB_PORT:$DB_PORT"
 
@@ -63,7 +73,7 @@ services:
       REDIS_PASSWORD: $REDIS_PASSWORD
       REDIS_PORT: $REDIS_PORT
     volumes:
-      - ./$DOCKER_DIR/redis_data/$APP_ENV:/data
+      - redis_data:/data
     ports:
       - "$REDIS_PORT:$REDIS_PORT"
 
@@ -84,7 +94,7 @@ services:
       RABBITMQ_DEFAULT_USER: $RABBITMQ_USER
       RABBITMQ_NODE_PORT: $RABBITMQ_PORT
     volumes:
-      - ./$DOCKER_DIR/rabbitmq_data/$APP_ENV:/var/lib/rabbitmq
+      - rabbitmq_data:/var/lib/rabbitmq
     ports:
       - "$RABBITMQ_PORT:$RABBITMQ_PORT"
 
@@ -131,9 +141,9 @@ services:
       - rabbitmq
       - redis
     volumes:
-      - ./$DOCKER_DIR/build:$WORKDIR/$BUILD_DIR
-      - ./$DOCKER_DIR/cache/go:/root/.cache
-      - ./$DOCKER_DIR/tmp:$WORKDIR/tmp
+      - api_data:$WORKDIR/$BUILD_DIR
+      - api_data:/root/.cache
+      - api_data:/$WORKDIR/tmp
       - ./cmd:$WORKDIR/cmd
       - ./config:$WORKDIR/config
       - ./internal:$WORKDIR/internal
@@ -142,13 +152,14 @@ services:
       - ./testutils:$WORKDIR/testutils
       - ./vendor:$WORKDIR/vendor
       - ./Makefile:$WORKDIR/Makefile
+      - ./.env.$APP_ENV:$WORKDIR/.env.$APP_ENV
 
   # Optimized for running tests. Do not use for development. It will run the 
   # database in a tmpfs, so it will not persist data. Besides that, it will
   # disable fsync, full_page_writes and synchronous_commit, so it will be much
   # faster, but it will not be safe for production.
   psql_test:
-    command: -c fsync=off -c full_page_writes=off -c synchronous_commit=off -p $DB_PORT
+    command: -c fsync=off -c full_page_writes=off -c synchronous_commit=off -p $DB_PORT -c max_connections=$DB_MAX_OPEN_CONNS
     container_name: nutrai-psql-test
     image: postgres:15.2-alpine
     restart: always
@@ -164,7 +175,6 @@ services:
       POSTGRES_PASSWORD: $DB_PASSWORD
       POSTGRES_PORT: $DB_PORT
       POSTGRES_USER: $DB_USER
-      POSTGRES_MAX_CONNECTIONS: $DB_MAX_OPEN_CONNS
     tmpfs:
       - /var/lib/postgresql/data
 
@@ -204,3 +214,15 @@ services:
       REDIS_PORT: $REDIS_PORT
     ports:
       - "$REDIS_PORT:$REDIS_PORT"
+
+volumes:
+  api_data:
+    name: "${APP_ENV}_api_data"
+  psql_data:
+    name: "${APP_ENV}_psql_data"
+  rabbitmq_data:
+    name: "${APP_ENV}_rabbitmq_data"
+  redis_data:
+    name: "${APP_ENV}_redis_data"
+  metrics_data:
+    name: "${APP_ENV}_metrics_data"
