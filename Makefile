@@ -243,23 +243,6 @@ test-integration: .cmd-exists-go .clear-screen .prepare-test
 
 
 # ==============================================================================================
-# Target: test-e2e
-# Brief: Runs end-to-end tests.
-# Usage: Run the command 'make test-e2e [FLAGS="<flags>"]'.
-# Usage:
-#   FLAG=<watch|cover> make test-e2e # Runs tests normally without any special flags
-#   COUNT=<count> make-e2e # Runs tests <count> times
-# Environment variables:
-#   COUNT: Number of times to run each test. Cannot be used with other flags.
-#   FLAG:  Defines the flag to run the tests with. Possible values: "cover", "watch".
-# ==============================================================================================
-.PHONY: test-e2e
-test-e2e: .cmd-exists-go .clear-screen .prepare-test
-	@TEST_MODE=e2e COUNT=$(COUNT) FLAG=$(FLAG) \
-	sh -c "./scripts/test.sh"
-
-
-# ==============================================================================================
 # Target: test
 # Brief: Runs all tests.
 # Usage:
@@ -399,6 +382,75 @@ mock: .cmd-exists-go
 	@sh -c "./scripts/mock.sh ./internal" &	\
 	sh -c "./scripts/mock.sh ./pkg"
 
+
+# ==============================================================================================
+# Target: docker-log-api
+# Brief: Shows the logs of the API container.
+# Usage: Run the command 'make docker-log-api'.
+# ==============================================================================================
+.PHONY: docker-log-api
+docker-log-api: .cmd-exists-docker .clear-screen
+	@sh -c "./scripts/docker_log.sh api"
+
+
+# ==============================================================================================
+# Target: docker-log-psql
+# Brief: Shows the logs of the postgres container.
+# Usage: Run the command 'make docker-log-psql'.
+# ==============================================================================================
+.PHONY: docker-log-psql
+docker-log-psql: .cmd-exists-docker .clear-screen
+	@sh -c "./scripts/docker_log.sh psql"
+
+
+# ==============================================================================================
+# Target: docker-log-redis
+# Brief: Shows the logs of the redis container.
+# Usage: Run the command 'make docker-log-redis'.
+# ==============================================================================================
+.PHONY: docker-log-redis
+docker-log-redis: .cmd-exists-docker .clear-screen
+	@sh -c "./scripts/docker_log.sh redis"
+
+
+# ==============================================================================================
+# Target: docker-log-rabbitmq
+# Brief: Shows the logs of the rabbitmq container.
+# Usage: Run the command 'make docker-log-rabbitmq'.
+# ==============================================================================================
+.PHONY: docker-log-rabbitmq
+docker-log-rabbitmq: .cmd-exists-docker .clear-screen
+	@sh -c "./scripts/docker_log.sh rabbitmq"
+
+
+# ==============================================================================================
+# Target: docker-log-grafana
+# Brief: Shows the logs of the grafana container.
+# Usage: Run the command 'make docker-log-grafana'.
+# ==============================================================================================
+.PHONY: docker-log-grafana
+docker-log-grafana: .cmd-exists-docker .clear-screen
+	@sh -c "./scripts/docker_log.sh grafana"
+
+
+# ==============================================================================================
+# Target: docker-log-prometheus
+# Brief: Shows the logs of the prometheus container.
+# Usage: Run the command 'make docker-log-prometheus'.
+# ==============================================================================================
+.PHONY: docker-log-prometheus
+docker-log-prometheus: .cmd-exists-docker .clear-screen
+	@sh -c "./scripts/docker_log.sh prometheus"
+
+
+# ==============================================================================================
+# Target: docker-log
+# Brief: Chooses which container to show the logs.
+# Usage: Run the command 'make docker-log'.
+# ==============================================================================================
+.PHONY: docker-log
+docker-log: .cmd-exists-docker .clear-screen
+	@sh -c "./scripts/docker_log.sh"
 
 # ==============================================================================================
 # Target: docker-dev

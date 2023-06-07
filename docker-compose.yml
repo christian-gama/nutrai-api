@@ -126,7 +126,7 @@ services:
         AIRVERSION: $AIRVERSION
         WORKDIR: $WORKDIR
     environment:
-      RUNNING_IN_DOCKER: true
+      RUNNING_IN_DOCKER: "true"
     ports:
       - "$APP_PORT:$APP_PORT"
     env_file:
