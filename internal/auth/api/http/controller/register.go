@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Register is a controller that handles the register of a user.
+// Register is a controller that handles the register of a user!.
 type Register = controller.Controller
 
 // NewRegister returns a new controller to handle the register of a user.
