@@ -1,48 +1,15 @@
-#!/usr/bin/env node
+#!/bin/sh
 
-const fs = require('fs');
+# This script is a commit-msg hook to validate commit message format for Conventional Commits 1.0.0
 
-const tags = [
-  'feat',
-  'fix',
-  'docs',
-  'style',
-  'refactor',
-  'perf',
-  'test',
-  'build',
-  'ci',
-  'chore',
-  'revert',
-  'wip',
-  'breaking',
-  'merge',
-];
+commit_regex='^(build|chore|ci|docs|feat|fix|perf|refactor|style|test|BREAKING CHANGE)(\(.+\))?!?: .+'
+error_msg="Commit message does not follow the Conventional Commits 1.0.0 format: https://www.conventionalcommits.org"
 
-const commitFilePath = process.argv[2];
-
-// Read the contents of the commit message file
-const commitMsg = fs.readFileSync(commitFilePath, 'utf8').trim();
-
-// Check the length of the commit message
-if (commitMsg.length > 100) {
-  console.error('\x1b[31mError: Commit message is too long! (Max length: 100)\x1b[0m');
-  process.exit(1);
-}
-
-// Check if the commit message starts with a valid tag
-const tagPattern = new RegExp(`^(${tags.join('|')})(\\([a-zA-Z0-9-]+\\))?:`);
-if (!tagPattern.test(commitMsg)) {
-  console.error(`\x1b[31mError: Commit message must start with one of the following tags: ${tags.join(', ')}!\x1b[0m`);
-  process.exit(1);
-}
-
-// Check if the commit message ends with a punctuation mark
-if (/[!?.]$/.test(commitMsg.slice(-1))) {
-  console.error(`\x1b[31mError: Commit message must not end with a punctuation mark.\x1b[0m`);
-  process.exit(1);
-}
-
-// If everything is OK, log a success message
-console.log('\x1b[32mCommit message is valid [length: %d]\x1b[0m', commitMsg.length);
-process.exit(0);
+# If it's not a merge commit
+if ! grep -qE "^Merge" "$1"; then
+    # Check if the first line of commit message matches the regex
+    if ! head -n1 "$1" | grep -qE "$commit_regex"; then
+        echo "$error_msg" >&2
+        exit 1
+    fi
+fi
