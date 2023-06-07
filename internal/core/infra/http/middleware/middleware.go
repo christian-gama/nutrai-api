@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Handler func(*gin.Context)
+type Handler = gin.HandlerFunc
 
 // Middleware is an interface that represents a middleware for gin.
 // It extracts the body, query and params from the request and passes it to the handler.

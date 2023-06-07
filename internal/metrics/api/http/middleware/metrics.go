@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"strconv"
+
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/middleware"
 	"github.com/christian-gama/nutrai-api/internal/metrics/infra/metrics/http"
 	"github.com/gin-gonic/gin"
@@ -17,10 +19,8 @@ func NewMetrics() Metrics {
 		defer timer.ObserveDuration()
 
 		defer func() {
-			if r := recover(); r != nil {
-				http.RequestsErrors.WithLabelValues(fullpath).Inc()
-				panic(r)
-			}
+			statusCode := strconv.Itoa(ctx.Writer.Status())
+			http.ResponseStatusCode.WithLabelValues(fullpath, statusCode).Inc()
 		}()
 
 		ctx.Next()

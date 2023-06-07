@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-	metrics.Add(RequestsTotal, RequestsDuration, RequestsErrors)
+	metrics.Add(RequestsTotal, RequestsDuration, ResponseStatusCode)
 }
 
 var (
@@ -27,11 +27,11 @@ var (
 		[]string{"path"},
 	)
 
-	RequestsErrors = prometheus.NewCounterVec(
+	ResponseStatusCode = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: "http_requests_errors_total",
-			Help: "Number of HTTP requests errors",
+			Name: "http_response_status_code",
+			Help: "HTTP response status code",
 		},
-		[]string{"path"},
+		[]string{"path", "status"},
 	)
 )

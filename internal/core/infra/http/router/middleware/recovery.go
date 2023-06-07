@@ -6,13 +6,7 @@ import (
 	"github.com/christian-gama/nutrai-api/pkg/errutil/errors"
 )
 
-// RecoveryStrategy is the strategy responsible for setting the middleware for recoverying
-// from panics.
-type RecoveryStrategy interface {
-	Middleware() middleware.Middleware
-}
-
-// RecoveryAndPersistStrategy is the strategy responsible for setting the middleware for recoverying
+// ecoveryAndPersistStrategy is the strategy responsible for setting the middleware for recoverying
 // from panics and persisting the errors in a database.
 var RecoveryAndPersistStrategy = new(recoveryAndPersistStrategy)
 

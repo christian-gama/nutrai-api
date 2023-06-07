@@ -3,7 +3,7 @@ package internal
 import (
 	"github.com/christian-gama/nutrai-api/config/env"
 	"github.com/christian-gama/nutrai-api/internal/auth"
-	"github.com/christian-gama/nutrai-api/internal/auth/api/http/middleware"
+	authMiddleware "github.com/christian-gama/nutrai-api/internal/auth/api/http/middleware"
 	"github.com/christian-gama/nutrai-api/internal/core"
 	"github.com/christian-gama/nutrai-api/internal/core/domain/module"
 	"github.com/christian-gama/nutrai-api/internal/core/infra/http/controller"
@@ -16,6 +16,7 @@ import (
 	"github.com/christian-gama/nutrai-api/internal/exception"
 	expectionMiddleware "github.com/christian-gama/nutrai-api/internal/exception/api/http/middleware"
 	"github.com/christian-gama/nutrai-api/internal/metrics"
+	metricsMiddleware "github.com/christian-gama/nutrai-api/internal/metrics/api/http/middleware"
 	"github.com/christian-gama/nutrai-api/internal/notify"
 	"github.com/christian-gama/nutrai-api/internal/patient"
 )
@@ -36,9 +37,10 @@ func setupModules() {
 // setupStrategies is responsible for setting up the strategies of the application. When creating a
 // new strategy, it should be added here.
 func setupStrategies() {
-	controller.AuthJwtStrategy.SetMiddleware(middleware.MakeAuthJwt())
-	controller.AuthApiKeyStrategy.SetMiddleware(middleware.MakeAuthApiKey())
+	controller.AuthJwtStrategy.SetMiddleware(authMiddleware.MakeAuthJwt())
+	controller.AuthApiKeyStrategy.SetMiddleware(authMiddleware.MakeAuthApiKey())
 	routesMiddleware.RecoveryAndPersistStrategy.SetMiddleware(expectionMiddleware.MakeRecovery())
+	routesMiddleware.MetricsStrategy.SetMiddleware(metricsMiddleware.MakeMetrics())
 }
 
 // setupConnections is responsible for setting up the connections of the application.
