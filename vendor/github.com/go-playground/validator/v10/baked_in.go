@@ -230,6 +230,7 @@ var (
 		"luhn_checksum":                 hasLuhnChecksum,
 		"mongodb":                       isMongoDB,
 		"cron":                          isCron,
+		"spicedb":                       isSpiceDB,
 	}
 )
 
@@ -1414,22 +1415,18 @@ func isURL(fl FieldLevel) bool {
 	switch field.Kind() {
 	case reflect.String:
 
-		var i int
 		s := field.String()
-
-		// checks needed as of Go 1.6 because of change https://github.com/golang/go/commit/617c93ce740c3c3cc28cdd1a0d712be183d0b328#diff-6c2d018290e298803c0c9419d8739885L195
-		// emulate browser and strip the '#' suffix prior to validation. see issue-#237
-		if i = strings.Index(s, "#"); i > -1 {
-			s = s[:i]
-		}
 
 		if len(s) == 0 {
 			return false
 		}
 
-		url, err := url.ParseRequestURI(s)
-
+		url, err := url.Parse(s)
 		if err != nil || url.Scheme == "" {
+			return false
+		}
+
+		if url.Host == "" && url.Fragment == "" && url.Opaque == "" {
 			return false
 		}
 
@@ -1450,7 +1447,13 @@ func isHttpURL(fl FieldLevel) bool {
 	case reflect.String:
 
 		s := strings.ToLower(field.String())
-		return strings.HasPrefix(s, "http://") || strings.HasPrefix(s, "https://")
+
+		url, err := url.Parse(s)
+		if err != nil || url.Host == "" {
+			return false
+		}
+
+		return url.Scheme == "http" || url.Scheme == "https"
 	}
 
 	panic(fmt.Sprintf("Bad field type %T", field.Interface()))
@@ -1559,6 +1562,10 @@ func isFilePath(fl FieldLevel) bool {
 
 	field := fl.Field()
 
+	// Not valid if it is a directory.
+	if isDir(fl) {
+		return false
+	}
 	// If it exists, it obviously is valid.
 	// This is done first to avoid code duplication and unnecessary additional logic.
 	if exists = isFile(fl); exists {
@@ -1708,7 +1715,7 @@ func hasValue(fl FieldLevel) bool {
 		if fl.(*validate).fldIsPointer && field.Interface() != nil {
 			return true
 		}
-		return field.IsValid() && field.Interface() != reflect.Zero(field.Type()).Interface()
+		return field.IsValid() && !field.IsZero()
 	}
 }
 
@@ -1732,7 +1739,7 @@ func requireCheckFieldKind(fl FieldLevel, param string, defaultNotFoundValue boo
 		if nullable && field.Interface() != nil {
 			return false
 		}
-		return field.IsValid() && field.Interface() == reflect.Zero(field.Type()).Interface()
+		return field.IsValid() && field.IsZero()
 	}
 }
 
@@ -2568,9 +2575,17 @@ func isDirPath(fl FieldLevel) bool {
 func isJSON(fl FieldLevel) bool {
 	field := fl.Field()
 
-	if field.Kind() == reflect.String {
+	switch field.Kind() {
+	case reflect.String:
 		val := field.String()
 		return json.Valid([]byte(val))
+	case reflect.Slice:
+		fieldType := field.Type()
+
+		if fieldType.ConvertibleTo(byteSliceType) {
+			b := field.Convert(byteSliceType).Interface().([]byte)
+			return json.Valid(b)
+		}
 	}
 
 	panic(fmt.Sprintf("Bad field type %T", field.Interface()))
@@ -2796,6 +2811,23 @@ func digitsHaveLuhnChecksum(digits []string) bool {
 func isMongoDB(fl FieldLevel) bool {
 	val := fl.Field().String()
 	return mongodbRegex.MatchString(val)
+}
+
+// isSpiceDB is the validation function for validating if the current field's value is valid for use with Authzed SpiceDB in the indicated way
+func isSpiceDB(fl FieldLevel) bool {
+	val := fl.Field().String()
+	param := fl.Param()
+
+	switch param {
+	case "permission":
+		return spicedbPermissionRegex.MatchString(val)
+	case "type":
+		return spicedbTypeRegex.MatchString(val)
+	case "id", "":
+		return spicedbIDRegex.MatchString(val)
+	}
+
+	panic("Unrecognized parameter: " + param)
 }
 
 // isCreditCard is the validation function for validating if the current field's value is a valid credit card number
